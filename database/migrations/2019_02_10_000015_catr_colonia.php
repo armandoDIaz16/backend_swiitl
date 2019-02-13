@@ -4,26 +4,27 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CATCARRERAUNIVERSIDAD extends Migration
+class CATRCOLONIA extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+     public function up()
     {
-        Schema::create('CAT_CARRERA_UNIVERSIDAD', function (Blueprint $table) {
+        Schema::create('CATR_COLONIA', function (Blueprint $table) {
+            
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_CARRERA_UNIVERSIDAD');            $table->primary('PK_CARRERA_UNIVERSIDAD');
-            $table->primary('PK_CARRERA_UNIVERSIDAD');
+            $table->increments('PK_COLONIA');
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');
-
-            /* CLAVES FORANEAS */
-            $table->integer('FK_ID_UNIVERSIDAD');
-            $table->foreign('FK_ID_UNIVERSIDAD')->references('PK_UNIVERSIDAD')->on('CATR_UNIVERSIDAD');
+            
+              /* CLAVES FORANEAS */
+            $table->integer('FK_ASENTAMIENTO');
+            $table->foreign('FK_ASENTAMIENTO')
+                  ->references('PK_ASENTAMIENTO')->on('CAT_ASENTAMIENTO');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -31,7 +32,7 @@ class CATCARRERAUNIVERSIDAD extends Migration
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
             $table->char('BORRADO',1)->default(0);
-        });
+    });
     }
 
     /**
@@ -41,6 +42,6 @@ class CATCARRERAUNIVERSIDAD extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('CAT_CARRERA_UNIVERSIDAD');
+        Schema::dropIfExists('CATR_COLONIA');
     }
 }

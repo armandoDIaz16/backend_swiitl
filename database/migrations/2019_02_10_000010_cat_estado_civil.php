@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePerTrRolModulo extends Migration
+class CatEstadoCivil extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,13 @@ class CreatePerTrRolModulo extends Migration
      */
     public function up()
     {
-        Schema::create('PER_TR_ROL_MODULO', function (Blueprint $table) {
+        Schema::create('CAT_ESTADO_CIVIL', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_ROL_MODULO');
-            $table->primary('PK_ROL_MODULO');
+            $table->increments('PK_ESTADO_CIVIL');
 
-            /* CLAVES FORANEAS */
-            $table->integer('FK_ROL');
-            $table->foreign('FK_ROL')->references('PK_ROL')->on('PER_CATR_ROL');
-
-            $table->integer('FK_MODULO');
-            $table->foreign('FK_MODULO')->references('PK_MODULO')->on('PER_CAT_MODULO');
+            /* DATOS GENERALES */
+            $table->string('NOMBRE');
+            $table->smallInteger('ESTADO');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -41,6 +37,6 @@ class CreatePerTrRolModulo extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('per_tr_rol_modulo');
+        Schema::dropIfExists('CAT_ESTADO_CIVIL');
     }
 }

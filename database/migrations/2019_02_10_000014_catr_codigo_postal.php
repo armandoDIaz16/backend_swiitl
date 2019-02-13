@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCatrCarrera extends Migration
+class CATRCODIGOPOSTAL extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,18 @@ class CreateCatrCarrera extends Migration
      */
     public function up()
     {
-        Schema::create('CATR_CARRERA', function (Blueprint $table) {
+         Schema::create('CATR_CODIGO_POSTAL', function (Blueprint $table) {
+
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_CARRERA');
-            $table->primary('PK_CARRERA');
+            $table->integer('PK_NUMERO_CODIGO_POSTAL');
+            $table->primary('PK_NUMERO_CODIGO_POSTAL');
 
             /* DATOS GENERALES */
-            $table->string('CLAVE');
-            $table->string('NOMBRE');
-            $table->smallInteger('ESTADO');
 
             /* CLAVES FORANEAS */
-            $table->integer('FK_AREA_ACADEMICA');
-            $table->foreign('FK_AREA_ACADEMICA')->references('PK_AREA_ACADEMICA')->on('CAT_AREA_ACADEMICA');
+            $table->integer('FK_CIUDAD');
+            $table->foreign('FK_CIUDAD')
+                  ->references('PK_CIUDAD')->on('CATR_CIUDAD');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -33,7 +32,7 @@ class CreateCatrCarrera extends Migration
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
             $table->char('BORRADO',1)->default(0);
-        });
+        });       
     }
 
     /**
@@ -43,6 +42,6 @@ class CreateCatrCarrera extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catr_carrera');
+        Schema::dropIfExists('CATR_CODIGO_POSTAL');
     }
 }

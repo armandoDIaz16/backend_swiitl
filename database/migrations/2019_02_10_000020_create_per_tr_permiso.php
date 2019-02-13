@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePerCatModulo extends Migration
+class CreatePerTrPermiso extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class CreatePerCatModulo extends Migration
      */
     public function up()
     {
-        Schema::create('PER_CAT_MODULO', function (Blueprint $table) {
+        Schema::create('PER_TR_PERMISO', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_MODULO');
-            $table->primary('PK_MODULO');
+            $table->increments('PK_ROL_USUARIO');
 
-            /* DATOS GENERALES */
-            $table->string('NOMBRE');
-            $table->smallInteger('ESTADO');
-            $table->smallInteger('ORDEN');
+            /* CLAVES FORANEAS */
+            $table->integer('FK_ROL');
+            $table->foreign('FK_ROL')->references('PK_ROL')->on('PER_CATR_ROL');
+
+            $table->integer('FK_ACCION');
+            $table->foreign('FK_ACCION')->references('PK_ACCION')->on('PER_CATR_ACCION');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -39,6 +40,6 @@ class CreatePerCatModulo extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('per_cat_modulo');
+        Schema::dropIfExists('per_tr_permiso');
     }
 }

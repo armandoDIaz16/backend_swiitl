@@ -17,13 +17,13 @@ class CATRASPIRANTE extends Migration
 
             /* CLAVES PRIMARIAS */
             $table->increments('PK_NUMERO_PREFICHA');
-            $table->primary('PK_NUMERO_PREFICHA');
 
             /* DATOS GENERALES */
             $table->string('PADRE_TUTOR');
             $table->string('MADRE');
             $table->integer('PROMEDIO');
             $table->date('PERIODO');
+            $table->char('AVISO_PRIVACIDAD',1)->default(0);
             $table->char('ESTATUS_PAGO',1)->default(0);
 
             /* CLAVES FORANEAS */
@@ -31,9 +31,11 @@ class CATRASPIRANTE extends Migration
             $table->integer('FK_CARRERA_1');
             $table->integer('FK_CARRERA_2');
             $table->integer('FK_PADRE');
+            $table->integer('FK_DEPENDENCIA');
+            $table->foreign('FK_DEPENDENCIA')->references('PK_DEPENDENCIA')->on('CAT_DEPENDENCIA');
             $table->foreign('FK_BACHILLERATO')->references('PK_BACHILLERATO')->on('CAT_BACHILLERATO');
-            $table->foreign('FK_CARRERA_1')->references('PK_CARRERA')->on('CAT_CARRERA');
-            $table->foreign('FK_CARRERA_2')->references('PK_CARRERA')->on('CAT_CARRERA');
+            $table->foreign('FK_CARRERA_1')->references('PK_CARRERA')->on('CATR_CARRERA');
+            $table->foreign('FK_CARRERA_2')->references('PK_CARRERA')->on('CATR_CARRERA');
             $table->foreign('FK_PADRE')->references('PK_USUARIO')->on('CATR_USUARIO');
 
             /* DATOS DE AUDITORIA */

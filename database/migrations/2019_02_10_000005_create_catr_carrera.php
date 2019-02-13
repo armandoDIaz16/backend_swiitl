@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePerTrPermiso extends Migration
+class CreateCatrCarrera extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,18 @@ class CreatePerTrPermiso extends Migration
      */
     public function up()
     {
-        Schema::create('PER_TR_PERMISO', function (Blueprint $table) {
+        Schema::create('CATR_CARRERA', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_ROL_USUARIO');
-            $table->primary('PK_ROL_USUARIO');
+            $table->increments('PK_CARRERA');
+
+            /* DATOS GENERALES */
+            $table->string('CLAVE');
+            $table->string('NOMBRE');
+            $table->smallInteger('ESTADO');
 
             /* CLAVES FORANEAS */
-            $table->integer('FK_ROL');
-            $table->foreign('FK_ROL')->references('PK_ROL')->on('PER_CATR_ROL');
-
-            $table->integer('FK_ACCION');
-            $table->foreign('FK_ACCION')->references('PK_ACCION')->on('PER_CATR_ACCION');
+            $table->integer('FK_AREA_ACADEMICA');
+            $table->foreign('FK_AREA_ACADEMICA')->references('PK_AREA_ACADEMICA')->on('CAT_AREA_ACADEMICA');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -41,6 +42,6 @@ class CreatePerTrPermiso extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('per_tr_permiso');
+        Schema::dropIfExists('catr_carrera');
     }
 }

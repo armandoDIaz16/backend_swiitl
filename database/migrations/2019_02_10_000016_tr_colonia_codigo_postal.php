@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePerTrRolUsuario extends Migration
+class TRCOLONIACODIGOPOSTAL extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreatePerTrRolUsuario extends Migration
      */
     public function up()
     {
-        Schema::create('PER_TR_ROL_USUARIO', function (Blueprint $table) {
+        Schema::create('TR_COLONIA_CODIGO_POSTAL', function (Blueprint $table) {
+
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_ROL_USUARIO');
-            $table->primary('PK_ROL_USUARIO');
+            $table->increments('PK_COLONIA_CODIGO_POSTAL');
+            /* DATOS GENERALES */
 
             /* CLAVES FORANEAS */
-            $table->integer('FK_ROL');
-            $table->foreign('FK_ROL')->references('PK_ROL')->on('PER_CATR_ROL');
-
-            $table->integer('FK_USUARIO');
-            $table->foreign('FK_USUARIO')->references('PK_USUARIO')->on('CATR_USUARIO');
+            $table->integer('FK_COLONIA');
+            $table->integer('FK_NUMERO_CODIGO_POSTAL');
+            $table->foreign('FK_COLONIA')->references('PK_COLONIA')->on('CATR_COLONIA');
+            $table->foreign('FK_NUMERO_CODIGO_POSTAL')->references('PK_NUMERO_CODIGO_POSTAL')->on('CATR_CODIGO_POSTAL');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -31,7 +31,7 @@ class CreatePerTrRolUsuario extends Migration
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
             $table->char('BORRADO',1)->default(0);
-        });
+        });    
     }
 
     /**
@@ -41,6 +41,6 @@ class CreatePerTrRolUsuario extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('per_tr_rol_usuario');
+        Schema::dropIfExists('CAT_COLONIA_CODIGO_POSTAL');
     }
 }

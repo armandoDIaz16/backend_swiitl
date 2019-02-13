@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePerCatSistema extends Migration
+class CATRCIUDAD extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,18 @@ class CreatePerCatSistema extends Migration
      */
     public function up()
     {
-        Schema::create('PER_CAT_SISTEMA', function (Blueprint $table) {
-            /* CLAVES PRIMARIAS */
-            $table->increments('PK_SISTEMA');
-            $table->primary('PK_SISTEMA');
+        Schema::create('CATR_CIUDAD', function (Blueprint $table) {
 
+            /* CLAVES PRIMARIAS */
+            $table->increments('PK_CIUDAD');
+            
             /* DATOS GENERALES */
             $table->string('NOMBRE');
-            $table->smallInteger('ESTADO');
+
+            /* CLAVES FORANEAS */
+            $table->integer('FK_ENTIDAD_FEDERATIVA');
+            $table->foreign('FK_ENTIDAD_FEDERATIVA')
+                  ->references('PK_ENTIDAD_FEDERATIVA')->on('CAT_ENTIDAD_FEDERATIVA');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -38,6 +42,6 @@ class CreatePerCatSistema extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('per_cat_sistema');
+        Schema::dropIfExists('CAT_CIUDAD');
     }
 }

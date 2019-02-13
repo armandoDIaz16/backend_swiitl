@@ -4,36 +4,32 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CATRCOLONIA extends Migration
+class CATENTIDADFEDERATIVA extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-     public function up()
+    public function up()
     {
-        Schema::create('CATR_COLONIA', function (Blueprint $table) {
+        Schema::create('CAT_ENTIDAD_FEDERATIVA', function (Blueprint $table) {
             
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_COLONIA');
-            $table->primary('PK_COLONIA');
+            $table->increments('PK_ENTIDAD_FEDERATIVA');
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');
-            
-              /* CLAVES FORANEAS */
-            $table->integer('FK_ASENTAMIENTO');
-            $table->foreign('FK_ASENTAMIENTO')
-                  ->references('PK_ASENTAMIENTO')->on('CAT_ASENTAMIENTO');
+
+            /* CLAVES FORANEAS */
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
-            $table->char('BORRADO',1)->default(0);
-    });
+            $table->char('BORRADO',1)->default(0); 
+        });
     }
 
     /**
@@ -43,6 +39,6 @@ class CATRCOLONIA extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('CAT_ENTIDAD_FEDERATIVA');
     }
 }

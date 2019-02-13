@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CATRCIUDAD extends Migration
+class CreatePerTrRolUsuario extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,16 @@ class CATRCIUDAD extends Migration
      */
     public function up()
     {
-        Schema::create('CATR_CIUDAD', function (Blueprint $table) {
-
+        Schema::create('PER_TR_ROL_USUARIO', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_CIUDAD');
-            $table->primary('PK_CIUDAD');
-            
-            /* DATOS GENERALES */
-            $table->string('NOMBRE');
+            $table->increments('PK_ROL_USUARIO');
 
             /* CLAVES FORANEAS */
-            $table->integer('FK_ENTIDAD_FEDERATIVA');
-            $table->foreign('FK_ENTIDAD_FEDERATIVA')
-                  ->references('PK_ENTIDAD_FEDERATIVA')->on('CAT_ENTIDAD_FEDERATIVA');
+            $table->integer('FK_ROL');
+            $table->foreign('FK_ROL')->references('PK_ROL')->on('PER_CATR_ROL');
+
+            $table->integer('FK_USUARIO');
+            $table->foreign('FK_USUARIO')->references('PK_USUARIO')->on('CATR_USUARIO');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -43,6 +40,6 @@ class CATRCIUDAD extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('per_tr_rol_usuario');
     }
 }
