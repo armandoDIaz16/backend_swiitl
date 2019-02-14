@@ -23,8 +23,7 @@ class CATRCIUDAD extends Migration
 
             /* CLAVES FORANEAS */
             $table->integer('FK_ENTIDAD_FEDERATIVA');
-            $table->foreign('FK_ENTIDAD_FEDERATIVA')
-                  ->references('PK_ENTIDAD_FEDERATIVA')->on('CAT_ENTIDAD_FEDERATIVA');
+            $table->foreign('FK_ENTIDAD_FEDERATIVA')->references('PK_ENTIDAD_FEDERATIVA')->on('CAT_ENTIDAD_FEDERATIVA');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');

@@ -23,8 +23,10 @@ class CATRASPIRANTE extends Migration
             $table->string('MADRE');
             $table->integer('PROMEDIO');
             $table->date('PERIODO');
+            $table->string('NACIONALIDAD');
             $table->char('AVISO_PRIVACIDAD',1)->default(0);
             $table->char('ESTATUS_PAGO',1)->default(0);
+
 
             /* CLAVES FORANEAS */
             $table->integer('FK_BACHILLERATO')->nullable();
@@ -37,6 +39,12 @@ class CATRASPIRANTE extends Migration
             $table->foreign('FK_CARRERA_1')->references('PK_CARRERA')->on('CATR_CARRERA');
             $table->foreign('FK_CARRERA_2')->references('PK_CARRERA')->on('CATR_CARRERA');
             $table->foreign('FK_PADRE')->references('PK_USUARIO')->on('CATR_USUARIO');
+
+            $table->integer('FK_CIUDAD')->nullable();
+            $table->foreign('FK_CIUDAD')->references('PK_CIUDAD')->on('CATR_CIUDAD');
+
+
+
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
