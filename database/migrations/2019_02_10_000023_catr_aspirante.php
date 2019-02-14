@@ -19,9 +19,9 @@ class CATRASPIRANTE extends Migration
             $table->increments('PK_NUMERO_PREFICHA');
 
             /* DATOS GENERALES */
-            $table->string('PADRE_TUTOR');
-            $table->string('MADRE');
-            $table->string('ESPECIALIDAD');
+            $table->string('PADRE_TUTOR')->nullable();
+            $table->string('MADRE')->nullable();
+            $table->string('ESPECIALIDAD')->nullable();
             $table->integer('PROMEDIO');
             $table->date('PERIODO');
             $table->string('NACIONALIDAD');
@@ -37,7 +37,7 @@ class CATRASPIRANTE extends Migration
             $table->integer('FK_CARRERA_1');
             $table->foreign('FK_CARRERA_1')->references('PK_CARRERA')->on('CATR_CARRERA');
 
-            $table->integer('FK_CARRERA_2');
+            $table->integer('FK_CARRERA_2')->nullable();
             $table->foreign('FK_CARRERA_2')->references('PK_CARRERA')->on('CATR_CARRERA');
 
             $table->integer('FK_PADRE');
@@ -52,8 +52,12 @@ class CATRASPIRANTE extends Migration
             $table->integer('FK_CARRERA_UNIVERSIDAD')->nullable();
             $table->foreign('FK_CARRERA_UNIVERSIDAD')->references('PK_CARRERA_UNIVERSIDAD')->on('CAT_CARRERA_UNIVERSIDAD');
 
+            $table->integer('FK_PROPAGANDA_TECNOLOGICO');
+            $table->foreign('FK_PROPAGANDA_TECNOLOGICO')->references('PK_PROPAGANDA_TECNOLOGICO')->on('CAT_PROPAGANDA_TECNOLOGICO');
+
+
             /* DATOS DE AUDITORIA */
-            $table->integer('FK_USUARIO_REGISTRO');
+            $table->integer('FK_USUARIO_REGISTRO')->nullable();
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();

@@ -26,7 +26,7 @@ class TRCOLONIACODIGOPOSTAL extends Migration
             $table->foreign('FK_NUMERO_CODIGO_POSTAL')->references('PK_NUMERO_CODIGO_POSTAL')->on('CATR_CODIGO_POSTAL');
 
             /* DATOS DE AUDITORIA */
-            $table->integer('FK_USUARIO_REGISTRO');
+            $table->integer('FK_USUARIO_REGISTRO')->nullable();
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();

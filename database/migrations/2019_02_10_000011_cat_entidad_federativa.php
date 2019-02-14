@@ -24,7 +24,7 @@ class CATENTIDADFEDERATIVA extends Migration
             /* CLAVES FORANEAS */
 
             /* DATOS DE AUDITORIA */
-            $table->integer('FK_USUARIO_REGISTRO');
+            $table->integer('FK_USUARIO_REGISTRO')->nullable();
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();

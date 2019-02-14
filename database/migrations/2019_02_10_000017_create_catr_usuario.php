@@ -23,23 +23,23 @@ class CreateCatrUsuario extends Migration
             $table->string('SEGUNDO_APELLIDO')->nullable();
             $table->date('FECHA_NACIMIENTO');
             $table->string('CURP', 18)->unique();
-            $table->smallInteger('ESTADO');
+            $table->smallInteger('ESTADO')->default(0);
             $table->string('TELEFONO_CASA');
-            $table->string('TELEFONO_MOVIL')->unique();
+            $table->string('TELEFONO_MOVIL')->nullable()->unique();
             $table->string('CORREO1')->unique();
-            $table->string('CORREO2')->unique();
-            $table->string('CORREO_INSTITUCIONAL')->unique();
-            $table->string('CONTRASENIA');
+            $table->string('CORREO2')->nullable()->unique();
+            $table->string('CORREO_INSTITUCIONAL')->nullable()->unique();
+            $table->string('CONTRASENIA')->nullable();
             $table->string('CALLE');
             $table->string('NUMERO_EXTERIOR');
             $table->string('NUMERO_INTERIOR')->nullable();
-            $table->string('NACIONALIDAD');
+            $table->string('NACIONALIDAD')->nullable();
             $table->char('SEXO');
-            $table->string('TIPO_SANGUINEO');
+            $table->string('TIPO_SANGUINEO')->nullable();
             $table->string('NSS', 11)->unique();
-            $table->string('NOMBRE_CONTACTO');
-            $table->string('TELEFONO_CONTACTO');
-            $table->string('CORREO_CONTACTO');
+            $table->string('NOMBRE_CONTACTO')->nullable();
+            $table->string('TELEFONO_CONTACTO')->nullable();
+            $table->string('CORREO_CONTACTO')->nullable();
             $table->string('AYUDA_INCAPACIDAD')->nullable()->comment("Refiere al tipo de ayuda que necesita para atender la incapacidad");
 
             /* CLAVES FORANEAS */
@@ -54,7 +54,7 @@ class CreateCatrUsuario extends Migration
 
 
             /* DATOS DE AUDITORIA */
-            $table->integer('FK_USUARIO_REGISTRO');
+            $table->integer('FK_USUARIO_REGISTRO')->nullable();
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CATRCODIGOPOSTAL extends Migration
+class CATRCIUDAD extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,17 @@ class CATRCODIGOPOSTAL extends Migration
      */
     public function up()
     {
-         Schema::create('CATR_CODIGO_POSTAL', function (Blueprint $table) {
+        Schema::create('CATR_CIUDAD', function (Blueprint $table) {
 
             /* CLAVES PRIMARIAS */
-            $table->integer('PK_NUMERO_CODIGO_POSTAL');
-            $table->primary('PK_NUMERO_CODIGO_POSTAL');
-
+            $table->increments('PK_CIUDAD');
+            
             /* DATOS GENERALES */
+            $table->string('NOMBRE');
 
             /* CLAVES FORANEAS */
-            $table->integer('FK_CIUDAD');
-            $table->foreign('FK_CIUDAD')
-                  ->references('PK_CIUDAD')->on('CATR_CIUDAD');
+            $table->integer('FK_ENTIDAD_FEDERATIVA');
+            $table->foreign('FK_ENTIDAD_FEDERATIVA')->references('PK_ENTIDAD_FEDERATIVA')->on('CAT_ENTIDAD_FEDERATIVA');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();
@@ -32,7 +31,7 @@ class CATRCODIGOPOSTAL extends Migration
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
             $table->char('BORRADO',1)->default(0);
-        });       
+        });
     }
 
     /**
@@ -42,6 +41,6 @@ class CATRCODIGOPOSTAL extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('CATR_CODIGO_POSTAL');
+        Schema::dropIfExists('CAT_CIUDAD');
     }
 }

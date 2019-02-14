@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTrRestableceContrasena extends Migration
+class CreatePerCatrRol extends Migration
 {
     /**
      * Run the migrations.
@@ -13,22 +13,20 @@ class CreateTrRestableceContrasena extends Migration
      */
     public function up()
     {
-        Schema::create('TR_RESTABLECE_CONTRASENA', function (Blueprint $table) {
+        Schema::create('PER_CATR_ROL', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_RESTABLECE_CONTRASENA');
+            $table->increments('PK_ROL');
 
             /* DATOS GENERALES */
-            $table->dateTime('FECHA_GENERACION');
-            $table->dateTime('FECHA_EXPIRACION');
-            $table->string('TOKEN');
-            $table->smallInteger('ESTADO')->comment('Activo = 1, Utilizado = 2');
+            $table->string('NOMBRE');
+            $table->smallInteger('ESTADO');
 
             /* CLAVES FORANEAS */
-            $table->integer('FK_USUARIO');
-            $table->foreign('FK_USUARIO')->references('PK_USUARIO')->on('CATR_USUARIO');
+            $table->integer('FK_SISTEMA');
+            $table->foreign('FK_SISTEMA')->references('PK_SISTEMA')->on('PER_CAT_SISTEMA');
 
             /* DATOS DE AUDITORIA */
-            $table->integer('FK_USUARIO_REGISTRO');
+            $table->integer('FK_USUARIO_REGISTRO')->nullable();
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
@@ -43,6 +41,6 @@ class CreateTrRestableceContrasena extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tr_recupera_contrasena');
+        Schema::dropIfExists('per_catr_rol');
     }
 }

@@ -25,7 +25,7 @@ class CreatePerTrRolUsuario extends Migration
             $table->foreign('FK_USUARIO')->references('PK_USUARIO')->on('CATR_USUARIO');
 
             /* DATOS DE AUDITORIA */
-            $table->integer('FK_USUARIO_REGISTRO');
+            $table->integer('FK_USUARIO_REGISTRO')->nullable();
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCatrCarrera extends Migration
+class CATCARRERAUNIVERSIDAD extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,15 @@ class CreateCatrCarrera extends Migration
      */
     public function up()
     {
-        Schema::create('CATR_CARRERA', function (Blueprint $table) {
+        Schema::create('CAT_CARRERA_UNIVERSIDAD', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_CARRERA');
+            $table->increments('PK_CARRERA_UNIVERSIDAD');
 
             /* DATOS GENERALES */
-            $table->string('CLAVE');
             $table->string('NOMBRE');
-            $table->smallInteger('ESTADO');
-
-            /* CLAVES FORANEAS */
-            $table->integer('FK_AREA_ACADEMICA');
-            $table->foreign('FK_AREA_ACADEMICA')->references('PK_AREA_ACADEMICA')->on('CAT_AREA_ACADEMICA');
 
             /* DATOS DE AUDITORIA */
-            $table->integer('FK_USUARIO_REGISTRO');
+            $table->integer('FK_USUARIO_REGISTRO')->nullable();
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
@@ -42,6 +36,6 @@ class CreateCatrCarrera extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catr_carrera');
+        Schema::dropIfExists('CAT_CARRERA_UNIVERSIDAD');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CatEstadoCivil extends Migration
+class CATASENTAMIENTO extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,23 @@ class CatEstadoCivil extends Migration
      */
     public function up()
     {
-        Schema::create('CAT_ESTADO_CIVIL', function (Blueprint $table) {
+        Schema::create('CAT_ASENTAMIENTO', function (Blueprint $table) {
+            
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_ESTADO_CIVIL');
+            $table->increments('PK_ASENTAMIENTO');
 
-            /* DATOS GENERALES */
+             /* DATOS GENERALES */
             $table->string('NOMBRE');
-            $table->smallInteger('ESTADO');
+
+            /* CLAVES FORANEAS */
 
             /* DATOS DE AUDITORIA */
-            $table->integer('FK_USUARIO_REGISTRO');
+            $table->integer('FK_USUARIO_REGISTRO')->nullable();
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
             $table->char('BORRADO',1)->default(0);
-        });
+        });    
     }
 
     /**
@@ -37,6 +39,6 @@ class CatEstadoCivil extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('CAT_ESTADO_CIVIL');
+        Schema::dropIfExists('CAT_ASENTAMIENTO');
     }
 }

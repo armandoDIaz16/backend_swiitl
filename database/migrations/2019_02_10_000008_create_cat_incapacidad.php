@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CATRUNIVERSIDAD extends Migration
+class CreateCatIncapacidad extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,16 @@ class CATRUNIVERSIDAD extends Migration
      */
     public function up()
     {
-        Schema::create('CATR_UNIVERSIDAD', function (Blueprint $table) {
+        Schema::create('CAT_INCAPACIDAD', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_UNIVERSIDAD');
+            $table->increments('PK_INCAPACIDAD');
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');
-            $table->string('ESTADO');
-            $table->string('MUNICIPIO');
+            $table->smallInteger('ESTADO');
 
             /* DATOS DE AUDITORIA */
-            $table->integer('FK_USUARIO_REGISTRO');
+            $table->integer('FK_USUARIO_REGISTRO')->nullable();
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
@@ -38,6 +37,6 @@ class CATRUNIVERSIDAD extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('CATR_UNIVERSIDAD');
+        Schema::dropIfExists('cat_incapacidad');
     }
 }
