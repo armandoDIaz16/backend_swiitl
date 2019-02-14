@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCatAreaAcademica extends Migration
+class CatDependencia extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateCatAreaAcademica extends Migration
      */
     public function up()
     {
-        Schema::create('CAT_AREA_ACADEMICA', function (Blueprint $table) {
+        Schema::create('CAT_DEPENDENCIA', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_AREA_ACADEMICA');
-            $table->primary('PK_AREA_ACADEMICA');
+            $table->increments('PK_DEPENDENCIA');
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');
@@ -38,6 +37,6 @@ class CreateCatAreaAcademica extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cat_area_academica');
+        Schema::dropIfExists('CAT_DEPENDENCIA');
     }
 }

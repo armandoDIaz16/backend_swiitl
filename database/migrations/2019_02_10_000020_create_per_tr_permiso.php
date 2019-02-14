@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePerTrRolUsuario extends Migration
+class CreatePerTrPermiso extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,16 @@ class CreatePerTrRolUsuario extends Migration
      */
     public function up()
     {
-        Schema::create('PER_TR_ROL_USUARIO', function (Blueprint $table) {
+        Schema::create('PER_TR_PERMISO', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
             $table->increments('PK_ROL_USUARIO');
-            $table->primary('PK_ROL_USUARIO');
 
             /* CLAVES FORANEAS */
             $table->integer('FK_ROL');
             $table->foreign('FK_ROL')->references('PK_ROL')->on('PER_CATR_ROL');
 
-            $table->integer('FK_USUARIO');
-            $table->foreign('FK_USUARIO')->references('PK_USUARIO')->on('CATR_USUARIO');
+            $table->integer('FK_ACCION');
+            $table->foreign('FK_ACCION')->references('PK_ACCION')->on('PER_CATR_ACCION');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -41,6 +40,6 @@ class CreatePerTrRolUsuario extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('per_tr_rol_usuario');
+        Schema::dropIfExists('per_tr_permiso');
     }
 }

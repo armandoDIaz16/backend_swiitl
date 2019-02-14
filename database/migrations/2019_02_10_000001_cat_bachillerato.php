@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CATCARRERAUNIVERSIDAD extends Migration
+class CATBACHILLERATO extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,15 @@ class CATCARRERAUNIVERSIDAD extends Migration
      */
     public function up()
     {
-        Schema::create('CAT_CARRERA_UNIVERSIDAD', function (Blueprint $table) {
+        Schema::create('CAT_BACHILLERATO', function (Blueprint $table) {
+
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_CARRERA_UNIVERSIDAD');            $table->primary('PK_CARRERA_UNIVERSIDAD');
-            $table->primary('PK_CARRERA_UNIVERSIDAD');
+            $table->increments('PK_BACHILLERATO');
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');
-
-            /* CLAVES FORANEAS */
-            $table->integer('FK_ID_UNIVERSIDAD');
-            $table->foreign('FK_ID_UNIVERSIDAD')->references('PK_UNIVERSIDAD')->on('CATR_UNIVERSIDAD');
+            $table->string('ESTADO');
+            $table->string('MUNICIPIO');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -41,6 +39,6 @@ class CATCARRERAUNIVERSIDAD extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('CAT_CARRERA_UNIVERSIDAD');
+        Schema::dropIfExists('CAT_BACHILLERATO');
     }
 }

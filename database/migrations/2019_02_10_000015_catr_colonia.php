@@ -4,29 +4,27 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePerCatrAccion extends Migration
+class CATRCOLONIA extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+     public function up()
     {
-        Schema::create('PER_CATR_ACCION', function (Blueprint $table) {
+        Schema::create('CATR_COLONIA', function (Blueprint $table) {
+            
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_ACCION');
-            $table->primary('PK_ACCION');
+            $table->increments('PK_COLONIA');
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');
-            $table->smallInteger('ESTADO');
-            $table->smallInteger('ORDEN');
-            $table->string('CLAVE_ACCION');
-
-            /* CLAVES FORANEAS */
-            $table->integer('FK_MODULO');
-            $table->foreign('FK_MODULO')->references('PK_MODULO')->on('PER_CAT_MODULO');
+            
+              /* CLAVES FORANEAS */
+            $table->integer('FK_ASENTAMIENTO');
+            $table->foreign('FK_ASENTAMIENTO')
+                  ->references('PK_ASENTAMIENTO')->on('CAT_ASENTAMIENTO');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -34,7 +32,7 @@ class CreatePerCatrAccion extends Migration
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
             $table->char('BORRADO',1)->default(0);
-        });
+    });
     }
 
     /**
@@ -44,6 +42,6 @@ class CreatePerCatrAccion extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('per_catr_accion');
+        Schema::dropIfExists('CATR_COLONIA');
     }
 }

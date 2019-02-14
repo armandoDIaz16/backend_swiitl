@@ -16,7 +16,6 @@ class CreateCatrUsuario extends Migration
         Schema::create('CATR_USUARIO', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
             $table->increments('PK_USUARIO');
-            $table->primary('PK_USUARIO');
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');
@@ -46,10 +45,14 @@ class CreateCatrUsuario extends Migration
 
             /* CLAVES FORANEAS */
             $table->integer('FK_COLONIA');
-            $table->foreign('FK_COLONIA')->references('PK_COLONIA')->on('CAT_COLONIA');
+            $table->foreign('FK_COLONIA')->references('PK_COLONIA')->on('CATR_COLONIA');
 
             $table->integer('FK_INCAPACIDAD');
             $table->foreign('FK_INCAPACIDAD')->references('PK_INCAPACIDAD')->on('CAT_INCAPACIDAD');
+
+            $table->integer('FK_ESTADO_CIVIL');
+            $table->foreign('FK_ESTADO_CIVIL')->references('PK_ESTADO_CIVIL')->on('CAT_ESTADO_CIVIL');
+
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');

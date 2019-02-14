@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCatrCarrera extends Migration
+class CreatePerCatrRol extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,17 @@ class CreateCatrCarrera extends Migration
      */
     public function up()
     {
-        Schema::create('CATR_CARRERA', function (Blueprint $table) {
+        Schema::create('PER_CATR_ROL', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_CARRERA');
-            $table->primary('PK_CARRERA');
+            $table->increments('PK_ROL');
 
             /* DATOS GENERALES */
-            $table->string('CLAVE');
             $table->string('NOMBRE');
             $table->smallInteger('ESTADO');
 
             /* CLAVES FORANEAS */
-            $table->integer('FK_AREA_ACADEMICA');
-            $table->foreign('FK_AREA_ACADEMICA')->references('PK_AREA_ACADEMICA')->on('CAT_AREA_ACADEMICA');
+            $table->integer('FK_SISTEMA');
+            $table->foreign('FK_SISTEMA')->references('PK_SISTEMA')->on('PER_CAT_SISTEMA');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');
@@ -43,6 +41,6 @@ class CreateCatrCarrera extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catr_carrera');
+        Schema::dropIfExists('per_catr_rol');
     }
 }
