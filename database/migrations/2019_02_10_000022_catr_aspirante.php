@@ -21,30 +21,36 @@ class CATRASPIRANTE extends Migration
             /* DATOS GENERALES */
             $table->string('PADRE_TUTOR');
             $table->string('MADRE');
+            $table->string('ESPECIALIDAD');
             $table->integer('PROMEDIO');
             $table->date('PERIODO');
             $table->string('NACIONALIDAD');
+            $table->char('TRABAJAS_Y_ESTUDIAS',1)->default(0);
             $table->char('AVISO_PRIVACIDAD',1)->default(0);
             $table->char('ESTATUS_PAGO',1)->default(0);
 
 
             /* CLAVES FORANEAS */
             $table->integer('FK_BACHILLERATO')->nullable();
+            $table->foreign('FK_BACHILLERATO')->references('PK_BACHILLERATO')->on('CAT_BACHILLERATO');
+
             $table->integer('FK_CARRERA_1');
+            $table->foreign('FK_CARRERA_1')->references('PK_CARRERA')->on('CATR_CARRERA');
+
             $table->integer('FK_CARRERA_2');
+            $table->foreign('FK_CARRERA_2')->references('PK_CARRERA')->on('CATR_CARRERA');
+
             $table->integer('FK_PADRE');
+            $table->foreign('FK_PADRE')->references('PK_USUARIO')->on('CATR_USUARIO');
+
             $table->integer('FK_DEPENDENCIA');
             $table->foreign('FK_DEPENDENCIA')->references('PK_DEPENDENCIA')->on('CAT_DEPENDENCIA');
-            $table->foreign('FK_BACHILLERATO')->references('PK_BACHILLERATO')->on('CAT_BACHILLERATO');
-            $table->foreign('FK_CARRERA_1')->references('PK_CARRERA')->on('CATR_CARRERA');
-            $table->foreign('FK_CARRERA_2')->references('PK_CARRERA')->on('CATR_CARRERA');
-            $table->foreign('FK_PADRE')->references('PK_USUARIO')->on('CATR_USUARIO');
 
             $table->integer('FK_CIUDAD')->nullable();
             $table->foreign('FK_CIUDAD')->references('PK_CIUDAD')->on('CATR_CIUDAD');
 
-
-
+            $table->integer('FK_CARRERA_UNIVERSIDAD')->nullable();
+            $table->foreign('FK_CARRERA_UNIVERSIDAD')->references('PK_CARRERA_UNIVERSIDAD')->on('CAT_CARRERA_UNIVERSIDAD');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO');

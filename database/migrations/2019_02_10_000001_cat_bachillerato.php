@@ -20,6 +20,7 @@ class CATBACHILLERATO extends Migration
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');
+            $table->string('PAIS');
             $table->string('ESTADO');
             $table->string('MUNICIPIO');
 

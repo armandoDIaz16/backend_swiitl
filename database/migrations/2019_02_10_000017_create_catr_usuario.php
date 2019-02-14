@@ -40,8 +40,7 @@ class CreateCatrUsuario extends Migration
             $table->string('NOMBRE_CONTACTO');
             $table->string('TELEFONO_CONTACTO');
             $table->string('CORREO_CONTACTO');
-            $table->string('AYUDA_INCAPACIDAD')
-                ->comment("Refiere al tipo de ayuda que necesita para atender la incapacidad");
+            $table->string('AYUDA_INCAPACIDAD')->nullable()->comment("Refiere al tipo de ayuda que necesita para atender la incapacidad");
 
             /* CLAVES FORANEAS */
             $table->integer('FK_COLONIA');
