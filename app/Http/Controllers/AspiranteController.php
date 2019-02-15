@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Carrera_Universidad;
 use Illuminate\Http\Request;
 use App\Aspirante;
 use App\Usuario;
+use App\Mail\DemoEmail;
+use Illuminate\Support\Facades\Mail;
 
 class AspiranteController extends Controller
 {
@@ -37,6 +38,7 @@ class AspiranteController extends Controller
      */
     public function store(Request $request)
     {
+
         $usuario = new Usuario();
         $usuario->NOMBRE = $request->NOMBRE;
         $usuario->PRIMER_APELLIDO = $request->PRIMER_APELLIDO;
@@ -81,6 +83,14 @@ class AspiranteController extends Controller
         $aspirante->FK_PADRE = $FK_PADRE;
         $aspirante->save();
 
+
+        $objDemo = new \stdClass();
+        $objDemo->demo_one = 'Demo One Value';
+        $objDemo->demo_two = 'Demo Two Value';
+        $objDemo->sender = 'SenderUserName';
+        $objDemo->receiver = 'ReceiverUserName';
+
+        Mail::to("eddychavezba@gmail.com")->send(new DemoEmail($objDemo));
     }
 
     /**

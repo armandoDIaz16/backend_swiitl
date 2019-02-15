@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Dependencia;
+use App\Mail\DemoEmail;
+use Illuminate\Support\Facades\Mail;
 
 class DependenciaController extends Controller
 {
