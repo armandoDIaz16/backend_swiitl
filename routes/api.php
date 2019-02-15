@@ -16,6 +16,12 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+<<<<<<< Updated upstream
 Route::resource('Aspirante', 'AspiranteController');
 Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
 Route::resource('Dependencia', 'DependenciaController');
+=======
+
+Route::resource('CAT_INCAPACIDAD', 'CatincapacidadController');
+Route::resource('CAT_PROPAGANDA_TECNOLOGICO', 'CatpropagandaController');
+>>>>>>> Stashed changes
