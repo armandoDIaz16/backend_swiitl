@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Carrera_Universidad;
 use Illuminate\Http\Request;
 use App\Aspirante;
 use App\Usuario;
@@ -55,11 +56,11 @@ class AspiranteController extends Controller
         $usuario->AYUDA_INCAPACIDAD = $request->AYUDA_INCAPACIDAD;
         $usuario->save();
 
-        //return Carrera_Universidad::select('PK_CARRERA_UNIVERSIDAD','NOMBRE')->get();
+        //Usuario::where('CURP', $usuario->CURP)->select('CURP')->get();
 
-        $FK_PADRE = SWITLL::table('CATR_USUARIO')->insertGetId(
-            ['CURP' => $usuario->CURP]
-        );
+        $usuario = Usuario::where('CURP', $usuario->CURP)->select('PK_USUARIO')->get()->first();
+        $FK_PADRE = $usuario->PK_USUARIO;
+        //return $usuario->PK_USUARIO;
 
         $aspirante = new Aspirante();
         $aspirante->PERIODO = $request->PERIODO;
@@ -79,6 +80,7 @@ class AspiranteController extends Controller
         $aspirante->AVISO_PRIVACIDAD = $request->AVISO_PRIVACIDAD;
         $aspirante->FK_PADRE = $FK_PADRE;
         $aspirante->save();
+
     }
 
     /**
@@ -89,7 +91,9 @@ class AspiranteController extends Controller
      */
     public function show($id)
     {
-        return Usuario::where('PK_USUARIO', $id)->get();
+        $aspirante = Aspirante::where('PK_NUMERO_PREFICHA', $id)->select('FK_PADRE')->get()->first();
+        $FK_PADRE = $aspirante->FK_PADRE;
+        return $respuesta1 = Aspirante::where('PK_NUMERO_PREFICHA', $id)->get() . $respuesta2 = Usuario::where('PK_USUARIO', $FK_PADRE)->get();
     }
 
     /**
