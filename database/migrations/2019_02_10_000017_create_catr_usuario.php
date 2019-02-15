@@ -36,7 +36,7 @@ class CreateCatrUsuario extends Migration
             $table->string('NACIONALIDAD')->nullable();
             $table->char('SEXO');
             $table->string('TIPO_SANGUINEO')->nullable();
-            $table->string('NSS', 11)->unique();
+            $table->string('NSS', 11)->nullable()->unique();
             $table->string('NOMBRE_CONTACTO')->nullable();
             $table->string('TELEFONO_CONTACTO')->nullable();
             $table->string('CORREO_CONTACTO')->nullable();
