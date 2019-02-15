@@ -9,16 +9,6 @@ use Illuminate\Support\Facades\Mail;
 
 class DependenciaController extends Controller
 {
-    public function send()
-    {
-        $objDemo = new \stdClass();
-        $objDemo->demo_one = 'Demo One Value';
-        $objDemo->demo_two = 'Demo Two Value';
-        $objDemo->sender = 'SenderUserName';
-        $objDemo->receiver = 'ReceiverUserName';
-
-        Mail::to("eddychavezba@gmail.com")->send(new DemoEmail($objDemo));
-    }
     /**
      * Display a listing of the resource.
      *
@@ -58,8 +48,6 @@ class DependenciaController extends Controller
      */
     public function show($id)
     {
-        Mail::to("14240683@itleon.edu.mx")->send("Hola");
-        //codigo envio correos
         return Dependencia::select('PK_DEPENDENCIA','NOMBRE')->get();
     }
 
