@@ -47,9 +47,8 @@ class CreditosSiiaController extends Controller
     public function show($numero_control)
     {
         $var = new CreditosSiia();
-        $var2 = new CreditosSiia();
 
-        return array ($var -> get_creditos_aprobados($numero_control),$var2->get_creditos_horario($numero_control));
+        return $var->correo();
     }
 
     /**
