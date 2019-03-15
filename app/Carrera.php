@@ -17,7 +17,7 @@ class Carrera extends Model
         'FECHA_MODIFICACION',
         'BORRADO'
     ];
-    protected $table = 'CAT_UNIVERSIDAD';
+    protected $table = 'CATR_CARRERA';
 
 
 

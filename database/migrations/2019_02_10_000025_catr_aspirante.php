@@ -16,14 +16,15 @@ class CATRASPIRANTE extends Migration
         Schema::create('CATR_ASPIRANTE', function (Blueprint $table) {
 
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_NUMERO_PREFICHA');
+            $table->increments('PK_ASPIRANTE');
 
             /* DATOS GENERALES */
+            $table->char('PREFICHA',10);
+            $table->char('NUMERO_PREFICHA',5);
             $table->string('PADRE_TUTOR')->nullable();
             $table->string('MADRE')->nullable();
             $table->string('ESPECIALIDAD')->nullable();
             $table->integer('PROMEDIO');
-            $table->date('PERIODO');
             $table->string('NACIONALIDAD');
             $table->char('TRABAJAS_Y_ESTUDIAS',1)->default(0);
             $table->char('AVISO_PRIVACIDAD',1)->default(0);
@@ -31,6 +32,9 @@ class CATRASPIRANTE extends Migration
 
 
             /* CLAVES FORANEAS */
+            $table->integer('FK_PERIODO');
+            $table->foreign('FK_PERIODO')->references('PK_PERIODO_PREFICHAS')->on('CAT_PERIODO_PREFICHAS');
+
             $table->integer('FK_BACHILLERATO')->nullable();
             $table->foreign('FK_BACHILLERATO')->references('PK_BACHILLERATO')->on('CAT_BACHILLERATO');
 

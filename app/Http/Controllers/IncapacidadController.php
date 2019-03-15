@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\CatPropaganda;
 use Illuminate\Http\Request;
+use App\Incapacidad;
 
-class CatpropagandaController extends Controller
+class IncapacidadController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,8 @@ class CatpropagandaController extends Controller
      */
     public function index()
     {
-        //
+        //Solicitamos al modelo con el id solicitado por GET
+        return Incapacidad::select('PK_INCAPACIDAD','NOMBRE')->get();
     }
 
     /**
@@ -46,8 +47,7 @@ class CatpropagandaController extends Controller
      */
     public function show($id)
     {
-        //Solicitamos al modelo la propaganda con el id solicitado por el GET
-        return CatPropaganda::select('PK_PROPAGANDA_TECNOLOGICO','NOMBRE')->get();
+        //
     }
 
     /**

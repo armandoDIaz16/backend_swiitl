@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Estado_Civil;
 use Illuminate\Http\Request;
 
-class Estado_CivilController extends Controller
+class CATR_INCAPACIDAD_ASPIRANTE extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +13,7 @@ class Estado_CivilController extends Controller
      */
     public function index()
     {
-        return Estado_Civil::select('PK_ESTADO_CIVIL','NOMBRE')->get();
+        //
     }
 
     /**
@@ -46,7 +45,7 @@ class Estado_CivilController extends Controller
      */
     public function show($id)
     {
-       // 
+        //
     }
 
     /**

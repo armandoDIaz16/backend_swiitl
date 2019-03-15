@@ -14,7 +14,7 @@ class CarreraController extends Controller
      */
     public function index()
     {
-        //
+        return Carrera::select('PK_CARRERA','NOMBRE')->get();
     }
 
     /**
@@ -46,7 +46,7 @@ class CarreraController extends Controller
      */
     public function show($id)
     {
-        return Carrera::select('PK_CARRERA','NOMBRE')->get();
+        //
     }
 
     /**

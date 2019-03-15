@@ -14,6 +14,7 @@ class Aspirante extends Model
     'ESPECIALIDAD',
     'PROMEDIO',
 
+
     'NACIONALIDAD',
     'FK_CIUDAD',
 

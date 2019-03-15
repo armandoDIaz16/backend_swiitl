@@ -19,13 +19,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::resource('Aspirante', 'AspiranteController');
 Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
+Route::resource('Carrera', 'CarreraController');
 Route::resource('Dependencia', 'DependenciaController');
-
-Route::resource('Aspirante', 'AspiranteController');
-Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
-Route::resource('Dependencia', 'DependenciaController');
-
-Route::resource('CAT_INCAPACIDAD', 'CatincapacidadController');
-Route::resource('CAT_PROPAGANDA_TECNOLOGICO', 'CatpropagandaController');
-
+Route::resource('Estado_Civil', 'Estado_CivilController');
+Route::resource('Incapacidad', 'IncapacidadController');
+Route::resource('Propaganda_Tecnologico', 'PropagandaController');
 Route::resource('CreditosSiia','CreditosSiiaController');

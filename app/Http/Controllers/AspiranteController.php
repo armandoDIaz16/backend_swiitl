@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Aspirante;
 use App\Usuario;
+use App\Generar_Preficha;
 use App\Mail\DemoEmail;
 use Illuminate\Support\Facades\Mail;
 
@@ -39,6 +40,11 @@ class AspiranteController extends Controller
     public function store(Request $request)
     {
 
+        $var = new Generar_Preficha();
+        return $var->get_generar_preficha();
+
+
+        /*
         $usuario = new Usuario();
         $usuario->NOMBRE = $request->NOMBRE;
         $usuario->PRIMER_APELLIDO = $request->PRIMER_APELLIDO;
@@ -91,6 +97,7 @@ class AspiranteController extends Controller
         $objDemo->receiver = 'ReceiverUserName';
 
         Mail::to("eddychavezba@gmail.com")->send(new DemoEmail($objDemo));
+        */
     }
 
     /**

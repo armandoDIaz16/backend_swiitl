@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Dependencia;
-use App\Mail\DemoEmail;
-use Illuminate\Support\Facades\Mail;
 
 class DependenciaController extends Controller
 {
@@ -16,7 +14,7 @@ class DependenciaController extends Controller
      */
     public function index()
     {
-        //
+        return Dependencia::select('PK_DEPENDENCIA','NOMBRE')->get();    
     }
 
     /**
@@ -48,7 +46,7 @@ class DependenciaController extends Controller
      */
     public function show($id)
     {
-        return Dependencia::select('PK_DEPENDENCIA','NOMBRE')->get();
+        //
     }
 
     /**
