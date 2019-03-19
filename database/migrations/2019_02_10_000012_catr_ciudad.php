@@ -16,7 +16,7 @@ class CATRCIUDAD extends Migration
         Schema::create('CATR_CIUDAD', function (Blueprint $table) {
 
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_CIUDAD');
+            $table->integer('PK_CIUDAD')->primary();
             
             /* DATOS GENERALES */
             $table->string('NOMBRE');
@@ -27,7 +27,7 @@ class CATRCIUDAD extends Migration
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();
-            $table->dateTime('FECHA_REGISTRO')->useCurrent();
+            $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
             $table->char('BORRADO',1)->default(0);

@@ -16,8 +16,7 @@ class CATRCODIGOPOSTAL extends Migration
          Schema::create('CATR_CODIGO_POSTAL', function (Blueprint $table) {
 
             /* CLAVES PRIMARIAS */
-            $table->integer('PK_NUMERO_CODIGO_POSTAL');
-            $table->primary('PK_NUMERO_CODIGO_POSTAL');
+            $table->integer('PK_NUMERO_CODIGO_POSTAL')->primary();
 
             /* DATOS GENERALES */
 
@@ -28,7 +27,7 @@ class CATRCODIGOPOSTAL extends Migration
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();
-            $table->dateTime('FECHA_REGISTRO')->useCurrent();
+            $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
             $table->char('BORRADO',1)->default(0);

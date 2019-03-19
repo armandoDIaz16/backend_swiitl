@@ -29,6 +29,7 @@ class CATRASPIRANTE extends Migration
             $table->char('TRABAJAS_Y_ESTUDIAS',1)->default(0);
             $table->char('AVISO_PRIVACIDAD',1)->default(0);
             $table->char('ESTATUS_PAGO',1)->default(0);
+            $table->string('AYUDA_INCAPACIDAD')->nullable()->comment("Refiere al tipo de ayuda que necesita para atender la incapacidad");
 
 
             /* CLAVES FORANEAS */
@@ -62,7 +63,7 @@ class CATRASPIRANTE extends Migration
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();
-            $table->dateTime('FECHA_REGISTRO')->useCurrent();
+            $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
             $table->char('BORRADO',1)->default(0);
