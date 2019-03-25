@@ -45,25 +45,32 @@ class CreditosSiiaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($id)
     {
         $var = new CreditosSiia();
-        $var2 = 'info';
 
-        $varcor1 = $var->correo();
-        $varcor2 = json_decode(json_encode($varcor1),true);
+        if($id = 1){
+            $var2 = 'info';
 
-        for($i=0;$i<count($varcor1);$i++) {
+            $varcor1 = $var->correo();
+            $varcor2 = json_decode(json_encode($varcor1),true);
 
-            $varcor3 = array_pop($varcor2);
+            for($i=0;$i<count($varcor1);$i++) {
 
-            $varcor4 = array_pop($varcor3);
+                $varcor3 = array_pop($varcor2);
 
-            $varcor5 = array_pop($varcor4);
+                $varcor4 = array_pop($varcor3);
 
-            Mail::to($varcor5)->send(new JuntaEmail($var2));
-        }
+                $varcor5 = array_pop($varcor4);
+
+                Mail::to($varcor5)->send(new JuntaEmail($var2));
+            }
+
             return 'correo enviado';
+        }
+        elseif ($id = 2){
+            $var2 = $var->alumno2();
+        }
     }
 
     /**

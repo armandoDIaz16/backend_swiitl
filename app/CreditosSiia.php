@@ -162,4 +162,94 @@ GROUP BY
 
         return $var3;
     }
+
+    public function sersoc($numero_control){
+        $var = DB::connection('sqlsrv2')->select('SELECT Calificacion FROM view_seguimiento WHERE ClaveMateria = :clave AND NumeroControl = :numero',['clave'=>'S1','numero'=>$numero_control]);
+        $var2 = array_pop($var);
+        if($var2 = 100):
+            return 1;
+        else:
+            return 0;
+        endif;
+    }
+
+    public function viablefinal($numero_control){
+        $cursados = $this->get_creditos_aprobados($numero_control);
+        $cursadosa = json_decode(json_encode($cursados),true);
+        $cursadosb = array_pop($cursadosa);
+        $cursadosc = array_pop($cursadosb);
+        $accomp = $this->creditos($numero_control);
+        $total = $cursadosc + $accomp;
+        /* °°||*** 208 es 80% del total de creditos de todas las carreas ***||°° */
+        if($total>=208 && $total<=250):
+            return $numero_control;
+        else:
+            return null;
+        endif;
+    }
+
+    public function especial($numero_control){
+        $periodo = $this->periodo();
+
+
+        $var = DB::connection('sqlsrv2')->select('SELECT ClaveMateria FROM view_horarioalumno WHERE IdPeriodoEscolar = :per AND NumeroControl = :numero AND (view_horarioalumno.Dia=1 or view_horarioalumno.Dia = 2)',['per'=>$periodo, 'numero'=>$numero_control]);
+
+        $var3 = json_decode(json_encode($var),true);
+
+        for($i=0;$i<count($var3);$i++){
+
+            $var2 = array_pop($var3);
+
+            $var4 = array_pop($var2);
+
+            $var5 = DB::connection('sqlsrv2')->select('SELECT * FROM view_seguimiento WHERE NumeroControl = :numero AND IdNivelCurso = :nivel AND clavemateria = :mat AND Calificacion < 70',['numero'=>$numero_control,'nivel'=>'CR','mat'=>$var4]);
+
+            return $var5;
+        }
+    }
+
+
+    public function alumno2(){
+        $alumnos = DB::connection('sqlsrv2')->select('Select NumeroControl from view_alumnos where (semestre>=7 AND semestre<12) AND estado = :estado AND (clavecarrera != :clave AND clavecarrera != :clave2 ) ORDER BY NumeroControl',['estado'=>'AR','clave'=>'DC1', 'clave2'=>'MC4']);
+        $validos = array();
+        $prueba = json_decode(json_encode($alumnos), true);
+
+        for($i=0; $i<count($alumnos); $i++) {
+            $pruebaa = array_pop($prueba);
+            $H = array_pop($pruebaa);
+            $I = $this->especial($H);
+            $J = $this->sersoc($H);
+            $K = $this->creditos($H);
+            $L = $this->viablefinal($H);
+            $contador = 0;
+            if($I != null):
+                /**/
+                $contador += 0;
+            else:
+                $contador += 1;
+            endif;
+            if($J == 1):
+                $contador += 1;
+            else:
+                $contador += 0;
+            endif;
+            if($K == 5):
+                $contador += 1;
+            else:
+                $contador += 0;
+            endif;
+            if($L != null):
+                $contador += 1;
+            else:
+                $contador += 0;
+            endif;
+            if($contador == 4):
+                array_push($validos, $L);
+            endif;
+        }
+
+        return $validos;
+
+
+    }
 }
