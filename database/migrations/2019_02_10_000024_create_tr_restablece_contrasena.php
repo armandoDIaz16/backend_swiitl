@@ -25,7 +25,7 @@ class CreateTrRestableceContrasena extends Migration
 
             /* CLAVES FORANEAS */
             $table->integer('FK_USUARIO');
-            $table->foreign('FK_USUARIO')->references('PK_USUARIO')->on('CATR_USUARIO');
+            $table->foreign('FK_USUARIO')->references('PK_USUARIO')->on('users');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();

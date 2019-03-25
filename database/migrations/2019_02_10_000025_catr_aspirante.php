@@ -46,7 +46,7 @@ class CATRASPIRANTE extends Migration
             $table->foreign('FK_CARRERA_2')->references('PK_CARRERA')->on('CATR_CARRERA');
 
             $table->integer('FK_PADRE');
-            $table->foreign('FK_PADRE')->references('PK_USUARIO')->on('CATR_USUARIO');
+            $table->foreign('FK_PADRE')->references('PK_USUARIO')->on('users');
 
             $table->integer('FK_DEPENDENCIA');
             $table->foreign('FK_DEPENDENCIA')->references('PK_DEPENDENCIA')->on('CAT_DEPENDENCIA');

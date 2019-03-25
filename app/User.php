@@ -19,6 +19,35 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name', 'email', 'password',
+         'NOMBRE',
+         'PRIMER_APELLIDO',
+         'SEGUNDO_APELLIDO',
+         'FECHA_NACIMIENTO',
+         'CURP',
+         'ESTADO',
+         'TELEFONO_CASA',
+         'TELEFONO_MOVIL',
+         'CORREO1',
+         'CORREO2',
+         'CORREO_INSTITUCIONAL',
+         'CONTRASENIA',
+         'CALLE',
+         'NUMERO_EXTERIOR',
+         'NUMERO_INTERIOR',
+         'NACIONALIDAD',
+         'SEXO',
+         'TIPO_SANGUINEO',
+         'NSS',
+         'NOMBRE_CONTACTO',
+         'TELEFONO_CONTACTO',
+         'CORREO_CONTACTO',
+         'FK_COLONIA',
+         'FK_ESTADO_CIVIL',
+         'FK_USUARIO_REGISTRO',
+         'FECHA_REGISTRO',
+         'FK_USUARIO_MODIFICACION',
+         'FECHA_MODIFICACION',
+         'BORRADO'
     ];
 
     /**
@@ -64,5 +93,9 @@ class User extends Authenticatable implements JWTSubject
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    public function getKeyName(){
+        return "PK_USUARIO";
     }
 }
