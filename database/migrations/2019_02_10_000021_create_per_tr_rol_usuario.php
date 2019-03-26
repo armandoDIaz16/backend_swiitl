@@ -22,7 +22,7 @@ class CreatePerTrRolUsuario extends Migration
             $table->foreign('FK_ROL')->references('PK_ROL')->on('PER_CATR_ROL');
 
             $table->integer('FK_USUARIO');
-            $table->foreign('FK_USUARIO')->references('PK_USUARIO')->on('CATR_USUARIO');
+            $table->foreign('FK_USUARIO')->references('PK_USUARIO')->on('users');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();
