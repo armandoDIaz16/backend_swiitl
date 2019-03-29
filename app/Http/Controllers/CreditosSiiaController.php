@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CreditosSiia;
+use App\Mail\JuntaEmail;
 use Illuminate\Http\Request;
 
 class CreditosSiiaController extends Controller
@@ -47,8 +48,22 @@ class CreditosSiiaController extends Controller
     public function show()
     {
         $var = new CreditosSiia();
+        $var2 = 'info';
 
-        return $var->correo();
+        $varcor1 = $var->correo();
+        $varcor2 = json_decode(json_encode($varcor1),true);
+
+        for($i=0;$i<count($varcor1);$i++) {
+
+            $varcor3 = array_pop($varcor2);
+
+            $varcor4 = array_pop($varcor3);
+
+            $varcor5 = array_pop($varcor4);
+
+            Mail::to($varcor5)->send(new JuntaEmail($var2));
+        }
+            return 'correo enviado';
     }
 
     /**

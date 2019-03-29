@@ -81,6 +81,7 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
+        
         'sqlsrv2' => [
             'driver' => 'sqlsrv',
             'host' => env('DB_HOST_SECOND', 'localhost'),

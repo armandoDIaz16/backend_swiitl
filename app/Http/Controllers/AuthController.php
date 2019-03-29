@@ -29,7 +29,7 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
+        $credentials = request(['curp', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Correo o contraseña no registrada brow'], 401);
