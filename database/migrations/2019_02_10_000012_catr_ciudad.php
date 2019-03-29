@@ -16,7 +16,7 @@ class CATRCIUDAD extends Migration
         Schema::create('CATR_CIUDAD', function (Blueprint $table) {
 
             /* CLAVES PRIMARIAS */
-            $table->integer('PK_CIUDAD')->primary();
+            $table->increments('PK_CIUDAD');
             
             /* DATOS GENERALES */
             $table->string('NOMBRE');

@@ -16,7 +16,7 @@ class CATRCOLONIA extends Migration
         Schema::create('CATR_COLONIA', function (Blueprint $table) {
             
             /* CLAVES PRIMARIAS */
-            $table->integer('PK_COLONIA')->primary();
+            $table->increments('PK_COLONIA');
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');

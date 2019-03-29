@@ -15,7 +15,7 @@ class CreatePerTrPermiso extends Migration
     {
         Schema::create('PER_TR_PERMISO', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_ROL_USUARIO');
+            $table->increments('PK_PERMISO');
 
             /* CLAVES FORANEAS */
             $table->integer('FK_ROL');

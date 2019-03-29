@@ -16,7 +16,7 @@ class CATENTIDADFEDERATIVA extends Migration
         Schema::create('CAT_ENTIDAD_FEDERATIVA', function (Blueprint $table) {
             
             /* CLAVES PRIMARIAS */
-            $table->integer('PK_ENTIDAD_FEDERATIVA')->primary();
+            $table->increments('PK_ENTIDAD_FEDERATIVA');
 
             /* DATOS GENERALES */
             $table->string('NOMBRE');
