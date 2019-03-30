@@ -15,23 +15,37 @@ class NumeroControl extends Controller
             ->select('estado')
             ->where('NumeroControl',$request->control)
             ->get()->first();
-        if ($estado->estado == 'BD' ) {
-            return $this->failedResponse();
-        }else{
-            return $this->successResponse();
 
+        if(!empty($estado)){
+            if ($estado->estado == 'BD' ) {
+                return $this->failedResponse();
+            }else{
+               return $this->getName($request->control);
+            }
         }
+        return $this->failedResponse();
     }
+
+    public function getName($control){
+        $name = DB::connection('sqlsrv2')
+            ->table('view_alumnos')
+            ->select('nombre')
+            ->where('NumeroControl',$control)
+            ->get()->first();
+            return $this->successResponse($name->nombre);
+
+    }
+
     public function failedResponse()
     {
         return response()->json([
-            'error' => 'numero de control o estado del alumno no valido'
+            'error' => 'Numero de control no encontrado o estado de alumno no valido'
         ], Response::HTTP_NOT_FOUND);
     }
-    public function successResponse()
+    public function successResponse($name)
     {
         return response()->json([
-            'data' => 'Se encontrol el numero de control y el estado del alumno es valido.'
+            'data' => trim($name)
         ], Response::HTTP_OK);
     }
 }
