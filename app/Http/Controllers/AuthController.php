@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Http\Requests\SignUpRequest;
-
-
-
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -87,12 +85,18 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $id = DB::table('users')
+        ->select('PK_USUARIO')
+        ->where('email',auth()->user()->email)
+        ->get()->first();
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()->name
+            'user' => auth()->user()->email,
+            'IdUsuario' => $id->PK_USUARIO
         ]);
-
+        
     }
 }
