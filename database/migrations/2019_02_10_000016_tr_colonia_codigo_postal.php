@@ -14,16 +14,16 @@ class TRCOLONIACODIGOPOSTAL extends Migration
     public function up()
     {
         Schema::create('TR_COLONIA_CODIGO_POSTAL', function (Blueprint $table) {
-
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_COLONIA_CODIGO_POSTAL');
+            $table->primary(['FK_COLONIA', 'FK_NUMERO_CODIGO_POSTAL']);
+
             /* DATOS GENERALES */
 
             /* CLAVES FORANEAS */
-            $table->integer('FK_COLONIA');
-            $table->integer('FK_NUMERO_CODIGO_POSTAL');
+            $table->integer('FK_COLONIA')->unsigned();
+            $table->integer('FK_NUMERO_CODIGO_POSTAL')->unsigned();
             $table->foreign('FK_COLONIA')->references('PK_COLONIA')->on('CATR_COLONIA');
-            $table->foreign('FK_NUMERO_CODIGO_POSTAL')->references('PK_NUMERO_CODIGO_POSTAL')->on('CATR_CODIGO_POSTAL');
+            $table->foreign('FK_NUMERO_CODIGO_POSTAL')->references('PK_NUMERO_CODIGO_POSTAL')->on('CatrCodigoPostal');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();

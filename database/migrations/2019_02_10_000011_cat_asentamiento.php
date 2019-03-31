@@ -16,7 +16,7 @@ class CATASENTAMIENTO extends Migration
         Schema::create('CAT_ASENTAMIENTO', function (Blueprint $table) {
             
             /* CLAVES PRIMARIAS */
-            $table->integer('PK_ASENTAMIENTO')->primary();
+            $table->increments('PK_ASENTAMIENTO');
 
              /* DATOS GENERALES */
             $table->string('NOMBRE');

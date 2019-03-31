@@ -15,6 +15,8 @@ Route::group([
     Route::post('me', 'AuthController@me');
     Route::post('sendPasswordResetLink','ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
+    Route::post('control', 'NumeroControl@getControl');
+
 });
 
 /*
@@ -40,3 +42,6 @@ Route::resource('Estado_Civil', 'Estado_CivilController');
 Route::resource('Incapacidad', 'IncapacidadController');
 Route::resource('Propaganda_Tecnologico', 'PropagandaController');
 Route::resource('CreditosSiia','CreditosSiiaController');
+Route::resource('Entidad_Federativa','Entidad_FederativaController');
+Route::resource('Ciudad','CiudadController');
+Route::resource('Usuario_Rol','Usuario_RolController');

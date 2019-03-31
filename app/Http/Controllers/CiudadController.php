@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Ciudad;
 use Illuminate\Http\Request;
 
-class TR_INCAPACIDAD_ASPIRANTE extends Controller
+class CiudadController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +14,7 @@ class TR_INCAPACIDAD_ASPIRANTE extends Controller
      */
     public function index()
     {
-        //
+        return Ciudad::select('PK_CIUDAD','NOMBRE')->get();
     }
 
     /**
@@ -45,7 +46,7 @@ class TR_INCAPACIDAD_ASPIRANTE extends Controller
      */
     public function show($id)
     {
-        //
+        return Ciudad::where('FK_ENTIDAD_FEDERATIVA', $id)->select('PK_CIUDAD','NOMBRE')->get();
     }
 
     /**

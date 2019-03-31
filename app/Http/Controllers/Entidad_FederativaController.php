@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Entidad_Federativa;
 use Illuminate\Http\Request;
 
-class TR_INCAPACIDAD_ASPIRANTE extends Controller
+class Entidad_FederativaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +14,7 @@ class TR_INCAPACIDAD_ASPIRANTE extends Controller
      */
     public function index()
     {
-        //
+        return Entidad_Federativa::select('PK_ENTIDAD_FEDERATIVA','NOMBRE')->get();
     }
 
     /**

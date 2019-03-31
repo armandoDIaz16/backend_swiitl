@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('PK_USUARIO');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
@@ -28,15 +28,15 @@ class CreateUsersTable extends Migration
             $table->string('SEGUNDO_APELLIDO')->nullable();
             $table->date('FECHA_NACIMIENTO')->nullable();
             $table->string('CURP', 18)->unique();
-            $table->smallInteger('ESTADO')->default(0);
+            $table->smallInteger('ESTADO')->nullable();
             $table->string('TELEFONO_CASA')->nullable();
-            $table->string('TELEFONO_MOVIL')->nullable()->unique();
+            $table->string('TELEFONO_MOVIL')->nullable();
             $table->string('CORREO1')->nullable();
             $table->string('CORREO2')->nullable();
             $table->string('CORREO_INSTITUCIONAL')->nullable();
             //$table->string('CONTRASENIA')->nullable();
             $table->string('CALLE')->nullable();
-            $table->string('NUMERO_EXTERIOR');
+            $table->string('NUMERO_EXTERIOR')->nullable();
             $table->string('NUMERO_INTERIOR')->nullable();
             $table->string('NACIONALIDAD')->nullable();
             $table->char('SEXO',1)->nullable();
@@ -59,7 +59,7 @@ class CreateUsersTable extends Migration
             $table->dateTime('FECHA_REGISTRO')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('FK_USUARIO_MODIFICACION')->nullable();
             $table->dateTime('FECHA_MODIFICACION')->nullable();
-            $table->char('BORRADO',1)->default(0);
+            $table->char('BORRADO',1)->nullable();
         });
     }
 
