@@ -16,7 +16,7 @@ Route::group([
     Route::post('sendPasswordResetLink','ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
     Route::post('control', 'NumeroControl@getControl');
-    Route::post('permisos', 'Sistema_permisos@getPermisos');
+    //Route::get('permisos', 'Sistema_permiso@getPermisos');
 
 });
 
@@ -46,3 +46,4 @@ Route::resource('CreditosSiia','CreditosSiiaController');
 Route::resource('Entidad_Federativa','Entidad_FederativaController');
 Route::resource('Ciudad','CiudadController');
 Route::resource('Usuario_Rol','Usuario_RolController');
+Route::resource('Sistema_Permiso','Sistema_PermisoController');
