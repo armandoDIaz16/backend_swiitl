@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Usuario;
+use App\User;
 use App\Usuario_Rol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -49,7 +49,7 @@ class Usuario_RolController extends Controller
      */
     public function show($id)
     {
-        $usuario = Usuario::where('PK_USUARIO', $id)->select('PK_USUARIO','NOMBRE')->get()[0];
+        $usuario = user::where('PK_USUARIO', $id)->select('PK_USUARIO','name')->get()[0];
 
         $sistemas = DB::table('PER_CAT_SISTEMA')
             ->select('PER_CAT_SISTEMA.PK_SISTEMA', 'PER_CAT_SISTEMA.NOMBRE')
@@ -74,7 +74,7 @@ class Usuario_RolController extends Controller
         return [
             array(
             'USUARIO'  => $id,
-            'NOMBRE'   => $usuario->NOMBRE,
+            'NOMBRE'   => $usuario->name,
             'SISTEMAS' => $array_sistemas
             )
         ];
@@ -114,7 +114,7 @@ class Usuario_RolController extends Controller
         //
     }
     private function get_roles_usuario($id,$PK_SISTEMA){        
-        $usuario = Usuario::where('PK_USUARIO', $id)->select('PK_USUARIO','NOMBRE')->get()[0];
+        $usuario = user::where('PK_USUARIO', $id)->select('PK_USUARIO','name')->get()[0];
         $roles = DB::table('PER_TR_ROL_USUARIO')
             ->join('PER_CATR_ROL', 'PER_CATR_ROL.PK_ROL', '=', 'PER_TR_ROL_USUARIO.FK_ROL')
             ->select('PER_CATR_ROL.PK_ROL', 'PER_CATR_ROL.NOMBRE')
