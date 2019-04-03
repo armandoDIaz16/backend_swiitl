@@ -23,7 +23,7 @@ class TRCOLONIACODIGOPOSTAL extends Migration
             $table->integer('FK_COLONIA')->unsigned();
             $table->integer('FK_NUMERO_CODIGO_POSTAL')->unsigned();
             $table->foreign('FK_COLONIA')->references('PK_COLONIA')->on('CATR_COLONIA');
-            $table->foreign('FK_NUMERO_CODIGO_POSTAL')->references('PK_NUMERO_CODIGO_POSTAL')->on('CatrCodigoPostal');
+            $table->foreign('FK_NUMERO_CODIGO_POSTAL')->references('PK_NUMERO_CODIGO_POSTAL')->on('CATR_CODIGO_POSTAL');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();
