@@ -29,7 +29,7 @@ class Usuario extends Model
     public $timestamps = false;
 
 
-    protected $table = 'CATR_USUARIO';
+    protected $table = 'users';
 
 
 }
