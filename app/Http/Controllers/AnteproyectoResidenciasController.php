@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\CargaArchivo;
 use App\AnteproyectoResidencias;
+use Illuminate\Support\Facades\Log;
 
 class AnteproyectoResidenciasController extends Controller
 {
@@ -37,13 +38,17 @@ class AnteproyectoResidenciasController extends Controller
     public function store(Request $request)
     {
         $anteproyecto = new AnteproyectoResidencias();
-        $carga = new CargaArchivo();
+       // $carga = new CargaArchivo();
         $anteproyecto->Nombre = $request->Nombre;
-        if(!$request->pdf):
+        $anteproyecto->AreaAcademica = $request->AreaAcademica;
+        $anteproyecto->Empresa = $request->Empresa;
+        $anteproyecto->TipoEspecialidad = $request->TipoEspecialidad;
+        $anteproyecto->save();
+/*        /*if(!$request->pdf):
             ;
         else:
-            $ruta = $carga->savefile($request);
-            $anteproyecto->pdf = $ruta;
+            //$ruta = $carga->savefile($request);
+           // $anteproyecto->pdf = $ruta;
         endif;
         if(!$request->Alumno):
             ;
@@ -75,7 +80,12 @@ class AnteproyectoResidenciasController extends Controller
         else:
             $anteproyecto->TipoEspecialidad = $request->TipoEspecialidad;
         endif;
-        $anteproyecto->save();
+        $anteproyecto->save();*/
+
+        Log::debug('A ver'.$request->Nombre);
+        Log::debug('A ver'.$request->AreaAcademica);
+        Log::debug('A ver'.$request->Empresa);
+        Log::debug('A ver'.$request->TipoEspecialidad);
     }
 
     /**

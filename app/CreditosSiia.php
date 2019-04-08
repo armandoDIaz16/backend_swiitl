@@ -85,9 +85,10 @@ GROUP BY
         where 
             (semestre>=7 AND semestre<12) 
             AND estado = :estado 
-            AND (clavecarrera != :clave AND clavecarrera != :clave2 ) 
+            AND (clavecarrera != :clave AND clavecarrera != :clave2 )
+            AND NumeroControl != :contro 
         ORDER BY 
-            NumeroControl',['estado'=>'AR','clave'=>'DC1', 'clave2'=>'MC4']);
+            NumeroControl',['estado'=>'AR','clave'=>'DC1', 'clave2'=>'MC4', 'contro'=>'18240017']);
         $validos = array();
         $prueba = json_decode(json_encode($alumnos), true);
         /*Prueba alumnos 1 por 1 si son viables para residencias*/
@@ -113,7 +114,7 @@ GROUP BY
         /*Busca en la base de datos alumno por alumno y regresa el correo*/
         for($i=0;$i<count($ncontrol);$i++) {
             $nprimero = array_pop($ncontrol);
-            $tcorreo = DB::connection('sqlsrv')->select('SELECT 
+            $tcorreo = DB::connection('sqlsrv3')->select('SELECT 
                 Correo1 
             FROM 
                 table_usuario 
@@ -131,19 +132,29 @@ GROUP BY
         /*Busca todos los creditos aprobados*/
         $cursados = $this->get_creditos_aprobados($numero_control);
         $cursadosa = json_decode(json_encode($cursados),true);
-        $cursadosb = array_pop($cursadosa);
-        $cursadosc = array_pop($cursadosb);
+        if($cursadosa == []){
+            $cursadosc = 0;
+        }
+        else {
+            $cursadosb = array_pop($cursadosa);
+            $cursadosc = array_pop($cursadosb);
+        }
         /*Suma todos los creditos del horario actual de los alumnos*/
         $actuales = $this->get_creditos_horario($numero_control);
         $actualesa = json_decode(json_encode($actuales),true);
-        $actualesb = array_pop($actualesa);
-        $actualesc = array_pop($actualesb);
+        if($actualesa == []){
+            $actualesc = 0;
+        }
+        else{
+            $actualesb = array_pop($actualesa);
+            $actualesc = array_pop($actualesb);
+        }
         /*Comprueba que se tengan las actividades complementarias*/
         $accomp = $this->creditos($numero_control);
         /*Se suman todos los creditos del alumno*/
         $total = $cursadosc + $actualesc +$accomp;
         /* *** 208 es 80% del total de creditos de todas las carreas *** */
-        if($total>=208 && $total<=250):
+        if($total>=208 /*&& $total<=250*/):
             return $numero_control;
         else:
             return null;

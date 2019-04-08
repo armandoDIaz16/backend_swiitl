@@ -37,8 +37,6 @@ class DocumentacionResidenciasController extends Controller
      */
     public function store(Request $request)
     {
-       $carga = new CargaArchivo();
-       return $carga->saveFile($request);
         /* $documentacion = new Documentacion();
         $documentacion->id_alumno = $request->id_alumno;
         $documentacion->save();*/

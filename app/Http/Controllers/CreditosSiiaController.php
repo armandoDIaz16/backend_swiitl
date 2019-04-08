@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\CreditosSiia;
 use App\Mail\JuntaEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CreditosSiiaController extends Controller
 {
@@ -36,7 +38,27 @@ class CreditosSiiaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $var = new CreditosSiia();
+
+        $distressCall = new \stdClass();
+        $distressCall->demo_one = $request->Dia;
+        $distressCall->demo_two = $request->Hora;
+        $distressCall->demo_three = $request->Lugar;
+        $distressCall->sender = $request->Persona;
+
+        $varcor1 = $var->correo();
+        $varcor2 = json_decode(json_encode($varcor1),true);
+
+        for($i=0;$i<count($varcor1);$i++) {
+
+            $varcor3 = array_pop($varcor2);
+
+            $varcor4 = array_pop($varcor3);
+
+            $varcor5 = array_pop($varcor4);
+
+            Mail::to($varcor5)->send(new JuntaEmail($distressCall));
+        }
     }
 
     /**
@@ -47,30 +69,8 @@ class CreditosSiiaController extends Controller
      */
     public function show($id)
     {
-        $var = new CreditosSiia();
 
-        if($id = 1){
-            $var2 = 'info';
 
-            $varcor1 = $var->correo();
-            $varcor2 = json_decode(json_encode($varcor1),true);
-
-            for($i=0;$i<count($varcor1);$i++) {
-
-                $varcor3 = array_pop($varcor2);
-
-                $varcor4 = array_pop($varcor3);
-
-                $varcor5 = array_pop($varcor4);
-
-                Mail::to($varcor5)->send(new JuntaEmail($var2));
-            }
-
-            return 'correo enviado';
-        }
-        elseif ($id = 2){
-            $var2 = $var->alumno2();
-        }
     }
 
     /**
