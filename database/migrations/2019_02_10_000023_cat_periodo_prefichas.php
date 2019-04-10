@@ -20,7 +20,6 @@ class CatPeriodoPrefichas extends Migration
             /* DATOS GENERALES */
             $table->date('FECHA_INICIO');
             $table->date('FECHA_FIN');
-            $table->integer('NUMERO_PREFICHAS');
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();
