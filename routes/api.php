@@ -15,11 +15,11 @@ Route::group([
     Route::post('me', 'AuthController@me');
     Route::post('sendPasswordResetLink','ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
-    //Route::post('control', 'NumeroControl@getControl');
+    Route::post('control', 'NumeroControl@getControl');
 
     Route::group(['middleware' => ['jwt.auth']], function() {
         Route::get('logout', 'AuthController@logout');
-        Route::post('control', 'NumeroControl@getControl');
+        //Route::post('control', 'NumeroControl@getControl');
 
     });
     //Route::post('periodo', 'PAAE_Periodo@getPeriodo');
