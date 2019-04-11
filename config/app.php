@@ -225,6 +225,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        /* CLASES DEFINIDAS POR EL PROGRAMADOR */
+        'Constantes_Alumnos' => App\Constantes_Alumnos::class,
+
     ],
 
 ];
