@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\CreditosSiia;
 use App\Mail\JuntaEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CreditosSiiaController extends Controller
 {
@@ -36,19 +38,13 @@ class CreditosSiiaController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show()
-    {
         $var = new CreditosSiia();
-        $var2 = 'info';
+
+        $distressCall = new \stdClass();
+        $distressCall->demo_one = $request->Dia;
+        $distressCall->demo_two = $request->Hora;
+        $distressCall->demo_three = $request->Lugar;
+        $distressCall->sender = $request->Persona;
 
         $varcor1 = $var->correo();
         $varcor2 = json_decode(json_encode($varcor1),true);
@@ -61,9 +57,20 @@ class CreditosSiiaController extends Controller
 
             $varcor5 = array_pop($varcor4);
 
-            Mail::to($varcor5)->send(new JuntaEmail($var2));
+            Mail::to($varcor5)->send(new JuntaEmail($distressCall));
         }
-            return 'correo enviado';
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+
+
     }
 
     /**

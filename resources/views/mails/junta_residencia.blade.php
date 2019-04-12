@@ -1,20 +1,14 @@
-Hello <i>{{ $demo->receiver }}</i>,
-<p>This is a demo email for testing purposes! Also, it's the HTML version.</p>
+Buenos dias alumnos
+<p>Este correo es para avisarles de la junta de información de recidencias.</p>
 
-<p><u>Demo object values:</u></p>
-
-<div>
-    <p><b>Demo One:</b>&nbsp;{{ $demo->demo_one }}</p>
-    <p><b>Demo Two:</b>&nbsp;{{ $demo->demo_two }}</p>
-</div>
-
-<p><u>Values passed by With method:</u></p>
+<p><u>Información:</u></p>
 
 <div>
-    <p><b>testVarOne:</b>&nbsp;{{ $demo->demo_one }}</p>
-    <p><b>testVarTwo:</b>&nbsp;{{ $demo->demo_two }}</p>
+    <p><b>Dia:</b>&nbsp;{{ $distressCall->demo_one }}</p>
+    <p><b>Hora:</b>&nbsp;{{ $distressCall->demo_two }}</p>
+    <p><b>Lugar:</b>&nbsp;{{ $distressCall->demo_three }}</p>
 </div>
-
-Thank You,
 <br/>
-<i>{{ $demo->sender }}</i>
+
+Atentamente:
+<i>{{ $distressCall->sender }}</i>

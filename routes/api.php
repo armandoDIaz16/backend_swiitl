@@ -18,6 +18,14 @@ Route::group([
     Route::post('control', 'NumeroControl@getControl');
    // Route::post('permisos', 'Sistema_permisos@getPermisos');
 
+    Route::group(['middleware' => ['jwt.auth']], function() {
+        Route::get('logout', 'AuthController@logout');
+        Route::post('Periodo','PeriodoController@store');
+        //Route::post('control', 'NumeroControl@getControl');
+
+    });
+    //Route::post('periodo', 'PAAE_Periodo@getPeriodo');
+
 });
 
 /*
@@ -36,6 +44,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::resource('Aspirante', 'AspiranteController');
+Route::resource('Universidad', 'UniversidadController');
 Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
 Route::resource('Carrera', 'CarreraController');
 Route::resource('Dependencia', 'DependenciaController');
@@ -49,3 +58,6 @@ Route::resource('Usuario_Rol','Usuario_RolController');
 Route::resource('Encuestas', 'EncuestaController');
 Route::resource('Seccion_Encuesta', 'Seccion_EncuestaController');
 Route::resource('Tipo_Pregunta', 'Tipo_PreguntaController');
+Route::resource('PAAE_Periodo','PAAE_Periodo');
+route::get('Periodo','PeriodoController@index');
+//Route::resource('Periodo','PeriodoController');
