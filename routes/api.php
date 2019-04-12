@@ -16,7 +16,13 @@ Route::group([
     Route::post('sendPasswordResetLink','ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
     Route::post('control', 'NumeroControl@getControl');
-    //Route::post('permisos', 'Sistema_permisos@getPermisos');
+
+    Route::group(['middleware' => ['jwt.auth']], function() {
+        Route::get('logout', 'AuthController@logout');
+        //Route::post('control', 'NumeroControl@getControl');
+
+    });
+    //Route::post('periodo', 'PAAE_Periodo@getPeriodo');
 
 });
 
@@ -47,4 +53,5 @@ Route::resource('CreditosSiia','CreditosSiiaController');
 Route::resource('Entidad_Federativa','Entidad_FederativaController');
 Route::resource('Ciudad','CiudadController');
 Route::resource('Usuario_Rol','Usuario_RolController');
+Route::resource('PAAE_Periodo','PAAE_Periodo');
 Route::resource('Periodo','PeriodoController');
