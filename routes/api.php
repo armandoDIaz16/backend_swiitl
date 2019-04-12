@@ -36,6 +36,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::resource('Aspirante', 'AspiranteController');
+Route::resource('Universidad', 'UniversidadController');
 Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
 Route::resource('Carrera', 'CarreraController');
 Route::resource('Dependencia', 'DependenciaController');

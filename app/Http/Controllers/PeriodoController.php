@@ -14,7 +14,29 @@ class PeriodoController extends Controller
      */
     public function index()
     {
-        //
+        $PK_PERIODO_PREFICHAS = Periodo::max('PK_PERIODO_PREFICHAS');
+
+        $periodo = Periodo::select('PK_PERIODO_PREFICHAS','FECHA_INICIO','FECHA_FIN')
+        ->where('PK_PERIODO_PREFICHAS',$PK_PERIODO_PREFICHAS)
+        ->get();
+        
+        if(isset ($periodo[0])){
+            return [
+                array(
+                'PK_PERIODO_PREFICHAS' => $periodo[0]->PK_PERIODO_PREFICHAS,
+                'FECHA_INICIO' => $periodo[0]->FECHA_INICIO,
+                'FECHA_FIN' => $periodo[0]->FECHA_FIN,
+                'FECHA_ACTUAL' => $this->fechaActual()
+                )
+            ];
+        }
+    }
+
+    public function fechaActual(){
+        $fechaActual = Date('Y').'-';
+        $fechaActual = $fechaActual .Date('m').'-';
+        $fechaActual = $fechaActual .Date('d');
+        return $fechaActual;
     }
 
     /**
@@ -35,15 +57,22 @@ class PeriodoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-        ]);
+        if($request->PK_PERIODO_PREFICHAS){        
+            $periodo = Periodo::select('PK_PERIODO_PREFICHAS','FECHA_INICIO','FECHA_FIN','FK_USUARIO_MODIFICACION')
+            ->where('PK_PERIODO_PREFICHAS',$request->PK_PERIODO_PREFICHAS)
+            ->update(['FECHA_INICIO' => $request->FECHA_INICIO,
+                        'FECHA_FIN' => $request->FECHA_FIN,
+                        'FK_USUARIO_MODIFICACION' => $request->FK_USUARIO_MODIFICACION]);
 
-        $periodo = Periodo::create($request->all());
+        }else{
+            $periodo = new Periodo();
+            $periodo->FECHA_INICIO = $request->FECHA_INICIO;
+            $periodo->FECHA_FIN = $request->FECHA_FIN;
+            $periodo->FK_USUARIO_REGISTRO = $request->FK_USUARIO_REGISTRO;
+            $periodo->save();
 
-        return (new PlayerResource($player))
-                ->response()
-                ->setStatusCode(201);
+            return Periodo::max('PK_PERIODO_PREFICHAS');
+        }
     }
 
     /**
