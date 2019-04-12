@@ -34,6 +34,7 @@ class AuthController extends Controller
         }
  
         return $this->respondWithToken($token);
+
     }
 
     public function signup(SignUpRequest $request)
@@ -41,9 +42,7 @@ class AuthController extends Controller
         
         User::create($request->all());
         return $this->login($request);
-        
         }
-
     /**
      * Get the authenticated User.
      *
