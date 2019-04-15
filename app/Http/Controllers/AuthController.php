@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\Http\Requests\SignUpRequest;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -29,20 +30,21 @@ class AuthController extends Controller
     {
         $credentials = request(['curp', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Correo o contraseña no registrada brow'], 401);
         }
- 
+
         return $this->respondWithToken($token);
     }
 
     public function signup(SignUpRequest $request)
     {
-        
+        //todo Cambiar a generación de objeto de usaurio de forma explícita
         User::create($request->all());
-        return $this->login($request);
-        
-        }
+
+        return response()->json(['data' => true], Response::HTTP_OK);
+        //return $this->login($request);
+    }
 
     /**
      * Get the authenticated User.
@@ -86,9 +88,9 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         $id = DB::table('users')
-        ->select('PK_USUARIO')
-        ->where('email',auth()->user()->email)
-        ->get()->first();
+            ->select('PK_USUARIO')
+            ->where('email', auth()->user()->email)
+            ->get()->first();
 
         return response()->json([
             'access_token' => $token,
@@ -97,6 +99,6 @@ class AuthController extends Controller
             'user' => auth()->user()->email,
             'IdUsuario' => $id->PK_USUARIO
         ]);
-        
+
     }
 }

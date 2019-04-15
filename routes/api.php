@@ -16,7 +16,14 @@ Route::group([
     Route::post('sendPasswordResetLink','ResetPasswordController@sendEmail');
     Route::post('resetPassword', 'ChangePasswordController@process');
     Route::post('control', 'NumeroControl@getControl');
-    //Route::post('permisos', 'Sistema_permisos@getPermisos');
+
+    Route::group(['middleware' => ['jwt.auth']], function() {
+        Route::get('logout', 'AuthController@logout');
+        Route::post('Periodo','PeriodoController@store');
+        //Route::post('control', 'NumeroControl@getControl');
+
+    });
+    //Route::post('periodo', 'PAAE_Periodo@getPeriodo');
 
 });
 
@@ -36,6 +43,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::resource('Aspirante', 'AspiranteController');
+Route::resource('Universidad', 'UniversidadController');
 Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
 Route::resource('Carrera', 'CarreraController');
 Route::resource('Dependencia', 'DependenciaController');
@@ -46,7 +54,6 @@ Route::resource('CreditosSiia','CreditosSiiaController');
 Route::resource('Entidad_Federativa','Entidad_FederativaController');
 Route::resource('Ciudad','CiudadController');
 Route::resource('Usuario_Rol','Usuario_RolController');
-Route::resource('Anteproyecto','AnteproyectoResidenciasController');
-Route::resource('Documentacion','DocumentacionResidenciasController');//->middleware('CORS');
-Route::post('documentacion','DocumentacionResidenciasController@updatechido');
-Route::post('documentacion2','DocumentacionResidenciasController@updateaceptacion');
+Route::resource('PAAE_Periodo','PAAE_Periodo');
+route::get('Periodo','PeriodoController@index');
+//Route::resource('Periodo','PeriodoController');

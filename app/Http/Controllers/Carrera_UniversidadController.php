@@ -14,7 +14,7 @@ class Carrera_UniversidadController extends Controller
      */
     public function index()
     {
-        //
+        return Carrera_Universidad::select('PK_CARRERA_UNIVERSIDAD','NOMBRE')->get();
     }
 
     /**
@@ -46,7 +46,7 @@ class Carrera_UniversidadController extends Controller
      */
     public function show($id)
     {
-        return Carrera_Universidad::select('PK_CARRERA_UNIVERSIDAD','NOMBRE')->get();
+        //
     }
 
     /**

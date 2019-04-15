@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\PAAE;
 use Illuminate\Http\Request;
 
-class Sistema_permiso extends Controller
+class PAAE_Periodo extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +14,26 @@ class Sistema_permiso extends Controller
      */
     public function index()
     {
-        //
+        $PK_PAAE_PERIODO = PAAE::select('FECHA_INICIO','FECHA_FIN')->max('PK_PAAE_PERIODO');
+
+        $periodo = PAAE::select('FECHA_INICIO','FECHA_FIN')
+        ->where('PK_PAAE_PERIODO',$PK_PAAE_PERIODO)
+        ->get()[0];
+        
+        return [
+            array(
+            'FECHA_INICIO' => $periodo->FECHA_INICIO,
+            'FECHA_FIN' => $periodo->FECHA_FIN,
+            'FECHA_ACTUAL' => $this->fechaActual()
+            )
+        ];
+    }
+
+    public function fechaActual(){
+        $fechaActual = Date('Y').'-';
+        $fechaActual = $fechaActual .Date('m').'-';
+        $fechaActual = $fechaActual .Date('d');
+        return $fechaActual;
     }
 
     /**
@@ -34,7 +54,13 @@ class Sistema_permiso extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->FK_USUARIO_REGISTRO){
+            $periodo = new PAAE();
+            $periodo->FECHA_INICIO = $request->FECHA_INICIO;
+            $periodo->FECHA_FIN = $request->FECHA_FIN;
+            $periodo->FK_USUARIO_REGISTRO = $request->FK_USUARIO_REGISTRO;
+            $periodo->save();
+        }
     }
 
     /**
