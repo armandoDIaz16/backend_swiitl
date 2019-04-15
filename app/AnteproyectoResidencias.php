@@ -9,5 +9,5 @@ class AnteproyectoResidencias extends Model
     protected $connection = 'sqlsrv3';
     protected $table = 'ante';
 
-    protected $fillable = ['Nombre','AreaAcademica','Empresa','TipoEspecialidad'];
+    protected $fillable = ['Nombre','pdf','Alumno','Estatus','AreaAcademica','Autor','Empresa','TipoEspecialidad'];
 }
