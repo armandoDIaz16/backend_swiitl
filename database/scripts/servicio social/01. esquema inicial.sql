@@ -1,0 +1,103 @@
+use SWIITL;
+
+/*********************  INICIO MODIFICACIONES LUNES 15 DE ABRIL 2019 *********************************
+ * CONTROL DE CAMBIOS EN AMBIENTES
+ * LOCAL:      PENDIENTE (FECHA DE APLICACIÓN)
+ * PRUEBAS:    PENDIENTE (FECHA DE APLICACIÓN)
+ * PRODUCCIÓN: PENDIENTE (FECHA DE APLICACIÓN)
+*/
+
+-- AQUÍ SE INDICAN TODOS LOS CAMBIOS QUE SE HAGAN DURANTE EL DÍA O RANGO DE FECHAS
+
+-- SE DEFINEN LAS TABLAS DEL ESQUEMA TECNOLÓGICO
+
+CREATE TABLE CAT_TIPO_INSTITUTO(
+    PK_TIPO_INSTITUTO INT NOT NULL IDENTITY,
+    NOMBRE VARCHAR(100)
+    PRIMARY KEY (PK_TIPO_INSTITUTO),
+    FK_USUARIO_REGISTRO int,
+    FECHA_REGISTRO datetime default getdate() not null,
+    FK_USUARIO_MODIFICACION int,
+    FECHA_MODIFICACION datetime,
+    BORRADO nchar(1) default '0' not null
+);
+
+CREATE TABLE CATR_TECNM(
+    PK_TECNOLOGICO INT NOT NULL IDENTITY,
+    NOMBRE VARCHAR (100),
+    ABREVIATURA VARCHAR (50),
+    CLAVE VARCHAR (10),
+    ID INT,
+    FK_TIPO_INSTITUTO INT,
+    FK_CODIGO_POSTAL INT,
+    FK_USUARIO_REGISTRO INT,
+    FECHA_REGISTRO datetime default getdate() not null,
+    FK_USUARIO_MODIFICACION int,
+    FECHA_MODIFICACION datetime,
+    BORRADO nchar(1) default '0' not null
+    PRIMARY KEY (PK_TECNOLOGICO)
+    FOREIGN KEY (FK_TIPO_INSTITUTO) REFERENCES CAT_TIPO_INSTITUTO (PK_TIPO_INSTITUTO)
+    FOREIGN KEY (FK_CODIGO_POSTAL)  REFERENCES CATR_CODIGO_POSTAL (PK_NUMERO_CODIGO_POSTAL)
+);
+
+CREATE TABLE CAT_TIPO_ESPACIO(
+    PK_TIPO_ESPACIO INT NOT NULL IDENTITY,
+    NOMBRE VARCHAR (100),
+    FK_USUARIO_REGISTRO int,
+    FECHA_REGISTRO datetime default getdate() not null,
+    FK_USUARIO_MODIFICACION int,
+    FECHA_MODIFICACION datetime,
+    BORRADO nchar(1) default '0' not null
+    PRIMARY KEY (PK_TIPO_ESPACIO)
+);
+
+CREATE TABLE CATR_CAMPUS(
+    PK_CAMPUS INT NOT NULL IDENTITY,
+    NOMBRE VARCHAR (100),
+    FK_TECNOLOGICO INT,
+    FK_USUARIO_REGISTRO int,
+    FECHA_REGISTRO datetime default getdate() not null,
+    FK_USUARIO_MODIFICACION int,
+    FECHA_MODIFICACION datetime,
+    BORRADO nchar(1) default '0' not null
+    PRIMARY KEY (PK_CAMPUS)
+    FOREIGN KEY (FK_TECNOLOGICO) REFERENCES CATR_TECNM (PK_TECNOLOGICO)
+);
+
+CREATE TABLE CATR_EDIFICIO(
+    PK_EDIFICIO INT NOT NULL IDENTITY,
+    NOMBRE VARCHAR (100),
+    PREFIJO VARCHAR (20),
+    FK_CAMPUS  INT,
+    FK_USUARIO_REGISTRO int,
+    FECHA_REGISTRO datetime default getdate() not null,
+    FK_USUARIO_MODIFICACION int,
+    FECHA_MODIFICACION datetime,
+    BORRADO nchar(1) default '0' not null
+    PRIMARY KEY (PK_EDIFICIO)
+    FOREIGN KEY (FK_CAMPUS) REFERENCES CATR_CAMPUS (PK_CAMPUS)
+);
+
+CREATE TABLE TR_ESPACIO (
+    PK_ESPACIO INT NOT NULL IDENTITY,
+    FK_EDIFICIO INT,
+    FK_TIPO_ESPACIO INT,
+    NOMBRE VARCHAR (100),
+    IDENTIFICADOR VARCHAR (50),
+    CAPACIDAD INT,
+    FK_USUARIO_REGISTRO int,
+    FECHA_REGISTRO datetime default getdate() not null,
+    FK_USUARIO_MODIFICACION int,
+    FECHA_MODIFICACION datetime,
+    BORRADO nchar(1) default '0' not null
+    PRIMARY KEY (PK_ESPACIO)
+    FOREIGN KEY (FK_EDIFICIO) REFERENCES CATR_EDIFICIO (PK_EDIFICIO),
+    FOREIGN KEY (FK_TIPO_ESPACIO) REFERENCES CAT_TIPO_ESPACIO (PK_TIPO_ESPACIO)
+);
+
+
+/*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
+
+-- --------------------------------------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------------------------------------
