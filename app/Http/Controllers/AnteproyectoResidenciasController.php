@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\CargaArchivo;
 use App\AnteproyectoResidencias;
-use Illuminate\Support\Facades\Log;
 
 class AnteproyectoResidenciasController extends Controller
 {
@@ -16,7 +15,8 @@ class AnteproyectoResidenciasController extends Controller
      */
     public function index()
     {
-        //
+        $vistaante = AnteproyectoResidencias::all();
+        return $vistaante;
     }
 
     /**
@@ -38,54 +38,16 @@ class AnteproyectoResidenciasController extends Controller
     public function store(Request $request)
     {
         $anteproyecto = new AnteproyectoResidencias();
-       // $carga = new CargaArchivo();
+
         $anteproyecto->Nombre = $request->Nombre;
+        $anteproyecto->pdf = $request->pdf;
+        $anteproyecto->Alumno = $request->Alumno;
+        $anteproyecto->Estatus = $request->Estatus;
         $anteproyecto->AreaAcademica = $request->AreaAcademica;
+        $anteproyecto->Autor = $request->Autor;
         $anteproyecto->Empresa = $request->Empresa;
         $anteproyecto->TipoEspecialidad = $request->TipoEspecialidad;
         $anteproyecto->save();
-/*        /*if(!$request->pdf):
-            ;
-        else:
-            //$ruta = $carga->savefile($request);
-           // $anteproyecto->pdf = $ruta;
-        endif;
-        if(!$request->Alumno):
-            ;
-        else:
-            $anteproyecto->Alumno = $request->Alumno;
-        endif;
-        if(!$request->Estatus):
-            ;
-        else:
-            $anteproyecto->Estatus = $request->Estatus;
-        endif;
-        if(!$request->AreaAcademica):
-            ;
-        else:
-            $anteproyecto->AreaAcademica = $request->AreaAcademica;
-        endif;
-        if(!$request->Autor):
-            ;
-        else:
-            $anteproyecto->Autor = $request->Autor;
-        endif;
-        if(!$request->Empresa):
-            ;
-        else:
-            $anteproyecto->Empresa = $request->Empresa;
-        endif;
-        if(!$request->TipoEspecialidad):
-            ;
-        else:
-            $anteproyecto->TipoEspecialidad = $request->TipoEspecialidad;
-        endif;
-        $anteproyecto->save();*/
-
-        Log::debug('A ver'.$request->Nombre);
-        Log::debug('A ver'.$request->AreaAcademica);
-        Log::debug('A ver'.$request->Empresa);
-        Log::debug('A ver'.$request->TipoEspecialidad);
     }
 
     /**
@@ -120,10 +82,24 @@ class AnteproyectoResidenciasController extends Controller
     public function update(Request $request, $id)
     {
         $anteproyecto = AnteproyectoResidencias::find($id);
+
         $carga = new CargaArchivo();
+        $x = $request->Usuario;
 
 
-            if(!$request->Nombre):
+        $etse = AnteproyectoResidencias::where('Alumno',$x)->first();
+        \Log::debug('Test var fails' . $etse . 'Hola');
+        if($anteproyecto->Alumno != 'NULL'){
+            if($etse == NULL){
+                $anteproyecto->Alumno = $x;
+                $anteproyecto->save();
+                return $f = json_encode('ok');
+            }
+            else return $i = json_encode('Un alumno no puede tener más de un proyecto.');
+        }
+        else return  $h = json_encode('Proyecto ya esta asignado a un alumno.');
+
+/*            if(!$request->Nombre):
                 ;
             else:
                 $anteproyecto->Nombre = $request->Nombre;
@@ -163,9 +139,9 @@ class AnteproyectoResidenciasController extends Controller
                 ;
             else:
                 $anteproyecto->TipoEspecialidad = $request->TipoEspecialidad;
-            endif;
+            endif;*/
 
-            $anteproyecto->save();
+          //  $anteproyecto->save();
     }
 
     /**
