@@ -30,13 +30,13 @@ class Seccion_EncuestaController extends Controller
     public function store(Request $request)
     {
         //POST
+        //$seccion_e->FECHA_REGISTRO = date('Y-m-d H:i:s');
         try {
             $seccion_e = new Seccion_Encuesta();
             $seccion_e->NOMBRE_SECCION = $request->input('NOMBRE_SECCION');
             $seccion_e->NUMERO_SECCION = $request->input('NUMERO_SECCION');
             $seccion_e->OBJETIVO = $request->input('OBJETIVO');
             $seccion_e->INSTRUCCIONES = $request->input('INSTRUCCIONES');
-            $seccion_e->FECHA_REGISTRO = date('Y-m-d H:i:s');
             $seccion_e->save();
             return response()->json((array) new Respuesta('OK', 200, Mensaje::CREADO, $seccion_e));
         }catch (\Exception $exception){
@@ -73,7 +73,6 @@ class Seccion_EncuestaController extends Controller
             $seccion_e->NUMERO_SECCION = $request->input('NUMERO_SECCION');
             $seccion_e->OBJETIVO = $request->input('OBJETIVO');
             $seccion_e->INSTRUCCIONES = $request->input('INSTRUCCIONES');
-            $seccion_e->FECHA_REGISTRO = date('Y-m-d H:i:s');
             $seccion_e->save();
             return response()->json((array) new Respuesta('OK', 200, Mensaje::ACTUALIZADO, $seccion_e));
         }catch (\Exception $exception){

@@ -61,3 +61,4 @@ Route::resource('Tipo_Pregunta', 'Tipo_PreguntaController');
 Route::resource('PAAE_Periodo','PAAE_Periodo');
 route::get('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
+Route::resource('Pregunta', 'PreguntaController');

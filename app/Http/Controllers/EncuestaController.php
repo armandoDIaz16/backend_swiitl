@@ -32,16 +32,16 @@ class EncuestaController extends Controller
     public function store(Request $request)
     {
         //POST
+        //$encuesta->FECHA_REGISTRO = date('Y-m-d H:i:s');
         try {
             $encuesta = new Encuesta();
             $encuesta->NOMBRE = $request->input('NOMBRE');
             $encuesta->OBJETIVO = $request->input('OBJETIVO');
             $encuesta->INSTRUCCIONES = $request->input('INSTRUCCIONES');
-            $encuesta->FECHA_REGISTRO = date('Y-m-d H:i:s');
             $encuesta->save();
             return response()->json((array) new Respuesta('OK', 200, Mensaje::CREADO, $encuesta));
         }catch (\Exception $exception){
-            return response()->json((array) new Respuesta('ERROR', 400, Mensaje::BD_ERR, $encuesta));
+            return response()->json((array) new Respuesta('ERROR', 400, $exception, $encuesta));
         }
     }
 
