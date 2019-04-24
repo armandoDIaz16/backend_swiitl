@@ -52,9 +52,13 @@ Route::resource('Incapacidad', 'IncapacidadController');
 Route::resource('Propaganda_Tecnologico', 'PropagandaController');
 Route::resource('CreditosSiia','CreditosSiiaController');
 Route::resource('Entidad_Federativa','Entidad_FederativaController');
+Route::resource('ColoniaCodigoPostal','ColoniaCodigoPostalController');
 Route::resource('Ciudad','CiudadController');
+Route::resource('Colonia','ColoniaController');
+Route::resource('CodigoPostal','CodigoPostalController');
 Route::resource('Usuario_Rol','Usuario_RolController');
 Route::resource('PAAE_Periodo','PAAE_Periodo');
+<<<<<<< HEAD
 Route::resource('Anteproyecto', 'AnteproyectoResidenciasController');
 Route::resource('Documentacion', 'DocumentacionResidenciasController');
 Route::resource('Reporte','ReporteResidenciaController');
@@ -65,3 +69,13 @@ Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
 route::get('Periodo','PeriodoController@index');
 route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
 //Route::resource('Periodo','PeriodoController');
+=======
+Route::resource('Campus','CampusController');
+Route::resource('TipoEspacio','TipoEspacioController');
+Route::resource('Espacio','EspacioController');
+Route::resource('TipoInstituto','TipoInstitutoController');
+Route::resource('Edificio','EdificioController');
+Route::resource('Tecnologico','TecnmController');
+route::get     ('Periodo','PeriodoController@index');
+//Route::resource('Periodo','PeriodoController');
+>>>>>>> b3f06193eb9932c55c6bf925440e240a1a65decd
