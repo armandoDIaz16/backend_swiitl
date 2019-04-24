@@ -21,10 +21,7 @@ class CATRCOLONIA extends Migration
             /* DATOS GENERALES */
             $table->string('NOMBRE');
             
-              /* CLAVES FORANEAS */
-            $table->integer('FK_ASENTAMIENTO');
-            $table->foreign('FK_ASENTAMIENTO')
-                  ->references('PK_ASENTAMIENTO')->on('CAT_ASENTAMIENTO');
+            /* CLAVES FORANEAS */
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();
