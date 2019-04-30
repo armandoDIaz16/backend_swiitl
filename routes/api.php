@@ -82,5 +82,10 @@ Route::resource('Edificio','EdificioController');
 Route::resource('Tecnologico','TecnmController');
 route::get     ('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
+
+
+//route::get     ('pdf/{orientation}','PdfController@pdf');
+route::get     ('pdf','PdfController@pdf');
+
 >>>>>>> b3f06193eb9932c55c6bf925440e240a1a65decd
 Route::resource('Pregunta', 'PreguntaController');
