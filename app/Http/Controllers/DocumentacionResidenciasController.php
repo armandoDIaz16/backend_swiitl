@@ -37,9 +37,9 @@ class DocumentacionResidenciasController extends Controller
      */
     public function store(Request $request)
     {
-        /* $documentacion = new Documentacion();
-        $documentacion->id_alumno = $request->id_alumno;
-        $documentacion->save();*/
+         $documentacion = new Documentacion();
+        $documentacion->ALUMNO = $request->ALUMNO;
+        $documentacion->save();
     }
 
     /**
@@ -88,25 +88,33 @@ class DocumentacionResidenciasController extends Controller
     }
 
 
-    public function updatechido(Request $request){
-        //$documentacion = DocumentacionResidencias::find($id);
-
+    public function updatesolicitud(Request $request){
+        $id = $request->id;
+        $documentacion = DocumentacionResidencias::where('ALUMNO',$id)->first();
+     //   \Log::debug('Prueba ' . $id);
         $File = $request -> file('myfile'); //line 1
         $sub_path = 'files'; //line 2
         $real_name = $File -> getClientOriginalName(); //line 3
         $destination_path = public_path($sub_path);  //line 4
         $File->move($destination_path,  $real_name);  //line 5
+        $Ruta = $sub_path.'/'.$real_name;
+        $documentacion->SOLICITUD = $Ruta;
+        $documentacion->save();
         return response()->json('Solicitud guardada');
     }
 
     public function updateaceptacion(Request $request){
-        //$documentacion = DocumentacionResidencias::find($id);
+        $id = $request->id;
+        $documentacion = DocumentacionResidencias::where('ALUMNO',$id)->first();
 
         $File = $request -> file('myfile'); //line 1
         $sub_path = 'files'; //line 2
         $real_name = $File -> getClientOriginalName(); //line 3
         $destination_path = public_path($sub_path);  //line 4
         $File->move($destination_path,  $real_name);  //line 5
+        $Ruta = $sub_path.'/'.$real_name;
+        $documentacion->CARTA_ACEPTACION = $Ruta;
+        $documentacion->save();
         return response()->json('Carta de aceptacion guardada');
     }
 
