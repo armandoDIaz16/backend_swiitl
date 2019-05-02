@@ -20,6 +20,8 @@ Route::group([
     Route::group(['middleware' => ['jwt.auth']], function() {
         Route::get('logout', 'AuthController@logout');
         Route::post('Periodo','PeriodoController@store');
+        Route::post('PAAE_Periodo','PAAE_Periodo@store');
+
         //Route::post('control', 'NumeroControl@getControl');
 
     });
@@ -54,6 +56,8 @@ Route::resource('CreditosSiia','CreditosSiiaController');
 Route::resource('Entidad_Federativa','Entidad_FederativaController');
 Route::resource('Ciudad','CiudadController');
 Route::resource('Usuario_Rol','Usuario_RolController');
-Route::resource('PAAE_Periodo','PAAE_Periodo');
+Route::get('PAAE_Periodo','PAAE_Periodo@index');
+Route::get('Hora','PAAE_Periodo@horario');
+Route::get('Materia','PAAE_Periodo@materia');
 route::get('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
