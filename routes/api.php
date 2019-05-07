@@ -87,16 +87,10 @@ Route::resource('Espacio','EspacioController');
 Route::resource('TipoInstituto','TipoInstitutoController');
 Route::resource('Edificio','EdificioController');
 Route::resource('Tecnologico','TecnmController');
-<<<<<<< HEAD
 
-=======
 route::get     ('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
 
-
 //route::get     ('pdf/{orientation}','PdfController@pdf');
 route::get     ('pdf','PdfController@pdf');
-
->>>>>>> b3f06193eb9932c55c6bf925440e240a1a65decd
 Route::resource('Pregunta', 'PreguntaController');
->>>>>>> ea66d23797d68a31ecbf07b3ce412ffa8b9915ae
