@@ -70,11 +70,20 @@ Route::resource('Docente','DocenteController');
 Route::resource('Comentario','ComentariosController');
 Route::resource('Repdocente','ReporteDocenteController');
 Route::resource('Alumnor','AlumnoController');
+Route::resource('PeriodoR','PeriodoResidenciaController');
+Route::resource('Convenio','ConveniosController');
+Route::resource('Informe','InformeTecnicoController');
+Route::resource('CalificacionR','CalificacionAlumnoController');
+Route::resource('ExternoR','ExternoController');
+Route::resource('Repexterno','ReporteExternoController');
 Route::post('documentacion', 'DocumentacionResidenciasController@updatesolicitud');
 Route::post('documentacion2', 'DocumentacionResidenciasController@updateaceptacion');
 Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
 route::get('Periodo','PeriodoController@index');
 route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
+Route::get('Pdf/{id}','FichaUnicaController@FUApdf');
+Route::get('Proyecto1/{id}','AnteproyectoResidenciasController@ind1');
+Route::get('Proyecto2/{id}','AnteproyectoResidenciasController@ind2');
 //Route::resource('Periodo','PeriodoController');
 Route::resource('Campus','CampusController');
 Route::resource('TipoEspacio','TipoEspacioController');
@@ -82,9 +91,7 @@ Route::resource('Espacio','EspacioController');
 Route::resource('TipoInstituto','TipoInstitutoController');
 Route::resource('Edificio','EdificioController');
 Route::resource('Tecnologico','TecnmController');
-<<<<<<< HEAD
 
-=======
 route::get     ('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
 
@@ -92,6 +99,5 @@ route::get     ('Periodo','PeriodoController@index');
 //route::get     ('pdf/{orientation}','PdfController@pdf');
 route::get     ('pdf','PdfController@pdf');
 
->>>>>>> b3f06193eb9932c55c6bf925440e240a1a65decd
+
 Route::resource('Pregunta', 'PreguntaController');
->>>>>>> ea66d23797d68a31ecbf07b3ce412ffa8b9915ae

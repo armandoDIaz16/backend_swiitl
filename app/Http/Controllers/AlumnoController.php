@@ -24,11 +24,13 @@ class AlumnoController extends Controller
 
     public function show($id)
     {
-        $alumnos = DB::select('SELECT users.name, users.PK_USUARIO 
+        $alumnos = DB::select('DECLARE @Maestro int = :maestro
+                                      SELECT users.name, users.PK_USUARIO 
                                       FROM users
                                       JOIN CAT_ANTEPROYECTO_RESIDENCIA ON users.PK_USUARIO = CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO
                                       JOIN CATR_PROYECTO ON CAT_ANTEPROYECTO_RESIDENCIA.ID_ANTEPROYECTO = CATR_PROYECTO.FK_ANTEPROYECTO
-                                      WHERE CATR_PROYECTO.FK_DOCENTE = :maestro',['maestro'=>$id]);
+                                      WHERE (CATR_PROYECTO.FK_DOCENTE = @Maestro
+                                      OR CATR_PROYECTO.FK_ASESOR_EXT = @Maestro)',['maestro'=>$id]);
         return $alumnos;
     }
 

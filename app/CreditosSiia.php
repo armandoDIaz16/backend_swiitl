@@ -187,8 +187,13 @@ GROUP BY
     public function viablefinal($numero_control){
         $cursados = $this->get_creditos_aprobados($numero_control);
         $cursadosa = json_decode(json_encode($cursados),true);
-        $cursadosb = array_pop($cursadosa);
-        $cursadosc = array_pop($cursadosb);
+        if($cursadosa == []){
+            $cursadosc = 0;
+        }
+        else {
+            $cursadosb = array_pop($cursadosa);
+            $cursadosc = array_pop($cursadosb);
+        }
         $accomp = $this->creditos($numero_control);
         $total = $cursadosc + $accomp;
         /* °°||*** 208 es 80% del total de creditos de todas las carreas ***||°° */
