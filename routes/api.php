@@ -21,6 +21,8 @@ Route::group([
     Route::group(['middleware' => ['jwt.auth']], function() {
         Route::get('logout', 'AuthController@logout');
         Route::post('Periodo','PeriodoController@store');
+        Route::post('PAAE_Periodo','PAAE_Periodo@store');
+
         //Route::post('control', 'NumeroControl@getControl');
 
     });
@@ -58,6 +60,9 @@ Route::resource('Ciudad','CiudadController');
 Route::resource('Colonia','ColoniaController');
 Route::resource('CodigoPostal','CodigoPostalController');
 Route::resource('Usuario_Rol','Usuario_RolController');
+Route::get('PAAE_Periodo','PAAE_Periodo@index');
+Route::get('Hora','PAAE_Periodo@horario');
+Route::get('Materia','PAAE_Periodo@materia');
 Route::resource('Encuestas', 'EncuestaController');
 Route::resource('Seccion_Encuesta', 'Seccion_EncuestaController');
 Route::resource('Tipo_Pregunta', 'Tipo_PreguntaController');
@@ -95,9 +100,11 @@ Route::resource('Tecnologico','TecnmController');
 route::get     ('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
 
-
 //route::get     ('pdf/{orientation}','PdfController@pdf');
 route::get     ('pdf','PdfController@pdf');
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 0bfd77081b0babd8bb5d25ed3dba3e24dd0ec736
 Route::resource('Pregunta', 'PreguntaController');
