@@ -117,3 +117,8 @@ Route::resource('actividades','ActividadController');
 Route::resource('alumno-actividades','AlumnoActividadController');
 Route::resource('asistencia-alumnos','AsistenciaAlumnoActividadController');
 Route::resource('alumno-creditos','AlumnoCreditoController');
+Route::get('actividades-disponibles/{id_alumno}', 'ActividadController@actividadesDisponibles');
+Route::get('lista-actividades/{FK_LINEAMIENTO}/{FK_ALUMNO}', 'AsistenciaAlumnoActividadController@actividadesList');
+Route::resource('responsables-actividad','ResponsableActividadController');
+Route::get('responsable-lista-asistentes/{pk_actividad}','ResponsableActividadController@getListaAsistentes');
+Route::resource('asistentes-actividad','AsistenteActividadController');
