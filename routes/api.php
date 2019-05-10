@@ -102,9 +102,18 @@ route::get     ('Periodo','PeriodoController@index');
 
 //route::get     ('pdf/{orientation}','PdfController@pdf');
 route::get     ('pdf','PdfController@pdf');
-<<<<<<< HEAD
+/* <<<<<<< HEAD
 
 
 =======
->>>>>>> 0bfd77081b0babd8bb5d25ed3dba3e24dd0ec736
+>>>>>>> 0bfd77081b0babd8bb5d25ed3dba3e24dd0ec736 */
 Route::resource('Pregunta', 'PreguntaController');
+
+
+
+Route::resource('lineamientos','LineamientoController');
+Route::resource('tipos','TipoController');
+Route::resource('actividades','ActividadController');
+Route::resource('alumno-actividades','AlumnoActividadController');
+Route::resource('asistencia-alumnos','AsistenciaAlumnoActividadController');
+Route::resource('alumno-creditos','AlumnoCreditoController');
