@@ -10,5 +10,5 @@ class AnteproyectoResidencias extends Model
 
     protected $primaryKey = 'ID_ANTEPROYECTO';
 
-    protected $fillable = ['NOMBRE','PDF','ALUMNO','ESTATUS','AREA_ACADEMICA','AUTOR','EMPRESA','TIPO_ESPECIALIDAD'];
+    protected $fillable = ['NOMBRE','PDF','ALUMNO','ESTATUS','AREA_ACADEMICA','AUTOR','EMPRESA','TIPO_ESPECIALIDAD','PERIODO'];
 }

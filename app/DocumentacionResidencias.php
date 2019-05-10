@@ -10,5 +10,5 @@ class DocumentacionResidencias extends Model
 
     protected $primaryKey = 'PK_DOCUMENTACION';
 
-    protected $fillable = ['ALUMNO','CARTA_ACEPTACION','SOLICITUD'];
+    protected $fillable = ['ALUMNO','CARTA_ACEPTACION','SOLICITUD','PERIODO'];
 }

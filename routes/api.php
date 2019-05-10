@@ -83,11 +83,20 @@ Route::resource('Docente','DocenteController');
 Route::resource('Comentario','ComentariosController');
 Route::resource('Repdocente','ReporteDocenteController');
 Route::resource('Alumnor','AlumnoController');
+Route::resource('PeriodoR','PeriodoResidenciaController');
+Route::resource('Convenio','ConveniosController');
+Route::resource('Informe','InformeTecnicoController');
+Route::resource('CalificacionR','CalificacionAlumnoController');
+Route::resource('ExternoR','ExternoController');
+Route::resource('Repexterno','ReporteExternoController');
 Route::post('documentacion', 'DocumentacionResidenciasController@updatesolicitud');
 Route::post('documentacion2', 'DocumentacionResidenciasController@updateaceptacion');
 Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
 route::get('Periodo','PeriodoController@index');
 route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
+Route::get('Pdf/{id}','FichaUnicaController@FUApdf');
+Route::get('Proyecto1/{id}','AnteproyectoResidenciasController@ind1');
+Route::get('Proyecto2/{id}','AnteproyectoResidenciasController@ind2');
 //Route::resource('Periodo','PeriodoController');
 Route::resource('Campus','CampusController');
 Route::resource('TipoEspacio','TipoEspacioController');
@@ -95,11 +104,29 @@ Route::resource('Espacio','EspacioController');
 Route::resource('TipoInstituto','TipoInstitutoController');
 Route::resource('Edificio','EdificioController');
 Route::resource('Tecnologico','TecnmController');
+
 route::get     ('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
 
-
 //route::get     ('pdf/{orientation}','PdfController@pdf');
-route::get('pdf','PdfController@pdf');
+route::get     ('pdf','PdfController@pdf');
+/* <<<<<<< HEAD
 
+
+=======
+>>>>>>> 0bfd77081b0babd8bb5d25ed3dba3e24dd0ec736 */
 Route::resource('Pregunta', 'PreguntaController');
+
+
+
+Route::resource('lineamientos','LineamientoController');
+Route::resource('tipos','TipoController');
+Route::resource('actividades','ActividadController');
+Route::resource('alumno-actividades','AlumnoActividadController');
+Route::resource('asistencia-alumnos','AsistenciaAlumnoActividadController');
+Route::resource('alumno-creditos','AlumnoCreditoController');
+Route::get('actividades-disponibles/{id_alumno}', 'ActividadController@actividadesDisponibles');
+Route::get('lista-actividades/{FK_LINEAMIENTO}/{FK_ALUMNO}', 'AsistenciaAlumnoActividadController@actividadesList');
+Route::resource('responsables-actividad','ResponsableActividadController');
+Route::get('responsable-lista-asistentes/{pk_actividad}','ResponsableActividadController@getListaAsistentes');
+Route::resource('asistentes-actividad','AsistenteActividadController');
