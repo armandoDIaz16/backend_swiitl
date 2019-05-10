@@ -43,6 +43,19 @@ class AuthController extends Controller
         //todo Cambiar a generación de objeto de usaurio de forma explícita
         User::create($request->all());
 
+        $alumno = DB::table('users')
+        ->select('PK_USUARIO')
+        ->where('NUMERO_CONTROL',$request->NUMERO_CONTROL)
+        ->get();
+
+        //return $alumno[0]->PK_USUARIO;
+       // echo( $numero);
+
+        DB::table('PER_TR_ROL_USUARIO')->insert([
+            'FK_ROL' => 4,
+            'FK_USUARIO' => $alumno[0]->PK_USUARIO
+        ]);
+
         return response()->json(['data' => true], Response::HTTP_OK);
         //return $this->login($request);
     }
@@ -89,7 +102,7 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         $id = DB::table('users')
-            ->select('PK_USUARIO')
+            ->select('PK_USUARIO','NUMERO_CONTROL')
             ->where('email', auth()->user()->email)
             ->get()->first();
 
@@ -98,7 +111,9 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
             'user' => auth()->user()->email,
-            'IdUsuario' => $id->PK_USUARIO
+            'IdUsuario' => $id->PK_USUARIO,
+            'control' => $id->NUMERO_CONTROL
+
         ]);
 
     }
