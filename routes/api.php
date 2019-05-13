@@ -119,10 +119,10 @@ route::get     ('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
 //route::get     ('pdf/{orientation}','PdfController@pdf');
 route::get     ('pdf','PdfController@pdf');
-<<<<<<< HEAD
+
 
 Route::resource('Pregunta', 'PreguntaController');
-=======
+
 Route::resource('Pregunta', 'PreguntaController');
 
 Route::get('pdf1',function(){
@@ -145,4 +145,4 @@ Route::resource('asistentes-actividad','AsistenteActividadController');
 Route::get('alumnos-num-control/{NUM_CONTROL}','AsistenteActividadController@getAlumnoByNc');
 Route::get('alumnos-num-control/{PRIMER_APELLIDO}/{SEGUNDO_APELLIDO}/{name}','AsistenteActividadController@getPkuserByName');
 Route::get('registrar-asistencia','AsistenteActividadController@habilitarTomaAsistencia');
->>>>>>> c59c86ee1b6ac8b4aa3c54df252a8d7ceabc3277
+
