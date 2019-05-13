@@ -12,7 +12,7 @@ class NumeroControl extends Controller
     public function getControl(Request $request){
         $alumno = DB::connection('sqlsrv2')
             ->table('view_alumnos')
-            ->select('Estado', 'Nombre', 'ApellidoPaterno', 'ApellidoMaterno', 'NumeroControl')
+            ->select('Estado', 'Nombre', 'ApellidoPaterno', 'ApellidoMaterno', 'NumeroControl','ClaveCarrera','Semestre')
             ->where('NumeroControl',$request->control)
             ->get()->first();
 
@@ -35,6 +35,8 @@ class NumeroControl extends Controller
             'nombre'           => trim($alumno->Nombre),
             'primer_apellido' => trim($alumno->ApellidoPaterno),
             'segundo_apellido' => trim($alumno->ApellidoMaterno),
+            'clave_carrera' => trim($alumno->ClaveCarrera),
+            'semestre' => trim($alumno->Semestre),
             'numero_control'   => trim($alumno->NumeroControl)
         ];
         return response()->json(['data' => $datos_alumno], Response::HTTP_OK);
