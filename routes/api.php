@@ -81,14 +81,17 @@ Route::resource('Informe','InformeTecnicoController');
 Route::resource('CalificacionR','CalificacionAlumnoController');
 Route::resource('ExternoR','ExternoController');
 Route::resource('Repexterno','ReporteExternoController');
+Route::resource('Estadisticas','EstadisticasController');
 Route::post('documentacion', 'DocumentacionResidenciasController@updatesolicitud');
 Route::post('documentacion2', 'DocumentacionResidenciasController@updateaceptacion');
 Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
+Route::post('Totalr','EstadisticasController@reportestotal');
 route::get('Periodo','PeriodoController@index');
 route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
 Route::get('Pdf/{id}','FichaUnicaController@FUApdf');
 Route::get('Proyecto1/{id}','AnteproyectoResidenciasController@ind1');
 Route::get('Proyecto2/{id}','AnteproyectoResidenciasController@ind2');
+Route::get('Totalp','EstadisticasController@totalproyectos');
 //Route::resource('Periodo','PeriodoController');
 Route::resource('Campus','CampusController');
 Route::resource('TipoEspacio','TipoEspacioController');
@@ -102,9 +105,5 @@ route::get     ('Periodo','PeriodoController@index');
 
 //route::get     ('pdf/{orientation}','PdfController@pdf');
 route::get     ('pdf','PdfController@pdf');
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 0bfd77081b0babd8bb5d25ed3dba3e24dd0ec736
 Route::resource('Pregunta', 'PreguntaController');
