@@ -122,3 +122,6 @@ Route::get('lista-actividades/{FK_LINEAMIENTO}/{FK_ALUMNO}', 'AsistenciaAlumnoAc
 Route::resource('responsables-actividad','ResponsableActividadController');
 Route::get('responsable-lista-asistentes/{pk_actividad}','ResponsableActividadController@getListaAsistentes');
 Route::resource('asistentes-actividad','AsistenteActividadController');
+Route::get('alumnos-num-control/{NUM_CONTROL}','AsistenteActividadController@getAlumnoByNc');
+Route::get('alumnos-num-control/{PRIMER_APELLIDO}/{SEGUNDO_APELLIDO}/{name}','AsistenteActividadController@getPkuserByName');
+Route::get('registrar-asistencia','AsistenteActividadController@habilitarTomaAsistencia');
