@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Universidad;
+use App\Bachillerato;
 use Illuminate\Http\Request;
 
-class UniversidadController extends Controller
+class BachilleratoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class UniversidadController extends Controller
      */
     public function index()
     {
-        return Universidad::select('PK_UNIVERSIDAD','NOMBRE')->get();
+        //return Bachillerato::select('PK_BACHILLERATO','NOMBRE')->get();
     }
 
     /**
@@ -46,7 +46,7 @@ class UniversidadController extends Controller
      */
     public function show($id)
     {
-        //
+        return Bachillerato::where('FK_CIUDAD', $id)->select('PK_BACHILLERATO','NOMBRE')->get();
     }
 
     /**

@@ -175,6 +175,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
+
 
     ],
 
@@ -229,6 +231,8 @@ return [
 
         /* CLASES DEFINIDAS POR EL PROGRAMADOR */
         'Constantes_Alumnos' => App\Constantes_Alumnos::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+
 
     ],
 

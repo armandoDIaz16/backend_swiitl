@@ -49,6 +49,9 @@ class User extends Authenticatable implements JWTSubject
          'BORRADO'
     ];
 
+    protected $table = 'users';
+
+
     /**
      * The attributes that should be hidden for arrays.
      *

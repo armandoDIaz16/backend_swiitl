@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class TrIncapacidadAspirante extends Migration
+class CatEstatusAspirante extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,13 @@ class TrIncapacidadAspirante extends Migration
      */
     public function up()
     {
-        Schema::create('TR_INCAPACIDAD_ASPIRANTE', function (Blueprint $table) {
+        Schema::create('CAT_ESTATUS_ASPIRANTE', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->primary(['FK_ASPIRANTE', 'FK_INCAPACIDAD']);
+            $table->increments('PK_ESTATUS_ASPIRANTE');
 
-            /* CLAVES FORANEAS */
-            $table->integer('FK_ASPIRANTE');
-            $table->foreign('FK_ASPIRANTE')->references('PK_ASPIRANTE')->on('CATR_ASPIRANTE');
-
-            $table->integer('FK_INCAPACIDAD');
-            $table->foreign('FK_INCAPACIDAD')->references('PK_INCAPACIDAD')->on('CAT_INCAPACIDAD');
+            /* DATOS GENERALES */
+            $table->string('NOMBRE');
+            $table->smallInteger('ESTADO')->nullable();
 
             /* DATOS DE AUDITORIA */
             $table->integer('FK_USUARIO_REGISTRO')->nullable();
@@ -40,6 +37,6 @@ class TrIncapacidadAspirante extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tr_incapacidad_aspirante');
+        Schema::dropIfExists('CAT_ESTATUS_ASPIRANTE');
     }
 }
