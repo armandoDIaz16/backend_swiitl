@@ -46,7 +46,10 @@ class User extends Authenticatable implements JWTSubject
          'FECHA_REGISTRO',
          'FK_USUARIO_MODIFICACION',
          'FECHA_MODIFICACION',
-         'BORRADO'
+         'BORRADO',
+         'NUMERO_CONTROL',
+         'CLAVE_CARRERA',
+         'SEMESTRE'
     ];
 
     protected $table = 'users';

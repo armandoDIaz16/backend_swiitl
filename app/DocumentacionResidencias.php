@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class DocumentacionResidencias extends Model
 {
-    protected $table = 'documentacion';
-    protected $fillable = ['id_alumno','carta_aceptacion','carta_solicitud'];
+    protected $table = 'CAT_DOCUMENTACION';
+
+    protected $primaryKey = 'PK_DOCUMENTACION';
+
+    protected $fillable = ['ALUMNO','CARTA_ACEPTACION','SOLICITUD','PERIODO'];
 }

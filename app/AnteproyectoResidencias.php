@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class AnteproyectoResidencias extends Model
 {
-    protected $connection = 'sqlsrv3';
-    protected $table = 'ante';
+    protected $table = 'CAT_ANTEPROYECTO_RESIDENCIA';
 
-    protected $fillable = ['Nombre','AreaAcademica','Empresa','TipoEspecialidad'];
+    protected $primaryKey = 'ID_ANTEPROYECTO';
+
+    protected $fillable = ['NOMBRE','PDF','ALUMNO','ESTATUS','AREA_ACADEMICA','AUTOR','EMPRESA','TIPO_ESPECIALIDAD','PERIODO'];
 }

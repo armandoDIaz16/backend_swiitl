@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CreditosSiia;
 use App\Mail\JuntaEmail;
+use App\DocumentacionResidencias;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -17,7 +18,21 @@ class CreditosSiiaController extends Controller
      */
     public function index()
     {
-        //
+        $var = new CreditosSiia();
+        $varcon1 = $var->alumno2();
+        $varcon2 = json_decode(json_encode($varcon1),true);
+        for ($i=0;$i<count($varcon1);$i++) {
+            $varcon3 = array_pop($varcon2);
+            $id_padre = DB::select('SELECT ID_PADRE FROM CATR_ALUMNO WHERE NUMERO_CONTROL = :no', ['no' => $varcon3]);
+            $id_padre1 = json_decode(json_encode($id_padre), true);
+            $id_padre2 = array_pop($id_padre1);
+            $id_padre3 = array_pop($id_padre2);
+            DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '2', 'FK_USUARIO' => $id_padre3]);
+            $documentacion = new Documentacion();
+            $documentacion->ALUMNO = $id_padre3;
+            $documentacion->PERIODO = $var->periodo();
+            $documentacion->save();
+        }
     }
 
     /**
