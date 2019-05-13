@@ -14,7 +14,7 @@ class UniversidadController extends Controller
      */
     public function index()
     {
-        return Universidad::select('PK_Universidad','NOMBRE')->get();
+        return Universidad::select('PK_UNIVERSIDAD','NOMBRE')->get();
     }
 
     /**

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Colonia;
+use App\Bachillerato;
 use Illuminate\Http\Request;
 
-class ColoniaController extends Controller
+class BachilleratoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class ColoniaController extends Controller
      */
     public function index()
     {
-        //
+        //return Bachillerato::select('PK_BACHILLERATO','NOMBRE')->get();
     }
 
     /**
@@ -46,12 +46,7 @@ class ColoniaController extends Controller
      */
     public function show($id)
     {
-        $colonias = Colonia::select('CATR_COLONIA.PK_COLONIA','CATR_COLONIA.NOMBRE')
-            ->join('TR_COLONIA_CODIGO_POSTAL', 'TR_COLONIA_CODIGO_POSTAL.FK_COLONIA', '=', 'CATR_COLONIA.PK_COLONIA')
-            ->where('TR_COLONIA_CODIGO_POSTAL.FK_NUMERO_CODIGO_POSTAL', $id)
-            ->get();
-
-        return $colonias;
+        return Bachillerato::where('FK_CIUDAD', $id)->select('PK_BACHILLERATO','NOMBRE')->get();
     }
 
     /**

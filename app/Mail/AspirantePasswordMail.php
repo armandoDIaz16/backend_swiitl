@@ -4,7 +4,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-class ResetPasswordMail extends Mailable
+class AspirantePasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $token;
@@ -26,7 +26,7 @@ class ResetPasswordMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mails.passwordReset')->with([
+        return $this->markdown('mails.aspirantePassword')->with([
             'token' => $this->token,
             'email' => $this->email
         ]);

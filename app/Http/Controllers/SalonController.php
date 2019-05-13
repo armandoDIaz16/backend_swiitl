@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Colonia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class ColoniaController extends Controller
+class SalonController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,9 @@ class ColoniaController extends Controller
      */
     public function index()
     {
-        //
+        return DB::table('CATR_ESPACIO')
+            ->select('PK_ESPACIO', 'NOMBRE')
+            ->get();
     }
 
     /**
@@ -46,12 +48,7 @@ class ColoniaController extends Controller
      */
     public function show($id)
     {
-        $colonias = Colonia::select('CATR_COLONIA.PK_COLONIA','CATR_COLONIA.NOMBRE')
-            ->join('TR_COLONIA_CODIGO_POSTAL', 'TR_COLONIA_CODIGO_POSTAL.FK_COLONIA', '=', 'CATR_COLONIA.PK_COLONIA')
-            ->where('TR_COLONIA_CODIGO_POSTAL.FK_NUMERO_CODIGO_POSTAL', $id)
-            ->get();
-
-        return $colonias;
+       // 
     }
 
     /**
