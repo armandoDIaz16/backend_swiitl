@@ -20,15 +20,14 @@ class CATRASPIRANTE extends Migration
 
             /* DATOS GENERALES */
             $table->char('PREFICHA',10);
-            $table->char('NUMERO_PREFICHA',5);
+            $table->integer('NUMERO_PREFICHA');
             $table->string('PADRE_TUTOR')->nullable();
             $table->string('MADRE')->nullable();
             $table->string('ESPECIALIDAD')->nullable();
-            $table->integer('PROMEDIO');
+            $table->decimal('PROMEDIO', 3, 1);	
             $table->string('NACIONALIDAD');
             $table->char('TRABAJAS_Y_ESTUDIAS',1)->default(0);
             $table->char('AVISO_PRIVACIDAD',1)->default(0);
-            $table->char('ESTATUS_PAGO',1)->default(0);
             $table->string('AYUDA_INCAPACIDAD')->nullable()->comment("Refiere al tipo de ayuda que necesita para atender la incapacidad");
 
 
@@ -54,11 +53,17 @@ class CATRASPIRANTE extends Migration
             $table->integer('FK_CIUDAD')->nullable();
             $table->foreign('FK_CIUDAD')->references('PK_CIUDAD')->on('CATR_CIUDAD');
 
+            $table->integer('FK_UNIVERSIDAD')->nullable();
+            $table->foreign('FK_UNIVERSIDAD')->references('PK_UNIVERSIDAD')->on('CAT_UNIVERSIDAD');
+
             $table->integer('FK_CARRERA_UNIVERSIDAD')->nullable();
             $table->foreign('FK_CARRERA_UNIVERSIDAD')->references('PK_CARRERA_UNIVERSIDAD')->on('CAT_CARRERA_UNIVERSIDAD');
 
             $table->integer('FK_PROPAGANDA_TECNOLOGICO');
             $table->foreign('FK_PROPAGANDA_TECNOLOGICO')->references('PK_PROPAGANDA_TECNOLOGICO')->on('CAT_PROPAGANDA_TECNOLOGICO');
+
+            $table->integer('FK_ESTATUS')->nullable();
+            $table->foreign('FK_ESTATUS')->references('PK_ESTATUS_ASPIRANTE')->on('CAT_ESTATUS_ASPIRANTE');
 
 
             /* DATOS DE AUDITORIA */

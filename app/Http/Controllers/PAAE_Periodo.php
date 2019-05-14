@@ -141,6 +141,37 @@ class PAAE_Periodo extends Controller
             return $this->failedResponse();
          }
     }
+
+    public function horarioAll(Request $request){      
+        $hoy = getdate();
+        $year = $hoy['year'];
+        $month = $hoy['mon'];
+        if($month <=6){
+            $month = 1;       
+        }
+        if($month > 7){
+            $month = 2;
+        }
+        $periodo = $year.$month;
+        //print_r($periodo);
+
+        $hora = DB::connection('sqlsrv2')
+        ->table('view_horarioalumno')
+            ->select('Dia','HoraInicial','MinutoInicial','HoraFinal','MinutoFinal')
+            ->where([['NumeroControl',$request->control],    
+                    ['IdPeriodoEscolar',$periodo]
+                    ])   
+            ->orderBy('dia')
+            ->orderBy('HoraInicial')
+            ->get();
+         if($hora){
+             return $hora;
+            //return $hoy;
+        /* return response()->json(['data' => $horario], Response::HTTP_OK); */
+         }else{
+            return $this->failedResponse();
+         }
+    }
     
     public function materia(Request $request){
         $hoy = getdate();
@@ -161,7 +192,7 @@ class PAAE_Periodo extends Controller
             ->where([['NumeroControl',$request->control],    
                     ['IdPeriodoEscolar',$periodo]
                     ])
-            ->get();
+            ->get();            
         if($materia){
             return $materia;
         }else{
@@ -213,6 +244,7 @@ class PAAE_Periodo extends Controller
             $month = 2;
         }
         $periodo = $year.$month;
+
         DB::table('CATR_USER_ASESORIA_HORARIO')->insert([
             'FK_USUARIO' => $request->id,
             'MATERIA' => $request->materia,
@@ -221,8 +253,70 @@ class PAAE_Periodo extends Controller
             'PERIODO' => $periodo,
             'CAMPUS' => $request->campus,
             'STATUS' => 'PENDIENTE'
-
         ]);
+
+        $asesor = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
+        ->select('FK_USUARIO')
+        ->where([['MATERIA',$request->materia],    
+                ['DIA',$request->dia],
+                ['HORA',$request->hora],
+                ])
+        ->get()->first();        
+
+        $asesor1 = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
+        ->select('FK_USUARIO')
+        ->where([['MATERIA1',$request->materia],    
+                ['DIA',$request->dia],
+                ['HORA',$request->hora],
+                ])
+        ->get()->first();       
+
+        $asesor2 = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
+        ->select('FK_USUARIO')
+        ->where([['MATERIA2',$request->materia],    
+                ['DIA',$request->dia],
+                ['HORA',$request->hora],
+                ])
+        ->get()->first();        
+
+        if($asesor){
+            DB::table('CATR_ASESORIA_ACEPTADA')->insert([
+                'FK_ASESOR' => $asesor->FK_USUARIO,
+                'FK_ALUMNO' => $request->id,
+                'MATERIA' => $request->materia,
+                'DIA' => $request->dia,
+                'HORA' => $request->hora,
+                'PERIODO' => $periodo,
+                'CAMPUS' => $request->campus,
+                'STATUS' => 'ACEPTADO'
+            ]);
+        }
+        if($asesor1){
+          
+            DB::table('CATR_ASESORIA_ACEPTADA')->insert([
+                'FK_ASESOR' => $asesor1->FK_USUARIO,
+                'FK_ALUMNO' => $request->id,
+                'MATERIA' => $request->materia,
+                'DIA' => $request->dia,
+                'HORA' => $request->hora,
+                'PERIODO' => $periodo,
+                'CAMPUS' => $request->campus,
+                'STATUS' => 'ACEPTADO'
+            ]);
+        }
+        if($asesor2){
+            DB::table('CATR_ASESORIA_ACEPTADA')->insert([
+                'FK_ASESOR' => $asesor2->FK_USUARIO,
+                'FK_ALUMNO' => $request->id,
+                'MATERIA' => $request->materia,
+                'DIA' => $request->dia,
+                'HORA' => $request->hora,
+                'PERIODO' => $periodo,
+                'CAMPUS' => $request->campus,
+                'STATUS' => 'ACEPTADO'
+            ]);
+        }
+
         return response()->json(['data' => true], Response::HTTP_OK);
         
     }
@@ -298,7 +392,8 @@ class PAAE_Periodo extends Controller
             'CATR_ASESOR_ASESORIA_HORARIO.MATERIA1','CATR_ASESOR_ASESORIA_HORARIO.MATERIA2'
             ,'CATR_ASESOR_ASESORIA_HORARIO.DIA',
             'CATR_ASESOR_ASESORIA_HORARIO.HORA','CATR_ASESOR_ASESORIA_HORARIO.CAMPUS',
-            'CATR_ASESOR_ASESORIA_HORARIO.STATUS','CATR_ASESOR_ASESORIA_HORARIO.PERIODO')
+            'CATR_ASESOR_ASESORIA_HORARIO.STATUS','CATR_ASESOR_ASESORIA_HORARIO.PERIODO',
+            'users.NUMERO_CONTROL','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
             ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
             ->where('PERIODO',$periodo)
             ->get();
@@ -347,7 +442,8 @@ class PAAE_Periodo extends Controller
         'CATR_USER_ASESORIA_HORARIO.MATERIA'
         , 'CATR_USER_ASESORIA_HORARIO.DIA',
         'CATR_USER_ASESORIA_HORARIO.HORA','CATR_USER_ASESORIA_HORARIO.CAMPUS', 'CATR_USER_ASESORIA_HORARIO.STATUS',
-        'CATR_USER_ASESORIA_HORARIO.CAMPUS','CATR_USER_ASESORIA_HORARIO.STATUS')
+        'CATR_USER_ASESORIA_HORARIO.CAMPUS','CATR_USER_ASESORIA_HORARIO.STATUS','CATR_USER_ASESORIA_HORARIO.PERIODO',
+        'users.NUMERO_CONTROL')
         ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
         ->where('PERIODO',$periodo)
         ->get();
@@ -359,7 +455,73 @@ class PAAE_Periodo extends Controller
         }
     }
 
+    public function getSolicitudPeriodo(Request $request){
+        $alumno = DB::table('CATR_USER_ASESORIA_HORARIO')
+        ->select('CATR_USER_ASESORIA_HORARIO.PK_USER_ASESORIA_HORARIO','users.name',
+        'users.PRIMER_APELLIDO', 'users.SEGUNDO_APELLIDO', 'users.email', 'users.TELEFONO_MOVIL',
+        'CATR_USER_ASESORIA_HORARIO.MATERIA'
+        , 'CATR_USER_ASESORIA_HORARIO.DIA',
+        'CATR_USER_ASESORIA_HORARIO.HORA','CATR_USER_ASESORIA_HORARIO.CAMPUS', 'CATR_USER_ASESORIA_HORARIO.STATUS',
+        'CATR_USER_ASESORIA_HORARIO.CAMPUS','CATR_USER_ASESORIA_HORARIO.STATUS','CATR_USER_ASESORIA_HORARIO.PERIODO')
+        ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
+        ->where('PERIODO',$request->periodo)
+        ->get();
 
+        if($alumno){
+            return $alumno;
+        }else{
+        return $this->failedResponse();
+        }
+    }
+
+    public function seguimiento(Request $request){
+        $alumno = DB::connection('sqlsrv2')->select('SELECT distinct  a.ClaveMateria,b.Nombre COLLATE Latin1_General_CI_AI AS [Nombre],a.IdNivelCurso,a.Calificacion 
+        FROM view_seguimiento a INNER JOIN view_reticula b on a.ClaveMateria = b.ClaveMateria WHERE NumeroControl = :control1',['control1'=>$request->control]);
+        if($alumno){
+            return $alumno;
+        }else{
+        return $this->failedResponse();
+        }
+    }
+
+    public function actualizAsesor(Request $request){
+        DB::table('CATR_ASESOR_ASESORIA_HORARIO')
+            ->where('PK_ASESOR_ASESORIA_HORARIO', $request->id)
+            ->update(['MATERIA' => $request->materia1, 'MATERIA1' => $request->materia2, 'MATERIA2' => $request->materia3,
+            'DIA' => $request->dia,'HORA' => $request->hora,'VALIDA' => $request->valida]);
+        
+        return response()->json(['data' => true], Response::HTTP_OK);
+    }
+
+    public function actualizaSolicitud(Request $request){
+        DB::table('CATR_USER_ASESORIA_HORARIO')
+            ->where('PK_USER_ASESORIA_HORARIO', $request->id1)
+            ->update(['MATERIA' => $request->materia,'DIA' => $request->dia1,'HORA' => $request->hora1]);
+        
+        return response()->json(['data' => true], Response::HTTP_OK);
+    }
+
+    public function borrAsesor(Request $request){
+        DB::table('CATR_ASESOR_ASESORIA_HORARIO')
+        ->where('PK_ASESOR_ASESORIA_HORARIO',$request->id)
+        ->delete();
+        
+        return response()->json(['data' => true], Response::HTTP_OK);
+    }
+
+    public function borraSolicitud(Request $request){
+        DB::table('CATR_USER_ASESORIA_HORARIO')
+        ->where('PK_USER_ASESORIA_HORARIO',$request->id1)
+        ->delete();
+        
+        return response()->json(['data' => true], Response::HTTP_OK);
+    }
+
+/* 
+    DB::table('users')
+            ->where('id', 1)
+            ->update(array('votes' => 1));
+ */
     public function failedResponse()
     {
         return response()->json([

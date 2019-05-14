@@ -4,23 +4,23 @@ use Illuminate\Http\Request;
 use App\User;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ResetPasswordMail;
+use App\Mail\AspirantePasswordMail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-class ResetPasswordController extends Controller
+class AspirantePasswordController extends Controller
 {
-    public function sendEmail(Request $request)
+    public function sendEmail($email)
     {
-        if (!$this->validateEmail($request->email)) {
+        if (!$this->validateEmail($email)) {
             return $this->failedResponse();
         }
-        $this->send($request->email);
+        $this->send($email);
         return $this->successResponse();
     }
     public function send($email)
     {
         $token = $this->createToken($email);
-        Mail::to($email)->send(new ResetPasswordMail($token,$email));
+        Mail::to($email)->send(new AspirantePasswordMail($token));
     }
     public function createToken($email)
     {
@@ -37,7 +37,7 @@ class ResetPasswordController extends Controller
         DB::table('password_resets')->insert([
             'email' => $email,
             'token' => $token,
-            'created_at' => Carbon::now()
+            'created_at' => '18-06-12 10:34:09'
         ]);
     }
     public function validateEmail($email)
