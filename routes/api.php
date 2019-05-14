@@ -132,4 +132,8 @@ Route::get('responsable-lista-asistentes/{pk_actividad}','ResponsableActividadCo
 Route::resource('asistentes-actividad','AsistenteActividadController');
 Route::get('alumnos-num-control/{NUM_CONTROL}','AsistenteActividadController@getAlumnoByNc');
 Route::get('alumnos-num-control/{PRIMER_APELLIDO}/{SEGUNDO_APELLIDO}/{name}','AsistenteActividadController@getPkuserByName');
-Route::get('registrar-asistencia','AsistenteActividadController@habilitarTomaAsistencia');
+Route::get('registrar-asistencia/{PK_ACTIVIDAD}','AsistenteActividadController@habilitarTomaAsistencia');
+Route::get('actividades-tomar-asistencia/{PK_USUARIO}','AsistenteActividadController@listaActividades');
+Route::get('eliminar-asistente-act/{PK_USUARIO}/{PK_ACTIVIDAD}','AsistenteActividadController@eliminarAsistente');
+Route::get('eliminar-rol-asistente/{PK_USUARIO}','AsistenteActividadController@eliminarRolAsistente');
+Route::get('lista-actividades-creditos/{FK_ALUMNO}/{FK_LINEAMIENTO}', 'AsistenciaAlumnoActividadController@pruebaActByLineamiento');

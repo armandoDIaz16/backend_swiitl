@@ -41,20 +41,26 @@ class AsistenteActividadController extends Controller
      */
     public function store(Request $request)
     {
-        $registro_rol = DB::select('exec getNumRegistrosRolAsistente ?,?', array(2002,$request->FK_USUARIO));
+        $rol = DB::table('PER_CATR_ROL')
+        ->select('PK_ROL')
+        ->where('NOMBRE','=','Registro de asistencias')
+        ->get()->first();
 
-        if($registro_rol){
+        $registro_rol = DB::select('exec getNumRegistrosRolAsistente ?,?', array($rol->PK_ROL, $request->FK_USUARIO));
+
+        if($registro_rol[0]->registros){
             $sistente_actividad = new asistenteActividad();
             $sistente_actividad->FK_USUARIO = $request->FK_USUARIO;
             $sistente_actividad->FK_ACTIVIDAD = $request->FK_ACTIVIDAD;
-            $sistente_actividad->save();
+            $sistente_actividad->save(); 
         }else{
-        DB::table('PER_TR_ROL_USUARIO')
-            ->insert(array('FK_ROL' => 2002, 'FK_USUARIO' => $request->FK_USUARIO));
+         DB::table('PER_TR_ROL_USUARIO')
+            ->insert(array('FK_ROL' => $rol->PK_ROL, 'FK_USUARIO' => $request->FK_USUARIO));
             $sistente_actividad = new asistenteActividad();
             $sistente_actividad->FK_USUARIO = $request->FK_USUARIO;
             $sistente_actividad->FK_ACTIVIDAD = $request->FK_ACTIVIDAD;
-            $sistente_actividad->save();
+            $sistente_actividad->save(); 
+
         }
     }
 
@@ -100,14 +106,26 @@ class AsistenteActividadController extends Controller
     }
 
 
-    //estos son servicios para los alumnos con el rol de asistentes
-    public function habilitarTomaAsistencia(){
+    //------------------ estos son servicios para los alumnos con el rol de asistentes-------------------------------------
+
+    public function listaActividades($pk_usuario){
+        $actividades = DB::table('actividades_v')
+            ->join('ASISTENTES_ACTIVIDAD','ASISTENTES_ACTIVIDAD.FK_ACTIVIDAD','=','actividades_v.PK_ACTIVIDAD')
+            ->select('actividades_v.PK_ACTIVIDAD', 'actividades_v.NOMBRE', 'actividades_v.DESCRIPCION', 'actividades_v.LUGAR', 'actividades_v.FECHA',
+                    'actividades_v.HORA', 'actividades_v.CUPO', 'actividades_v.FK_LINEAMIENTO', 'actividades_v.FK_TIPO', 'actividades_v.FK_RESPONSABLE')
+            ->where('ASISTENTES_ACTIVIDAD.FK_USUARIO','=', $pk_usuario)
+            ->get();
+        $response = Response::json($actividades);
+        return $response;   
+
+    }
+    public function habilitarTomaAsistencia($pk_actividad){
         $fechaActual = Carbon::now();
         $fechaActual = $fechaActual->format('Y-m-d');
         
         $fechaActividad = DB::table('ACTIVIDADES')
                           ->select('PK_ACTIVIDAD','FECHA')
-                          ->where('PK_ACTIVIDAD','=',1005)
+                          ->where('PK_ACTIVIDAD','=',$pk_actividad)
                           ->get()->first();
         
         $fechaActCarbon = Carbon::parse($fechaActividad->FECHA)->format('Y-m-d');
@@ -119,9 +137,9 @@ class AsistenteActividadController extends Controller
             $horaActual = Carbon::now();
             $horaActual = $horaActual->format('G:i');
 
-            $horaActividad = DB::table('actividades_v')
+            $horaActividad = DB::table('ACTIVIDADES')
                          ->select('PK_ACTIVIDAD','HORA')
-                         ->where('PK_ACTIVIDAD','=',1005)
+                         ->where('PK_ACTIVIDAD','=',$pk_actividad)
                          ->get()->first();
             //$fecha_hora = $fechaActividad->FECHA +
             
@@ -142,6 +160,26 @@ class AsistenteActividadController extends Controller
             return "La fecha de la actividad aun no llega";
            }
          
+    }
+
+    public function eliminarAsistente($pk_usuario, $pk_actividad){
+          DB::table('ASISTENTES_ACTIVIDAD')
+          ->where('FK_USUARIO','=',$pk_usuario)
+          ->where('FK_ACTIVIDAD','=',$pk_actividad)
+          ->delete();
+    }
+
+    public function eliminarRolAsistente($pk_usuario){
+        $rol = DB::table('PER_CATR_ROL')
+                ->select('PK_ROL')
+                ->where('NOMBRE','=','Registro de asistencias')
+                ->get()->first();
+        
+        DB::table('PER_TR_ROL_USUARIO')
+            ->where('FK_ROL','=',$rol->PK_ROL)
+            ->where('FK_USUARIO','=',$pk_usuario)
+            ->delete();
+
     }
 
     /**

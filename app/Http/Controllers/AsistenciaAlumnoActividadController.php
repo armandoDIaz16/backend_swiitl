@@ -118,6 +118,45 @@ class AsistenciaAlumnoActividadController extends Controller
                     //DB::select('exec dbo.insert_alumnocreditos ?,?',array($alumno[0]->alumno, $alumno[0]->lineamiento));//insertar el credito cumplido                    
                     DB::table('ALUMNO_CREDITO')->insert(//insertar el credito cumplido
                         array('FK_ALUMNO' => $alumno[0]->alumno, 'FK_LINEAMIENTO' => $alumno[0]->lineamiento));
+                        /**---------------------------- */
+                 $registrar = true;
+                 $lista_act = DB::table('ACTIVIDADES')//obtener una lista de las actividades en base al lineamiento y al usuario
+                        ->join('LINEAMIENTOS','ACTIVIDADES.FK_LINEAMIENTO','=','LINEAMIENTOS.PK_LINEAMIENTO')
+                        ->join('ALUMNO_ACTIVIDAD','ACTIVIDADES.PK_ACTIVIDAD','=','ALUMNO_ACTIVIDAD.FK_ACTIVIDAD')
+                        ->join('ASISTENCIA_ALUMNO_ACTIVIDAD','ALUMNO_ACTIVIDAD.PK_ALUMNO_ACTIVIDAD','=','ASISTENCIA_ALUMNO_ACTIVIDAD.FK_ALUMNO_ACTIVIDAD')
+                        ->join('users','ALUMNO_ACTIVIDAD.FK_ALUMNO','=','users.PK_USUARIO')
+                        ->selectRAW("ACTIVIDADES.PK_ACTIVIDAD, ACTIVIDADES.NOMBRE, replace(convert(NVARCHAR, ACTIVIDADES.FECHA, 106), ' ', '/') as FECHA")
+                        ->where('users.PK_USUARIO','=', $alumno[0]->alumno)
+                        ->where('LINEAMIENTOS.PK_LINEAMIENTO','=',$alumno[0]->lineamiento)
+                        ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA','=',1)
+                        ->get();
+                    
+                    $act_registradas = DB::table('CREDITO_ACTIVIDAD')//obtener una lista de las actividades ya registradas en la tabla credito_alumno . Esta tabla relacionar los creditos con las actividades mediante las cuales fueron cumplidos
+                        ->join('ALUMNO_CREDITO','FK_ALUMNO_CREDITO','=','PK_ALUMNO_CREDITO')
+                        ->select('FK_ACTIVIDAD')
+                        ->where('FK_ALUMNO','=',$alumno[0]->alumno)
+                        ->get();
+
+                        foreach ($lista_act as $l) { //comparar ambas listas para sabes si se debe regisrar o no la actividad para evitar duplicados y garantizar el orden   
+                            foreach($act_registradas as $ar){
+                                if($ar->FK_ACTIVIDAD == $l->PK_ACTIVIDAD){
+                                    $registrar = false;
+                                }
+                            }
+                            if($registrar){
+                                $alumno_credito = DB::table('ALUMNO_CREDITO')//obtener el ultimo id insertado en esta tabla correspondiente al usuaro, para posteriomente insertarlo en la tabla credito_actividad
+                                ->select('PK_ALUMNO_CREDITO')
+                                ->where('FK_ALUMNO','=',$alumno[0]->alumno)
+                                ->get()->last();
+
+                                DB::table('CREDITO_ACTIVIDAD')->insert(//insertar la actividad correspondiente al credito cumplido
+                                    array('FK_ALUMNO_CREDITO' => $alumno_credito->PK_ALUMNO_CREDITO, 'FK_ACTIVIDAD' => $l->PK_ACTIVIDAD));
+
+                            }
+                        $registrar = TRUE;
+                        }
+        
+                        
                     echo("nuevo credito registrado");
                 }else{//sino significa que ya se rebaso el limite
                     echo("No se pueden registrar mas creditos de este tipo. Superaste el limite de creditos permitidos para este lineamiento");
@@ -125,12 +164,94 @@ class AsistenciaAlumnoActividadController extends Controller
             }else{//si la variable $num_registros no contiene nada significa que no hay ningun registro de algun credito para este lineamiento, entonces...
                 DB::table('ALUMNO_CREDITO')->insert(//insertar el credito cumplido
                     array('FK_ALUMNO' => $alumno[0]->alumno, 'FK_LINEAMIENTO' => $alumno[0]->lineamiento));
+
+                 $registrar = true;
+                 $lista_act = DB::table('ACTIVIDADES')//obtener una lista de las actividades en base al lineamiento y al usuario
+                        ->join('LINEAMIENTOS','ACTIVIDADES.FK_LINEAMIENTO','=','LINEAMIENTOS.PK_LINEAMIENTO')
+                        ->join('ALUMNO_ACTIVIDAD','ACTIVIDADES.PK_ACTIVIDAD','=','ALUMNO_ACTIVIDAD.FK_ACTIVIDAD')
+                        ->join('ASISTENCIA_ALUMNO_ACTIVIDAD','ALUMNO_ACTIVIDAD.PK_ALUMNO_ACTIVIDAD','=','ASISTENCIA_ALUMNO_ACTIVIDAD.FK_ALUMNO_ACTIVIDAD')
+                        ->join('users','ALUMNO_ACTIVIDAD.FK_ALUMNO','=','users.PK_USUARIO')
+                        ->selectRAW("ACTIVIDADES.PK_ACTIVIDAD, ACTIVIDADES.NOMBRE, replace(convert(NVARCHAR, ACTIVIDADES.FECHA, 106), ' ', '/') as FECHA")
+                        ->where('users.PK_USUARIO','=', $alumno[0]->alumno)
+                        ->where('LINEAMIENTOS.PK_LINEAMIENTO','=',$alumno[0]->lineamiento)
+                        ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA','=',1)
+                        ->get();
+                    
+                    $act_registradas = DB::table('CREDITO_ACTIVIDAD')//obtener una lista de las actividades ya registradas en la tabla credito_alumno . Esta tabla relacionar los creditos con las actividades mediante las cuales fueron cumplidos
+                        ->join('ALUMNO_CREDITO','FK_ALUMNO_CREDITO','=','PK_ALUMNO_CREDITO')
+                        ->select('FK_ACTIVIDAD')
+                        ->where('FK_ALUMNO','=',$alumno[0]->alumno)
+                        ->get();
+
+                        foreach ($lista_act as $l) { //comparar ambas listas para sabes si se debe regisrar o no la actividad para evitar duplicados y garantizar el orden   
+                            foreach($act_registradas as $ar){
+                                if($ar->FK_ACTIVIDAD == $l->PK_ACTIVIDAD){
+                                    $registrar = false;
+                                }
+                            }
+                            if($registrar){
+                                $alumno_credito = DB::table('ALUMNO_CREDITO')//obtener el ultimo id insertado en esta tabla correspondiente al usuaro, para posteriomente insertarlo en la tabla credito_actividad
+                                ->select('PK_ALUMNO_CREDITO')
+                                ->where('FK_ALUMNO','=',$alumno[0]->alumno)
+                                ->get()->last();
+
+                                DB::table('CREDITO_ACTIVIDAD')->insert(//insertar la actividad correspondiente al credito cumplido
+                                    array('FK_ALUMNO_CREDITO' => $alumno_credito->PK_ALUMNO_CREDITO, 'FK_ACTIVIDAD' => $l->PK_ACTIVIDAD));
+
+                        $registrar = TRUE;
+                        }
+        
                 echo("nuevo credito registrado");
             }            
         }
-
+    }
 
     }
+
+    public function pruebaActByLineamiento($pk_usuario, $pk_lineamiento){
+        $registrar = true;
+        $lista_act = DB::table('ACTIVIDADES')
+                ->join('LINEAMIENTOS','ACTIVIDADES.FK_LINEAMIENTO','=','LINEAMIENTOS.PK_LINEAMIENTO')
+                ->join('ALUMNO_ACTIVIDAD','ACTIVIDADES.PK_ACTIVIDAD','=','ALUMNO_ACTIVIDAD.FK_ACTIVIDAD')
+                ->join('ASISTENCIA_ALUMNO_ACTIVIDAD','ALUMNO_ACTIVIDAD.PK_ALUMNO_ACTIVIDAD','=','ASISTENCIA_ALUMNO_ACTIVIDAD.FK_ALUMNO_ACTIVIDAD')
+                ->join('users','ALUMNO_ACTIVIDAD.FK_ALUMNO','=','users.PK_USUARIO')
+                ->selectRAW("ACTIVIDADES.PK_ACTIVIDAD, ACTIVIDADES.NOMBRE, replace(convert(NVARCHAR, ACTIVIDADES.FECHA, 106), ' ', '/') as FECHA")
+                ->where('users.PK_USUARIO','=', $pk_usuario)
+                ->where('LINEAMIENTOS.PK_LINEAMIENTO','=',$pk_lineamiento)
+                ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA','=',1)
+                ->get();
+        
+         $act_registradas = DB::table('CREDITO_ACTIVIDAD')
+                ->join('ALUMNO_CREDITO','FK_ALUMNO_CREDITO','=','PK_ALUMNO_CREDITO')
+                ->select('FK_ACTIVIDAD')
+                ->where('FK_ALUMNO','=',$pk_usuario)
+                ->get();
+             /*    $response = Response::json($lista_act);
+                return $response;   */              
+        foreach ($lista_act as $l) {    
+                foreach($act_registradas as $ar){
+                    if($ar->FK_ACTIVIDAD == $l->PK_ACTIVIDAD){
+                        $registrar = false;
+                    }
+                }
+                if($registrar){
+                   // echo "hay que registrarlo";
+                }else{
+                    //echo "no se debe registrar";
+                }
+            $registrar = TRUE;
+            }
+        $alumno_credito = DB::table('ALUMNO_CREDITO')
+                ->select('PK_ALUMNO_CREDITO')
+                ->where('FK_ALUMNO','=',$pk_usuario)
+                ->get()->last();
+                $response = Response::json($alumno_credito);
+                return $response;
+
+        
+            
+        }
+    
 
     /**
      * Remove the specified resource from storage.
