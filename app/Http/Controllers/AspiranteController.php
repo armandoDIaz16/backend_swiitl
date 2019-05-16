@@ -785,6 +785,6 @@ class AspiranteController extends Controller
         return response()->json('Se modifico correctamente');
     }
     public function enviarCorreos(Request $request){
-        Mail::to($request->CORREOS)->send(new CorreoAspirantesMail($request->MENSAJE));
+        Mail::to($request->CORREOS)->send(new CorreoAspirantesMail($request->MENSAJE,$request->ASUNTO));
     }
 }

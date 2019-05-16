@@ -27,7 +27,7 @@ class FichaController extends Controller
             'CATR_EDIFICIO.PREFIJO',
             'CAT_CAMPUS.NOMBRE as NOMBRE_CAMPUS',
             'CATR_ESPACIO.NOMBRE as NOMBRE_ESPACIO',
-            'CATR_ASPIRANTE.FECHA_MODIFICACION',
+            'CATR_ASPIRANTE.FECHA_MODIFICACION'
         )
         ->join('CATR_ASPIRANTE', 'CATR_ASPIRANTE.FK_PADRE', '=', 'users.PK_USUARIO')
         ->join('CATR_CARRERA', 'CATR_CARRERA.PK_CARRERA', '=',  'CATR_ASPIRANTE.FK_CARRERA_1')

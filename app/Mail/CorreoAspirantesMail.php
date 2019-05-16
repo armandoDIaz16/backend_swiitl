@@ -8,14 +8,16 @@ class CorreoAspirantesMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $mensaje;
+    public $asunto;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($mensaje)
+    public function __construct($mensaje,$asunto)
     {
         $this->mensaje = $mensaje;
+        $this->asunto = $asunto;
     }
     /**
      * Build the message.
@@ -24,7 +26,7 @@ class CorreoAspirantesMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mails.aspirantePassword')->with([
+        return $this->markdown('mails.correoAspirantes')->subject($this->asunto)->with([
             'mensaje' => $this->mensaje
         ]);
     }
