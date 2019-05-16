@@ -11,6 +11,7 @@ use App\Mail\DemoEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Mail\AspirantePasswordMail;
+use App\Mail\CorreoAspirantesMail;
 use Symfony\Component\HttpFoundation\Response;
 use function GuzzleHttp\json_encode;
 use PHPExcel; 
@@ -782,5 +783,8 @@ class AspiranteController extends Controller
 
 
         return response()->json('Se modifico correctamente');
+    }
+    public function enviarCorreos(Request $request){
+        Mail::to($request->CORREOS)->send(new CorreoAspirantesMail($request->MENSAJE));
     }
 }
