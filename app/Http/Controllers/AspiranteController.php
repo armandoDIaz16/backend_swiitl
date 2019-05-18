@@ -11,6 +11,7 @@ use App\Mail\DemoEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Mail\AspirantePasswordMail;
+use App\Mail\CorreoAspirantesMail;
 use Symfony\Component\HttpFoundation\Response;
 use function GuzzleHttp\json_encode;
 use PHPExcel; 
@@ -165,7 +166,7 @@ class AspiranteController extends Controller
                 'CATR_ASPIRANTE.PROMEDIO',
                 'CATR_ASPIRANTE.ESPECIALIDAD',
                 'CATR_ASPIRANTE.FK_CARRERA_1',
-                'CATR_ASPIRANTE.FK_CARRERA_2',
+                'CATR_ASPIRANTE.FK_CARRERA_2'
             )
             ->join('CATR_ASPIRANTE', 'CATR_ASPIRANTE.FK_PADRE', '=', 'users.PK_USUARIO')
             ->join('CAT_ESTADO_CIVIL', 'CAT_ESTADO_CIVIL.PK_ESTADO_CIVIL', '=', 'users.FK_ESTADO_CIVIL')
@@ -732,7 +733,7 @@ class AspiranteController extends Controller
             'created_at' => Carbon::now()
         ]);
     }
-    public function validateEmail($email)
+/*     public function validateEmail($email)
     {
         return !!User::where('email', $email)->first();
     }
@@ -747,7 +748,7 @@ class AspiranteController extends Controller
         return response()->json([
             'data' => 'Reset Email is send successfully, please check your inbox.'
         ], Response::HTTP_OK);
-    }
+    } */
 
     public function modificarAspirante(Request $request){ 
         
@@ -781,12 +782,9 @@ class AspiranteController extends Controller
         
 
 
-        return response()->json($request);
-        /* "CURP": "'" + this.CURP + "'",
-        "TELEFONO_CASA": "'" + this.telefonoCasa + "'",
-        "TELEFONO_MOVIL": "'" +this.telefonoMovil + "'",
-        "email": "'" + this.email + "'",
-        "FK_CARRERA_1": this.especialidad1,
-        "FK_CARRERA_2": this.especialidad2 */
+        return response()->json('Se modifico correctamente');
+    }
+    public function enviarCorreos(Request $request){
+        Mail::to($request->CORREOS)->send(new CorreoAspirantesMail($request->MENSAJE,$request->ASUNTO));
     }
 }

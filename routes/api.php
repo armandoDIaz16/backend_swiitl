@@ -6,7 +6,7 @@ Route::group([
 
     'middleware' => 'api',
 
-], function ($router) {
+], function ($Router) {
 
     Route::post('login', 'AuthController@login');
     Route::post('signup', 'AuthController@signup');
@@ -24,25 +24,6 @@ Route::group([
         Route::post('Periodo','PeriodoController@store');
         Route::post('PAAE_Periodo','PAAE_Periodo@store');
 
-        Route::post('Periodo', 'PeriodoController@store');
-
-
-        Route::resource('Salon', 'SalonController');
-        Route::resource('Turno', 'TurnoController');
-        route::get('Referencia/{preficha}', 'AspiranteController@referencia');
-        route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
-        route::get('Aspirantes2', 'AspiranteController@aspirantes2');
-        route::get('Aspirantes3/{PK_PERIODO}', 'AspiranteController@aspirantes3');
-        route::get('EstatusAspirante/', 'AspiranteController@estatusAspirante');
-        route::get('GraficaEstatus/{PK_PERIODO}', 'AspiranteController@graficaEstatus');
-        route::get('GraficaCarreras/{PK_PERIODO}', 'AspiranteController@graficaCarreras');
-        route::get('GraficaCampus/{PK_PERIODO}', 'AspiranteController@graficaCampus');
-        route::post('CargarArchivoBanco/{PK_PERIODO}', 'AspiranteController@cargarArchivoBanco');
-        route::post('CargarArchivoPreRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoPreRegistroCENEVAL');
-        route::post('CargarArchivoRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoRegistroCENEVAL');
-        route::post('Aspirante2', 'AspiranteController@modificarAspirante');
-        route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
-        Route::get('Grupo', 'GrupoController@listaGrupos');
         //Route::post('control', 'NumeroControl@getControl');
 
     });
@@ -55,8 +36,8 @@ Route::group([
 | API Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
+| Here is where you can register API Routes for your application. These
+| Routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
@@ -121,8 +102,8 @@ Route::post('documentacion', 'DocumentacionResidenciasController@updatesolicitud
 Route::post('documentacion2', 'DocumentacionResidenciasController@updateaceptacion');
 Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
 Route::post('Totalr','EstadisticasController@reportestotal');
-route::get('Periodo','PeriodoController@index');
-route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
+Route::get('Periodo','PeriodoController@index');
+Route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
 Route::get('Pdf/{id}','FichaUnicaController@FUApdf');
 Route::get('Proyecto1/{id}','AnteproyectoResidenciasController@ind1');
 Route::get('Proyecto2/{id}','AnteproyectoResidenciasController@ind2');
@@ -132,9 +113,9 @@ Route::resource('Entidad_Federativa', 'Entidad_FederativaController');
 Route::resource('Ciudad', 'CiudadController');
 Route::resource('Usuario_Rol', 'Usuario_RolController');
 Route::resource('PAAE_Periodo', 'PAAE_Periodo');
-route::resource('Bachillerato', 'BachilleratoController');
-route::resource('Colonia', 'ColoniaController');
-route::get('Periodo', 'PeriodoController@index');
+Route::resource('Bachillerato', 'BachilleratoController');
+Route::resource('Colonia', 'ColoniaController');
+Route::get('Periodo', 'PeriodoController@index');
 
 
 
@@ -154,8 +135,10 @@ Route::resource('TipoInstituto','TipoInstitutoController');
 Route::resource('Edificio','EdificioController');
 Route::resource('Tecnologico','TecnmController');
 
-route::get     ('Periodo','PeriodoController@index');
+Route::get     ('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
+//Route::get     ('pdf/{orientation}','PdfController@pdf');
+Route::get     ('pdf','PdfController@pdf');
 //route::get     ('pdf/{orientation}','PdfController@pdf');
 route::get     ('pdf','PdfController@pdf');
 
@@ -196,3 +179,32 @@ Route::get('eliminar-rol-asistente/{PK_USUARIO}','AsistenteActividadController@e
 Route::get('lista-actividades-creditos/{FK_ALUMNO_ACTIVIDAD}', 'AsistenciaAlumnoActividadController@pruebaActByLineamiento');
 Route::get('actividades-credito-cumplidos/{PK_ALUMNO_CREDITO}','CreditoActividadController@getActByCredito');
 /*************************************************************************************************************************/
+
+
+
+//Rutas aspirantes
+Route::get('Referencia/{preficha}', 'AspiranteController@referencia');
+Route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
+Route::get('Aspirantes2', 'AspiranteController@aspirantes2');
+Route::get('Aspirantes3/{PK_PERIODO}', 'AspiranteController@aspirantes3');
+Route::get('EstatusAspirante/', 'AspiranteController@estatusAspirante');
+Route::get('GraficaEstatus/{PK_PERIODO}', 'AspiranteController@graficaEstatus');
+Route::get('GraficaCarreras/{PK_PERIODO}', 'AspiranteController@graficaCarreras');
+Route::get('GraficaCampus/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+Route::post('CargarArchivoBanco/{PK_PERIODO}', 'AspiranteController@cargarArchivoBanco');
+Route::post('CargarArchivoPreRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoPreRegistroCENEVAL');
+Route::post('CargarArchivoRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoRegistroCENEVAL');
+Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
+Route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
+Route::get('Grupo', 'GrupoController@listaGrupos');
+
+Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
+Route::get('Turno', 'LugarExamenController@obtenerTurno');
+Route::get('Turno2', 'LugarExamenController@obtenerTurno2');
+Route::get('Edificio', 'LugarExamenController@obtenerEdificio');
+Route::get('TipoEspacio', 'LugarExamenController@obtenerTipoEspacio');
+Route::post('AgregarTurno', 'LugarExamenController@agregarTurno');
+Route::post('AgregarEspacio', 'LugarExamenController@agregarEspacio');
+Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
+
+Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
