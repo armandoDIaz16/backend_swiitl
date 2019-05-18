@@ -169,23 +169,30 @@ Route::get('pdf1',function(){
     return $pdf->download('archivo.pdf');
 });
 
-
+/**********************************RUTAS SISTEMA CREDITOS COMPLEMENTARIOS ************************************************/
 Route::resource('lineamientos','LineamientoController');
 Route::resource('tipos','TipoController');
 Route::resource('actividades','ActividadController');
+Route::get('actividades-raw','ActividadController@getActRaw');
 Route::resource('alumno-actividades','AlumnoActividadController');
 Route::resource('asistencia-alumnos','AsistenciaAlumnoActividadController');
+Route::get('asistencia-alumnos-salida/{FK_ALUMNO_ACTIVIDAD}','AsistenciaAlumnoActividadController@regSalida');
 Route::resource('alumno-creditos','AlumnoCreditoController');
+Route::get('creditos-por-validar','AlumnoCreditoController@getCreditosPorValidar');
+Route::get('creditos-por-validar-nc/{NUMERO_CONTROL}','AlumnoCreditoController@getCreditosPorValidarByNumC');
+Route::get('creditos-por-validar-ln/{LINEAMIENTO}','AlumnoCreditoController@getCreditosPorValidarByLin');
+Route::put('validar-credito/{PK_ALUMNO_CREDITO}','AlumnoCreditoController@validarCreditos');
 Route::get('actividades-disponibles/{id_alumno}', 'ActividadController@actividadesDisponibles');
 Route::get('lista-actividades/{FK_LINEAMIENTO}/{FK_ALUMNO}', 'AsistenciaAlumnoActividadController@actividadesList');
 Route::resource('responsables-actividad','ResponsableActividadController');
 Route::get('responsable-lista-asistentes/{pk_actividad}','ResponsableActividadController@getListaAsistentes');
 Route::resource('asistentes-actividad','AsistenteActividadController');
 Route::get('alumnos-num-control/{NUM_CONTROL}','AsistenteActividadController@getAlumnoByNc');
-Route::get('alumnos-num-control/{PRIMER_APELLIDO}/{SEGUNDO_APELLIDO}/{name}','AsistenteActividadController@getPkuserByName');
+Route::get('userid-num-control/{NUM_CONTROL}','AsistenteActividadController@getPkuserByNc');
 Route::get('registrar-asistencia/{PK_ACTIVIDAD}','AsistenteActividadController@habilitarTomaAsistencia');
 Route::get('actividades-tomar-asistencia/{PK_USUARIO}','AsistenteActividadController@listaActividades');
 Route::get('eliminar-asistente-act/{PK_USUARIO}/{PK_ACTIVIDAD}','AsistenteActividadController@eliminarAsistente');
 Route::get('eliminar-rol-asistente/{PK_USUARIO}','AsistenteActividadController@eliminarRolAsistente');
-Route::get('lista-actividades-creditos/{FK_ALUMNO}/{FK_LINEAMIENTO}', 'AsistenciaAlumnoActividadController@pruebaActByLineamiento');
-
+Route::get('lista-actividades-creditos/{FK_ALUMNO_ACTIVIDAD}', 'AsistenciaAlumnoActividadController@pruebaActByLineamiento');
+Route::get('actividades-credito-cumplidos/{PK_ALUMNO_CREDITO}','CreditoActividadController@getActByCredito');
+/*************************************************************************************************************************/
