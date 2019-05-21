@@ -26,7 +26,7 @@ class CorreoAspirantesMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mails.correoAspirantes')->subject($this->asunto)->with([
+        return $this->markdown('mails.correoAspirantes')->subject($this->asunto)->from('us@example.com', 'ITL')->with([
             'mensaje' => $this->mensaje
         ]);
     }

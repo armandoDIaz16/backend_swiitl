@@ -14,5 +14,5 @@ Sistema
 @endcomponent
 
 Thanks,<br>
-{{ config('app.name') }}
+ITL
 @endcomponent
