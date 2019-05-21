@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\credito_actividad;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+
 
 class CreditoActividadController extends Controller
 {
@@ -47,6 +49,17 @@ class CreditoActividadController extends Controller
     public function show(credito_actividad $credito_actividad)
     {
         //
+    }
+
+    public function getActByCredito($pk_alumno_credito){
+        $act = credito_actividad::join('ACTIVIDADES','FK_ACTIVIDAD','=','PK_ACTIVIDAD')
+        ->selectRAW("ACTIVIDADES.PK_ACTIVIDAD, ACTIVIDADES.NOMBRE, replace(convert(NVARCHAR, ACTIVIDADES.FECHA, 106), ' ', '/') as FECHA")
+        ->where('FK_ALUMNO_CREDITO','=',$pk_alumno_credito)
+        ->get();
+        $response = Response::json($act);
+        return $response;
+
+
     }
 
     /**

@@ -85,7 +85,7 @@ class AsistenteActividadController extends Controller
     {
         $usuario = DB::connection('sqlsrv2')
                     ->table('view_alumnos')
-                    ->select('ApellidoPaterno','ApellidoMaterno','Nombre')
+                    ->select('NumeroControl','ApellidoPaterno','ApellidoMaterno','Nombre')
                     ->where('NumeroControl','=',$num_control)
                     ->get();
 
@@ -93,12 +93,10 @@ class AsistenteActividadController extends Controller
         return $response;
     }
 
-    public function getPkuserByName($apellidoPaterno, $apellidoMaterno,$nombre){//Obtener el id del usuario mediante el mnombre completo
+    public function getPkuserByNc($num_control){//Obtener el id del usuario mediante el mnombre completo
         $pk_usuario = DB::table('users')
                     ->select('PK_USUARIO as FK_USUARIO')
-                    ->where('PRIMER_APELLIDO','=',$apellidoPaterno)
-                    ->where('SEGUNDO_APELLIDO','=',$apellidoMaterno)
-                    ->where('name','=',$nombre)
+                    ->where('NUMERO_CONTROL','=',$num_control)
                     ->get();
 
         $response = Response::json($pk_usuario);
