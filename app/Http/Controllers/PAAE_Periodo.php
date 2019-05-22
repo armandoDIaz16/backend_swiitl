@@ -969,6 +969,20 @@ class PAAE_Periodo extends Controller
         return response()->json(['data' => true], Response::HTTP_OK);
     }
 
+    public function allAsesor(Request $request){
+        $materia = DB::table('CATR_ASESORIA_ACEPTADA')
+            ->select('CATR_ASESORIA_ACEPTADA.MATERIA')
+            ->distinct()
+            ->where([['FK_ASESOR',$request->id]])
+            ->get();
+        if($materia){
+            return $materia;
+        }else{
+           return $this->failedResponse();
+        }
+       
+    }
+
     public function failedResponse()
     {
         return response()->json([

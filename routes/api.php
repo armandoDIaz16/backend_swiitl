@@ -91,6 +91,7 @@ Route::get('AsesoriaGrupoPeriodo','PAAE_Periodo@getAsesoriaGrupoPeriodo');
 Route::get('AsesoriaId','PAAE_Periodo@getAsesoriaId');
 Route::get('Docentes','PAAE_Periodo@allDocente');
 Route::get('NameAses','PAAE_Periodo@nombreAsesor');
+Route::get('AsesorSesion','PAAE_Periodo@allAsesor');
 Route::post('SolicitudAsesoria','PAAE_Periodo@crearSolicitud');
 Route::post('SolicitudAsesor','PAAE_Periodo@crearSolicitudAsesor');
 Route::post('ActualizAsesor','PAAE_Periodo@actualizAsesor');
