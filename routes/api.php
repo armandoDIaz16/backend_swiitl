@@ -89,7 +89,6 @@ Route::post('documentacion', 'DocumentacionResidenciasController@updatesolicitud
 Route::post('documentacion2', 'DocumentacionResidenciasController@updateaceptacion');
 Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
 Route::post('Totalr','EstadisticasController@reportestotal');
-Route::get('Periodo','PeriodoController@index');
 Route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
 Route::get('Pdf/{id}','FichaUnicaController@FUApdf');
 Route::get('Proyecto1/{id}','AnteproyectoResidenciasController@ind1');
@@ -100,9 +99,14 @@ Route::resource('Entidad_Federativa', 'Entidad_FederativaController');
 Route::resource('Ciudad', 'CiudadController');
 Route::resource('Usuario_Rol', 'Usuario_RolController');
 Route::resource('PAAE_Periodo', 'PAAE_Periodo');
-Route::resource('Bachillerato', 'BachilleratoController');
-Route::resource('Colonia', 'ColoniaController');
-Route::get('Periodo', 'PeriodoController@index');
+
+
+route::get('GraficaAsesorados', 'GraficasAsesoriaController@graficaAsesorados');
+route::get('GraficaNoAsesorados', 'GraficasAsesoriaController@graficaNoAsesorados');
+route::get('GraficaMaterias', 'GraficasAsesoriaController@graficaMaterias');
+
+
+
 
 
 
@@ -594,17 +598,6 @@ Route::get('actividades-credito-cumplidos/{PK_ALUMNO_CREDITO}','CreditoActividad
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 /* ************************************** RUTAS DEL SISTEMA ASPIRANTES *************************************** */
 Route::get('Periodo','PeriodoController@index');
 Route::resource('Aspirante', 'AspiranteController');
@@ -620,6 +613,7 @@ Route::resource('Entidad_Federativa','Entidad_FederativaController');
 Route::resource('ColoniaCodigoPostal','ColoniaCodigoPostalController');
 Route::resource('Ciudad','CiudadController');
 Route::resource('Colonia','ColoniaController');
+Route::resource('Bachillerato', 'BachilleratoController');
 Route::resource('CodigoPostal','CodigoPostalController');
 
 Route::get('Referencia/{preficha}', 'AspiranteController@referencia');
