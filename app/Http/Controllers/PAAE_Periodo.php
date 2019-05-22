@@ -183,12 +183,8 @@ class PAAE_Periodo extends Controller
         if($month > 7){
             $month = 2;
         }
-        $periodo = $year.$month; 
-        /*$materias=[];
-          $alumno = DB::connection('sqlsrv2')->select('SELECT distinct  a.ClaveMateria,b.Nombre COLLATE Latin1_General_CI_AI AS [Nombre],a.IdNivelCurso,a.Calificacion 
-        FROM view_seguimiento a INNER JOIN view_reticula b on a.ClaveMateria = b.ClaveMateria WHERE NumeroControl = :control1',['control1'=>$request->control],
-         'AND  NumeroControl = :control1',['control1'=>$request->control]); */
-        /* $materia = DB::connection('sqlsrv2')
+        $periodo = $year.$month; $materias=[];
+        $materia = DB::connection('sqlsrv2')
         ->table('view_horarioalumno')
             ->select('Nombre')
             ->distinct()
@@ -196,10 +192,7 @@ class PAAE_Periodo extends Controller
             ->where([['NumeroControl',$request->control],    
                     ['IdPeriodoEscolar',$periodo]
                     ])
-            ->get();  */   
-            $materia =  DB::connection('sqlsrv2')->select('SELECT distinct b.Nombre COLLATE Latin1_General_CI_AI AS [Nombre] 
-            FROM view_horarioalumno a INNER JOIN view_reticula b on a.ClaveMateria = b.ClaveMateria WHERE NumeroControl = :control1 AND  
-            IdPeriodoEscolar = :periodo',['control1'=>$request->control]+['periodo'=>$periodo]);   
+            ->get();            
         if($materia){
             return $materia;
         }else{
@@ -258,35 +251,31 @@ class PAAE_Periodo extends Controller
             'DIA' => $request->dia,
             'HORA' => $request->hora,
             'PERIODO' => $periodo,
-            'CAMPUS' => $request->campus
+            'CAMPUS' => $request->campus,
+            'STATUS' => 'PENDIENTE'
         ]);
 
         $asesor = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
-        ->select('FK_USUARIO','VALIDA')
+        ->select('FK_USUARIO')
         ->where([['MATERIA',$request->materia],    
                 ['DIA',$request->dia],
                 ['HORA',$request->hora],
-                ['CAMPUS',$request->campus],
-                ['PERIODO',$periodo]
                 ])
-        ->get()->first();
+        ->get()->first();        
 
         $asesor1 = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
-        ->select('FK_USUARIO','VALIDA')
+        ->select('FK_USUARIO')
         ->where([['MATERIA1',$request->materia],    
                 ['DIA',$request->dia],
                 ['HORA',$request->hora],
-                ['CAMPUS',$request->campus],
-                ['PERIODO',$periodo]
                 ])
         ->get()->first();       
 
         $asesor2 = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
-        ->select('FK_USUARIO','VALIDA')
+        ->select('FK_USUARIO')
         ->where([['MATERIA2',$request->materia],    
                 ['DIA',$request->dia],
                 ['HORA',$request->hora],
-                ['CAMPUS',$request->campus]
                 ])
         ->get()->first();        
 
@@ -299,8 +288,7 @@ class PAAE_Periodo extends Controller
                 'HORA' => $request->hora,
                 'PERIODO' => $periodo,
                 'CAMPUS' => $request->campus,
-                'STATUS' => 'ACEPTADO',
-                'VALIDA' => $asesor->VALIDA
+                'STATUS' => 'ACEPTADO'
             ]);
         }
         if($asesor1){
@@ -313,8 +301,7 @@ class PAAE_Periodo extends Controller
                 'HORA' => $request->hora,
                 'PERIODO' => $periodo,
                 'CAMPUS' => $request->campus,
-                'STATUS' => 'ACEPTADO',
-                'VALIDA' => $asesor1->VALIDA
+                'STATUS' => 'ACEPTADO'
             ]);
         }
         if($asesor2){
@@ -326,8 +313,7 @@ class PAAE_Periodo extends Controller
                 'HORA' => $request->hora,
                 'PERIODO' => $periodo,
                 'CAMPUS' => $request->campus,
-                'STATUS' => 'ACEPTADO',
-                'VALIDA' => $asesor2->VALIDA
+                'STATUS' => 'ACEPTADO'
             ]);
         }
 
@@ -365,7 +351,7 @@ class PAAE_Periodo extends Controller
     //hola
     public function getDatos(Request $request){
         $alumno = DB::table('users')
-            ->select('NUMERO_CONTROL', 'PRIMER_APELLIDO', 'SEGUNDO_APELLIDO', 'name', 'CLAVE_CARRERA', 'email', 'TELEFONO_MOVIL','SEMESTRE','SEXO')
+            ->select('NUMERO_CONTROL', 'PRIMER_APELLIDO', 'SEGUNDO_APELLIDO', 'name', 'CLAVE_CARRERA', 'email', 'TELEFONO_MOVIL','SEMESTRE')
             ->where('PK_USUARIO',$request->id)
             ->get()->first();
 
@@ -380,7 +366,6 @@ class PAAE_Periodo extends Controller
                     'email'           => trim($alumno->email),
                     'semestre'           => trim($alumno->SEMESTRE),
                     'celular'           => trim($alumno->TELEFONO_MOVIL),
-                    'sexo'           => trim($alumno->SEXO),
                 ];
                 return response()->json([$datos_alumno], Response::HTTP_OK);
         }
@@ -408,32 +393,7 @@ class PAAE_Periodo extends Controller
             ,'CATR_ASESOR_ASESORIA_HORARIO.DIA',
             'CATR_ASESOR_ASESORIA_HORARIO.HORA','CATR_ASESOR_ASESORIA_HORARIO.CAMPUS',
             'CATR_ASESOR_ASESORIA_HORARIO.STATUS','CATR_ASESOR_ASESORIA_HORARIO.PERIODO',
-            'users.NUMERO_CONTROL','CATR_ASESOR_ASESORIA_HORARIO.VALIDA','CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
-            ->where('PERIODO',$periodo)
-            ->get();
-
-            if($alumno){
-                return $alumno;
-            }else{
-            return $this->failedResponse();
-            }
-    }
-
-    public function getAsesorAsigna(){
-        $hoy = getdate();
-        $year = $hoy['year'];
-        $month = $hoy['mon'];
-        if($month <=6){
-            $month = 1;       
-        }
-        if($month > 7){
-            $month = 2;
-        }
-        $periodo = $year.$month;
-        $alumno = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
-            ->select('users.PK_USUARIO','users.name','users.PRIMER_APELLIDO', 'users.SEGUNDO_APELLIDO')
-            ->distinct()
+            'users.NUMERO_CONTROL','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
             ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
             ->where('PERIODO',$periodo)
             ->get();
@@ -453,8 +413,7 @@ class PAAE_Periodo extends Controller
             'CATR_ASESOR_ASESORIA_HORARIO.MATERIA1','CATR_ASESOR_ASESORIA_HORARIO.MATERIA2'
             ,'CATR_ASESOR_ASESORIA_HORARIO.DIA',
             'CATR_ASESOR_ASESORIA_HORARIO.HORA','CATR_ASESOR_ASESORIA_HORARIO.CAMPUS',
-            'CATR_ASESOR_ASESORIA_HORARIO.STATUS','CATR_ASESOR_ASESORIA_HORARIO.PERIODO',
-            'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
+            'CATR_ASESOR_ASESORIA_HORARIO.STATUS','CATR_ASESOR_ASESORIA_HORARIO.PERIODO')
             ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
             ->where('PERIODO',$request->periodo)
             ->get();
@@ -484,32 +443,7 @@ class PAAE_Periodo extends Controller
         , 'CATR_USER_ASESORIA_HORARIO.DIA',
         'CATR_USER_ASESORIA_HORARIO.HORA','CATR_USER_ASESORIA_HORARIO.CAMPUS', 'CATR_USER_ASESORIA_HORARIO.STATUS',
         'CATR_USER_ASESORIA_HORARIO.CAMPUS','CATR_USER_ASESORIA_HORARIO.STATUS','CATR_USER_ASESORIA_HORARIO.PERIODO',
-        'users.NUMERO_CONTROL','CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
-        ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
-        ->where('PERIODO',$periodo)
-        ->get();
-
-        if($alumno){
-            return $alumno;
-        }else{
-        return $this->failedResponse();
-        }
-    }
-
-    public function getSolicitudAsigna(){
-        $hoy = getdate();
-        $year = $hoy['year'];
-        $month = $hoy['mon'];
-        if($month <=6){
-            $month = 1;       
-        }
-        if($month > 7){
-            $month = 2;
-        }
-        $periodo = $year.$month;
-        $alumno = DB::table('CATR_USER_ASESORIA_HORARIO')
-        ->select('users.PK_USUARIO','users.name','users.PRIMER_APELLIDO', 'users.SEGUNDO_APELLIDO')
-        ->distinct()
+        'users.NUMERO_CONTROL')
         ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
         ->where('PERIODO',$periodo)
         ->get();
@@ -528,8 +462,7 @@ class PAAE_Periodo extends Controller
         'CATR_USER_ASESORIA_HORARIO.MATERIA'
         , 'CATR_USER_ASESORIA_HORARIO.DIA',
         'CATR_USER_ASESORIA_HORARIO.HORA','CATR_USER_ASESORIA_HORARIO.CAMPUS', 'CATR_USER_ASESORIA_HORARIO.STATUS',
-        'CATR_USER_ASESORIA_HORARIO.CAMPUS','CATR_USER_ASESORIA_HORARIO.STATUS','CATR_USER_ASESORIA_HORARIO.PERIODO',
-        'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
+        'CATR_USER_ASESORIA_HORARIO.CAMPUS','CATR_USER_ASESORIA_HORARIO.STATUS','CATR_USER_ASESORIA_HORARIO.PERIODO')
         ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
         ->where('PERIODO',$request->periodo)
         ->get();
