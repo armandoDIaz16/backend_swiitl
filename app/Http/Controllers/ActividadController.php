@@ -109,6 +109,13 @@ class ActividadController extends Controller
         return $response;
     }
 
+    public function getActRaw()/*Obtiene las actividades directamente de la tabla Actividades, no de la vista */
+    {
+        $actividad =  actividad::get();
+        $response = Response::json($actividad);
+        return $response;
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
