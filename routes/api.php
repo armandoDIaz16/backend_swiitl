@@ -24,25 +24,9 @@ Route::group([
         Route::post('Periodo','PeriodoController@store');
         Route::post('PAAE_Periodo','PAAE_Periodo@store');
 
-        Route::post('Periodo', 'PeriodoController@store');
 
 
-        Route::resource('Salon', 'SalonController');
-        Route::resource('Turno', 'TurnoController');
-        route::get('Referencia/{preficha}', 'AspiranteController@referencia');
-        route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
-        route::get('Aspirantes2', 'AspiranteController@aspirantes2');
-        route::get('Aspirantes3/{PK_PERIODO}', 'AspiranteController@aspirantes3');
-        route::get('EstatusAspirante/', 'AspiranteController@estatusAspirante');
-        route::get('GraficaEstatus/{PK_PERIODO}', 'AspiranteController@graficaEstatus');
-        route::get('GraficaCarreras/{PK_PERIODO}', 'AspiranteController@graficaCarreras');
-        route::get('GraficaCampus/{PK_PERIODO}', 'AspiranteController@graficaCampus');
-        route::post('CargarArchivoBanco/{PK_PERIODO}', 'AspiranteController@cargarArchivoBanco');
-        route::post('CargarArchivoPreRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoPreRegistroCENEVAL');
-        route::post('CargarArchivoRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoRegistroCENEVAL');
-        route::post('Aspirante2', 'AspiranteController@modificarAspirante');
-        route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
-        Route::get('Grupo', 'GrupoController@listaGrupos');
+
         //Route::post('control', 'NumeroControl@getControl');
 
     });
@@ -88,16 +72,38 @@ Route::get('Datos','PAAE_Periodo@getDatos');
 Route::get('Promedio','PAAE_Periodo@promedio');
 Route::get('MateriAsesor','PAAE_Periodo@materiAsesor');
 Route::get('Asesor','PAAE_Periodo@getAsesor');
+Route::get('AsesorAsigna','PAAE_Periodo@getAsesorAsigna');
 Route::get('AsesorPeriodo','PAAE_Periodo@getAsesorPeriodo');
 Route::get('Solicitudes','PAAE_Periodo@getSolicitud');
+Route::get('SolicitudesAsigna','PAAE_Periodo@getSolicitudAsigna');
 Route::get('SolicitudesPeriodo','PAAE_Periodo@getSolicitudPeriodo');
 Route::get('Seguimiento','PAAE_Periodo@seguimiento');
+Route::get('AllMaterias','PAAE_Periodo@allMaterias');
+Route::get('ClaveGrupo','PAAE_Periodo@claveGrupo');
+Route::get('ClaveHorario','PAAE_Periodo@claveHorario');
+Route::get('Asesoria','PAAE_Periodo@getAsesoria');
+Route::get('AsesoriaPeriodo','PAAE_Periodo@getAsesoriaPeriodo');
+Route::get('AsesoriaGrupo','PAAE_Periodo@getAsesoriaGrupo');
+Route::get('AsesoriaGrupoPeriodo','PAAE_Periodo@getAsesoriaGrupoPeriodo');
+Route::get('AsesoriaId','PAAE_Periodo@getAsesoriaId');
+Route::get('Docentes','PAAE_Periodo@allDocente');
+Route::get('NameAses','PAAE_Periodo@nombreAsesor');
 Route::post('SolicitudAsesoria','PAAE_Periodo@crearSolicitud');
 Route::post('SolicitudAsesor','PAAE_Periodo@crearSolicitudAsesor');
 Route::post('ActualizAsesor','PAAE_Periodo@actualizAsesor');
 Route::post('ActualizaSolicitud','PAAE_Periodo@actualizaSolicitud');
 Route::post('BorrAsesor','PAAE_Periodo@borrAsesor');
 Route::post('BorraSolicitud','PAAE_Periodo@borraSolicitud');
+Route::post('AsignaIndividual','PAAE_Periodo@asignacionIndividual');
+Route::post('AsignaGrupal','PAAE_Periodo@asignacionGrupal');
+Route::post('ActualizaInd','PAAE_Periodo@actualizAsigInd');
+Route::post('BorraInd','PAAE_Periodo@borrInd');
+Route::post('ActualizaGrupo','PAAE_Periodo@actualizGrupo');
+Route::post('BorraGru','PAAE_Periodo@borrGru');
+Route::post('Motivo','PAAE_Periodo@motivo');
+Route::post('CompromisoUser','PAAE_Periodo@compromisoUser');
+Route::post('EvaluacionSatisfaccion','PAAE_Periodo@evaluacionSatisfaccion');
+Route::post('CompromisoAsesor','PAAE_Periodo@compromisoAsesor');
 Route::resource('Encuestas', 'EncuestaController');
 Route::resource('Seccion_Encuesta', 'Seccion_EncuestaController');
 Route::resource('Tipo_Pregunta', 'Tipo_PreguntaController');
@@ -184,8 +190,25 @@ Route::resource('asistentes-actividad','AsistenteActividadController');
 Route::get('alumnos-num-control/{NUM_CONTROL}','AsistenteActividadController@getAlumnoByNc');
 Route::get('alumnos-num-control/{PRIMER_APELLIDO}/{SEGUNDO_APELLIDO}/{name}','AsistenteActividadController@getPkuserByName');
 Route::get('registrar-asistencia','AsistenteActividadController@habilitarTomaAsistencia');
-<<<<<<< HEAD
-=======
->>>>>>> c59c86ee1b6ac8b4aa3c54df252a8d7ceabc3277
->>>>>>> 2e0d32c301cca644ef6c22fa69fbb568ebc6fbcf
 
+
+
+
+
+
+Route::resource('Salon', 'SalonController');
+Route::resource('Turno', 'TurnoController');
+route::get('Referencia/{preficha}', 'AspiranteController@referencia');
+route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
+route::get('Aspirantes2', 'AspiranteController@aspirantes2');
+route::get('Aspirantes3/{PK_PERIODO}', 'AspiranteController@aspirantes3');
+route::get('EstatusAspirante/', 'AspiranteController@estatusAspirante');
+route::get('GraficaEstatus/{PK_PERIODO}', 'AspiranteController@graficaEstatus');
+route::get('GraficaCarreras/{PK_PERIODO}', 'AspiranteController@graficaCarreras');
+route::get('GraficaCampus/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+route::post('CargarArchivoBanco/{PK_PERIODO}', 'AspiranteController@cargarArchivoBanco');
+route::post('CargarArchivoPreRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoPreRegistroCENEVAL');
+route::post('CargarArchivoRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoRegistroCENEVAL');
+route::post('Aspirante2', 'AspiranteController@modificarAspirante');
+route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
+Route::get('Grupo', 'GrupoController@listaGrupos');
