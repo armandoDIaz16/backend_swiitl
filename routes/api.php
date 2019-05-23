@@ -163,8 +163,11 @@ Route::get('asistencia-alumnos-salida/{FK_ALUMNO_ACTIVIDAD}','AsistenciaAlumnoAc
 Route::resource('alumno-creditos','AlumnoCreditoController');
 Route::get('creditos-por-validar','AlumnoCreditoController@getCreditosPorValidar');
 Route::get('creditos-por-validar-nc/{NUMERO_CONTROL}','AlumnoCreditoController@getCreditosPorValidarByNumC');
+Route::get('creditos-validados-nc/{NUMERO_CONTROL}','AlumnoCreditoController@getCreditosValidadosByNumC');
 Route::get('creditos-por-validar-ln/{LINEAMIENTO}','AlumnoCreditoController@getCreditosPorValidarByLin');
+Route::get('creditos-validados-ln/{LINEAMIENTO}','AlumnoCreditoController@getCreditosValidadosByLin');
 Route::put('validar-credito/{PK_ALUMNO_CREDITO}','AlumnoCreditoController@validarCreditos');
+Route::get('creditos-validados','AlumnoCreditoController@getCreditosValidados');
 Route::get('actividades-disponibles/{id_alumno}', 'ActividadController@actividadesDisponibles');
 Route::get('lista-actividades/{FK_LINEAMIENTO}/{FK_ALUMNO}', 'AsistenciaAlumnoActividadController@actividadesList');
 Route::resource('responsables-actividad','ResponsableActividadController');
@@ -178,6 +181,12 @@ Route::get('eliminar-asistente-act/{PK_USUARIO}/{PK_ACTIVIDAD}','AsistenteActivi
 Route::get('eliminar-rol-asistente/{PK_USUARIO}','AsistenteActividadController@eliminarRolAsistente');
 Route::get('lista-actividades-creditos/{FK_ALUMNO_ACTIVIDAD}', 'AsistenciaAlumnoActividadController@pruebaActByLineamiento');
 Route::get('actividades-credito-cumplidos/{PK_ALUMNO_CREDITO}','CreditoActividadController@getActByCredito');
+Route::get('prueba-ver-pdf','pruebaVerPdf@verpdf');
+Route::get('generar-constancia/{PK_ALUMNO_CREDITO}','constanciasCreditosController@generarConstancia');
+Route::get('constancia-view-o_o_s_e/{PK_ALUMNO_CREDITO}','constanciasCreditosController@verConstanciaOficial');
+Route::get('constancia-preview/{PK_ALUMNO_CREDITO}','constanciasCreditosController@verConstanciaVistaPrevia');
+//Route::get('prueba-fecha','constanciasCreditosController@pruebaFormatoFecha');
+//Route::get('prueba-carrera/{PK_ALUMNO_CREDITO}','constanciasCreditosController@getCarrera');
 /*************************************************************************************************************************/
 
 
