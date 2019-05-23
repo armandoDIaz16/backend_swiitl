@@ -46,20 +46,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('Aspirante', 'AspiranteController');
-Route::resource('Universidad', 'UniversidadController');
-Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
-Route::resource('Carrera', 'CarreraController');
-Route::resource('Dependencia', 'DependenciaController');
-Route::resource('Estado_Civil', 'Estado_CivilController');
-Route::resource('Incapacidad', 'IncapacidadController');
-Route::resource('Propaganda_Tecnologico', 'PropagandaController');
-Route::resource('CreditosSiia','CreditosSiiaController');
-Route::resource('Entidad_Federativa','Entidad_FederativaController');
-Route::resource('ColoniaCodigoPostal','ColoniaCodigoPostalController');
-Route::resource('Ciudad','CiudadController');
-Route::resource('Colonia','ColoniaController');
-Route::resource('CodigoPostal','CodigoPostalController');
+
 Route::resource('Usuario_Rol','Usuario_RolController');
 Route::get('PAAE_Periodo','PAAE_Periodo@index');
 Route::get('Hora','PAAE_Periodo@horario');
@@ -73,6 +60,17 @@ Route::get('AsesorPeriodo','PAAE_Periodo@getAsesorPeriodo');
 Route::get('Solicitudes','PAAE_Periodo@getSolicitud');
 Route::get('SolicitudesPeriodo','PAAE_Periodo@getSolicitudPeriodo');
 Route::get('Seguimiento','PAAE_Periodo@seguimiento');
+Route::get('AllMaterias','PAAE_Periodo@allMaterias');
+Route::get('ClaveGrupo','PAAE_Periodo@claveGrupo');
+Route::get('ClaveHorario','PAAE_Periodo@claveHorario');
+Route::get('Asesoria','PAAE_Periodo@getAsesoria');
+Route::get('AsesoriaPeriodo','PAAE_Periodo@getAsesoriaPeriodo');
+Route::get('AsesoriaGrupo','PAAE_Periodo@getAsesoriaGrupo');
+Route::get('AsesoriaGrupoPeriodo','PAAE_Periodo@getAsesoriaGrupoPeriodo');
+Route::get('AsesoriaId','PAAE_Periodo@getAsesoriaId');
+Route::get('Docentes','PAAE_Periodo@allDocente');
+Route::get('NameAses','PAAE_Periodo@nombreAsesor');
+Route::get('AsesorSesion','PAAE_Periodo@allAsesor');
 Route::post('SolicitudAsesoria','PAAE_Periodo@crearSolicitud');
 Route::post('SolicitudAsesor','PAAE_Periodo@crearSolicitudAsesor');
 Route::post('ActualizAsesor','PAAE_Periodo@actualizAsesor');
@@ -102,7 +100,6 @@ Route::post('documentacion', 'DocumentacionResidenciasController@updatesolicitud
 Route::post('documentacion2', 'DocumentacionResidenciasController@updateaceptacion');
 Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
 Route::post('Totalr','EstadisticasController@reportestotal');
-Route::get('Periodo','PeriodoController@index');
 Route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
 Route::get('Pdf/{id}','FichaUnicaController@FUApdf');
 Route::get('Proyecto1/{id}','AnteproyectoResidenciasController@ind1');
@@ -113,9 +110,14 @@ Route::resource('Entidad_Federativa', 'Entidad_FederativaController');
 Route::resource('Ciudad', 'CiudadController');
 Route::resource('Usuario_Rol', 'Usuario_RolController');
 Route::resource('PAAE_Periodo', 'PAAE_Periodo');
-Route::resource('Bachillerato', 'BachilleratoController');
-Route::resource('Colonia', 'ColoniaController');
-Route::get('Periodo', 'PeriodoController@index');
+
+
+route::get('GraficaAsesorados', 'GraficasAsesoriaController@graficaAsesorados');
+route::get('GraficaNoAsesorados', 'GraficasAsesoriaController@graficaNoAsesorados');
+route::get('GraficaMaterias', 'GraficasAsesoriaController@graficaMaterias');
+
+
+
 
 
 
@@ -135,7 +137,6 @@ Route::resource('TipoInstituto','TipoInstitutoController');
 Route::resource('Edificio','EdificioController');
 Route::resource('Tecnologico','TecnmController');
 
-Route::get     ('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
 //Route::get     ('pdf/{orientation}','PdfController@pdf');
 Route::get     ('pdf','PdfController@pdf');
@@ -191,7 +192,450 @@ Route::get('constancia-preview/{PK_ALUMNO_CREDITO}','constanciasCreditosControll
 
 
 
-//Rutas aspirantes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ************************************** RUTAS DEL SISTEMA ASPIRANTES *************************************** */
+Route::get('Periodo','PeriodoController@index');
+Route::resource('Aspirante', 'AspiranteController');
+Route::resource('Universidad', 'UniversidadController');
+Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
+Route::resource('Carrera', 'CarreraController');
+Route::resource('Dependencia', 'DependenciaController');
+Route::resource('Estado_Civil', 'Estado_CivilController');
+Route::resource('Incapacidad', 'IncapacidadController');
+Route::resource('Propaganda_Tecnologico', 'PropagandaController');
+Route::resource('CreditosSiia','CreditosSiiaController');
+Route::resource('Entidad_Federativa','Entidad_FederativaController');
+Route::resource('ColoniaCodigoPostal','ColoniaCodigoPostalController');
+Route::resource('Ciudad','CiudadController');
+Route::resource('Colonia','ColoniaController');
+Route::resource('Bachillerato', 'BachilleratoController');
+Route::resource('CodigoPostal','CodigoPostalController');
+
 Route::get('Referencia/{preficha}', 'AspiranteController@referencia');
 Route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
 Route::get('Aspirantes2', 'AspiranteController@aspirantes2');
@@ -203,8 +647,10 @@ Route::get('GraficaCampus/{PK_PERIODO}', 'AspiranteController@graficaCampus');
 Route::post('CargarArchivoBanco/{PK_PERIODO}', 'AspiranteController@cargarArchivoBanco');
 Route::post('CargarArchivoPreRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoPreRegistroCENEVAL');
 Route::post('CargarArchivoRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoRegistroCENEVAL');
+Route::post('CargarArchivoAceptados/{PK_PERIODO}', 'AspiranteController@cargarArchivoAceptados');
 Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
 Route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
+Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
 Route::get('Grupo', 'GrupoController@listaGrupos');
 
 Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
@@ -217,3 +663,58 @@ Route::post('AgregarEspacio', 'LugarExamenController@agregarEspacio');
 Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
 
 Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

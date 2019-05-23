@@ -26,7 +26,7 @@ class AspirantePasswordMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mails.aspirantePassword')->with([
+        return $this->markdown('mails.aspirantePassword')->from('us@example.com', 'ITL')->with([
             'token' => $this->token,
             'email' => $this->email
         ]);
