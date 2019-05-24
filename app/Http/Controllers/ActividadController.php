@@ -61,6 +61,7 @@ class ActividadController extends Controller
         $actividad->FK_LINEAMIENTO = $request->input('FK_LINEAMIENTO');
         $actividad->FK_TIPO = $request->input('FK_TIPO');
         $actividad->FK_RESPONSABLE = $request->input('FK_RESPONSABLE');
+        $actividad->IMAGEN = $request->input('IMAGEN');
         $actividad->save();
 
         echo json_encode($actividad);
@@ -74,14 +75,27 @@ class ActividadController extends Controller
      */
     public function show($id_alumno)
     {
+        $hoy = Carbon::today();
         /* Mostrar las actividades en las que se encuentra registrado el alumno */
         $inscrito = DB::table('actividades_v')->join('ALUMNO_ACTIVIDAD','FK_ACTIVIDAD', '=', 'PK_ACTIVIDAD')
                     ->select('actividades_v.PK_ACTIVIDAD', 'actividades_v.NOMBRE', 'actividades_v.DESCRIPCION', 'actividades_v.LUGAR', 'actividades_v.FECHA',
                     'actividades_v.HORA', 'actividades_v.CUPO', 'actividades_v.FK_LINEAMIENTO', 'actividades_v.FK_TIPO', 'actividades_v.FK_RESPONSABLE')
                     ->where('ALUMNO_ACTIVIDAD.FK_ALUMNO','=',$id_alumno)
+                    ->whereDate('actividades_v.FECHA','>=',$hoy)
+                    ->orderBY('actividades_v.FECHA')
                     ->get();
         $response = Response::json($inscrito);
         return $response;
+    }
+
+    public function getActividadById($id_actividad){
+        $actividad = DB::table('actividades_v')->select('*')
+                    ->where('PK_ACTIVIDAD','=',$id_actividad)
+                    ->get();
+
+        $response = Response::json($actividad);
+        return $response;
+
     }
 
     public function actividadesDisponibles($id_alumno)
@@ -146,6 +160,7 @@ class ActividadController extends Controller
         $actividad->FK_LINEAMIENTO = $request->input('FK_LINEAMIENTO');
         $actividad->FK_TIPO = $request->input('FK_TIPO');
         $actividad->FK_RESPONSABLE = $request->input('FK_RESPONSABLE');
+        $actividad->IMAGEN = $request->input('IMAGEN');
         $actividad->save();
 
         echo json_encode($actividad);
