@@ -13,6 +13,9 @@ class FichaUnicaController extends Controller
         $pdf = new FichaUnica();
         $proyectos = $pdf->proyectos($id);
         $jefe = $pdf->jefe($id);
+        $mes = $pdf->mes();
+        $periodo = $pdf->periodo();
+        $departamento = $pdf->departamento($id);
         $alumno = [];
         foreach ($proyectos as $po){
             $x = json_decode(json_encode($po),true);
@@ -21,14 +24,20 @@ class FichaUnicaController extends Controller
             foreach ($alumnos as $al){
                 $alumno[] = array(
                     'Nombre' => $al->name,
+                    'PApellido' => $al->PRIMER_APELLIDO,
+                    'SApellido' => $al->SEGUNDO_APELLIDO,
                     'Carrera' => $al->NOMBRE,
                     'Numero' => $al->NUMERO_CONTROL,
                     'CorreoA' => $al->email,
                     'Proyecto' => $al->Proyecto,
                     'Empresa' => $al->Empresa,
                     'NombreDocente' => $al->NombreDocente,
+                    'ApellidoPDocente' => $al->ApellidoPDocente,
+                    'ApellidoMDocente' => $al->ApellidoMDocente,
                     'CorreoDocente' => $al->CorreoDocente,
                     'NombreExterno' => $al->NombreExterno,
+                    'ApellidoPExterno' => $al->ApellidoPExterno,
+                    'ApellidoMExterno' => $al->ApellidoMExterno,
                     'CorreoExterno' => $al->CorreoExterno
                 );
             }
@@ -39,7 +48,10 @@ class FichaUnicaController extends Controller
 
         $data = array(
             'alumnoss' => ($alumno),
-            'jefe' => $jefe
+            'jefe' => $jefe,
+            'mes' => $mes,
+            'periodo' => $periodo,
+            'departamento' => $departamento
         );
 
         $html_final = view('constancias.fichaunica', $data);
