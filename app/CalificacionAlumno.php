@@ -9,5 +9,5 @@ class CalificacionAlumno extends Model
     protected $table = 'CATR_CALIFICACION_ALUMNO';
     public $timestamps = false;
     protected $primaryKey = 'PK_CALIFICACION_ALUMNO';
-    protected $fillable = ['CALIFICACION','FK_ALUMNO','FK_DOCENTE','PERIODO'];
+    protected $fillable = ['CALIFICACION', 'TITULACION', 'OBSERVACIONES',  'FK_ALUMNO','FK_DOCENTE','PERIODO'];
 }

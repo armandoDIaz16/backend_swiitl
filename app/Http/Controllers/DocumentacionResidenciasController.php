@@ -55,14 +55,14 @@ class DocumentacionResidenciasController extends Controller
     {
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
-        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, users.name 
+        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, users.name, CAT_DOCUMENTACION.CARTA_FINALIZACION 
                                   FROM CAT_DOCUMENTACION 
                                   JOIN CATR_ALUMNO ON CAT_DOCUMENTACION.ALUMNO = CATR_ALUMNO.ID_PADRE
                                   JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
                                   JOIN CATR_CARRERA ON CATR_ALUMNO.CLAVE_CARRERA = CATR_CARRERA.CLAVE
                                   WHERE CATR_CARRERA.FK_AREA_ACADEMICA = :caa
                                   AND CAT_DOCUMENTACION.PERIODO = :periodo',['caa'=>$id,'periodo'=>$actual]);
-        return $documentos;
+            return $documentos;
     }
 
     /**
