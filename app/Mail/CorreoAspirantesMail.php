@@ -4,20 +4,20 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-class AspirantePasswordMail extends Mailable
+class CorreoAspirantesMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $token;
-    public $email;
+    public $mensaje;
+    public $asunto;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($token,$email)
+    public function __construct($mensaje,$asunto)
     {
-        $this->token = $token;
-        $this->email = $email;
+        $this->mensaje = $mensaje;
+        $this->asunto = $asunto;
     }
     /**
      * Build the message.
@@ -26,9 +26,8 @@ class AspirantePasswordMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mails.aspirantePassword')->from('us@example.com', 'ITL')->with([
-            'token' => $this->token,
-            'email' => $this->email
+        return $this->markdown('mails.correoAspirantes')->subject($this->asunto)->from('us@example.com', 'ITL')->with([
+            'mensaje' => $this->mensaje
         ]);
     }
 }

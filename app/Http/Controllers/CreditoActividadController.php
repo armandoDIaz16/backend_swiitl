@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\credito_actividad;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
-class TurnoController extends Controller
+
+class CreditoActividadController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +16,7 @@ class TurnoController extends Controller
      */
     public function index()
     {
-        return DB::table('CAT_TURNO')
-            ->select('DIA', 'HORA')
-            ->get();
+        //
     }
 
     /**
@@ -43,21 +43,32 @@ class TurnoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\credito_actividad  $credito_actividad
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(credito_actividad $credito_actividad)
     {
-       // 
+        //
+    }
+
+    public function getActByCredito($pk_alumno_credito){
+        $act = credito_actividad::join('ACTIVIDADES','FK_ACTIVIDAD','=','PK_ACTIVIDAD')
+        ->selectRAW("ACTIVIDADES.PK_ACTIVIDAD, ACTIVIDADES.NOMBRE, replace(convert(NVARCHAR, ACTIVIDADES.FECHA, 106), ' ', '/') as FECHA")
+        ->where('FK_ALUMNO_CREDITO','=',$pk_alumno_credito)
+        ->get();
+        $response = Response::json($act);
+        return $response;
+
+
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\credito_actividad  $credito_actividad
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(credito_actividad $credito_actividad)
     {
         //
     }
@@ -66,10 +77,10 @@ class TurnoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\credito_actividad  $credito_actividad
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, credito_actividad $credito_actividad)
     {
         //
     }
@@ -77,10 +88,10 @@ class TurnoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\credito_actividad  $credito_actividad
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(credito_actividad $credito_actividad)
     {
         //
     }
