@@ -55,6 +55,7 @@ class ResponsableActividadController extends Controller
             ->select('actividades_v.PK_ACTIVIDAD', 'actividades_v.NOMBRE', 'actividades_v.DESCRIPCION', 'actividades_v.LUGAR', 'actividades_v.FECHA',
                     'actividades_v.HORA', 'actividades_v.CUPO', 'actividades_v.FK_LINEAMIENTO', 'actividades_v.FK_TIPO', 'actividades_v.FK_RESPONSABLE')
             ->where('ACTIVIDADES.FK_RESPONSABLE','=', $id_usuario)
+            ->orderBy('actividades_v.FECHA','DESC')
             ->get();
 
         $response = Response::json($actividades);
@@ -67,10 +68,11 @@ class ResponsableActividadController extends Controller
             ->join('ALUMNO_ACTIVIDAD', 'ALUMNO_ACTIVIDAD.FK_ALUMNO','=','users.PK_USUARIO')
             ->join('ACTIVIDADES','ACTIVIDADES.PK_ACTIVIDAD','=','ALUMNO_ACTIVIDAD.FK_ACTIVIDAD')
             ->join('ASISTENCIA_ALUMNO_ACTIVIDAD','ASISTENCIA_ALUMNO_ACTIVIDAD.FK_ALUMNO_ACTIVIDAD','=','ALUMNO_ACTIVIDAD.PK_ALUMNO_ACTIVIDAD')
-            ->select('users.PK_USUARIO','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name')
+            ->select('users.PK_USUARIO','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','ASISTENCIA_ALUMNO_ACTIVIDAD.ENTRADA','ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA')
             ->where('ACTIVIDADES.PK_ACTIVIDAD','=',$pk_actividad)
-            ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.ENTRADA','=',1)
-            ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA','=',1)
+         /*    ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.ENTRADA','=',1)
+            ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA','=',1) */
+            ->orderBy('users.PRIMER_APELLIDO')
             ->get();
         $response = Response::json($alumnos);
         return $response;

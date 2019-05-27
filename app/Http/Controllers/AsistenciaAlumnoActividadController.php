@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\asistenciaAlumnoActividad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Carbon\Carbon;
 use DB;
 
 
@@ -44,7 +45,7 @@ class AsistenciaAlumnoActividadController extends Controller
         $asistencia_alumno_actividad = new asistenciaAlumnoActividad();
         $asistencia_alumno_actividad->FK_ALUMNO_ACTIVIDAD = $request->FK_ALUMNO_ACTIVIDAD;
         $asistencia_alumno_actividad->ENTRADA = $request->ENTRADA;
-        //$asistencia_alumno_actividad->SALIDA = $request->SALIDA;
+        $asistencia_alumno_actividad->SALIDA = $request->SALIDA;
         $asistencia_alumno_actividad->save();
 
         echo json_encode($asistencia_alumno_actividad);

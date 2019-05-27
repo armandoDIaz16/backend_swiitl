@@ -29,8 +29,28 @@ class FichaController extends Controller
             ])
             ->get();
 
+        $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
+
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS','FECHA_INICIO','FECHA_FIN')
+        ->where('PK_PERIODO_PREFICHAS',$PK_PERIODO_PREFICHAS)
+        ->get();
+
         $fecha = date('Y-m-j');
+        $fechaFin = strtotime($periodo[0]->FECHA_FIN);        
         $nuevafecha = strtotime('+3 day', strtotime($fecha));
+        if($nuevafecha > $fechaFin){         
+            $nuevafecha = strtotime('+2 day', strtotime($fecha));   
+            if($nuevafecha > $fechaFin){
+                $nuevafecha = strtotime('+1 day', strtotime($fecha)); 
+                if($nuevafecha > $fechaFin){ 
+                    $nuevafecha = strtotime('+0 day', strtotime($fecha)); 
+                    if($nuevafecha > $fechaFin){
+                        $nuevafecha = $fechaFin;  
+                    }
+                }                
+            }
+        }       
+        
         $fechaLimitePago = date('Y-m-j', $nuevafecha);
 
         $datosReferencia =

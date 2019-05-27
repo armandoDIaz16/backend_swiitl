@@ -241,6 +241,7 @@ Route::get('pdf1',function(){
 Route::resource('lineamientos','LineamientoController');
 Route::resource('tipos','TipoController');
 Route::resource('actividades','ActividadController');
+Route::get('actividad-por-id/{PK_ACTIVIDAD}','ActividadController@getActividadById');
 Route::get('actividades-raw','ActividadController@getActRaw');
 Route::resource('alumno-actividades','AlumnoActividadController');
 Route::resource('asistencia-alumnos','AsistenciaAlumnoActividadController');
