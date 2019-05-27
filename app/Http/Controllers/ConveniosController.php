@@ -10,7 +10,8 @@ class ConveniosController extends Controller
 {
     public function index()
     {
-        //
+        $empresa = Convenios::all();
+        return $empresa;
     }
 
     public function create()

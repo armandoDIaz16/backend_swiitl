@@ -1,0 +1,18 @@
+create table ante(
+    id int IDENTITY(1,1) PRIMARY KEY,
+    Nombre NVARCHAR(255) null,
+    pdf NVARCHAR(255) NULL,
+    Alumno NVARCHAR(255) NULL,
+    Estatus NVARCHAR(255) NULL,
+    AreaAcademica NVARCHAR(255) NULL,
+    Autor NVARCHAR(255) NULL,
+    Empresa NVARCHAR(255) NULL,
+    TipoEspecialidad NVARCHAR(255) NULL,
+    created_at DATETIME NULL,
+    updated_at DATETIME NULL
+)
+
+drop TABLE dbo.ante
+SELECT * FROM dbo.ante
+
+SELECT * from dbo.PER_CAT_MODULO

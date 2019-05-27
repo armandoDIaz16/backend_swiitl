@@ -101,34 +101,29 @@ class ProyectoController extends Controller
        $periodo = new CreditosSiia();
         if($request->Maestro) {
             $maestro = $request->Maestro;
-            $cantidad = DB::select('SELECT CANTIDAD FROM PER_DOCENTE_PROYECTO 
-                                          WHERE FK_DOCENTE = :docente AND PERIODO = :periodo', ['docente' => $maestro, 'periodo' =>$periodo->periodo()]);
-            $cantidad1 = json_decode(json_encode($cantidad), true);
-            $cantidad2 = array_pop($cantidad1);
-            if ($cantidad2 != null) {
-                $cantidad3 = array_pop($cantidad2);
-            }
-            if ($cantidad2 == null) {
+            $prueba = DB::select('SELECT COUNT(CATR_PROYECTO.PK_PROYECTO)
+                                        FROM CATR_PROYECTO
+                                        WHERE CATR_PROYECTO.FK_DOCENTE = :cco
+                                        AND PERIODO = :periodo',['cco'=>$maestro, 'periodo'=>$periodo->periodo()]);
+            $prueba1 = json_decode(json_encode($prueba), true);
+            $prueba2 = array_pop($prueba1);
+            $prueba3 = array_pop($prueba2);
+            if ($prueba3 == 0) {
                 $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
                 $proyecto->FK_DOCENTE = $maestro;
                 if($request->Externo){
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
                 $proyecto->save();
-                $cantidad3 = 1;
-                DB::insert('INSERT INTO PER_DOCENTE_PROYECTO (FK_DOCENTE,CANTIDAD,PERIODO) 
-                                  VALUES(:maestro,:cantidad,:periodo)', ['maestro' => $maestro, 'cantidad' => $cantidad3, 'periodo'=>$periodo->periodo()]);
                 return json_encode('correcto');
             }
-            if ($cantidad3 < 3) {
+            if ($prueba3 < 3) {
                 $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
                 $proyecto->FK_DOCENTE = $maestro;
                 if($request->Externo){
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
                 $proyecto->save();
-                $cantidad3 = $cantidad3 + 1;
-                DB::statement('UPDATE PER_DOCENTE_PROYECTO SET CANTIDAD = :cantidad WHERE FK_DOCENTE = :maestro', ['cantidad' => $cantidad3, 'maestro' => $maestro]);
                 return json_encode('correcto');
             } else {
                 return json_encode('Maestro no puede tener más de 3 alumnos');
@@ -151,5 +146,13 @@ class ProyectoController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function alumnos($id){
+        $proyecto1 = DB::select('SELECT * FROM CATR_PROYECTO JOIN CAT_ANTEPROYECTO_RESIDENCIA ON CATR_PROYECTO.FK_ANTEPROYECTO = CAT_ANTEPROYECTO_RESIDENCIA.ID_ANTEPROYECTO
+                                        JOIN CATR_ALUMNO ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = CATR_ALUMNO.ID_PADRE WHERE NUMERO_CONTROL = :noc',['noc'=>$id]);
+        $proyecto = DB::table('CATR_PROYECTO')->join('CAT_ANTEPROYECTO_RESIDENCIA','CATR_PROYECTO.FK_ANTEPROYECTO','=','CAT_ANTEPROYECTO_RESIDENCIA.ID_ANTEPROYECTO')
+        ->join('CATR_ALUMNO','CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO','=', 'CATR_ALUMNO.ID_PADRE')->where('NUMERO_CONTROL','=', $id)->first();
+        return response()->json($proyecto1);
     }
 }

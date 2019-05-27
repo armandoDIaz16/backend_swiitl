@@ -115,11 +115,11 @@ GROUP BY
         for($i=0;$i<count($ncontrol);$i++) {
             $nprimero = array_pop($ncontrol);
             $tcorreo = DB::connection('sqlsrv3')->select('SELECT 
-                Correo1 
+                CORREO1 
             FROM 
-                table_usuario 
-                JOIN table_alumno ON table_usuario.id = table_alumno.Id_Padre 
-            WHERE Numero_Control = :numerocontrol', ['numerocontrol' => $nprimero]);
+                users 
+                JOIN CATR_ALUMNO ON users.PK_USUARIO = CATR_ALUMNO.ID_PADRE 
+            WHERE NUMERO_CONTROL = :numerocontrol', ['numerocontrol' => $nprimero]);
             if($tcorreo != null){
                 array_push($tcorreo2,$tcorreo);
             }
@@ -267,5 +267,15 @@ GROUP BY
         return $validos;
 
 
+    }
+
+    public function residencias($id) {
+        $actual = $this->periodo();
+        $residencia = DB::connection('sqlsrv2')->select('select * from view_horario 
+                                                                      where clavemateria = :materia 
+                                                                      and idperiodoescolar = :periodo 
+                                                                      and dia = :dia 
+                                                                      and NumeroControl = :nocontrol',['materia'=>'R1','periodo'=>$actual, 'dia'=>'1', 'nocontrol'=>$id]);
+        return $residencia;
     }
 }

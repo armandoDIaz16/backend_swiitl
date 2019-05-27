@@ -39,7 +39,7 @@ class AsistenteActividadController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request)//registrar asistente
     {
         $rol = DB::table('PER_CATR_ROL')
         ->select('PK_ROL')
@@ -73,7 +73,7 @@ class AsistenteActividadController extends Controller
     public function show($pk_actividad)//muestra la lista de alumnos designados para tomar asistencia en alguna actividad en especifico
     {
         $asitentes = asistenteActividad::join('users','PK_USUARIO','=','FK_USUARIO')
-                        ->select('PRIMER_APELLIDO','SEGUNDO_APELLIDO','name')
+                        ->select('PK_ASISTENTE_ACTIVIDAD','PRIMER_APELLIDO','SEGUNDO_APELLIDO','name')
                         ->where('FK_ACTIVIDAD','=',$pk_actividad)
                         ->get();
     
