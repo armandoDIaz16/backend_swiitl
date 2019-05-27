@@ -172,6 +172,7 @@ Route::resource('ConvenioContrato','ConvenioContratoController');
 Route::resource('ActaResidencias','ActaResidenciasController');
 Route::resource('ConfiguracionE','ConfiguracionEscolaresController');
 Route::resource('InfoActaR','InformacionActaCalificacionController');
+Route::resource('BaseResidencias','BaseResidenciasController');
 Route::post('documentacion', 'DocumentacionResidenciasController@updatesolicitud');
 Route::post('documentacion2', 'DocumentacionResidenciasController@updateaceptacion');
 Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
