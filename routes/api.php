@@ -274,6 +274,11 @@ Route::get('prueba-ver-pdf', 'pruebaVerPdf@verpdf');
 Route::get('generar-constancia/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@generarConstancia');
 Route::get('constancia-view-o_o_s_e/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@verConstanciaOficial');
 Route::get('constancia-preview/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@verConstanciaVistaPrevia');
+Route::post('signupAdminCC', 'AuthController@signupAdminCredito');
+Route::get('usuario-by-curp/{curp}','gestionRolesCreditosComController@getUsuarioByCurp');
+Route::get('agregar-user-ca/{PK_USUARIO}','gestionRolesCreditosComController@setRolComite');
+Route::get('agregar-user-jc/{PK_USUARIO}','gestionRolesCreditosComController@setRolJefeCarr');
+Route::get('agregar-user-ra/{PK_USUARIO}','gestionRolesCreditosComController@setRolRespAct');
 //Route::get('prueba-fecha','constanciasCreditosController@pruebaFormatoFecha');
 //Route::get('prueba-carrera/{PK_ALUMNO_CREDITO}','constanciasCreditosController@getCarrera');
 /*************************************************************************************************************************/

@@ -6,6 +6,7 @@ use App\actividad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Carbon\Carbon;
+use Log;
 
 use DB;
 
@@ -176,5 +177,22 @@ class ActividadController extends Controller
     {
         $actividad = Actividad::find($actividad_id);
         $actividad->delete();
+    
     }
+
+
+    public function signupComiteAcademico(Request $request)
+    {
+        //todo Cambiar a generación de objeto de usaurio de forma explícita
+
+        $usuario = DB::table('users')
+        ->select('PK_USUARIO')
+        ->where('CURP',$request->CURP)
+        ->get()->first();
+
+        $response = Response::json($usuario->PK_USUARIO);
+        return $response;
+
+    }
+    
 }
