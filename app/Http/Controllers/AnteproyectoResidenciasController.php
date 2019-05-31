@@ -66,7 +66,7 @@ class AnteproyectoResidenciasController extends Controller
                 $anteproyecto->AREA_ACADEMICA = $request->AreaAcademica;
                 $anteproyecto->AUTOR = $request->Autor;
                 $anteproyecto->EMPRESA = $request->Empresa;
-                $anteproyecto->TIPO_ESPECIALIDAD = $request->TipoEspecialidad;
+                $anteproyecto->COMENTARIO = $request->Comentario;
                 $periodo = new CreditosSiia();
                 $anteproyecto->PERIODO = $periodo->periodo();
                 $anteproyecto->save();
@@ -79,7 +79,7 @@ class AnteproyectoResidenciasController extends Controller
             $anteproyecto->AREA_ACADEMICA = $request->AreaAcademica;
             $anteproyecto->AUTOR = $request->Autor;
             $anteproyecto->EMPRESA = $request->Empresa;
-            $anteproyecto->TIPO_ESPECIALIDAD = $request->TipoEspecialidad;
+            $anteproyecto->TIPO_ESPECIALIDAD = $request->Comentario;
             $periodo = new CreditosSiia();
             $anteproyecto->PERIODO = $periodo->periodo();
             $anteproyecto->save();
@@ -159,8 +159,8 @@ class AnteproyectoResidenciasController extends Controller
             if($request->Empresa){
                 $anteproyecto->EMPRESA = $request->Empresa;
             }
-            if($request->TipoEspecialidad){
-                $anteproyecto->TIPO_ESPECIALIDAD = $request->TipoEspecialidad;
+            if($request->Comentario){
+                $anteproyecto->COMENTARIO = $request->Comentario;
             }
             if($request->Cancelar){
                 $diai = $fecha->FIniA($anteproyecto->ALUMNO,1);
