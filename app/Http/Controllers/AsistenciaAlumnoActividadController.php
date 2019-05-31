@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\asistenciaAlumnoActividad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Carbon\Carbon;
 use DB;
 
 
@@ -44,7 +45,7 @@ class AsistenciaAlumnoActividadController extends Controller
         $asistencia_alumno_actividad = new asistenciaAlumnoActividad();
         $asistencia_alumno_actividad->FK_ALUMNO_ACTIVIDAD = $request->FK_ALUMNO_ACTIVIDAD;
         $asistencia_alumno_actividad->ENTRADA = $request->ENTRADA;
-        //$asistencia_alumno_actividad->SALIDA = $request->SALIDA;
+        $asistencia_alumno_actividad->SALIDA = $request->SALIDA;
         $asistencia_alumno_actividad->save();
 
         echo json_encode($asistencia_alumno_actividad);
@@ -134,9 +135,21 @@ class AsistenciaAlumnoActividadController extends Controller
                        $lineamiento->NOMBRE == 'Programa de Apoyo a la Formacion Profesional'){
                        $calificacion = 'NOTABLE';
                         }
+                   //ahora determinar el periodo
+                   $año_actual = Carbon::today()->format('Y');
+                   $fecha_actual = Carbon::today()->format('m-d');
+                   $inicio_año = Carbon::parse('01/01')->format('m-d');
+                   $medio_año = Carbon::parse("08/01")->format('m-d');
+                   
+                   if($fecha_actual > $inicio_año && $fecha_actual < $medio_año){
+                    $periodo = "Enero - Junio ".$año_actual;
+                     }else{
+                    $periodo = "Agosto - Diciembre".$año_actual;
+                     }
                                 
                     DB::table('ALUMNO_CREDITO')->insert(//insertar el credito cumplido
-                        array('FK_ALUMNO' => $alumno[0]->alumno, 'FK_LINEAMIENTO' => $alumno[0]->lineamiento, 'CALIFICACION' => $calificacion));
+                        array('FK_ALUMNO' => $alumno[0]->alumno, 'FK_LINEAMIENTO' => $alumno[0]->lineamiento,
+                        'CALIFICACION' => $calificacion, 'PERIODO' => $periodo));
                         /**---------------------------- */
                  $registrar = true;
                  $lista_act = DB::table('ACTIVIDADES')//obtener una lista de las actividades en base al lineamiento y al usuario
@@ -190,9 +203,22 @@ class AsistenciaAlumnoActividadController extends Controller
                    $lineamiento->NOMBRE == 'Programa de Apoyo a la Formacion Profesional'){
                    $calificacion = 'NOTABLE';
                 }
+
+                 //ahora determinar el periodo
+                 $año_actual = Carbon::today()->format('Y');
+                 $fecha_actual = Carbon::today()->format('m-d');
+                 $inicio_año = Carbon::parse('01/01')->format('m-d');
+                 $medio_año = Carbon::parse("08/01")->format('m-d');
+                 
+                 if($fecha_actual > $inicio_año && $fecha_actual < $medio_año){
+                  $periodo = "Enero - Junio ".$año_actual;
+                   }else{
+                  $periodo = "Agosto - Diciembre".$año_actual;
+                   }
                                 
                     DB::table('ALUMNO_CREDITO')->insert(//insertar el credito cumplido
-                        array('FK_ALUMNO' => $alumno[0]->alumno, 'FK_LINEAMIENTO' => $alumno[0]->lineamiento, 'CALIFICACION' => $calificacion));
+                        array('FK_ALUMNO' => $alumno[0]->alumno, 'FK_LINEAMIENTO' => $alumno[0]->lineamiento, 
+                        'CALIFICACION' => $calificacion, 'PERIODO' => $periodo));
 
                  $registrar = true;
                  $lista_act = DB::table('ACTIVIDADES')//obtener una lista de las actividades en base al lineamiento y al usuario

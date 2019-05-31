@@ -455,7 +455,6 @@ class AspiranteController extends Controller
     }
     public function cargarArchivoRegistroCENEVAL(Request $request, $PK_PERIODO)
     {
-        return $this->asignaExamen();
         try {
             // create new workbook
             $file = $request->file('myfile');
@@ -470,6 +469,15 @@ class AspiranteController extends Controller
 
                 if ($preficha) {
                     /* Actualiza el estatus por preficha */
+                    $aspirante = DB::table('CATR_ASPIRANTE')
+                        ->select('PREFICHA')
+                        ->where([
+                            ['FK_PERIODO', '=', $PK_PERIODO],
+                            ['PREFICHA', '=', $preficha],
+                            ['FK_ESTATUS', '=', 3]
+                        ])
+                        ->get();
+                    if (isset($aspirante[0])){
                     DB::table('CATR_ASPIRANTE')
                         ->where([
                             ['FK_PERIODO', '=', $PK_PERIODO],
@@ -481,6 +489,7 @@ class AspiranteController extends Controller
                             'FK_ESTATUS' => 4,
                             'FK_EXAMEN_ADMISION' => $this->asignaExamen()
                         ]);
+                }
                 } else {
                     break;
                 }
@@ -610,17 +619,17 @@ class AspiranteController extends Controller
             $file = $request->file('myfile');
             $inputFileType = PHPExcel_IOFactory::identify($file);
             $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-            $objPHPExcel = $objReader->load($file)->getSheet(2);
+            $objPHPExcel = $objReader->load($file)->getSheet(0);
 
             for ($row = 2; $row <= $objPHPExcel->getHighestRow(); $row++) {
-                $preficha = $objPHPExcel->getCell("B" . $row)->getValue();
+                $preficha = $objPHPExcel->getCell("I" . $row)->getValue();
                 if ($preficha) {
                     /* Actualiza el estatus por preficha */
                     DB::table('CATR_ASPIRANTE')
                         ->where([
                             ['FK_PERIODO', '=', $PK_PERIODO],
-                            ['PREFICHA', '=', $preficha],
-                            ['FK_ESTATUS', '=', 4]
+                            ['PREFICHA', '=', $preficha]//,
+                            //['FK_ESTATUS', '=', 4]
                         ])
                         ->update(['FK_ESTATUS' => 5]);
                 } else {

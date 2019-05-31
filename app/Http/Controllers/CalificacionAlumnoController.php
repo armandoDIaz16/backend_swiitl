@@ -25,10 +25,11 @@ class CalificacionAlumnoController extends Controller
 
     public function store(Request $request)
     {
-        $dia = ('Y-m-d');
+        $dia = date('Y-m-d');
         $fecha = new PeriodoResidencia();
         $diai = $fecha->FIniD($request->FK_DOCENTE,5);
         $diaf = $fecha->FFinD($request->FK_DOCENTE,5);
+        \Log::debug('dia: '.$dia.' dia inicio: '.$diai.' dia fin: '.$diaf);
         if($diai<=$dia && $dia<=$diaf){
             $calificacion = new CalificacionAlumno();
             $periodo = new CreditosSiia();
@@ -37,6 +38,8 @@ class CalificacionAlumnoController extends Controller
                 return respose()->json('Alumno ya estaba calificado');
             }else {
                 $calificacion->CALIFICACION = $request->CALIFICACION;
+                $calificacion->TITULACION = $request->TITULACION;
+                $calificacion->OBSERVACIONES = $request->OBSERVACIONES;
                 $calificacion->FK_ALUMNO = $request->FK_ALUMNO;
                 $calificacion->FK_DOCENTE = $request->FK_DOCENTE;
                 $calificacion->PERIODO = $periodo->periodo();

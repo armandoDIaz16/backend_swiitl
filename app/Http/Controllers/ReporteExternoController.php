@@ -41,8 +41,13 @@ class ReporteExternoController extends Controller
                 $y = 5;
                 break;
         }
+        try{
         $diai = $fecha->FIniD($request->id, $y);
         $diaf = $fecha->FFinD($request->id, $y);
+        }
+        catch(\Exception $exception){
+            return response()->json('Fecha aun no activa');
+        }
         $dia = date('Y-m-d');
         if ($diai<=$dia && $dia<=$diaf) {
             $reporte->ALUMNO = $request->alumno;
@@ -63,8 +68,11 @@ class ReporteExternoController extends Controller
 
     public function show($id)
     {
-        $var = DB::select('SELECT * FROM CAT_REPORTE_EXTERNO JOIN CATR_EXTERNO ON CAT_REPORTE_EXTERNO.EXTERNO = CATR_EXTERNO.ID_PADRE
-                                WHERE CATR_EXTERNO.ID_PADRE = :id',['id'=>$id]);
+        $var = DB::select('SELECT * 
+                           FROM CAT_REPORTE_EXTERNO 
+                           JOIN CATR_EXTERNO ON CAT_REPORTE_EXTERNO.EXTERNO = CATR_EXTERNO.ID_PADRE
+                           JOIN users ON CAT_REPORTE_EXTERNO.ALUMNO = users.PK_USUARIO
+                           WHERE CATR_EXTERNO.ID_PADRE = :id',['id'=>$id]);
         return $var;
      }
 
