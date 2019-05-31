@@ -17,16 +17,16 @@ class FichaUnica extends Model
         $area3 = array_pop($area2);
 
         switch($area3){
-            case "sistemas":
+            case "Sistemas y Computación":
                 $jefe = 'Guadalupe Efraín Bermúdez';
                 break;
-            case "metalmecanica":
+            case "Metalmecánica":
                 $jefe = 'Francisco Alejandro Ramírez Díaz';
                 break;
-            case "gestion":
+            case "Ciencias Económico Administrativas":
                 $jefe = 'Petra Sandoval Flores';
                 break;
-            case "industrial":
+            case "Ingeniería Industrial":
                 $jefe = 'Eduardo Estrada Palomino';
                 break;
         }
@@ -170,16 +170,16 @@ AND CATR_PROYECTO.PK_PROYECTO = @Proyecto',['maestro'=>$maestro3,'proyecto'=>$y]
         $area3 = array_pop($area2);
 
         switch($area3){
-            case "sistemas":
+            case "Sistemas y Computación":
                 $departamento = 'SISTEMAS Y COMPUTACIÓN';
                 break;
-            case "metalmecanica":
+            case "Metalmecánica":
                 $departamento = 'METAL MECÁNICA';
                 break;
-            case "gestion":
+            case "Ciencias Económico Administrativas":
                 $departamento = 'CIENCIAS ECONÓMICO ADMINISTRATIVAS';
                 break;
-            case "industrial":
+            case "Ingeniería Industrial":
                 $departamento = 'INGENIERÍA INDUSTRIAL';
                 break;
         }

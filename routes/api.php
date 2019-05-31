@@ -151,40 +151,43 @@ route::get('Periodo', 'PeriodoController@index');
 /* *****************************************************************************
 ************** RUTAS DEL SISTEMA DE RESIDENCIAS PROFESIONALES ******************
 ***************************************************************************** */
-Route::resource('Anteproyecto', 'AnteproyectoResidenciasController');
-Route::resource('Documentacion', 'DocumentacionResidenciasController');
-Route::resource('Reporte','ReporteResidenciaController');
-Route::resource('proyecto','ProyectoController');
-Route::resource('Docente','DocenteController');
-Route::resource('Comentario','ComentariosController');
-Route::resource('Repdocente','ReporteDocenteController');
-Route::resource('Alumnor','AlumnoController');
-Route::resource('PeriodoR','PeriodoResidenciaController');
 Route::resource('Convenio','ConveniosController');
-Route::resource('Informe','InformeTecnicoController');
-Route::resource('CalificacionR','CalificacionAlumnoController');
-Route::resource('ExternoR','ExternoController');
-Route::resource('Repexterno','ReporteExternoController');
-Route::resource('Estadisticas','EstadisticasController');
-Route::resource('CartaFinalR','CartaFinalizacionController');
-Route::resource('BajaAlumnoR','BajaAlumnoController');
-Route::resource('ConvenioContrato','ConvenioContratoController');
-Route::resource('ActaResidencias','ActaResidenciasController');
-Route::resource('ConfiguracionE','ConfiguracionEscolaresController');
-Route::resource('InfoActaR','InformacionActaCalificacionController');
-Route::resource('BaseResidencias','BaseResidenciasController');
-Route::post('documentacion', 'DocumentacionResidenciasController@updatesolicitud');
-Route::post('documentacion2', 'DocumentacionResidenciasController@updateaceptacion');
-Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
-Route::post('Totalr','EstadisticasController@reportestotal');
-Route::get('ProyectoAlumno/{id}', 'ProyectoController@alumnos');
-route::get('Periodo','PeriodoController@index');
-route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
-Route::get('Pdf/{id}','FichaUnicaController@FUApdf');
-Route::get('Proyecto1/{id}','AnteproyectoResidenciasController@ind1');
-Route::get('Proyecto2/{id}','AnteproyectoResidenciasController@ind2');
-Route::get('Totalp','EstadisticasController@totalproyectos');
-Route::resource('CreditosSiia', 'CreditosSiiaController');
+
+//Route::group(['middleware' => ['jwt.auth']], function() {
+    Route::resource('Anteproyecto', 'AnteproyectoResidenciasController');
+    Route::resource('Documentacion', 'DocumentacionResidenciasController');
+    Route::resource('Reporte','ReporteResidenciaController');
+    Route::resource('proyecto','ProyectoController');
+    Route::resource('Docente','DocenteController');
+    Route::resource('Comentario','ComentariosController');
+    Route::resource('Repdocente','ReporteDocenteController');
+    Route::resource('Alumnor','AlumnoController');
+    Route::resource('PeriodoR','PeriodoResidenciaController');
+    Route::resource('Informe','InformeTecnicoController');
+    Route::resource('CalificacionR','CalificacionAlumnoController');
+    Route::resource('ExternoR','ExternoController');
+    Route::resource('Repexterno','ReporteExternoController');
+    Route::resource('Estadisticas','EstadisticasController');
+    Route::resource('CartaFinalR','CartaFinalizacionController');
+    Route::resource('BajaAlumnoR','BajaAlumnoController');
+    Route::resource('ConvenioContrato','ConvenioContratoController');
+    Route::resource('ActaResidencias','ActaResidenciasController');
+    Route::resource('ConfiguracionE','ConfiguracionEscolaresController');
+    Route::resource('InfoActaR','InformacionActaCalificacionController');
+    Route::resource('BaseResidencias','BaseResidenciasController');
+    Route::post('documentacion', 'DocumentacionResidenciasController@updatesolicitud');
+    Route::post('documentacion2', 'DocumentacionResidenciasController@updateaceptacion');
+    Route::post('anteproyecto2', 'AnteproyectoResidenciasController@proyecto');
+    Route::post('Totalr','EstadisticasController@reportestotal');
+    Route::get('ProyectoAlumno/{id}', 'ProyectoController@alumnos');
+    route::get('Periodo','PeriodoController@index');
+    route::get('Proyecto/{id}','AnteproyectoResidenciasController@alumno');
+    Route::get('Pdf/{id}','FichaUnicaController@FUApdf');
+    Route::get('Proyecto1/{id}','AnteproyectoResidenciasController@ind1');
+    Route::get('Proyecto2/{id}','AnteproyectoResidenciasController@ind2');
+    Route::get('Totalp','EstadisticasController@totalproyectos');
+    Route::resource('CreditosSiia', 'CreditosSiiaController');
+//});
 /*************************************************************************************
  * **********************************************************************************/
 

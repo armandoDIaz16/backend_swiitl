@@ -114,8 +114,8 @@ GROUP BY
         /*Busca en la base de datos alumno por alumno y regresa el correo*/
         for($i=0;$i<count($ncontrol);$i++) {
             $nprimero = array_pop($ncontrol);
-            $tcorreo = DB::connection('sqlsrv3')->select('SELECT 
-                CORREO1 
+            $tcorreo = DB::connection('sqlsrv')->select('SELECT 
+                email 
             FROM 
                 users 
                 JOIN CATR_ALUMNO ON users.PK_USUARIO = CATR_ALUMNO.ID_PADRE 
