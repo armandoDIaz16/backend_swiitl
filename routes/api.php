@@ -277,6 +277,9 @@ Route::get('usuario-by-curp/{curp}', 'gestionRolesCreditosComController@getUsuar
 Route::get('agregar-user-ca/{PK_USUARIO}', 'gestionRolesCreditosComController@setRolComite');
 Route::get('agregar-user-jc/{PK_USUARIO}', 'gestionRolesCreditosComController@setRolJefeCarr');
 Route::get('agregar-user-ra/{PK_USUARIO}', 'gestionRolesCreditosComController@setRolRespAct');
+Route::get('agregar-user-te/{PK_USUARIO}', 'gestionRolesCreditosComController@setRolTutoescolares');
+Route::post('import-excel-ac', 'excelAcController@importarCreditos');
+Route::get('generar-excel-ac', 'excelAcController@generarExcel');
 //Route::get('prueba-fecha','constanciasCreditosController@pruebaFormatoFecha');
 //Route::get('prueba-carrera/{PK_ALUMNO_CREDITO}','constanciasCreditosController@getCarrera');
 /*************************************************************************************************************************/

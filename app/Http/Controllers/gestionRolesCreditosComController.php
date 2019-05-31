@@ -52,4 +52,22 @@ class gestionRolesCreditosComController extends Controller
             ->insert(['FK_ROL' => $rol->PK_ROL,
                       'FK_USUARIO' => $pk_usuario]);
     }
+
+    public function setRolTutoescolares( $pk_usuario ){
+        $sistema = DB::table('PER_CAT_SISTEMA')
+            ->select('PK_SISTEMA')
+            ->where('NOMBRE','=','Creditos')
+            ->get()->first();
+
+        $rol = DB::table('PER_CATR_ROL')
+            ->select('PK_ROL')
+            ->where('NOMBRE','=','Tutorias-extraescolares')
+            ->where('FK_SISTEMA','=',$sistema->PK_SISTEMA)
+            ->get()->first();
+
+        DB::table('PER_TR_ROL_USUARIO')
+            ->insert(['FK_ROL' => $rol->PK_ROL,
+                      'FK_USUARIO' => $pk_usuario]);
+    }
 }
+
