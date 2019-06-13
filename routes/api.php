@@ -18,6 +18,7 @@ Route::group([
     Route::post('control', 'NumeroControl@getControl');
    // Route::post('permisos', 'Sistema_permisos@getPermisos');
 
+
     Route::group(['middleware' => ['jwt.auth']], function() {
         Route::get('logout', 'AuthController@logout');
         Route::post('Periodo','PeriodoController@store');
@@ -90,6 +91,11 @@ Route::get('Pdf/{id}','FichaUnicaController@FUApdf');
 Route::get('Proyecto1/{id}','AnteproyectoResidenciasController@ind1');
 Route::get('Proyecto2/{id}','AnteproyectoResidenciasController@ind2');
 //Route::resource('Periodo','PeriodoController');
+Route::resource('Pregunta', 'PreguntaController');
+
+Route::resource('Usuario', 'UsuarioController');
+Route::resource('Aplicacion_Encuesta', 'Aplicacion_EncuestaController');
+
 Route::resource('Campus','CampusController');
 Route::resource('TipoEspacio','TipoEspacioController');
 Route::resource('Espacio','EspacioController');
@@ -97,6 +103,7 @@ Route::resource('TipoInstituto','TipoInstitutoController');
 Route::resource('Edificio','EdificioController');
 Route::resource('Tecnologico','TecnmController');
 
+Route::resource('Respuesta_Posible','Respuesta_PosibleController');
 route::get     ('Periodo','PeriodoController@index');
 //Route::resource('Periodo','PeriodoController');
 
@@ -122,3 +129,6 @@ Route::get('lista-actividades/{FK_LINEAMIENTO}/{FK_ALUMNO}', 'AsistenciaAlumnoAc
 Route::resource('responsables-actividad','ResponsableActividadController');
 Route::get('responsable-lista-asistentes/{pk_actividad}','ResponsableActividadController@getListaAsistentes');
 Route::resource('asistentes-actividad','AsistenteActividadController');
+
+Route::post('getAllEncuesta','EncuestaController@showEncuestas');
+

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Encuesta;
+use App\Pregunta;
+use App\Respuesta_Posible;
+use App\Seccion_Encuesta;
 use App\Mensaje;
 use App\Respuesta;
 use Illuminate\Http\Request;
@@ -56,6 +59,59 @@ class EncuestaController extends Controller
         //get
         $encuesta = Encuesta::find($encuesta_id);
         echo json_encode($encuesta);
+    }
+
+
+    public function showEncuestas(Request $request){
+        //POST
+        $encuesta_id = $request->id_encuesta;
+
+        $array_secciones = array();
+        error_log(print_r($request->id_encuesta, true));
+
+        $array_preguntas = array();
+        error_log(print_r("", true));
+
+        $encuesta = Encuesta::where('PK_ENCUESTA', $encuesta_id)
+            ->select('PK_ENCUESTA','NOMBRE','CAT_ENCUESTA.OBJETIVO','CAT_ENCUESTA.INSTRUCCIONES')
+            ->first();
+
+//        \Log::debug($request->id_encuesta);
+
+        $secciones = Seccion_Encuesta::where('FK_ENCUESTA', $encuesta_id)->get();
+            foreach ($secciones as $seccion) {
+                $array_secciones[] = array(
+                    'PK_MODULO' => $seccion->PK_SECCION,
+                    'NOMBRE' => $seccion->NOMBRE_SECCION,
+                    'NUMERO_SECCION' => $seccion->NUMERO_SECCION,
+                    'OBJETIVO' => $seccion->OBJETIVO,
+                    'INSTRUCCIONES' => $seccion->INSTRUCCIONES,
+                    "PREGUNTAS" => $array_preguntas
+                );
+
+                $preguntas = Pregunta::where('FK_SECCION', $seccion->PK_SECCION)->get();
+                foreach ($preguntas as $pregunta) {
+                    $array_preguntas[] = array(
+                        'PK_MODEL' => $pregunta->PK_PREGUNTA,
+                        'ORDEN' => $pregunta->ORDEN,
+                        'PLANTEAMIENTO' => $pregunta->PLANTEAMIENTO,
+                        'TEXTO_GUIA' => $pregunta->TEXTO_GUIA,
+                        "RESPUESTAS" => Respuesta_Posible::where('FK_PREGUNTA', $pregunta->PK_PREGUNTA)->get()
+                    );
+                }
+            }
+
+        return  array(
+            "encuesta" => array(
+                "PK_ENCUESTA"   => $encuesta->PK_ENCUESTA,
+                "NOMBRE"        => $encuesta->NOMBRE,
+                "OBJETIVO"      => $encuesta->OBJETIVO,
+                "INSTRUCCIONES" => $encuesta->INSTRUCCIONES,
+                "SECCIONES"     => $array_secciones
+            )
+        );
+
+
     }
 
     /**
