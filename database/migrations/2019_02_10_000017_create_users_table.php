@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
 
@@ -28,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('SEGUNDO_APELLIDO')->nullable();
             $table->date('FECHA_NACIMIENTO')->nullable();
             $table->string('CURP', 18)->unique();
-            $table->smallInteger('ESTADO')->nullable();
+            $table->char('ESTADO',1)->default(0);
             $table->string('TELEFONO_CASA')->nullable();
             $table->string('TELEFONO_MOVIL')->nullable();
             $table->string('CORREO1')->nullable();
@@ -36,8 +36,8 @@ class CreateUsersTable extends Migration
             $table->string('CORREO_INSTITUCIONAL')->nullable();
             //$table->string('CONTRASENIA')->nullable();
             $table->string('CALLE')->nullable();
-            $table->string('NUMERO_EXTERIOR')->nullable();
-            $table->string('NUMERO_INTERIOR')->nullable();
+            $table->integer('NUMERO_EXTERIOR')->nullable();
+            $table->integer('NUMERO_INTERIOR')->nullable();
             $table->string('NACIONALIDAD')->nullable();
             $table->char('SEXO',1)->nullable();
             $table->string('TIPO_SANGUINEO')->nullable();

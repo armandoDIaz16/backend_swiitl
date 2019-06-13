@@ -15,7 +15,7 @@ class TrIncapacidadAspirante extends Migration
     {
         Schema::create('TR_INCAPACIDAD_ASPIRANTE', function (Blueprint $table) {
             /* CLAVES PRIMARIAS */
-            $table->increments('PK_INCAPACIDAD_ASPIRANTE');
+            $table->primary(['FK_ASPIRANTE', 'FK_INCAPACIDAD']);
 
             /* CLAVES FORANEAS */
             $table->integer('FK_ASPIRANTE');

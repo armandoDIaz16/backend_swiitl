@@ -66,7 +66,7 @@ class AnteproyectoResidenciasController extends Controller
                 $anteproyecto->AREA_ACADEMICA = $request->AreaAcademica;
                 $anteproyecto->AUTOR = $request->Autor;
                 $anteproyecto->EMPRESA = $request->Empresa;
-                $anteproyecto->TIPO_ESPECIALIDAD = $request->TipoEspecialidad;
+                $anteproyecto->COMENTARIO = $request->Comentario;
                 $periodo = new CreditosSiia();
                 $anteproyecto->PERIODO = $periodo->periodo();
                 $anteproyecto->save();
@@ -79,7 +79,7 @@ class AnteproyectoResidenciasController extends Controller
             $anteproyecto->AREA_ACADEMICA = $request->AreaAcademica;
             $anteproyecto->AUTOR = $request->Autor;
             $anteproyecto->EMPRESA = $request->Empresa;
-            $anteproyecto->TIPO_ESPECIALIDAD = $request->TipoEspecialidad;
+            $anteproyecto->TIPO_ESPECIALIDAD = $request->Comentario;
             $periodo = new CreditosSiia();
             $anteproyecto->PERIODO = $periodo->periodo();
             $anteproyecto->save();
@@ -159,8 +159,8 @@ class AnteproyectoResidenciasController extends Controller
             if($request->Empresa){
                 $anteproyecto->EMPRESA = $request->Empresa;
             }
-            if($request->TipoEspecialidad){
-                $anteproyecto->TIPO_ESPECIALIDAD = $request->TipoEspecialidad;
+            if($request->Comentario){
+                $anteproyecto->COMENTARIO = $request->Comentario;
             }
             if($request->Cancelar){
                 $diai = $fecha->FIniA($anteproyecto->ALUMNO,1);
@@ -190,7 +190,7 @@ class AnteproyectoResidenciasController extends Controller
         $area1 = json_decode(json_encode($area),true);
         $area2 = array_pop($area1);
         $area3 = array_pop($area2);
-        $vistaante = AnteproyectoResidencias::where('AREA_ACADEMICA',$area3)->get();
+        $vistaante = DB::select('SELECT * FROM CAT_ANTEPROYECTO_RESIDENCIA WHERE AREA_ACADEMICA = :area AND ALUMNO IS NULL',['area'=>$area3]);
         return $vistaante;
     }
 
@@ -199,7 +199,10 @@ class AnteproyectoResidenciasController extends Controller
         $area1 = json_decode(json_encode($area),true);
         $area2 = array_pop($area1);
         $area3 = array_pop($area2);
-        $vistaante = DB::select('SELECT * FROM CAT_ANTEPROYECTO_RESIDENCIA WHERE AREA_ACADEMICA = :area AND ALUMNO <> :id',['area'=>$area3,'id'=>'NULL']);  //AnteproyectoResidencias::where('AREA_ACADEMICA',$area3)->get();
+        $vistaante = DB::select('SELECT * 
+                                        FROM CAT_ANTEPROYECTO_RESIDENCIA 
+                                        JOIN users ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = users.PK_USUARIO
+                                        WHERE AREA_ACADEMICA = :area AND ALUMNO <> :id',['area'=>$area3,'id'=>'NULL']);
         return $vistaante;
     }
 

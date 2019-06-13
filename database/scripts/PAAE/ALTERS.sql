@@ -53,6 +53,787 @@ GO
 ALTER TABLE [dbo].[PAAE_PERIODO_SOLICITUD] ADD  DEFAULT ('0') FOR [BORRADO]
 GO
 
+*******************************************/*03/05/2019*/************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_USER_ASESORIA_HORARIO](
+	[PK_USER_ASESORIA_HORARIO] [int] IDENTITY(1,1) NOT NULL,
+	[FK_USUARIO] INT NOT NULL,
+	[MATERIA] NVARCHAR(50) NOT NULL,
+	[DIA] NVARCHAR(12) NOT NULL,
+	[HORA] NVARCHAR(20) NOT NULL,
+  [PERIODO]  NVARCHAR(5) NOT NULL,
+  [CAMPUS]  NVARCHAR(50) NOT NULL, 
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[STATUS] NVARCHAR(20) NOT NULL,
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_USER_ASESORIA_HORARIO] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_USER_ASESORIA_HORARIO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_USER_ASESORIA_HORARIO] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_USER_ASESORIA_HORARIO]  WITH CHECK ADD CONSTRAINT [fk_user_solicitud] FOREIGN KEY([FK_USUARIO])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+
+drop table CATR_USER_ASESORIA_HORARIO
+
+
+***********************************************************************************************
+ALTER TABLE dbo.users ADD NUMERO_CONTROL NVARCHAR(8);
+
+ALTER TABLE [SWIITL].[dbo].[users] ADD CLAVE_CARRERA NVARCHAR(10);
+
+  ALTER TABLE [SWIITL].[dbo].[users] ADD SEMESTRE NVARCHAR(2);
+
+
+//
+//
+
+You can do like this:
+
+$avg_stars = DB::table('your_table')
+                ->avg('star');
+//
+//
+
+
+
+
+************************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_ASESOR_ASESORIA_HORARIO]
+(
+    [PK_ASESOR_ASESORIA_HORARIO] [int] IDENTITY(1,1) NOT NULL,
+    [FK_USUARIO] INT NOT NULL,
+    [MATERIA] NVARCHAR(50) NOT NULL,
+    [MATERIA1] NVARCHAR(50) NOT NULL,
+    [MATERIA2] NVARCHAR(50) NOT NULL,
+    [DIA] NVARCHAR(12) NOT NULL,
+    [HORA] NVARCHAR(20) NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [CAMPUS] NVARCHAR(50) NOT NULL,
+    [VALIDA] NVARCHAR(30) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+	  [STATUS] NVARCHAR(20) NOT NULL
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_ASESOR_ASESORIA_HORARIO] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_ASESOR_ASESORIA_HORARIO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_ASESOR_ASESORIA_HORARIO] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_ASESOR_ASESORIA_HORARIO]  WITH CHECK ADD CONSTRAINT [fk_asesor_solicitud] FOREIGN KEY([FK_USUARIO])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+
+drop table CATR_ASESOR_ASESORIA_HORARIO
+
+**********************************************************************************************
+SELECT distinct [ITL_SICH].[dbo].[view_reticula].Nombre, [view_seguimiento].ClaveMateria
+from [ITL_SICH].[dbo].[view_seguimiento]
+INNER JOIN [ITL_SICH].[dbo].[view_reticula]
+ON [ITL_SICH].[dbo].[view_reticula].ClaveMateria = [ITL_SICH].[dbo].[view_seguimiento].ClaveMateria
+where NumeroControl='18240602' and IdNivelCurso='CO' and Calificacion > 85
+
+SELECT distinct ClaveMateria FROM view_seguimiento
+where NumeroControl='18240602' and IdNivelCurso='CO' and Calificacion > 85
+
+*************************************************************************************************
+  select count(*) from CATR_ASESOR_ASESORIA_HORARIO 
+  where FK_USUARIO='26' and VALIDA ='SERVICIO SOCIAL'
+
+select users.name
+from [CATR_ASESOR_ASESORIA_HORARIO]
+INNER JOIN [users]
+ON CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO = users.PK_USUARIO
+**************************************************************************************************
+select CATR_ASESOR_ASESORIA_HORARIO.PK_ASESOR_ASESORIA_HORARIO as id, users.name as nombre,
+    users.PRIMER_APELLIDO, users.SEGUNDO_APELLIDO, users.email, users.TELEFONO_MOVIL,
+    CATR_ASESOR_ASESORIA_HORARIO.MATERIA,CATR_ASESOR_ASESORIA_HORARIO.MATERIA1,CATR_ASESOR_ASESORIA_HORARIO.MATERIA2
+    , CATR_ASESOR_ASESORIA_HORARIO.DIA,
+    CATR_ASESOR_ASESORIA_HORARIO.HORA,CATR_ASESOR_ASESORIA_HORARIO.CAMPUS, CATR_ASESOR_ASESORIA_HORARIO.STATUS
+from CATR_ASESOR_ASESORIA_HORARIO
+    INNER JOIN users on users.PK_USUARIO = CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO
+where periodo='20191'
+***************************************************************************************************
+select CATR_USER_ASESORIA_HORARIO.PK_USER_ASESORIA_HORARIO as id, users.name as nombre,
+    users.PRIMER_APELLIDO, users.SEGUNDO_APELLIDO, users.email, users.TELEFONO_MOVIL,
+    CATR_USER_ASESORIA_HORARIO.MATERIA
+    , CATR_USER_ASESORIA_HORARIO.DIA,
+    CATR_USER_ASESORIA_HORARIO.HORA,CATR_USER_ASESORIA_HORARIO.CAMPUS, CATR_USER_ASESORIA_HORARIO.STATUS
+from CATR_USER_ASESORIA_HORARIO
+    INNER JOIN users on users.PK_USUARIO = CATR_USER_ASESORIA_HORARIO.FK_USUARIO
+where periodo='20191'
+****************************************************************************************************
+select distinct a.ClaveMateria,b.Nombre COLLATE Latin1_General_CI_AI AS [Lowercase],a.IdNivelCurso,a.Calificacion
+from view_seguimiento a
+    INNER JOIN view_reticula b on a.ClaveMateria = b.ClaveMateria
+where NumeroControl='18240602'
+
+
+,view_reticula.Nombre, view_seguimiento.IdNivelCurso, 
+view_seguimiento.Calificacion,
+view_seguimiento.FechaPrimera, view_seguimiento.FechaSegunda, view_seguimiento.FechaTercera
+
+SELECT * FROM sys.fn_helpcollations() WHERE [name] NOT LIKE N'SQL%';
+
+
+ $materia = DB::select('SELECT  a.ClaveMateria,b.Nombre COLLATE Latin1_General_CI_AI AS [Lowercase],a.IdNivelCurso,a.Calificacion 
+        FROM view_seguimiento a INNER JOIN view_reticula b on a.ClaveMateria = b.ClaveMateria WHERE NumeroControl = :control1',['control1'=>$request->control]);
+
+18240110
+****************************************************************************************************
+UPDATE CATR_ASESOR_ASESORIA_HORARIO
+SET  MATERIA= 'QUIMICA', MATERIA1 = 'QUIMICA', MATERIA2 = 'QUIMICA'
+WHERE PK_ASESOR_ASESORIA_HORARIO =  1;
+
+DELETE FROM CATR_ASESOR_ASESORIA_HORARIO WHERE PK_ASESOR_ASESORIA_HORARIO = 1002;
+
+*****************************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_ASESORIA_ACEPTADA]
+(
+    [PK_ASESORIA_ACEPTADA] [int] IDENTITY(1,1) NOT NULL,
+    [FK_ASESOR] INT NOT NULL,
+    [FK_ALUMNO] INT NOT NULL,
+    [MATERIA] NVARCHAR(50) NOT NULL,
+    [DIA] NVARCHAR(12) NOT NULL,
+    [HORA] NVARCHAR(20) NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [CAMPUS] NVARCHAR(50) NOT NULL,
+    [ESPACIO] NVARCHAR(50) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+	[STATUS] NVARCHAR(20) NOT NULL
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_ASESORIA_ACEPTADA] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA]  WITH CHECK ADD CONSTRAINT [fk_asesor_asesoria] FOREIGN KEY([FK_ASESOR])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA]  WITH CHECK ADD CONSTRAINT [fk_alumno_asesoria] FOREIGN KEY([FK_ALUMNO])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+
+drop table CATR_ASESORIA_ACEPTADA
+**********************************************************************************************
+http://sql.11sql.com/sql-inner-join.htm
+***************************************10/04/2019*********************************************
+-- Create a new table called '[PAAE_TECNOLOGICO]' in schema '[dbo]'
+-- Drop the table if it already exists
+IF OBJECT_ID('[dbo].[PAAE_TECNOLOGICO]', 'U') IS NOT NULL
+DROP TABLE [dbo].[PAAE_TECNOLOGICO]
+GO
+-- Create the table in the specified schema
+CREATE TABLE [dbo].[PAAE_TECNOLOGICO]
+(
+    [PK_TECNOLOGICO] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY, -- Primary Key column
+    [Nombre] NVARCHAR(50) NOT NULL,
+    [Estado] NVARCHAR(50) NOT NULL,
+    [Municipio] NVARCHAR(50) NOT NULL
+);
+GO
+
+ALTER TABLE dbo.users ADD FK_TECNOLOGICO INT NULL;  
+
+ALTER TABLE [dbo].[users]  WITH CHECK ADD  CONSTRAINT [users_fk_tecnologico_foreing] FOREIGN KEY([FK_TECNOLOGICO])
+REFERENCES [dbo].[PAAE_TECNOLOGICO] ([PK_TECNOLOGICO])
+GO
+ALTER TABLE [dbo].[users] CHECK CONSTRAINT [users_fk_tecnologico_foreing]
+GO
+
+--como saber de que tec es cada usuario
+SELECT name nombreestudiante,PAAE_TECNOLOGICO.NOMBRE FROM DBO.users INNER JOIN PAAE_TECNOLOGICO
+ON users.FK_TECNOLOGICO = PAAE_TECNOLOGICO.PK_TECNOLOGICO
+
+--CREAR PERIODO SOLICITUDES
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PAAE_PERIODO_SOLICITUD](
+	[PK_PAAE_PERIODO] [int] IDENTITY(1,1) NOT NULL,
+	[FECHA_INICIO] [date] NOT NULL,
+	[FECHA_FIN] [date] NOT NULL,
+	[FK_USUARIO_REGISTRO] [int] NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[FK_USUARIO_MODIFICACION] [int] NULL,
+	[FECHA_MODIFICACION] [datetime] NULL,
+	[BORRADO] [nchar](1) NOT NULL
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[PAAE_PERIODO_SOLICITUD] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_PAAE_PERIODO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[PAAE_PERIODO_SOLICITUD] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[PAAE_PERIODO_SOLICITUD] ADD  DEFAULT ('0') FOR [BORRADO]
+GO
+
+*******************************************/*03/05/2019*/************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_USER_ASESORIA_HORARIO](
+	[PK_USER_ASESORIA_HORARIO] [int] IDENTITY(1,1) NOT NULL,
+	[FK_USUARIO] INT NOT NULL,
+	[MATERIA] NVARCHAR(50) NOT NULL,
+	[DIA] NVARCHAR(12) NOT NULL,
+	[HORA] NVARCHAR(20) NOT NULL,
+  [PERIODO]  NVARCHAR(5) NOT NULL,
+  [CAMPUS]  NVARCHAR(50) NOT NULL, 
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[STATUS] NVARCHAR(20) NOT NULL,
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_USER_ASESORIA_HORARIO] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_USER_ASESORIA_HORARIO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_USER_ASESORIA_HORARIO] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_USER_ASESORIA_HORARIO]  WITH CHECK ADD CONSTRAINT [fk_user_solicitud] FOREIGN KEY([FK_USUARIO])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+
+drop table CATR_USER_ASESORIA_HORARIO
+
+
+***********************************************************************************************
+ALTER TABLE dbo.users ADD NUMERO_CONTROL NVARCHAR(8);
+
+ALTER TABLE [SWIITL].[dbo].[users] ADD CLAVE_CARRERA NVARCHAR(10);
+
+  ALTER TABLE [SWIITL].[dbo].[users] ADD SEMESTRE NVARCHAR(2);
+
+
+//
+//
+
+You can do like this:
+
+$avg_stars = DB::table('your_table')
+                ->avg('star');
+//
+//
+
+
+
+
+************************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_ASESOR_ASESORIA_HORARIO]
+(
+    [PK_ASESOR_ASESORIA_HORARIO] [int] IDENTITY(1,1) NOT NULL,
+    [FK_USUARIO] INT NOT NULL,
+    [MATERIA] NVARCHAR(50) NOT NULL,
+    [MATERIA1] NVARCHAR(50) NOT NULL,
+    [MATERIA2] NVARCHAR(50) NOT NULL,
+    [DIA] NVARCHAR(12) NOT NULL,
+    [HORA] NVARCHAR(20) NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [CAMPUS] NVARCHAR(50) NOT NULL,
+    [VALIDA] NVARCHAR(30) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+	  [STATUS] NVARCHAR(20) NOT NULL
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_ASESOR_ASESORIA_HORARIO] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_ASESOR_ASESORIA_HORARIO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_ASESOR_ASESORIA_HORARIO] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_ASESOR_ASESORIA_HORARIO]  WITH CHECK ADD CONSTRAINT [fk_asesor_solicitud] FOREIGN KEY([FK_USUARIO])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+
+drop table CATR_ASESOR_ASESORIA_HORARIO
+
+**********************************************************************************************
+SELECT distinct [ITL_SICH].[dbo].[view_reticula].Nombre, [view_seguimiento].ClaveMateria
+from [ITL_SICH].[dbo].[view_seguimiento]
+INNER JOIN [ITL_SICH].[dbo].[view_reticula]
+ON [ITL_SICH].[dbo].[view_reticula].ClaveMateria = [ITL_SICH].[dbo].[view_seguimiento].ClaveMateria
+where NumeroControl='18240602' and IdNivelCurso='CO' and Calificacion > 85
+
+SELECT distinct ClaveMateria FROM view_seguimiento
+where NumeroControl='18240602' and IdNivelCurso='CO' and Calificacion > 85
+
+*************************************************************************************************
+  select count(*) from CATR_ASESOR_ASESORIA_HORARIO 
+  where FK_USUARIO='26' and VALIDA ='SERVICIO SOCIAL'
+
+select users.name
+from [CATR_ASESOR_ASESORIA_HORARIO]
+INNER JOIN [users]
+ON CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO = users.PK_USUARIO
+**************************************************************************************************
+select CATR_ASESOR_ASESORIA_HORARIO.PK_ASESOR_ASESORIA_HORARIO as id, users.name as nombre,
+    users.PRIMER_APELLIDO, users.SEGUNDO_APELLIDO, users.email, users.TELEFONO_MOVIL,
+    CATR_ASESOR_ASESORIA_HORARIO.MATERIA,CATR_ASESOR_ASESORIA_HORARIO.MATERIA1,CATR_ASESOR_ASESORIA_HORARIO.MATERIA2
+    , CATR_ASESOR_ASESORIA_HORARIO.DIA,
+    CATR_ASESOR_ASESORIA_HORARIO.HORA,CATR_ASESOR_ASESORIA_HORARIO.CAMPUS, CATR_ASESOR_ASESORIA_HORARIO.STATUS
+from CATR_ASESOR_ASESORIA_HORARIO
+    INNER JOIN users on users.PK_USUARIO = CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO
+where periodo='20191'
+***************************************************************************************************
+select CATR_USER_ASESORIA_HORARIO.PK_USER_ASESORIA_HORARIO as id, users.name as nombre,
+    users.PRIMER_APELLIDO, users.SEGUNDO_APELLIDO, users.email, users.TELEFONO_MOVIL,
+    CATR_USER_ASESORIA_HORARIO.MATERIA
+    , CATR_USER_ASESORIA_HORARIO.DIA,
+    CATR_USER_ASESORIA_HORARIO.HORA,CATR_USER_ASESORIA_HORARIO.CAMPUS, CATR_USER_ASESORIA_HORARIO.STATUS
+from CATR_USER_ASESORIA_HORARIO
+    INNER JOIN users on users.PK_USUARIO = CATR_USER_ASESORIA_HORARIO.FK_USUARIO
+where periodo='20191'
+****************************************************************************************************
+select distinct a.ClaveMateria,b.Nombre COLLATE Latin1_General_CI_AI AS [Lowercase],a.IdNivelCurso,a.Calificacion
+from view_seguimiento a
+    INNER JOIN view_reticula b on a.ClaveMateria = b.ClaveMateria
+where NumeroControl='18240602'
+
+
+,view_reticula.Nombre, view_seguimiento.IdNivelCurso, 
+view_seguimiento.Calificacion,
+view_seguimiento.FechaPrimera, view_seguimiento.FechaSegunda, view_seguimiento.FechaTercera
+
+SELECT * FROM sys.fn_helpcollations() WHERE [name] NOT LIKE N'SQL%';
+
+
+ $materia = DB::select('SELECT  a.ClaveMateria,b.Nombre COLLATE Latin1_General_CI_AI AS [Lowercase],a.IdNivelCurso,a.Calificacion 
+        FROM view_seguimiento a INNER JOIN view_reticula b on a.ClaveMateria = b.ClaveMateria WHERE NumeroControl = :control1',['control1'=>$request->control]);
+
+18240110
+****************************************************************************************************
+UPDATE CATR_ASESOR_ASESORIA_HORARIO
+SET  MATERIA= 'QUIMICA', MATERIA1 = 'QUIMICA', MATERIA2 = 'QUIMICA'
+WHERE PK_ASESOR_ASESORIA_HORARIO =  1;
+
+DELETE FROM CATR_ASESOR_ASESORIA_HORARIO WHERE PK_ASESOR_ASESORIA_HORARIO = 1002;
+
+*****************************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_ASESORIA_ACEPTADA]
+(
+    [PK_ASESORIA_ACEPTADA] [int] IDENTITY(1,1) NOT NULL,
+    [FK_ASESOR] INT NOT NULL,
+    [FK_ALUMNO] INT NOT NULL,
+    [MATERIA] NVARCHAR(50) NOT NULL,
+    [DIA] NVARCHAR(12) NOT NULL,
+    [HORA] NVARCHAR(20) NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [CAMPUS] NVARCHAR(50) NOT NULL,
+    [ESPACIO] NVARCHAR(50) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+	[STATUS] NVARCHAR(20) NOT NULL
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_ASESORIA_ACEPTADA] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA]  WITH CHECK ADD CONSTRAINT [fk_asesor_asesoria] FOREIGN KEY([FK_ASESOR])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA]  WITH CHECK ADD CONSTRAINT [fk_alumno_asesoria] FOREIGN KEY([FK_ALUMNO])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+
+drop table CATR_ASESORIA_ACEPTADA
+
+**************************************************************************************************
+
+select distinct concat(HoraInicial,':',MinutoInicial,'-',HoraFinal,':',MinutoFinal),Dia from view_horarioalumno where clavemateria ='PDH' AND IdPeriodoEscolar = '20182' and clavegrupo='3030'
+
+select distinct clavegrupo from view_horarioalumno where clavemateria ='PDH' AND IdPeriodoEscolar = '20182'
+************************************************************************************************************
+ALTER TABLE CATR_ASESORIA_ACEPTADA ALTER COLUMN STATUS VARCHAR(20) NULL
+ALTER TABLE CATR_ASESORIA_GRUPO ALTER COLUMN STATUS VARCHAR(20) NULL
+ALTER TABLE CATR_ASESORIA_ACEPTADA ADD VALIDA NVARCHAR(50);
+ALTER TABLE CATR_ASESORIA_GRUPO ADD VALIDA NVARCHAR(50);
+ALTER TABLE CATR_ASESOR_ASESORIA_HORARIO ALTER COLUMN STATUS VARCHAR(20) NULL
+ALTER TABLE CATR_USER_ASESORIA_HORARIO ALTER COLUMN STATUS VARCHAR(20) NULL
+ALTER TABLE CATR_ASESORIA_ACEPTADA ALTER COLUMN ESPACIO VARCHAR(50) NULL
+ALTER TABLE users ALTER COLUMN sexo VARCHAR(15) NULL
+***********************************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CAT_MOTIVO_ASESORIA_ACADEMICA]
+(
+    [PK_MOTIVO_ASESORIA_ACADEMICA] [int] IDENTITY(1,1) NOT NULL,
+    [NOMBRE] NVARCHAR(100),
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CAT_MOTIVO_ASESORIA_ACADEMICA] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_MOTIVO_ASESORIA_ACADEMICA] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CAT_MOTIVO_ASESORIA_ACADEMICA] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+**********************************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TR_ASESORIA_MOTIVO]
+(
+    [PK_ASESORIA_MOTIVO] [int] IDENTITY(1,1) NOT NULL,
+    [FK_MOTIVO] INT NOT NULL,
+    [FK_SOLICITUD] INT NOT NULL,
+    [FK_USER] INT NOT NULL,
+    [TURNO] NVARCHAR(50) NOT NULL,
+    [MATERIA_APOYO1] NVARCHAR(50) NOT NULL,
+    [DOCENTE1] NVARCHAR(50) NOT NULL,
+    [EDAD] NVARCHAR(50) NOT NULL,
+    [RESIDENCIA] NVARCHAR(100) NOT NULL,
+    [OTRO] NVARCHAR(100) NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[TR_ASESORIA_MOTIVO] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_ASESORIA_MOTIVO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[TR_ASESORIA_MOTIVO] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[TR_ASESORIA_MOTIVO]  WITH CHECK ADD CONSTRAINT [fk_motivo] FOREIGN KEY([FK_MOTIVO])
+REFERENCES [dbo].[CAT_MOTIVO_ASESORIA_ACADEMICA] ([PK_MOTIVO_ASESORIA_ACADEMICA])
+GO
+ALTER TABLE [dbo].[TR_ASESORIA_MOTIVO]  WITH CHECK ADD CONSTRAINT [fk_motivo_solicitud] FOREIGN KEY([FK_SOLICITUD])
+REFERENCES [dbo].[CATR_USER_ASESORIA_HORARIO] ([PK_USER_ASESORIA_HORARIO])
+GO
+ALTER TABLE [dbo].[TR_ASESORIA_MOTIVO]  WITH CHECK ADD CONSTRAINT [fk_user_motivo] FOREIGN KEY([FK_USER])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+**********************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_CARTA_COMPROMISO_USER]
+(
+    [PK_CARTA_COMPROMISO_USER] [int] IDENTITY(1,1) NOT NULL,
+    [FK_USER] INT NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_CARTA_COMPROMISO_USER] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_CARTA_COMPROMISO_USER] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_CARTA_COMPROMISO_USER] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_CARTA_COMPROMISO_USER]  WITH CHECK ADD CONSTRAINT [fk_user_carta] FOREIGN KEY([FK_USER])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+************************************************************************************************
+ SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CAT_AFIRMACIONES_EVALUACION]
+(
+    [PK_AFIRMACIONES_EVALUACION] [int] IDENTITY(1,1) NOT NULL,
+    [NOMBRE] NVARCHAR(100),
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CAT_AFIRMACIONES_EVALUACION] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_AFIRMACIONES_EVALUACION] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CAT_AFIRMACIONES_EVALUACION] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+***********************************************************************************************
+ SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TR_EVALUACION_SATISFACCION]
+(
+    [PK_EVALUACION_SATISFACCION] [int] IDENTITY(1,1) NOT NULL,
+    [FK_AFIRMACION] INT NOT NULL,
+    [RESPUESTA] NVARCHAR(100) NOT NULL,
+    [FK_USER] INT NOT NULL,
+    [FK_ASESOR] INT NOT NULL,
+    [MATERIA] NVARCHAR(100) NOT NULL,
+    [SESIONES] INT NOT NULL,
+    [SUGERENCIA] NVARCHAR(500) NOT NULL,
+    [PERIODO] NVARCHAR(10) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[TR_EVALUACION_SATISFACCION] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_EVALUACION_SATISFACCION] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[TR_EVALUACION_SATISFACCION] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+*************************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_CARTA_COMPROMISO_ASESOR]
+(
+    [PK_CARTA_COMPROMISO_ASESOR] [int] IDENTITY(1,1) NOT NULL,
+    [FK_USER] INT NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_CARTA_COMPROMISO_ASESOR] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_CARTA_COMPROMISO_ASESOR] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_CARTA_COMPROMISO_ASESOR] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_CARTA_COMPROMISO_ASESOR]  WITH CHECK ADD CONSTRAINT [fk_asesor_carta] FOREIGN KEY([FK_USER])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+
+*******************************************FIN************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_REPORTE_DE_SESIONES]
+(
+    [PK_REPORTE_DE_SESIONES] [int] IDENTITY(1,1) NOT NULL,
+    [FK_ASESOR] INT NOT NULL,
+    [MATERIA] NVARCHAR(100) NOT NULL,
+    [SESION] INT NOT NULL,
+    [FECHA] [datetime] NOT NULL,
+    [ASISTENTES] INT NOT NULL,
+    [HORAINICIO] NVARCHAR(10) NOT NULL,
+    [HORAFINAL] NVARCHAR(10) NOT NULL,
+    [TEMA] NVARCHAR(10) NOT NULL,
+    [ACTIVIDADES_OBSERVACIONES] NVARCHAR(10) NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_REPORTE_DE_SESIONES] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_REPORTE_DE_SESIONES] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_REPORTE_DE_SESIONES] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_REPORTE_DE_SESIONES]  WITH CHECK ADD CONSTRAINT [fk_asesor_sesion] FOREIGN KEY([FK_ASESOR])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+*********************************************************************************************
+ALTER TABLE CATR_REPORTE_DE_SESIONES ALTER COLUMN ACTIVIDADES_OBSERVACIONES NVARCHAR(500) NOT NULL
+ALTER TABLE CATR_REPORTE_DE_SESIONES ALTER COLUMN TEMA NVARCHAR(500) NOT NULL
+*********************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_LISTA_DE_ASISTENCIA]
+(
+    [PK_LISTA_DE_ASISTENCIA] [int] IDENTITY(1,1) NOT NULL,
+    [FK_ASESOR] INT NOT NULL,
+    [FK_USER] INT NOT NULL,
+    [FECHA] [datetime] NOT NULL,
+    [ASISTIO] INT NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_LISTA_DE_ASISTENCIA] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_LISTA_DE_ASISTENCIA] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_LISTA_DE_ASISTENCIA] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_LISTA_DE_ASISTENCIA]  WITH CHECK ADD CONSTRAINT [fk_asesor_asistencia] FOREIGN KEY([FK_ASESOR])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+ALTER TABLE [dbo].[CATR_LISTA_DE_ASISTENCIA]  WITH CHECK ADD CONSTRAINT [fk_alumno_asistencia] FOREIGN KEY([FK_USER])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+ALTER TABLE [dbo].[CATR_LISTA_DE_ASISTENCIA] ADD  DEFAULT (0) FOR [ASISTIO]
+GO
+**********************************************************************************************
+  ALTER TABLE CATR_REPORTE_DE_SESIONES ALTER COLUMN FECHA DATE NOT NULL
+**********************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_REPORTE_FINAL]
+(
+    [PK_REPORTE_FINAL] [int] IDENTITY(1,1) NOT NULL,
+    [FK_ASESOR] INT NOT NULL,
+    [MATERIA] NVARCHAR(200) NOT NULL,
+    [FECHA_ENTREGA] [date] NOT NULL,
+    [FECHA_INICIO] [date] NOT NULL,
+    [FECHA_FIN] [date] NOT NULL,
+    [LUGAR] NVARCHAR(200) NOT NULL,
+    [ASESORADOS] INT NOT NULL,
+    [SESIONES] INT NOT NULL,
+    [SUGERENCIAS] NVARCHAR(500) NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_REPORTE_FINAL] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_REPORTE_FINAL] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_REPORTE_FINAL] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_REPORTE_FINAL]  WITH CHECK ADD CONSTRAINT [fk_asesor_final] FOREIGN KEY([FK_ASESOR])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+**********************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_ASESORIA_ACEPTADA_SITUACION](
+	[PK_ASESORIA_ACEPTADA_SITUACION] [int] IDENTITY(1,1) NOT NULL,
+	[FK_ASESOR] [int] NOT NULL,
+	[CONTROL_ALUMNO] [int] NOT NULL,
+	[MATERIA] [nvarchar](50) NOT NULL,
+	[DIA] [nvarchar](12) NOT NULL,
+	[HORA] [nvarchar](20) NOT NULL,
+	[PERIODO] [nvarchar](5) NOT NULL,
+	[CAMPUS] [nvarchar](50) NOT NULL,
+	[ESPACIO] [varchar](50) NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[STATUS] [nvarchar](20) NOT NULL,
+	[VALIDA] [nvarchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PK_ASESORIA_ACEPTADA_SITUACION] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA_SITUACION] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_ASESORIA_ACEPTADA_SITUACION]  WITH CHECK ADD  CONSTRAINT [fk_asesor_asesoria_situacion] FOREIGN KEY([FK_ASESOR])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+**********************************************************************************************
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CATR_CALIFICACION_PARCIAL]
+(
+    [PK_CALIFICACION_PARCIAL] [int] IDENTITY(1,1) NOT NULL,
+    [FK_USUARIO] INT NOT NULL,
+    [FK_ASESOR] INT NOT NULL,
+    [MATERIA] NVARCHAR(100) NOT NULL,
+    [AULA] NVARCHAR(50) NOT NULL,
+    [DIA] NVARCHAR(50) NOT NULL,
+    [HORA] NVARCHAR(50) NOT NULL,
+    [UNIDAD] NVARCHAR(10) NOT NULL,
+    [CALIFICACION] NVARCHAR(3) NOT NULL,
+    [OBSERVACIONES] NVARCHAR(200) NOT NULL,
+    [PERIODO] NVARCHAR(5) NOT NULL,
+    [FECHA_REGISTRO] [datetime] NOT NULL,
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_CALIFICACION_PARCIAL] ADD PRIMARY KEY CLUSTERED 
+(
+	[PK_CALIFICACION_PARCIAL] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CATR_CALIFICACION_PARCIAL] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+ALTER TABLE [dbo].[CATR_CALIFICACION_PARCIAL]  WITH CHECK ADD CONSTRAINT [fk_user_calificacion] FOREIGN KEY([FK_USUARIO])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+ALTER TABLE [dbo].[CATR_CALIFICACION_PARCIAL]  WITH CHECK ADD CONSTRAINT [fk_asesor_calificacion] FOREIGN KEY([FK_ASESOR])
+REFERENCES [dbo].[users] ([PK_USUARIO])
+GO
+**********************************************************************************************
+select s.NumeroControl,a.Nombre,a.ApellidoPaterno,a.ApellidoMaterno, s.FechaPrimera
+from view_seguimiento s
+    INNER JOIN view_reticula r on r.ClaveMateria=s.ClaveMateria
+    INNER JOIN view_alumnos a on a.NumeroControl=s.NumeroControl
+where a.Estado = 'AR' and IdNivelCurso = 'CR' or
+    a.Estado = 'AR' and IdNivelCurso = 'CE' or
+    a.Estado = 'AR' and IdNivelCurso = 'CE2'
+
+select distinct r.Nombre,r.ClaveMateria
+from view_seguimiento s
+    INNER JOIN view_reticula r on r.ClaveMateria=s.ClaveMateria
+    INNER JOIN view_alumnos a on a.NumeroControl=s.NumeroControl
+where a.Estado = 'AR' and IdNivelCurso = 'CR' and s.NumeroControl='14240683' or
+    a.Estado = 'AR' and IdNivelCurso = 'CE' and s.NumeroControl='14240683' or
+    a.Estado = 'AR' and IdNivelCurso = 'CE2' and s.NumeroControl='14240683'
+
+
+select distinct o.Nombre
+from view_horarioalumno s
+ INNER JOIN view_reticula o on o.ClaveMateria=s.clavemateria
+where s.IdPeriodoEscolar='20191' and o.ClaveMateria = 'R1' and s.NumeroControl='14240683'
+
+
 
 
 *******************************************FIN************************************************

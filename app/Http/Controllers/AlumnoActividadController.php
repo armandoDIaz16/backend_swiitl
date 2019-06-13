@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\alumno_actividad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-//use App\Mail\RegistroActividadMail;
+use App\Mail\RegistroActividadMail;
 
 use DB;
 use QrCode;
@@ -53,7 +53,7 @@ class AlumnoActividadController extends Controller
         $alumno_actividad->FK_ALUMNO = $request->FK_ALUMNO;
         $alumno_actividad->save();
         //echo json_encode($alumno_actividad);
-    /*
+    
         //obtener el id de la actividad que se acaba de registrar
         $actividad = alumno_actividad::select('PK_ALUMNO_ACTIVIDAD')
                             ->where('FK_ACTIVIDAD','=', $request->FK_ACTIVIDAD)
@@ -72,11 +72,11 @@ class AlumnoActividadController extends Controller
                      ->where('PK_ACTIVIDAD','=', $request->FK_ACTIVIDAD)
                      ->get()->first();
  
-        QrCode::format('png')->size(500)->generate($actividad->PK_ALUMNO_ACTIVIDAD, public_path('images/qrcode.png'));
+        QrCode::format('png')->size(500)->generate($actividad->PK_ALUMNO_ACTIVIDAD, public_path('creditos-complementarios/codigos-qr-a-c/qrcode-f-'.$actividad->PK_ALUMNO_ACTIVIDAD.'.png'));
 
         Mail::to($correo->email, $correo->name)
-            ->send(new RegistroActividadMail($correo->name, $datos_act->NOMBRE, $datos_act->FECHA, $datos_act->LUGAR, $datos_act->HORA));
-*/
+            ->send(new RegistroActividadMail($actividad->PK_ALUMNO_ACTIVIDAD,$correo->name, $datos_act->NOMBRE, $datos_act->FECHA, $datos_act->LUGAR, $datos_act->HORA));
+
         //echo "correo enviado";
   
     }
@@ -128,5 +128,16 @@ class AlumnoActividadController extends Controller
         $alumno_actividad = alumno_actividad::find($id);
         $alumno_actividad->delete();
     }
+
+    public function ctlAlumnoActividad ($FK_ACTIVIDAD, $FK_ALUMNO) {
+        //obtener el id de la actividad que se acaba de registrar
+        $actividad = alumno_actividad::select('PK_ALUMNO_ACTIVIDAD')
+        ->where('FK_ACTIVIDAD', '=', $FK_ACTIVIDAD)
+        ->where('FK_ALUMNO','=', $FK_ALUMNO)
+        ->get()->first();
+
+        $response = Response::json($actividad);
+       return $response;
+   }
 }
 

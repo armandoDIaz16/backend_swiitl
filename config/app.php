@@ -174,7 +174,8 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        App\Providers\RouteServiceProvider::class
+
 
     ],
 
@@ -227,8 +228,10 @@ return [
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class, 
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
 
+
         /* CLASES DEFINIDAS POR EL PROGRAMADOR */
-        'Constantes_Alumnos' => App\Constantes_Alumnos::class,
+        'Constantes_Alumnos' => App\Constantes_Alumnos::class
+
 
     ],
 

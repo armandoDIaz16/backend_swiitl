@@ -42,8 +42,13 @@ class ReporteDocenteController extends Controller
                 $y = 5;
                 break;
         }
+        try{
         $diai = $fecha->FIniD($request->id, $y);
         $diaf = $fecha->FFinD($request->id, $y);
+        }
+        catch(\Exception $exception){
+            return response()->json('Fecha aun no activa');
+        }
         $dia = date('Y-m-d');
         if ($diai<=$dia && $dia<=$diaf) {
             $reporte->ALUMNO = $request->alumno;
@@ -63,7 +68,10 @@ class ReporteDocenteController extends Controller
 
     public function show($id)
     {
-        $var = DB::select('SELECT * FROM CAT_REPORTE_DOCENTE JOIN CATR_DOCENTE ON CAT_REPORTE_DOCENTE.DOCENTE = CATR_DOCENTE.ID_PADRE
+        $var = DB::select('SELECT * 
+                                  FROM CAT_REPORTE_DOCENTE 
+                                  JOIN CATR_DOCENTE ON CAT_REPORTE_DOCENTE.DOCENTE = CATR_DOCENTE.ID_PADRE
+                                  JOIN users ON CAT_REPORTE_DOCENTE.ALUMNO = users.PK_USUARIO
                                 WHERE CATR_DOCENTE.ID_PADRE = :id',['id'=>$id]);
         return $var;
         /*$area = DB::select('SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :padre',['padre'=>$id]);

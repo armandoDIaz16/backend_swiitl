@@ -20,6 +20,7 @@ class CreateCatrCarrera extends Migration
             /* DATOS GENERALES */
             $table->string('CLAVE');
             $table->string('NOMBRE');
+            $table->string('CAMPUS');
             $table->smallInteger('ESTADO');
 
             /* CLAVES FORANEAS */
