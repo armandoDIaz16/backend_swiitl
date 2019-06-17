@@ -17,6 +17,10 @@ class Seccion_EncuestaController extends Controller
     public function index()
     {
         //GET
+     /*   $users = DB::table('users')
+            ->orderBy('name', 'desc')
+            ->get();
+    */
         $seccion = Seccion_Encuesta::get();
         echo json_encode($seccion);
     }

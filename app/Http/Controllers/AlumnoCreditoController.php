@@ -66,6 +66,7 @@ class AlumnoCreditoController extends Controller
                     ->join('users','FK_ALUMNO','=','PK_USUARIO')
                     ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
                     ->where('VALIDADO','=',0)
+                    ->take(200)
                     ->get();
         $response = Response::json($creditos);
         return $response;
@@ -99,6 +100,8 @@ class AlumnoCreditoController extends Controller
                     ->join('users','FK_ALUMNO','=','PK_USUARIO')
                     ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
                     ->where('VALIDADO','=',1)
+                    ->orderBy('PK_ALUMNO_CREDITO','desc')
+                    ->take(200)
                     ->get();
         $response = Response::json($creditos);
         return $response;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CreditosSiia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -50,7 +51,34 @@ JOIN CAT_CARTA_CALIFICACION_RESIDENCIA ON CATR_ALUMNO.NUMERO_CONTROL = CAT_CARTA
 
     public function show($id)
     {
-        //
+        $periodo = new CreditosSiia();
+        $actual = $periodo->periodo();
+        $final = [];
+        $alumno = DB::select('select CATR_ALUMNO.NUMERO_CONTROL, CAT_CARTA_CALIFICACION_RESIDENCIA.FECHA, CATR_CALIFICACION_ALUMNO.CALIFICACION, CAT_CARTA_CALIFICACION_RESIDENCIA.FOLIO_ASIGNADO
+                                    FROM CAT_CARTA_CALIFICACION_RESIDENCIA
+                                    JOIN CATR_ALUMNO ON CAT_CARTA_CALIFICACION_RESIDENCIA.NUMERO_CONTROL = CATR_ALUMNO.NUMERO_CONTROL
+                                    JOIN CATR_CALIFICACION_ALUMNO ON CATR_ALUMNO.ID_PADRE = CATR_CALIFICACION_ALUMNO.FK_ALUMNO
+                                    WHERE PERIODO = :periodo', ['periodo' => $actual]);
+
+
+
+        foreach ($alumno as $index => $value) {
+            $no = $value->NUMERO_CONTROL;
+            $nocontrol = DB::connection('sqlsrv2')->select('SELECT
+                                                                        view_alumnos.Semestre 
+                                                                    from view_horarioalumno 
+                                                                    join view_alumnos on view_horarioalumno.NumeroControl = view_alumnos.NumeroControl 
+                                                                    where ClaveMateria = :materia 
+                                                                    and IdPeriodoEscolar = :periodo 
+                                                                    and Dia = :dia
+                                                                    and view_alumnos.NumeroControl = :nol',['materia'=>'R1', 'periodo'=>$actual, 'dia'=>'1', 'nol'=>$no]);
+            $t = json_decode(json_encode($nocontrol), true);
+            $t2 = array_pop($t);
+            $t3 = array_pop($t2);
+            $value->SEMESTRE = $t3;
+            $value->PERIODO = $actual;
+        }
+        return $alumno;
     }
 
 

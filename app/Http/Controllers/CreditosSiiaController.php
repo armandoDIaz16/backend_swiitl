@@ -27,7 +27,7 @@ class CreditosSiiaController extends Controller
             $id_padre1 = json_decode(json_encode($id_padre), true);
             $id_padre2 = array_pop($id_padre1);
             $id_padre3 = array_pop($id_padre2);
-            DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '2', 'FK_USUARIO' => $id_padre3]);
+            DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '8', 'FK_USUARIO' => $id_padre3]);
             $documentacion = new Documentacion();
             $documentacion->ALUMNO = $id_padre3;
             $documentacion->PERIODO = $var->periodo();
@@ -66,7 +66,7 @@ class CreditosSiiaController extends Controller
 
         for($i=0;$i<count($varcor1);$i++) {
 
-            $varcor3 = array_pop($varcor2);
+            $varcoroller3 = array_pop($varcor2);
 
             $varcor4 = array_pop($varcor3);
 
@@ -95,7 +95,7 @@ class CreditosSiiaController extends Controller
                 $id_padre1 = json_decode(json_encode($id_padre), true);
                 $id_padre2 = array_pop($id_padre1);
                 $id_padre3 = array_pop($id_padre2);
-                DB::table('PER_TR_ROL_USUARIO')->where(['FK_ROL' => '2', 'FK_USUARIO' => $id_padre3])->delete();
+                DB::table('PER_TR_ROL_USUARIO')->where(['FK_ROL' => '8', 'FK_USUARIO' => $id_padre3])->delete();
                 DB::table('CAT_DOCUMENTACION')->where('ALUMNO', $id_padre3)->delete();
             }
         }

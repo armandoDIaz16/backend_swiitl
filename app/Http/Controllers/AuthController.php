@@ -18,7 +18,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','signup']]);
+        $this->middleware('auth:api', ['except' => ['login','signup','signupAdminCredito']]);
     }
 
     /**
@@ -116,5 +116,20 @@ class AuthController extends Controller
 
         ]);
 
+    }
+
+    /* --------------------------
+    Servicios para el registro de usuarios que no son alumnos en el sistema de CREDITOS COMPLEMENTARIOS
+    --------------------------------
+    */
+
+    public function signupAdminCredito(SignUpRequest $request)
+    {
+        //todo Cambiar a generación de objeto de usaurio de forma explícita
+        User::create($request->all());
+
+
+        return response()->json(['data' => true], Response::HTTP_OK);
+        //return $this->login($request);
     }
 }
