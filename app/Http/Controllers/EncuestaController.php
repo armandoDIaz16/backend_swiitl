@@ -100,7 +100,6 @@ class EncuestaController extends Controller
                     );
                 }
             }
-
         return  array(
             "encuesta" => array(
                 "PK_ENCUESTA"   => $encuesta->PK_ENCUESTA,
