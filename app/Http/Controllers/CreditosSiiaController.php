@@ -66,7 +66,7 @@ class CreditosSiiaController extends Controller
 
         for($i=0;$i<count($varcor1);$i++) {
 
-            $varcor3 = array_pop($varcor2);
+            $varcoroller3 = array_pop($varcor2);
 
             $varcor4 = array_pop($varcor3);
 

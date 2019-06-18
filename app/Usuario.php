@@ -8,6 +8,7 @@ class Usuario extends Model
 {
     protected $fillable = [
     'NOMBRE',
+    'ESTADO',
     'PRIMER_APELLIDO',
     'SEGUNDO_APELLIDO',
     'FECHA_NACIMIENTO',
@@ -28,8 +29,7 @@ class Usuario extends Model
     ];
     public $timestamps = false;
 
+    protected $primaryKey = 'PK_USUARIO';
 
     protected $table = 'users';
-
-
 }
