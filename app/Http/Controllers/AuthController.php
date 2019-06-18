@@ -16,27 +16,25 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login','signup','signupAdminCredito']]);
-    }
-
+    
     /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+
+
+     public function login()
     {
         $credentials = request(['curp', 'password']);
 
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Correo o contraseña no registrada brow'], 401);
+        if (!$token = auth('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Correo o contraseña no registrada brow :v'], 401);
         }
 
         return $this->respondWithToken($token);
 
-    }
+    }  
 
     public function signup(SignUpRequest $request)
     {
