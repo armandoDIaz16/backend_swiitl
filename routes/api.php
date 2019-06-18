@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 Route::post('login', 'AuthController@login');
 Route :: middleware ('jwt.auth') -> get('GraficaCampus3/{PK_PERIODO}', 'AspiranteController@graficaCampus');
-Route :: middleware ('api') -> get('GraficaCampus4/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+Route :: middleware ('auth:api') -> get('GraficaCampus4/{PK_PERIODO}', 'AspiranteController@graficaCampus');
 Route::middleware('jwt.auth')->get('users', function () {
     return auth('api')->user();
 });
