@@ -19,18 +19,12 @@ Route::group([
     Route::post('control', 'NumeroControl@getControl');
     // Route::post('permisos', 'Sistema_permisos@getPermisos');
 
+/*     Route::group(['middleware' => 'jwt.auth'], function () {
+        Route::get('logout', 'AuthController@logout');
+        Route::post('PAAE_Periodo', 'PAAE_Periodo@store');
+        //Route::post('control', 'NumeroControl@getControl');
 
-    Route::group(['middleware' => ['jwt.auth']], function () {
-        Route::group(['middleware' => ['jwt.auth']], function () {
-            Route::get('logout', 'AuthController@logout');
-            Route::post('PAAE_Periodo', 'PAAE_Periodo@store');
-
-            //Route::post('control', 'NumeroControl@getControl');
-
-        });
-        //Route::post('periodo', 'PAAE_Periodo@getPeriodo');
-
-    });
+    }); */
 });
 
 /*
@@ -274,6 +268,8 @@ Route::resource('Ciudad', 'CiudadController');
 Route::resource('Colonia', 'ColoniaController');
 Route::resource('Bachillerato', 'BachilleratoController');
 Route::resource('CodigoPostal', 'CodigoPostalController');
+//Route::group(['middleware' => 'auth:api'], function(){
+Route::middleware('jwt.auth')->get('GraficaCampus2/{PK_PERIODO}', 'AspiranteController@graficaEstatus');;
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('Aspirante/{id}', 'AspiranteController@show');
     Route::post('Periodo', 'PeriodoController@store');
