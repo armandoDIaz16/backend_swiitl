@@ -274,8 +274,7 @@ Route::resource('Ciudad', 'CiudadController');
 Route::resource('Colonia', 'ColoniaController');
 Route::resource('Bachillerato', 'BachilleratoController');
 Route::resource('CodigoPostal', 'CodigoPostalController');
-
-Route::group(['middleware' => ['jwt.auth']], function () {
+Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('Aspirante/{id}', 'AspiranteController@show');
     Route::post('Periodo', 'PeriodoController@store');
     Route::get('Referencia/{preficha}', 'AspiranteController@referencia');
