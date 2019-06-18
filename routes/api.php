@@ -1,9 +1,13 @@
 <?php
 
 use Illuminate\Http\Request;
-Route::post('login', 'AuthController@login');
-Route :: middleware ('jwt.auth') -> get('GraficaCampus3/{PK_PERIODO}', 'AspiranteController@graficaCampus');
-Route :: middleware ('auth:api') -> get('GraficaCampus4/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+Route::post('login', 'AuthController@login')->name('login');
+Route::middleware('jwt.auth')->get('GraficaCampus3/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+Route::middleware(['jwt.verify'])->get('GraficaCampus4/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+
+Route::group(['middleware' => ['jwt.verify']], function() {
+    Route::get('GraficaCampus5/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+});
 Route::middleware('jwt.auth')->get('users', function () {
     return auth('api')->user();
 });
