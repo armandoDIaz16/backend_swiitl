@@ -626,7 +626,7 @@ Route::resource('Colonia', 'ColoniaController');
 Route::resource('Bachillerato', 'BachilleratoController');
 Route::resource('CodigoPostal', 'CodigoPostalController');
 
-Route::group(['middleware' => ['jwt.auth']], function () {
+//Route::group(['middleware' => ['jwt.auth']], function () {
     Route::resource('Aspirante', 'AspiranteController');
     Route::post('Periodo', 'PeriodoController@store');
     Route::get('Referencia/{preficha}', 'AspiranteController@referencia');
@@ -656,7 +656,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
 
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
-});
+//});
 
 
 
