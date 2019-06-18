@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 
 Route::group([
 
-    'middleware' => 'jwt.auth',
+    'middleware' => 'api',
 
 ], function ($Router) {
     //Route::post('login', [ 'as' => 'login', 'uses' => 'AuthController@login']);
