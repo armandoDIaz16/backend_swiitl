@@ -272,7 +272,7 @@ Route::resource('Colonia', 'ColoniaController');
 Route::resource('Bachillerato', 'BachilleratoController');
 Route::resource('CodigoPostal', 'CodigoPostalController');
 //Route::group(['middleware' => 'auth:api'], function(){
-Route :: middleware ('jwt.auth') -> get('GraficaCampus2/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+Route :: middleware ('auth:api') -> get('GraficaCampus2/{PK_PERIODO}', 'AspiranteController@graficaCampus');
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('Aspirante/{id}', 'AspiranteController@show');
     Route::post('Periodo', 'PeriodoController@store');
