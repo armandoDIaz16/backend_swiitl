@@ -21,7 +21,7 @@
         {
             try {
                 $headers = apache_request_headers(); //get header
-                $request->headers->set('Authorization', $headers['authorization']);// set header in request
+                $request->headers->set('Authorization', $headers['Authorization']);// set header in request
             } catch (Exception $e) {
                 if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
                     return response()->json(['status' => 'Token is Invalid']);
