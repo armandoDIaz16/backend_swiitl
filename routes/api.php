@@ -1,9 +1,16 @@
 <?php
 
 use Illuminate\Http\Request;
-Route::post('login', 'AuthController@login')->name('login');
-Route::middleware('jwt.auth')->get('GraficaCampus3/{PK_PERIODO}', 'AspiranteController@graficaCampus');
-Route::middleware(['jwt.verify'])->get('GraficaCampus4/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+
+Route::post('login', 'AuthController@login');    
+Route::post('login', 'AuthController@login');
+Route::post('signup', 'AuthController@signup');
+Route::post('logout', 'AuthController@logout');
+Route::post('refresh', 'AuthController@refresh');
+Route::post('me', 'AuthController@me');
+Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
+Route::post('resetPassword', 'ChangePasswordController@process');
+Route::post('control', 'NumeroControl@getControl');
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('GraficaCampus5/{PK_PERIODO}', 'AspiranteController@graficaCampus');
@@ -17,19 +24,9 @@ Route::middleware('jwt.auth')->get('users', function () {
     'middleware' => 'api',
 
 ], function ($Router) {
-    //Route::post('login', [ 'as' => 'login', 'uses' => 'AuthController@login']);
-    Route::post('login', 'AuthController@login');
-    Route::post('signup', 'AuthController@signup');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
-    Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
-    //Route::post('sendAspirantePasswordLink','AspirantePasswordController@sendEmail');
-    Route::post('resetPassword', 'ChangePasswordController@process');
-    Route::post('control', 'NumeroControl@getControl');
-    // Route::post('permisos', 'Sistema_permisos@getPermisos');
-});
- */
+
+}); */
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
