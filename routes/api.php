@@ -268,10 +268,11 @@ Route::resource('Ciudad', 'CiudadController');
 Route::resource('Colonia', 'ColoniaController');
 Route::resource('Bachillerato', 'BachilleratoController');
 Route::resource('CodigoPostal', 'CodigoPostalController');
+Route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
+Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('Aspirante/{id}', 'AspiranteController@show');
     Route::post('Periodo', 'PeriodoController@store');
-    Route::get('Referencia/{preficha}', 'AspiranteController@referencia');
     Route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
     Route::get('Aspirantes2', 'AspiranteController@aspirantes2');
     Route::get('Aspirantes3/{PK_PERIODO}', 'AspiranteController@aspirantes3');
@@ -284,8 +285,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('CargarArchivoRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoRegistroCENEVAL');
     Route::post('CargarArchivoAceptados/{PK_PERIODO}', 'AspiranteController@cargarArchivoAceptados');
     Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
-    Route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
-    Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
     Route::get('Grupo', 'GrupoController@listaGrupos');
 
     Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
