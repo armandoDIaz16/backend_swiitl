@@ -384,3 +384,10 @@ Route::post('CreaFin', 'PAAE_Periodo@creaFinal');
 Route::post('AsignaSituacion', 'PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE', 'PAAE_Periodo@enviarCorreos');
 Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
+
+/* *********************************************************** *
+ * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
+ * *********************************************************** */
+// Route::group(['middleware' => ['jwt.verify']], function() {
+    Route::get('cuestionario/{id}', 'SITCuestionarioController@get_cuestionario');
+// });
