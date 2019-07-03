@@ -79,7 +79,7 @@ class AnteproyectoResidenciasController extends Controller
             $anteproyecto->AREA_ACADEMICA = $request->AreaAcademica;
             $anteproyecto->AUTOR = $request->Autor;
             $anteproyecto->EMPRESA = $request->Empresa;
-            $anteproyecto->TIPO_ESPECIALIDAD = $request->Comentario;
+            $anteproyecto->COMENTARIO = $request->Comentario;
             $periodo = new CreditosSiia();
             $anteproyecto->PERIODO = $periodo->periodo();
             $anteproyecto->save();
