@@ -158,6 +158,8 @@ Route::get('Pdf/{id}', 'FichaUnicaController@FUApdf');
 Route::get('Proyecto1/{id}', 'AnteproyectoResidenciasController@ind1');
 Route::get('Proyecto2/{id}', 'AnteproyectoResidenciasController@ind2');
 Route::get('Totalp', 'EstadisticasController@totalproyectos');
+Route::get('GraficaMaestro/{id}', 'ProyectoController@maestros');
+Route::get('Verdoc/{id}', 'DocumentacionResidenciasController@verdoc');
 Route::resource('CreditosSiia', 'CreditosSiiaController');
 //});
 /*************************************************************************************

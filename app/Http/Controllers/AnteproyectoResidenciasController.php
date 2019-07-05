@@ -132,20 +132,26 @@ class AnteproyectoResidenciasController extends Controller
                 //$ruta = $carga->savefile($request);
                 //$anteproyecto->pdf = $ruta;
             }
-            if($request->Alumno){
-                $diai = $fecha->FIniA($request->Alumno,1);
-                $diaf = $fecha->FFinA($request->Alumno,1);
-                if($diai<=$dia && $dia<=$diaf) {
-                    $x = $request->Alumno;
-                    $etse = AnteproyectoResidencias::where('ALUMNO', $x)->first();
-                    if ($anteproyecto->Alumno != 'NULL') {
-                        if ($etse == NULL) {
-                            $anteproyecto->ALUMNO = $x;
-                            //return $f = json_encode('ok');
-                        } else ;//return $i = json_encode('Un alumno no puede tener más de un proyecto.');
-                    } else ;//return  $h = json_encode('Proyecto ya esta asignado a un alumno.');
-                    //$anteproyecto->Alumno = $request->Alumno;
-                }
+            if($request->Alumno) {
+                $alumno = DB::select('SELECT ID_PADRE FROM CATR_ALUMNO WHERE ID_PADRE = :id', ['id' => $request->Usuario]);
+                if ($alumno != NULL) {
+                   // \Log::debug('Test var fails 2');
+                    $diai = $fecha->FIniA($request->Alumno, 1);
+                   // \Log::debug('Test var fails 3');
+                    $diaf = $fecha->FFinA($request->Alumno, 1);
+                   // \Log::debug('Test var fails 4');
+                    if ($diai <= $dia && $dia <= $diaf) {
+                        $x = $request->Alumno;
+                        $etse = AnteproyectoResidencias::where('ALUMNO', $x)->first();
+                        if ($anteproyecto->Alumno != 'NULL') {
+                            if ($etse == NULL) {
+                                $anteproyecto->ALUMNO = $x;
+                                //return $f = json_encode('ok');
+                            } else ;//return $i = json_encode('Un alumno no puede tener más de un proyecto.');
+                        } else ;//return  $h = json_encode('Proyecto ya esta asignado a un alumno.');
+                        //$anteproyecto->Alumno = $request->Alumno;
+                    }
+                } else $anteproyecto->ALUMNO = $request->Alumno;
             }
             if($request->Estatus){
                 $anteproyecto->ESTATUS = $request->Estatus;
@@ -170,6 +176,7 @@ class AnteproyectoResidenciasController extends Controller
                 }
             }
         $anteproyecto->save();
+        return json_encode('Guardado con exito');
     }
 
     /**

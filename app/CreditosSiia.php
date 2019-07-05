@@ -119,7 +119,7 @@ GROUP BY
             FROM 
                 users 
                 JOIN CATR_ALUMNO ON users.PK_USUARIO = CATR_ALUMNO.ID_PADRE 
-            WHERE NUMERO_CONTROL = :numerocontrol', ['numerocontrol' => $nprimero]);
+            WHERE CATR_ALUMNO.NUMERO_CONTROL = :numerocontrol', ['numerocontrol' => $nprimero]);
             if($tcorreo != null){
                 array_push($tcorreo2,$tcorreo);
             }

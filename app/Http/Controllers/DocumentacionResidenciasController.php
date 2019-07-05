@@ -55,13 +55,28 @@ class DocumentacionResidenciasController extends Controller
     {
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
-        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, users.name, CAT_DOCUMENTACION.CARTA_FINALIZACION 
+        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, users.name, CAT_DOCUMENTACION.CARTA_FINALIZACION, PRIMER_APELLIDO,
+                                    SEGUNDO_APELLIDO, PK_USUARIO 
                                   FROM CAT_DOCUMENTACION 
                                   JOIN CATR_ALUMNO ON CAT_DOCUMENTACION.ALUMNO = CATR_ALUMNO.ID_PADRE
                                   JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
                                   JOIN CATR_CARRERA ON CATR_ALUMNO.CLAVE_CARRERA = CATR_CARRERA.CLAVE
                                   WHERE CATR_CARRERA.FK_AREA_ACADEMICA = :caa
                                   AND CAT_DOCUMENTACION.PERIODO = :periodo',['caa'=>$id,'periodo'=>$actual]);
+
+        foreach ($documentos as $index => $value) {
+            $no = $value->PK_USUARIO;
+            $informe = DB::select('SELECT INFORME FROM CAT_INFORME_ALUMNO WHERE FK_ALUMNO = :alumno',['alumno'=>$no]);
+            $in = json_decode(json_encode($informe), true);
+            if( $in != null) {
+                $in2 = array_pop($in);
+                $in3 = array_pop($in2);
+                $value->INFORME = $in3;
+            } else {
+                $value->INFORME = $in;
+            }
+        }
+
             return $documentos;
     }
 
@@ -144,12 +159,34 @@ class DocumentacionResidenciasController extends Controller
         return response()->json('Fuera de fecha permitida');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function verdoc($id){
+        $periodo = new CreditosSiia();
+        $actual = $periodo->periodo();
+        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, users.name, CAT_DOCUMENTACION.CARTA_FINALIZACION, PRIMER_APELLIDO,
+                                    SEGUNDO_APELLIDO, PK_USUARIO 
+                                  FROM CAT_DOCUMENTACION 
+                                  JOIN CATR_ALUMNO ON CAT_DOCUMENTACION.ALUMNO = CATR_ALUMNO.ID_PADRE
+                                  JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
+                                  JOIN CATR_CARRERA ON CATR_ALUMNO.CLAVE_CARRERA = CATR_CARRERA.CLAVE
+                                  WHERE CATR_CARRERA.FK_AREA_ACADEMICA = (SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :caa)
+                                  AND CAT_DOCUMENTACION.PERIODO = :periodo',['caa'=>$id,'periodo'=>$actual]);
+
+        foreach ($documentos as $index => $value) {
+            $no = $value->PK_USUARIO;
+            $informe = DB::select('SELECT INFORME FROM CAT_INFORME_ALUMNO WHERE FK_ALUMNO = :alumno',['alumno'=>$no]);
+            $in = json_decode(json_encode($informe), true);
+            if( $in != null) {
+                $in2 = array_pop($in);
+                $in3 = array_pop($in2);
+                $value->INFORME = $in3;
+            } else {
+                $value->INFORME = $in;
+            }
+        }
+
+        return $documentos;
+    }
+
     public function destroy($id)
     {
         //
