@@ -11,7 +11,7 @@ use DB;
 
 class constanciasCreditosController extends Controller
 {
-    public function generarConstancia($pk_alumno_credito){
+    public function generarConstancia(Request $request){
 
 
         $mpdf = new Mpdf(['orientation' => 'p']);
@@ -20,100 +20,51 @@ class constanciasCreditosController extends Controller
                 ->join('users as u','ac.FK_ALUMNO','=','u.PK_USUARIO')
                 ->join('LINEAMIENTOS as l','ac.FK_LINEAMIENTO','=','l.PK_LINEAMIENTO')
                 ->select('ac.PK_ALUMNO_CREDITO', 'u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','l.NOMBRE','ac.CALIFICACION', 'ac.PERIODO')
-                ->where('ac.PK_ALUMNO_CREDITO','=',$pk_alumno_credito)
+                ->where('ac.PK_ALUMNO_CREDITO','=',$request->pk_alumno_credito)
                 ->get()->first();
 
-               /*  $response = Response::json($datos);
-                return $response; */
-        
-                $html_final = view('constancias.creditosComplementarios',['DATOS'=>$datos]);
-                /*Fuenres*/
-                /** @noinspection PhpLanguageLevelInspection */
-                $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-                $fontDirs = $defaultConfig['fontDir'];
-        
-                /** @noinspection PhpLanguageLevelInspection */
-                $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-                $fontData = $defaultFontConfig['fontdata'];
-        
-                $mpdf = new Mpdf([
-                    'fontDir' => array_merge($fontDirs, [
-                        __DIR__ . '/custom/font/directory',
-                    ]),
-                    'fontdata' => $fontData + [
-                            'montserrat' => [
-                                'R' => 'Montserrat-Medium.ttf',
-                                'B' => 'Montserrat-ExtraBold.ttf',
-                            ]
-                        ],
-                    'default_font' => 'montserrat'
-                ]);
-        
-                $path = public_path() . '/img/marca_agua.jpg';
-                \Log::debug($path);
-                $mpdf->SetDefaultBodyCSS('background', "url('".$path."')");
-                $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
-        
-                $mpdf->WriteHTML($html_final);
-                $mpdf->Output(public_path().'/creditos-complementarios/constancias/constancias-oficiales/ConstanciaCreditos-folio-'.$datos->PK_ALUMNO_CREDITO.'.pdf','F');
+        $data[] = [
+            'PK_ALUMNO_CREDITO' => $datos->PK_ALUMNO_CREDITO,
+            'PRIMER_APELLIDO' => $datos->PRIMER_APELLIDO,
+            'SEGUNDO_APELLIDO' => $datos->SEGUNDO_APELLIDO,
+            'NOMBRE' => $datos->name,
+            'NUMERO_CONTROL' => $datos->NUMERO_CONTROL,
+            'LINEAMIENTO' => $datos->NOMBRE,
+            'CALIFICACION' => $datos->CALIFICACION,
+            'PERIODO' => $datos->PERIODO,
+            'FOLIO' => $request->FOLIO,
+            'DEPARTAMENTO' => $request->DEPARTAMENTO
+        ];
 
-
-                /*CONSTANCIA VERSION ALUMNOS */
-
-                $html_final2 = view('constancias.creditosComplementarios',['DATOS'=>$datos]);
-                /*Fuenres*/
-                /** @noinspection PhpLanguageLevelInspection */
-                $defaultConfig2 = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-                $fontDirs2 = $defaultConfig2['fontDir'];
-        
-                /** @noinspection PhpLanguageLevelInspection */
-                $defaultFontConfig2 = (new \Mpdf\Config\FontVariables())->getDefaults();
-                $fontData2 = $defaultFontConfig2['fontdata'];
-        
-                $mpdf2 = new Mpdf([
-                    'fontDir' => array_merge($fontDirs2, [
-                        __DIR__ . '/custom/font/directory',
-                    ]),
-                    'fontdata' => $fontData2 + [
-                            'montserrat' => [
-                                'R' => 'Montserrat-Medium.ttf',
-                                'B' => 'Montserrat-ExtraBold.ttf',
-                            ]
-                        ],
-                    'default_font' => 'montserrat'
-                ]);
-        
-                $path2 = public_path() . '/img/marca_agua-vista-previa.jpeg';
-                \Log::debug($path2);
-                $mpdf2->SetDefaultBodyCSS('background', "url('".$path2."')");
-                $mpdf2->SetDefaultBodyCSS('background-image-resize', 6);
-        
-                $mpdf2->WriteHTML($html_final2);
-                $mpdf2->Output(public_path().'/creditos-complementarios/constancias/constancias-vista-previa/ConstanciaCreditos-preview-folio-'.$datos->PK_ALUMNO_CREDITO.'.pdf','F');
-
+                $response = Response::json($data);
+                return $response; 
 
     }
 
     public function verConstanciaOficial($pk_alumno_credito){
         
         $ruta_archivo = public_path().'/creditos-complementarios/constancias/constancias-oficiales/ConstanciaCreditos-folio-'.$pk_alumno_credito.'.pdf';
- 
+        try{
         return Response::make(file_get_contents($ruta_archivo), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename= ConstanciaCreditos-folio-"'.$pk_alumno_credito.'".pdf'
-
-]);
+         ]);
+        }catch(\Exception $e){
+            return "No se ha generado la constancia para este crédito";
+        }
     }
 
     public function verConstanciaVistaPrevia($pk_alumno_credito){
         
         $ruta_archivo = public_path().'/creditos-complementarios/constancias/constancias-vista-previa/ConstanciaCreditos-preview-folio-'.$pk_alumno_credito.'.pdf';
- 
+        try{
         return Response::make(file_get_contents($ruta_archivo), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename= ConstanciaCreditos-folio-"'.$pk_alumno_credito.'".pdf'
-
-]);
+        ]);
+        }catch(\Exception $e){
+            return "No se ha generado la constancia para este crédito";
+        }
     }
 
     public function pruebaFormatoFecha(){/* 

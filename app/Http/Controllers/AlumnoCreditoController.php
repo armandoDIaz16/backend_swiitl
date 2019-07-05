@@ -18,22 +18,7 @@ class AlumnoCreditoController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $alumnoCredito = new alumnoCredito();
@@ -45,12 +30,6 @@ class AlumnoCreditoController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\alumnoCredito  $alumnoCredito
-     * @return \Illuminate\Http\Response
-     */
     public function show($pk_usuario)
     {
         $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
@@ -128,30 +107,19 @@ class AlumnoCreditoController extends Controller
         $response = Response::json($creditos);
         return $response;
     }
-    
-    
 
-
-    
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\alumnoCredito  $alumnoCredito
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(alumnoCredito $alumnoCredito)
-    {
-        
+    /**------------------------------------------------------------------------ */
+    public function getCreditosByCarrera($carrera){
+        $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
+                    ->join('users','FK_ALUMNO','=','PK_USUARIO')
+                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
+                    ->where('users.CLAVE_CARRERA','=',$carrera)
+                    ->get();
+        $response = Response::json($creditos);
+        return $response;
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\alumnoCredito  $alumnoCredito
-     * @return \Illuminate\Http\Response
-     */
+    
+    
     public function update($pk_alumnoCredito)//validar credito
     {
         $alumnoCredito = alumnoCredito::find($pk_alumnoCredito);
@@ -165,12 +133,6 @@ class AlumnoCreditoController extends Controller
         $alumnoCredito->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\alumnoCredito  $alumnoCredito
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $alumnoCredito = alumnoCredito::find($id);

@@ -2,36 +2,30 @@
 
 use Illuminate\Http\Request;
 
-Route::group([
+Route::post('login', 'AuthController@login');    
+Route::post('login', 'AuthController@login');
+Route::post('signup', 'AuthController@signup');
+Route::post('logout', 'AuthController@logout');
+Route::post('refresh', 'AuthController@refresh');
+Route::post('me', 'AuthController@me');
+Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
+Route::post('resetPassword', 'ChangePasswordController@process');
+Route::post('control', 'NumeroControl@getControl');
+
+Route::group(['middleware' => ['jwt.verify']], function() {
+    Route::get('GraficaCampus5/{PK_PERIODO}', 'AspiranteController@graficaCampus');
+});
+Route::middleware('jwt.auth')->get('users', function () {
+    return auth('api')->user();
+});
+
+/* Route::group([
 
     'middleware' => 'api',
 
 ], function ($Router) {
 
-    Route::post('login', 'AuthController@login');
-    Route::post('signup', 'AuthController@signup');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
-    Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
-    //Route::post('sendAspirantePasswordLink','AspirantePasswordController@sendEmail');
-    Route::post('resetPassword', 'ChangePasswordController@process');
-    Route::post('control', 'NumeroControl@getControl');
-    // Route::post('permisos', 'Sistema_permisos@getPermisos');
-
-
-    Route::group(['middleware' => ['jwt.auth']], function () {
-        Route::group(['middleware' => ['jwt.auth']], function () {
-            Route::get('logout', 'AuthController@logout');
-            Route::post('PAAE_Periodo', 'PAAE_Periodo@store');
-
-            //Route::post('control', 'NumeroControl@getControl');
-
-        });
-        //Route::post('periodo', 'PAAE_Periodo@getPeriodo');
-
-    });
-});
+}); */
 
 /*
 |--------------------------------------------------------------------------
@@ -218,6 +212,7 @@ Route::get('creditos-por-validar-nc/{NUMERO_CONTROL}', 'AlumnoCreditoController@
 Route::get('creditos-validados-nc/{NUMERO_CONTROL}', 'AlumnoCreditoController@getCreditosValidadosByNumC');
 Route::get('creditos-por-validar-ln/{LINEAMIENTO}', 'AlumnoCreditoController@getCreditosPorValidarByLin');
 Route::get('creditos-validados-ln/{LINEAMIENTO}', 'AlumnoCreditoController@getCreditosValidadosByLin');
+Route::get('creditos-carrera/{CARRERA}', 'AlumnoCreditoController@getCreditosByCarrera');
 Route::put('validar-credito/{PK_ALUMNO_CREDITO}', 'AlumnoCreditoController@validarCreditos');
 Route::get('creditos-validados', 'AlumnoCreditoController@getCreditosValidados');
 Route::get('actividades-disponibles/{id_alumno}', 'ActividadController@actividadesDisponibles');
@@ -241,8 +236,7 @@ Route::get('eliminar-asistente-act/{PK_USUARIO}/{PK_ACTIVIDAD}', 'AsistenteActiv
 Route::get('eliminar-rol-asistente/{PK_USUARIO}', 'AsistenteActividadController@eliminarRolAsistente');
 Route::get('lista-actividades-creditos/{FK_ALUMNO_ACTIVIDAD}', 'AsistenciaAlumnoActividadController@pruebaActByLineamiento');
 Route::get('actividades-credito-cumplidos/{PK_ALUMNO_CREDITO}', 'CreditoActividadController@getActByCredito');
-Route::get('prueba-ver-pdf', 'pruebaVerPdf@verpdf');
-Route::get('generar-constancia/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@generarConstancia');
+Route::post('generar-constancia', 'constanciasCreditosController@generarConstancia');
 Route::get('constancia-view-o_o_s_e/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@verConstanciaOficial');
 Route::get('constancia-preview/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@verConstanciaVistaPrevia');
 Route::post('signupAdminCC', 'AuthController@signupAdminCredito');
@@ -276,10 +270,18 @@ Route::resource('Ciudad', 'CiudadController');
 Route::resource('Colonia', 'ColoniaController');
 Route::resource('Bachillerato', 'BachilleratoController');
 Route::resource('CodigoPostal', 'CodigoPostalController');
-Route::group(['middleware' => 'jwt.auth'], function () {
+Route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
+Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
+Route::get('ReferenciaCurso/{preficha}', 'FichaController@descargarReferenciaCurso');
+Route::get('ReferenciaInscripcion/{preficha}', 'FichaController@descargarReferenciaInscripcion');
+Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('Aspirante/{id}', 'AspiranteController@show');
     Route::post('Periodo', 'PeriodoController@store');
-    Route::get('Referencia/{preficha}', 'AspiranteController@referencia');
+    Route::post('PeriodoCurso', 'PeriodoController@periodoCurso');
+    Route::post('PeriodoInscripcion', 'PeriodoController@periodoInscripcion');
+    Route::post('MontoPreficha', 'PeriodoController@montoPreficha');
+    Route::post('MontoCurso', 'PeriodoController@montoCurso');
+    Route::post('MontoInscripcion', 'PeriodoController@montoInscripcion');
     Route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
     Route::get('Aspirantes2', 'AspiranteController@aspirantes2');
     Route::get('Aspirantes3/{PK_PERIODO}', 'AspiranteController@aspirantes3');
@@ -292,8 +294,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('CargarArchivoRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoRegistroCENEVAL');
     Route::post('CargarArchivoAceptados/{PK_PERIODO}', 'AspiranteController@cargarArchivoAceptados');
     Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
-    Route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
-    Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
     Route::get('Grupo', 'GrupoController@listaGrupos');
 
     Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
@@ -304,470 +304,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('AgregarTurno', 'LugarExamenController@agregarTurno');
     Route::post('AgregarEspacio', 'LugarExamenController@agregarEspacio');
     Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ************************************** RUTAS DEL SISTEMA ASPIRANTES *************************************** */
-Route::get('Periodo', 'PeriodoController@index');
-Route::post('Aspirante', 'AspiranteController@store');
-Route::resource('Universidad', 'UniversidadController');
-Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
-Route::resource('Carrera', 'CarreraController');
-Route::resource('Dependencia', 'DependenciaController');
-Route::resource('Estado_Civil', 'Estado_CivilController');
-Route::resource('Incapacidad', 'IncapacidadController');
-Route::resource('Propaganda_Tecnologico', 'PropagandaController');
-Route::resource('CreditosSiia', 'CreditosSiiaController');
-Route::resource('Entidad_Federativa', 'Entidad_FederativaController');
-Route::resource('ColoniaCodigoPostal', 'ColoniaCodigoPostalController');
-Route::resource('Ciudad', 'CiudadController');
-Route::resource('Colonia', 'ColoniaController');
-Route::resource('Bachillerato', 'BachilleratoController');
-Route::resource('CodigoPostal', 'CodigoPostalController');
-
-//Route::group(['middleware' => ['jwt.auth']], function () {
-    Route::resource('Aspirante', 'AspiranteController');
-    Route::post('Periodo', 'PeriodoController@store');
-    Route::get('Referencia/{preficha}', 'AspiranteController@referencia');
-    Route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
-    Route::get('Aspirantes2', 'AspiranteController@aspirantes2');
-    Route::get('Aspirantes3/{PK_PERIODO}', 'AspiranteController@aspirantes3');
-    Route::get('EstatusAspirante/', 'AspiranteController@estatusAspirante');
-    Route::get('GraficaEstatus/{PK_PERIODO}', 'AspiranteController@graficaEstatus');
-    Route::get('GraficaCarreras/{PK_PERIODO}', 'AspiranteController@graficaCarreras');
-    Route::get('GraficaCampus/{PK_PERIODO}', 'AspiranteController@graficaCampus');
-    Route::post('CargarArchivoBanco/{PK_PERIODO}', 'AspiranteController@cargarArchivoBanco');
-    Route::post('CargarArchivoPreRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoPreRegistroCENEVAL');
-    Route::post('CargarArchivoRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoRegistroCENEVAL');
-    Route::post('CargarArchivoAceptados/{PK_PERIODO}', 'AspiranteController@cargarArchivoAceptados');
-    Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
-    Route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
-    Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
-    Route::get('Grupo', 'GrupoController@listaGrupos');
-
-    Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
-    Route::get('Turno', 'LugarExamenController@obtenerTurno');
-    Route::get('Turno2', 'LugarExamenController@obtenerTurno2');
-    Route::get('Edificio', 'LugarExamenController@obtenerEdificio');
-    Route::get('TipoEspacio', 'LugarExamenController@obtenerTipoEspacio');
-    Route::post('AgregarTurno', 'LugarExamenController@agregarTurno');
-    Route::post('AgregarEspacio', 'LugarExamenController@agregarEspacio');
-    Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
-
-    Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
-//});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
 });
-
 
 
 ///////////////////////////////// PAAE ////////////////////////////////////
