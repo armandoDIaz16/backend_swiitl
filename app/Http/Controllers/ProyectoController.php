@@ -165,6 +165,7 @@ class ProyectoController extends Controller
             $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
             $proyecto->FK_ASESOR_EXT = $request->Externo;
             $proyecto->save();
+            return json_encode('correcto');
         }
 
     }
@@ -186,5 +187,20 @@ class ProyectoController extends Controller
         $proyecto = DB::table('CATR_PROYECTO')->join('CAT_ANTEPROYECTO_RESIDENCIA','CATR_PROYECTO.FK_ANTEPROYECTO','=','CAT_ANTEPROYECTO_RESIDENCIA.ID_ANTEPROYECTO')
         ->join('CATR_ALUMNO','CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO','=', 'CATR_ALUMNO.ID_PADRE')->where('NUMERO_CONTROL','=', $id)->first();
         return response()->json($proyecto1);
+    }
+
+    public function maestros($id){
+        $periodo = new CreditosSiia();
+        $actual = $periodo->periodo();
+        $maestros = DB::select('SELECT ID_PADRE, name, PRIMER_APELLIDO, SEGUNDO_APELLIDO FROM CATR_DOCENTE JOIN users ON CATR_DOCENTE.ID_PADRE = users.PK_USUARIO WHERE ID_AREA_ACADEMICA = (SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :padre)',['padre'=>$id]);
+        foreach ($maestros as $index => $value){
+            $te = $value->ID_PADRE;
+            $cantidad = DB::select('SELECT COUNT(PK_PROYECTO) FROM CATR_PROYECTO WHERE FK_DOCENTE = :te and PERIODO = :periodo',['te'=>$te, 'periodo'=>$actual]);
+            $c1 = json_decode(json_encode($cantidad), true);
+            $c2 = array_pop($c1);
+            $c3 = array_pop($c2);
+            $value->CANTIDAD = $c3;
+        }
+        return $maestros;
     }
 }

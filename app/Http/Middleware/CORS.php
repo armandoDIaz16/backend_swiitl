@@ -10,14 +10,21 @@ class CORS
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+/*     public function handle($request, Closure $next)
     {
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Content-type, X-Auth-Token, Authorization, Origin');
         header('Access-Control-Allow-Credentials: true');
         return $next($request);
-    }
+    } */
+    public function handle($request, Closure $next)
+  {
+    return $next($request)
+    ->header('Access-Control-Allow-Origin', '*')
+    ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    ->header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, X-Token-Auth, Authorization');
+  }
    /* public function handle($request, Closure $next)
     {
         //All the domains you want to whitelist

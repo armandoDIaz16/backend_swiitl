@@ -4,9 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-
-    "content-hash": "6224d3f7779669c6fea0c23ed50d2a03",
-
+    "content-hash": "7b34f6270e6491bb32e4874be0f0f19c",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -691,6 +689,64 @@
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
+            "name": "jeremeamia/superclosure",
+            "version": "2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jeremeamia/super_closure.git",
+                "reference": "5707d5821b30b9a07acfb4d76949784aaa0e9ce9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jeremeamia/super_closure/zipball/5707d5821b30b9a07acfb4d76949784aaa0e9ce9",
+                "reference": "5707d5821b30b9a07acfb4d76949784aaa0e9ce9",
+                "shasum": ""
+            },
+            "require": {
+                "nikic/php-parser": "^1.2|^2.0|^3.0|^4.0",
+                "php": ">=5.4",
+                "symfony/polyfill-php56": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SuperClosure\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Lindblom",
+                    "email": "jeremeamia@gmail.com",
+                    "homepage": "https://github.com/jeremeamia",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Serialize Closure objects, including their context and binding",
+            "homepage": "https://github.com/jeremeamia/super_closure",
+            "keywords": [
+                "closure",
+                "function",
+                "lambda",
+                "parser",
+                "serializable",
+                "serialize",
+                "tokenizer"
+            ],
+            "time": "2018-03-21T22:21:57+00:00"
+        },
+        {
             "name": "laravel/framework",
             "version": "v5.7.28",
             "source": {
@@ -1154,6 +1210,84 @@
                 "storage"
             ],
             "time": "2019-03-30T13:22:34+00:00"
+        },
+        {
+            "name": "maatwebsite/excel",
+            "version": "2.1.30",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Maatwebsite/Laravel-Excel.git",
+                "reference": "f5540c4ba3ac50cebd98b09ca42e61f926ef299f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Maatwebsite/Laravel-Excel/zipball/f5540c4ba3ac50cebd98b09ca42e61f926ef299f",
+                "reference": "f5540c4ba3ac50cebd98b09ca42e61f926ef299f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/cache": "^5.0",
+                "illuminate/config": "^5.0",
+                "illuminate/filesystem": "^5.0",
+                "illuminate/support": "^5.0",
+                "jeremeamia/superclosure": "^2.3",
+                "nesbot/carbon": "~1.0",
+                "php": ">=5.5",
+                "phpoffice/phpexcel": "^1.8.1",
+                "tijsverkoyen/css-to-inline-styles": "~2.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.0",
+                "orchestra/testbench": "3.1.*|3.2.*|3.3.*|3.4.*|3.5.*|3.6.*",
+                "phpseclib/phpseclib": "~1.0",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "illuminate/http": "^5.0",
+                "illuminate/queue": "^5.0",
+                "illuminate/routing": "^5.0",
+                "illuminate/view": "^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Maatwebsite\\Excel\\ExcelServiceProvider"
+                    ],
+                    "aliases": {
+                        "Excel": "Maatwebsite\\Excel\\Facades\\Excel"
+                    }
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/Maatwebsite/Excel"
+                ],
+                "psr-0": {
+                    "Maatwebsite\\Excel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maatwebsite.nl",
+                    "email": "patrick@maatwebsite.nl"
+                }
+            ],
+            "description": "Supercharged Excel exports in Laravel",
+            "keywords": [
+                "PHPExcel",
+                "batch",
+                "csv",
+                "excel",
+                "export",
+                "import",
+                "laravel"
+            ],
+            "time": "2018-09-04T19:00:09+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3769,12 +3903,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tymondesigns/jwt-auth.git",
-                "reference": "63698d304554e5d0bc3eb481cc260a9fc900e151"
+                "reference": "13e8ddc7bac782d9f0458ed151e3690ac7ba44fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/63698d304554e5d0bc3eb481cc260a9fc900e151",
-                "reference": "63698d304554e5d0bc3eb481cc260a9fc900e151",
+                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/13e8ddc7bac782d9f0458ed151e3690ac7ba44fd",
+                "reference": "13e8ddc7bac782d9f0458ed151e3690ac7ba44fd",
                 "shasum": ""
             },
             "require": {
@@ -3836,7 +3970,7 @@
                 "jwt",
                 "laravel"
             ],
-            "time": "2019-03-14T20:29:20+00:00"
+            "time": "2019-05-18T22:14:11+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -5013,7 +5147,6 @@
                 "testing",
                 "xunit"
             ],
-
             "time": "2019-05-14T04:53:02+00:00"
         },
         {

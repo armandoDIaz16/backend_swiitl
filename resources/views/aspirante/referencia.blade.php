@@ -78,7 +78,7 @@
             <tr>
                 <td>Concepto de pago</td>
                 <td>
-                    Solicitud de ficha de pago para examen de admisión.
+                    {{$ASPIRANTE->CONCEPTO}}
                 </td>
             </tr>
             <tr>
