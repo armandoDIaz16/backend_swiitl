@@ -2,15 +2,30 @@
 
 use Illuminate\Http\Request;
 
-Route::post('login', 'AuthController@login');    
-Route::post('login', 'AuthController@login');
+// BUSCAR Y VALIDAR NÚMERO DE CONTROL EN OBTENCIÓN DE CONTRASEÑA
+Route::post('control', 'NumeroControl@getControl');
+
+// OBTENCIÓN DE CONTRASEÑA
 Route::post('signup', 'AuthController@signup');
+
+// ACTIVACIÓN DE CUENTA
+Route::post('activar_cuenta', 'AuthController@activa_cuenta');
+
+// INICIO DE SESIÓN
+Route::post('login', 'AuthController@login');
+
+// TERMINAR SESIÓN
 Route::post('logout', 'AuthController@logout');
+
 Route::post('refresh', 'AuthController@refresh');
 Route::post('me', 'AuthController@me');
+
+// ENVIAR URL PARA REESTABLECER CONTRASEÑA
 Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
+
+// CAMBIO DE CONTRASEÑA
 Route::post('resetPassword', 'ChangePasswordController@process');
-Route::post('control', 'NumeroControl@getControl');
+
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('GraficaCampus5/{PK_PERIODO}', 'AspiranteController@graficaCampus');

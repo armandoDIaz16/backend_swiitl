@@ -9,22 +9,46 @@ use App\Http\Requests\SignUpRequest;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class AuthController
+ * @package App\Http\Controllers
+ */
 class AuthController extends Controller
 {
     /**
-     * Create a new AuthController instance.
+     * Función para validar cuenta en uso mediante CURP
+     * generar nuevo registro y enviar correo para activación de cuenta
      *
-     * @return void
-     */
-    
-    /**
-     * Get a JWT via given credentials.
-     *
+     * @param SignUpRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
+    public function signup(SignUpRequest $request)
+    {
+        error_log($request->curp);
+        $usuario = User::where('CURP', $request->curp)->first();
+        if (!isset($usuario->CURP)){
+            //si el CURP no se encuentra registrado, registrar usuario y enviar correo
+            $pk_usuario = $this->crear_usuario($request);
+            error_log($pk_usuario);
+            $this->asignar_roles($pk_usuario);
 
+            return response()->json(
+                ['data' => true],
+                Response::HTTP_OK
+            );
+        } else {
+            //mandar mensaje de CURP registrada
+            return response()->json(
+                ['error' => "La CURP proporcionada ya se encuentra asociada a una cuenta"],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
 
-     public function login()
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login()
     {
         $credentials = request(['curp', 'password']);
 
@@ -34,28 +58,6 @@ class AuthController extends Controller
 
         return $this->respondWithToken($token);
 
-    }  
-
-    public function signup(SignUpRequest $request)
-    {
-        //todo Cambiar a generación de objeto de usaurio de forma explícita
-        User::create($request->all());
-
-        $alumno = DB::table('users')
-        ->select('PK_USUARIO')
-        ->where('NUMERO_CONTROL',$request->NUMERO_CONTROL)
-        ->get();
-
-        //return $alumno[0]->PK_USUARIO;
-       // echo( $numero);
-
-        DB::table('PER_TR_ROL_USUARIO')->insert([
-            'FK_ROL' => 4,
-            'FK_USUARIO' => $alumno[0]->PK_USUARIO
-        ]);
-
-        return response()->json(['data' => true], Response::HTTP_OK);
-        //return $this->login($request);
     }
 
     /**
@@ -93,14 +95,14 @@ class AuthController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param  string $token
+     * @param string $token
      *
      * @return \Illuminate\Http\JsonResponse
      */
     protected function respondWithToken($token)
     {
         $id = DB::table('users')
-            ->select('PK_USUARIO','NUMERO_CONTROL')
+            ->select('PK_USUARIO', 'NUMERO_CONTROL')
             ->where('email', auth()->user()->email)
             ->get()->first();
 
@@ -121,6 +123,10 @@ class AuthController extends Controller
     --------------------------------
     */
 
+    /**
+     * @param SignUpRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function signupAdminCredito(SignUpRequest $request)
     {
         //todo Cambiar a generación de objeto de usaurio de forma explícita
@@ -129,5 +135,41 @@ class AuthController extends Controller
 
         return response()->json(['data' => true], Response::HTTP_OK);
         //return $this->login($request);
+    }
+
+    /*
+     * FUNCIONES PRIVADAS DE LA CASE
+     * */
+    /**
+     * Función para asignar roles a usuario
+     * @param $pk_usuario
+     * @return void
+     */
+    private function asignar_roles($pk_usuario){
+
+    }
+
+    /**
+     * Función para crear un nuevo usuario
+     * @param $request
+     * @return User
+     */
+    private function crear_usuario($request){
+        $usuario  = new User;
+
+        $usuario->CORREO1          = $request->email;
+        $usuario->NUMERO_CONTROL   = $request->NUMERO_CONTROL;
+        $usuario->name             = $request->name;
+        $usuario->PRIMER_APELLIDO  = $request->PRIMER_APELLIDO;
+        $usuario->SEGUNDO_APELLIDO = $request->SEGUNDO_APELLIDO;
+        $usuario->CLAVE_CARRERA    = $request->CLAVE_CARRERA;
+        $usuario->SEMESTRE         = $request->SEMESTRE;
+        $usuario->CURP             = $request->curp;
+        $usuario->TELEFONO_CASA    = $request->TELEFONO_FIJO;
+        $usuario->TELEFONO_MOVIL   = $request->TELEFONO_MOVIL;
+        $usuario->FECHA_REGISTRO   = date('Y-m-d H:i:s');
+
+        $usuario->save();
+        return $usuario;
     }
 }
