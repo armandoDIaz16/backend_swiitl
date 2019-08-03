@@ -26,7 +26,7 @@ class NumeroControl extends Controller
         $alumno = $this->get_alumno_siia($request->control);
         if (!empty($alumno)) {
             // Validar que no esté dado de baja definitiva
-            if ($alumno->Estado != Constantes_Alumnos::ALUMNO_BD) {
+            if ($alumno->ESTADO != NULL) {
                 // Validar que no tenga su cuenta activa
                 $usuario  = User::where('NUMERO_CONTROL', $request->control)->first();
                 if (!isset($usuario->NUMERO_CONTROL)) {
@@ -64,12 +64,12 @@ class NumeroControl extends Controller
     public function successResponse($alumno)
     {
         $datos_alumno = [
-            'nombre' => trim($alumno->Nombre),
-            'primer_apellido' => trim($alumno->ApellidoPaterno),
-            'segundo_apellido' => trim($alumno->ApellidoMaterno),
-            'clave_carrera' => trim($alumno->ClaveCarrera),
-            'semestre' => trim($alumno->Semestre),
-            'numero_control' => trim($alumno->NumeroControl)
+            'nombre'           => trim($alumno->NOMBRE),
+            'primer_apellido'  => trim($alumno->APELLIDO_PATERNO),
+            'segundo_apellido' => trim($alumno->APELLIDO_MATERNO),
+            'clave_carrera'    => trim($alumno->CLAVE_CARRERA),
+            'semestre'         => trim($alumno->SEMESTRE),
+            'numero_control'   => trim($alumno->NUMERO_CONTORL)
         ];
 
         return response()->json(
@@ -81,10 +81,10 @@ class NumeroControl extends Controller
     private function get_alumno_siia($numero_control)
     {
         return
-            DB::connection('sqlsrv2')
-                ->table('view_alumnos')
-                ->select('Estado', 'Nombre', 'ApellidoPaterno', 'ApellidoMaterno', 'NumeroControl', 'ClaveCarrera', 'Semestre')
-                ->where('NumeroControl', $numero_control)
+            DB::connection('sqlsrv')
+                ->table('SIIA')
+                ->select('*')
+                ->where('NUMERO_CONTORL', $numero_control)
                 ->get()
                 ->first();
     }

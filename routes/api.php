@@ -5,8 +5,12 @@ use Illuminate\Http\Request;
 // BUSCAR Y VALIDAR NÚMERO DE CONTROL EN OBTENCIÓN DE CONTRASEÑA
 Route::post('control', 'NumeroControl@getControl');
 
-// OBTENCIÓN DE CONTRASEÑA
-Route::post('signup', 'AuthController@signup');
+// REGISTRO EN SISTEMA
+// Route::post('signup', 'AuthController@signup');
+Route::post('signup', 'AuthController@registra_usuario');
+
+// OBTENCIÓN DE DATOS PARA ACTIVACIÓN DE CUENTA
+Route::get('activar_cuenta', 'AuthController@get_datos_activacion');
 
 // ACTIVACIÓN DE CUENTA
 Route::post('activar_cuenta', 'AuthController@activa_cuenta');
@@ -18,6 +22,7 @@ Route::post('login', 'AuthController@login');
 Route::post('logout', 'AuthController@logout');
 
 Route::post('refresh', 'AuthController@refresh');
+
 Route::post('me', 'AuthController@me');
 
 // ENVIAR URL PARA REESTABLECER CONTRASEÑA
@@ -30,6 +35,7 @@ Route::post('resetPassword', 'ChangePasswordController@process');
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('GraficaCampus5/{PK_PERIODO}', 'AspiranteController@graficaCampus');
 });
+
 Route::middleware('jwt.auth')->get('users', function () {
     return auth('api')->user();
 });
