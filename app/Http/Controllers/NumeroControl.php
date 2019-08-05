@@ -63,6 +63,7 @@ class NumeroControl extends Controller
      */
     public function successResponse($alumno)
     {
+        // CUANDO SE CONECTA CON TABLA LOCAL
         $datos_alumno = [
             'nombre'           => trim($alumno->NOMBRE),
             'primer_apellido'  => trim($alumno->APELLIDO_PATERNO),
@@ -72,6 +73,17 @@ class NumeroControl extends Controller
             'numero_control'   => trim($alumno->NUMERO_CONTORL)
         ];
 
+        // CUANDO SE CONECTA CON EL SIIA
+        /*$datos_alumno = [
+            'nombre'           => trim($alumno->Nombre),
+            'primer_apellido' => trim($alumno->ApellidoPaterno),
+            'segundo_apellido' => trim($alumno->ApellidoMaterno),
+            'clave_carrera' => trim($alumno->ClaveCarrera),
+            'semestre' => trim($alumno->Semestre),
+            'numero_control'   => trim($alumno->NumeroControl)
+        ];*/
+
+
         return response()->json(
             ['data' => $datos_alumno],
             Response::HTTP_OK
@@ -80,6 +92,7 @@ class NumeroControl extends Controller
 
     private function get_alumno_siia($numero_control)
     {
+        // CUANDO SE CONECTA CON TABLA LOCAL
         return
             DB::connection('sqlsrv')
                 ->table('SIIA')
@@ -87,5 +100,13 @@ class NumeroControl extends Controller
                 ->where('NUMERO_CONTORL', $numero_control)
                 ->get()
                 ->first();
+
+        // CUANDO SE CONECTA CON EL SIIA
+        /*return DB::connection('sqlsrv2')
+            ->table('view_alumnos')
+            ->select('Estado', 'Nombre', 'ApellidoPaterno', 'ApellidoMaterno', 'NumeroControl','ClaveCarrera','Semestre')
+            ->where('NumeroControl',$request->control)
+            ->get()->first();*/
+
     }
 }

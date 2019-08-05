@@ -514,7 +514,7 @@ CREATE TABLE CAT_USUARIO
     PRIMER_APELLIDO         NVARCHAR(100) NOT NULL,
     SEGUNDO_APELLIDO        NVARCHAR(100)          DEFAULT NULL,
     FECHA_NACIMIENTO        DATE                   DEFAULT NULL,
-    curp                    NVARCHAR(18)  NOT NULL,
+    CURP                    NVARCHAR(18)  NOT NULL,
     TOKEN_CURP              NVARCHAR(150) NOT NULL,
     SEXO                    NCHAR(1)               DEFAULT NULL,
     NACIONALIDAD            NVARCHAR(100),
@@ -526,7 +526,7 @@ CREATE TABLE CAT_USUARIO
     CORREO1                 NVARCHAR(255) NOT NULL,
     CORREO2                 NVARCHAR(255)          DEFAULT NULL,
     CORREO_INSTITUCIONAL    NVARCHAR(255)          DEFAULT NULL,
-    password                NVARCHAR(255)          DEFAULT NULL,
+    PASSWORD                NVARCHAR(255)          DEFAULT NULL,
     NSS                     NVARCHAR(15),
 
     -- DATOS ACADÉMICOS
@@ -793,6 +793,8 @@ CREATE TABLE SIIA
     MOTIVO           NVARCHAR(50)  NOT NULL
 );
 /* FIN TABLA PROVISIONAL DEL SIIA */
+
+ALTER TABLE PER_CAT_SISTEMA ADD RUTA_ANGULAR NVARCHAR(50) DEFAULT NULL;
 
 /*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
 

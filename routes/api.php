@@ -100,7 +100,6 @@ Route::resource('Tipo_Pregunta', 'Tipo_PreguntaController');
 Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 Route::resource('Entidad_Federativa', 'Entidad_FederativaController');
 Route::resource('Ciudad', 'CiudadController');
-Route::resource('Usuario_Rol', 'Usuario_RolController');
 Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 route::resource('Bachillerato', 'BachilleratoController');
 route::resource('Colonia', 'ColoniaController');
@@ -181,7 +180,6 @@ Route::resource('CreditosSiia', 'CreditosSiiaController');
 
 Route::resource('Entidad_Federativa', 'Entidad_FederativaController');
 Route::resource('Ciudad', 'CiudadController');
-Route::resource('Usuario_Rol', 'Usuario_RolController');
 Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 
 

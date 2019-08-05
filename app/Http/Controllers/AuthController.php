@@ -32,8 +32,8 @@ class AuthController extends Controller
      */
     public function registra_usuario(Request $request)
     {
-        $usuario = User::where('curp', $request->curp)->first();
-        if (!isset($usuario->curp)) {
+        $usuario = User::where('CURP', $request->curp)->first();
+        if (!isset($usuario->CURP)) {
             //si el CURP no se encuentra registrado, registrar usuario
             $pk_usuario = $this->crear_usuario($request);
             if ($pk_usuario) {
@@ -69,12 +69,12 @@ class AuthController extends Controller
     public function get_datos_activacion(Request $request)
     {
         $usuario = User::where('TOKEN_CURP', $request->token)->first();
-        if (isset($usuario->curp)) {
+        if (isset($usuario->CURP)) {
             if ($usuario->ESTADO == Constantes_Alumnos::ALUMNO_REGISTRADO){
                 return response()->json(
                     [
                         'data' => [
-                            'CURP' => $usuario->curp
+                            'CURP' => $usuario->CURP
                         ]
                     ],
                     Response::HTTP_OK
@@ -103,8 +103,8 @@ class AuthController extends Controller
      */
     public function activa_cuenta(Request $request)
     {
-        $usuario = User::where('curp', $request->curp)->first();
-        if (isset($usuario->curp)) {
+        $usuario = User::where('CURP', $request->curp)->first();
+        if (isset($usuario->CURP)) {
             $usuario->password           = $request->password1;
             $usuario->ESTADO             = Constantes_Alumnos::ALUMNO_CUENTA_ACTIVA;
             $usuario->FECHA_MODIFICACION = date('Y-m-d H:i:s');
@@ -210,21 +210,14 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        $id = DB::table('users')
-            ->select('PK_USUARIO', 'NUMERO_CONTROL')
-            ->where('email', auth()->user()->email)
-            ->get()->first();
-
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()->email,
-            'IdUsuario' => $id->PK_USUARIO,
-            'control' => $id->NUMERO_CONTROL
-
+            'token_type'   => 'bearer',
+            'expires_in'   => auth()->factory()->getTTL() * 60,
+            'user'         => auth()->user()->CORREO1,
+            'IdUsuario'    => auth()->user()->PK_USUARIO,
+            'control'      => auth()->user()->NUMERO_CONTROL
         ]);
-
     }
 
     /* --------------------------
@@ -310,7 +303,7 @@ class AuthController extends Controller
         $usuario->PRIMER_APELLIDO  = $request->PRIMER_APELLIDO;
         $usuario->SEGUNDO_APELLIDO = $request->SEGUNDO_APELLIDO;
         $usuario->SEMESTRE         = $request->SEMESTRE;
-        $usuario->curp             = $request->curp;
+        $usuario->CURP             = $request->curp;
         $usuario->TOKEN_CURP       = Hash::make($request->curp);
         $usuario->TELEFONO_CASA    = $request->TELEFONO_FIJO;
         $usuario->TELEFONO_MOVIL   = $request->TELEFONO_MOVIL;

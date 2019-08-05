@@ -18,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'NOMBRE', 'password', 'curp',
+        'NOMBRE', 'PASSWORD', 'curp',
         'PRIMER_APELLIDO',
         'SEGUNDO_APELLIDO',
         'FECHA_NACIMIENTO',
@@ -62,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array
      */
-    protected $hidden = ['password'];
+    protected $hidden = ['PASSWORD'];
 
     /**
      * The attributes that should be cast to native types.
@@ -96,7 +96,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = bcrypt($value);
+        $this->attributes['PASSWORD'] = bcrypt($value);
     }
 
     public function getKeyName()
@@ -106,6 +106,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function getAuthPassword()
     {
-        return $this->password;
+        return $this->PASSWORD;
     }
 }
