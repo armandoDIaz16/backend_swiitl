@@ -10,7 +10,7 @@ Route::post('control', 'NumeroControl@getControl');
 Route::post('signup', 'AuthController@registra_usuario');
 
 // OBTENCIÓN DE DATOS PARA ACTIVACIÓN DE CUENTA
-Route::get('activar_cuenta', 'AuthController@get_datos_activacion');
+Route::post('get_datos_activacion', 'AuthController@get_datos_activacion');
 
 // ACTIVACIÓN DE CUENTA
 Route::post('activar_cuenta', 'AuthController@activa_cuenta');

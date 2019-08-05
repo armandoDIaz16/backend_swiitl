@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Constantes_Alumnos;
-use App\Usuario_Rol;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
-use App\User;
 use App\Http\Requests\SignUpRequest;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
-use App\Carrera;
 use Illuminate\Http\Request;
-use App\Helpers\Mailer;
-use App\Helpers\Constantes;
 use Illuminate\Support\Facades\Hash;
+
+use App\Carrera;
+use App\User;
+use App\Constantes_Alumnos;
+use App\Usuario_Rol;
+use App\Models\General\Sistema;
+
+use App\Helpers\Mailer;
 
 
 /**
@@ -32,11 +32,11 @@ class AuthController extends Controller
      */
     public function registra_usuario(Request $request)
     {
-        $usuario = User::where('CURP', $request->curp)->first();
-        if (!isset($usuario->CURP)){
+        $usuario = User::where('curp', $request->curp)->first();
+        if (!isset($usuario->curp)) {
             //si el CURP no se encuentra registrado, registrar usuario
             $pk_usuario = $this->crear_usuario($request);
-            if ($pk_usuario){
+            if ($pk_usuario) {
                 // asigna roles a usuario
                 $this->asignar_roles($pk_usuario);
 
@@ -68,28 +68,27 @@ class AuthController extends Controller
      */
     public function get_datos_activacion(Request $request)
     {
-        $usuario = User::where('CURP', $request->curp)->first();
-        if (!isset($usuario->CURP)){
-            //si el CURP no se encuentra registrado, registrar usuario
-            $pk_usuario = $this->crear_usuario($request);
-            if ($pk_usuario){
-                // asigna roles a usuario
-                $this->asignar_roles($pk_usuario);
-
-                // enviar correo de notificación al usuario
-                if (!$this->notifica_usuario($request->email)){
-                    error_log("Error al enviar correo al receptor: " . $request->email);
-                }
-
+        $usuario = User::where('TOKEN_CURP', $request->token)->first();
+        if (isset($usuario->curp)) {
+            if ($usuario->ESTADO == Constantes_Alumnos::ALUMNO_REGISTRADO){
                 return response()->json(
-                    ['data' => true],
+                    [
+                        'data' => [
+                            'CURP' => $usuario->curp
+                        ]
+                    ],
                     Response::HTTP_OK
+                );
+            } else {
+                return response()->json(
+                    ['error' => "La cuenta ya se encuentra activa, inténte recuperar su contraseña"],
+                    Response::HTTP_NOT_FOUND
                 );
             }
         } else {
-            //mandar mensaje de CURP registrada
+            //mandar mensaje de Token no válido
             return response()->json(
-                ['error' => "La CURP proporcionada ya se encuentra asociada a una cuenta"],
+                ['error' => "El token de seguridad ha expirado"],
                 Response::HTTP_NOT_FOUND
             );
         }
@@ -104,28 +103,21 @@ class AuthController extends Controller
      */
     public function activa_cuenta(Request $request)
     {
-        $usuario = User::where('CURP', $request->curp)->first();
-        if (!isset($usuario->CURP)){
-            //si el CURP no se encuentra registrado, registrar usuario
-            $pk_usuario = $this->crear_usuario($request);
-            if ($pk_usuario){
-                // asigna roles a usuario
-                $this->asignar_roles($pk_usuario);
+        $usuario = User::where('curp', $request->curp)->first();
+        if (isset($usuario->curp)) {
+            $usuario->password           = $request->password1;
+            $usuario->ESTADO             = Constantes_Alumnos::ALUMNO_CUENTA_ACTIVA;
+            $usuario->FECHA_MODIFICACION = date('Y-m-d H:i:s');
+            $usuario->save();
 
-                // enviar correo de notificación al usuario
-                if (!$this->notifica_usuario($request->email)){
-                    error_log("Error al enviar correo al receptor: " . $request->email);
-                }
-
-                return response()->json(
-                    ['data' => true],
-                    Response::HTTP_OK
-                );
-            }
+            return response()->json(
+                ['data' => true],
+                Response::HTTP_OK
+            );
         } else {
             //mandar mensaje de CURP registrada
             return response()->json(
-                ['error' => "La CURP proporcionada ya se encuentra asociada a una cuenta"],
+                ['error' => "Ha ocurrido un error, por favor inténtelo de nuevo"],
                 Response::HTTP_NOT_FOUND
             );
         }
@@ -162,9 +154,10 @@ class AuthController extends Controller
     }*/
 
     /**
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
         $credentials = request(['curp', 'password']);
 
@@ -256,16 +249,18 @@ class AuthController extends Controller
     /*
      * FUNCIONES PRIVADAS DE LA CASE
      * */
-    private function notifica_usuario($correo_receptor){
+    private function notifica_usuario($correo_receptor)
+    {
+        $datos_sistema = Sistema::where('ABREVIATURA', 'SIT')->first();
         $mailer = new Mailer(
             array(
                 // correo de origen
-                'correo_origen'   => Constantes::CORREO1_TUTORIAS,
-                'password_origen' => Constantes::PASS1_TUTORIAS,
+                'correo_origen'   =>  $datos_sistema->CORREO1,
+                'password_origen' =>  $datos_sistema->INDICIO1,
 
                 // datos que se mostrarán del emisor
-                'correo_emisor'   => Constantes::CORREO1_TUTORIAS,
-                'nombre_emisor'   => 'Tecnológico Nacional de México en León',
+                'correo_emisor' => $datos_sistema->CORREO1,
+                'nombre_emisor' => 'Tecnológico Nacional de México en León',
 
                 // array correos receptores
                 'correos_receptores' => array($correo_receptor),
@@ -286,11 +281,12 @@ class AuthController extends Controller
      * @param $pk_usuario
      * @return void
      */
-    private function asignar_roles($pk_usuario){
+    private function asignar_roles($pk_usuario)
+    {
         $usuario_rol = new Usuario_Rol;
 
         /* Inicio asignación de rol de alumno en sistema de tutorías */
-        $usuario_rol->FK_ROL     = 1;
+        $usuario_rol->FK_ROL = 1;
         $usuario_rol->FK_USUARIO = $pk_usuario;
         $usuario_rol->save();
         /* Fin asignación de rol de alumno en sistema de tutorías */
@@ -301,10 +297,11 @@ class AuthController extends Controller
      * @param $request
      * @return User
      */
-    private function crear_usuario($request){
+    private function crear_usuario($request)
+    {
         $carrera = Carrera::where('CLAVE_TECLEON', $request->CLAVE_CARRERA)->first();
 
-        $usuario  = new User;
+        $usuario = new User;
 
         $usuario->FK_CARRERA       = $carrera->PK_CARRERA;
         $usuario->CORREO1          = $request->email;
@@ -313,7 +310,7 @@ class AuthController extends Controller
         $usuario->PRIMER_APELLIDO  = $request->PRIMER_APELLIDO;
         $usuario->SEGUNDO_APELLIDO = $request->SEGUNDO_APELLIDO;
         $usuario->SEMESTRE         = $request->SEMESTRE;
-        $usuario->CURP             = $request->curp;
+        $usuario->curp             = $request->curp;
         $usuario->TOKEN_CURP       = Hash::make($request->curp);
         $usuario->TELEFONO_CASA    = $request->TELEFONO_FIJO;
         $usuario->TELEFONO_MOVIL   = $request->TELEFONO_MOVIL;

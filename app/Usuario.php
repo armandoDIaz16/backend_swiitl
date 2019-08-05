@@ -32,5 +32,5 @@ class Usuario extends Model
 
     protected $primaryKey = 'PK_USUARIO';
 
-    protected $table = 'users';
+    protected $table = 'CAT_USUARIO';
 }
