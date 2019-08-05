@@ -28,7 +28,7 @@ class ComentariosController extends Controller
             $comentario->save();
             return json_encode('Guardado con exito!');}
         catch(\Exception $exception){
-            return json_encode('Error al subir archivo');
+            return json_encode('Error al subir comentario');
         }
 
     }
