@@ -10,9 +10,24 @@ use App\Tipo_Pregunta;
 use App\Respuesta_Posible;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use App\Aplicacion_Encuesta;
 
 class SITEncuestaController extends Controller
 {
+
+    public function guarda_respuestas_pasatiempos(Request $request) {
+        // TODO guardar respuestas de alumno
+        $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $request->PK_APLICACION)->first();
+        $aplicacion->FECHA_RESPUESTA = date('Y-m-d H:i:s');
+        $aplicacion->ESTADO = 2;
+        $aplicacion->save();
+
+        return response()->json(
+            ['data' => true],
+            Response::HTTP_OK
+        );
+    }
+
     public function get_cuestionarios_usuarios($id_usuario)
     {
         $encuestas = DB::table('VIEW_LISTA_ENCUESTAS')
