@@ -9,18 +9,75 @@ use App\Pregunta;
 use App\Tipo_Pregunta;
 use App\Respuesta_Posible;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
-class SITCuestionarioController extends Controller
+class SITEncuestaController extends Controller
 {
-    public function get_cuestionario($pk_cuestionario){
-        $cuestionario_ = $array_secciones = array();
-        $cuestionario = Encuesta::where('PK_ENCUESTA', $pk_cuestionario)->first();
-        if($cuestionario) {
+    public function get_cuestionarios_usuarios($id_usuario)
+    {
+        $encuestas = DB::table('VIEW_LISTA_ENCUESTAS')
+            ->where('FK_USUARIO', $id_usuario)
+            ->get();
+
+        if (count($encuestas) > 0){
+            return response()->json(
+                ['data' => $encuestas],
+                Response::HTTP_OK
+            );
+        } else {
+            return response()->json(
+                ['data' => false],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    public function get_encuesta($pk_cuestionario)
+    {
+        $encuesta = $this->get_encuesta_por_pk($pk_cuestionario);
+
+        if ($encuesta > 0){
+            return response()->json(
+                ['data' => $encuesta],
+                Response::HTTP_OK
+            );
+        } else {
+            return response()->json(
+                ['data' => false],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    public function get_encuesta_aplicacion($pk_aplicacion_encuesta) {
+        $encuesta = DB::table('VIEW_LISTA_ENCUESTAS')
+            ->where('PK_APLICACION_ENCUESTA', $pk_aplicacion_encuesta)
+            ->first();
+
+        $encuesta = $this->get_encuesta_por_pk($encuesta->PK_ENCUESTA);
+
+        if ($encuesta > 0){
+            return response()->json(
+                ['data' => $encuesta],
+                Response::HTTP_OK
+            );
+        } else {
+            return response()->json(
+                ['data' => false],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    private function get_encuesta_por_pk($pk_encuesta){
+        $array_secciones = array();
+        $cuestionario = Encuesta::where('PK_ENCUESTA', $pk_encuesta)->first();
+        if ($cuestionario) {
             $secciones = Seccion_Encuesta::where('FK_ENCUESTA', $cuestionario->PK_ENCUESTA)->get();
             foreach ($secciones as $seccion) {
                 $array_preguntas = array();
-                $preguntas = DB::table('CATR_PREGUNTA')
-                    ->leftJoin('CAT_TIPO_PREGUNTA', 'CAT_TIPO_PREGUNTA.PK_TIPO_PREGUNTA', '=', 'CATR_PREGUNTA.FK_TIPO_PREGUNTA')
+                $preguntas = DB::table('CAT_PREGUNTA')
+                    ->leftJoin('CAT_TIPO_PREGUNTA', 'CAT_TIPO_PREGUNTA.PK_TIPO_PREGUNTA', '=', 'CAT_PREGUNTA.FK_TIPO_PREGUNTA')
                     ->where('FK_SECCION', $seccion->PK_SECCION)
                     ->get();
                 foreach ($preguntas as $pregunta) {
@@ -59,7 +116,7 @@ class SITCuestionarioController extends Controller
                     'PREGUNTAS' => $array_preguntas
                 );
             }
-            $cuestionario_ = array(
+            $cuestionario_completo = array(
                 'PK_ENCUESTA' => $cuestionario->PK_ENCUESTA,
                 'NOMBRE' => $cuestionario->NOMBRE,
                 'OBJETIVO' => $cuestionario->OBJETIVO,
@@ -70,6 +127,6 @@ class SITCuestionarioController extends Controller
             );
         }
 
-        return $cuestionario_;
+        return $cuestionario_completo;
     }
 }

@@ -11,12 +11,16 @@ class Encuesta extends Model
         'NOMBRE',
         'OBJETIVO',
         'INSTRUCCIONES',
+        'FUENTE_CITA',
+        'ES_ADMINISTRABLE',
+        'ESTADO',
         'FK_USUARIO_REGISTRO',
         'FECHA_REGISTRO',
         'FK_USUARIO_MODIFICACION',
         'FECHA_MODIFICACION',
         'BORRADO'
     ];
+
     public $timestamps = false;
 
     protected $primaryKey = 'PK_ENCUESTA';
