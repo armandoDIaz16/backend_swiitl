@@ -11,23 +11,71 @@ use App\Respuesta_Posible;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use App\Aplicacion_Encuesta;
+use App\RespuestaUsuarioEncuesta;
 
+/**
+ * Class SITEncuestaController
+ * @package App\Http\Controllers
+ */
 class SITEncuestaController extends Controller
 {
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function guarda_respuestas_pasatiempos(Request $request) {
-        // TODO guardar respuestas de alumno
-        $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $request->PK_APLICACION)->first();
-        $aplicacion->FECHA_RESPUESTA = date('Y-m-d H:i:s');
-        $aplicacion->ESTADO = 2;
-        $aplicacion->save();
+        try{
+            //guardar respuestas de encuesta
+            DB::table('TR_RESPUESTA_USUARIO_ENCUESTA')->insert(
+                $this->get_respuestas_pasatiempos($request->PK_APLICACION, $request->RESPUESTAS)
+            );
 
-        return response()->json(
-            ['data' => true],
-            Response::HTTP_OK
-        );
+            // actualizar estatus de encuesta
+            $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $request->PK_APLICACION)->first();
+            $aplicacion->FECHA_RESPUESTA = date('Y-m-d H:i:s');
+            $aplicacion->ESTADO = 2;
+            $aplicacion->save();
+
+            return response()->json(
+                ['data' => true],
+                Response::HTTP_OK
+            );
+        } catch(Exception $e){
+            error_log("Error en respuesta de encuesta: ");
+            error_log("Detalles:");
+            error_log($e->getMessage());
+
+            return response()->json(
+                ['error' => "Ha ocurrido un error, inténtelo de nuevo"],
+                Response::HTTP_NOT_FOUND
+            );
+        }
     }
 
+    /**
+     * @param $pk_aplicacion
+     * @param $request
+     * @return array
+     */
+    private function get_respuestas_pasatiempos($pk_aplicacion, $request){
+        $respuestas = [];
+
+        foreach ($request as $respuesta) {
+            $respuestas[] = [
+                'FK_RESPUESTA_POSIBLE'   => $respuesta['pk_respuesta'],
+                'FK_APLICACION_ENCUESTA' => $pk_aplicacion,
+                'ORDEN'                  => $respuesta['orden']
+            ];
+        }
+
+        return $respuestas;
+    }
+
+    /**
+     * @param $id_usuario
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function get_cuestionarios_usuarios($id_usuario)
     {
         $encuestas = DB::table('VIEW_LISTA_ENCUESTAS')
@@ -47,6 +95,10 @@ class SITEncuestaController extends Controller
         }
     }
 
+    /**
+     * @param $pk_cuestionario
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function get_encuesta($pk_cuestionario)
     {
         $encuesta = $this->get_encuesta_por_pk($pk_cuestionario);
@@ -64,6 +116,10 @@ class SITEncuestaController extends Controller
         }
     }
 
+    /**
+     * @param $pk_aplicacion_encuesta
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function get_encuesta_aplicacion($pk_aplicacion_encuesta) {
         $encuesta = DB::table('VIEW_LISTA_ENCUESTAS')
             ->where('PK_APLICACION_ENCUESTA', $pk_aplicacion_encuesta)
@@ -84,6 +140,10 @@ class SITEncuestaController extends Controller
         }
     }
 
+    /**
+     * @param $pk_encuesta
+     * @return array
+     */
     private function get_encuesta_por_pk($pk_encuesta){
         $array_secciones = array();
         $cuestionario = Encuesta::where('PK_ENCUESTA', $pk_encuesta)->first();
