@@ -193,38 +193,39 @@ SET IDENTITY_INSERT CAT_PREGUNTA OFF;
 INSERT INTO CAT_RESPUESTA_POSIBLE(
     FK_PREGUNTA,
     RESPUESTA,
-    ORDEN
+    ORDEN,
+    ES_MIXTA
 ) VALUES
-(2, 'SÍ', 1),  (2, 'No', 1),
-(3, 'SÍ', 1),  (3, 'No', 1),
-(4, 'SÍ', 1),  (4, 'No', 1),
-(5, 'SÍ', 1),  (5, 'No', 1),
-(6, 'SÍ', 1),  (6, 'No', 1),
-(7, 'SÍ', 1),  (7, 'No', 1),
-(8, 'SÍ', 1),  (8, 'No', 1),
-(9, 'SÍ', 1),  (9, 'No', 1),
-(10, 'Sí', 1), (10, 'No', 1),
-(11, 'Sí', 1), (11, 'No', 1),
-(12, 'Sí', 1), (12, 'No', 1),
-(13, 'Sí', 1), (13, 'No', 1),
-(14, '1 a 4', 1), (14, '5 a 8', 1), (14, 'Más de 8', 1),
-(15, '3', 1), (15, '2', 1), (15, '1', 1),
-(16, 'Excelente', 1), (16, 'Buena', 1), (16, 'Regular', 1), (16, 'Mala', 1),
-(17, 'Excelente', 1), (17, 'Buena', 1), (17, 'Regular', 1), (17, 'Mala', 1),
-(18, 'Excelente', 1), (18, 'Buena', 1), (18, 'Regular', 1), (18, 'Mala', 1),
-(19, 'Excelente', 1), (19, 'Buena', 1), (19, 'Regular', 1), (19, 'Mala', 1),
-(20, 'Excelente', 1), (20, 'Buena', 1), (20, 'Regular', 1), (20, 'Mala', 1),
-(21, 'Excelente', 1), (21, 'Buena', 1), (21, 'Regular', 1), (21, 'Mala', 1),
-(22, 'Excelente', 1), (22, 'Buena', 1), (22, 'Regular', 1), (22, 'Mala', 1),
-(23, 'Excelente', 1), (23, 'Buena', 1), (23, 'Regular', 1), (23, 'Mala', 1),
-(24, 'Excelente', 1), (24, 'Buena', 1), (24, 'Regular', 1), (24, 'Mala', 1),
-(25, 'Excelente', 1), (25, 'Buena', 1), (25, 'Regular', 1), (25, 'Mala', 1),
-(26, 'Excelente', 1), (26, 'Buena', 1), (26, 'Regular', 1), (26, 'Mala', 1),
-(27, 'Excelente', 1), (27, 'Buena', 1), (27, 'Regular', 1), (27, 'Mala', 1),
-(28, 'Excelente', 1), (28, 'Buena', 1), (28, 'Regular', 1), (28, 'Mala', 1),
-(29, 'Excelente', 1), (29, 'Buena', 1), (29, 'Regular', 1), (29, 'Mala', 1),
-(30, 'Triste', 1), (30, 'Alegre', 1), (30, 'Ansioso', 1), (30, 'Tranquilo', 1),
-(31, 'Sí', 1), (31, 'No', 1)
+(2, 'SÍ', 1, 0), 	(2, 'No', 2, 0),
+(3, 'SÍ', 1, 0), 	(3, 'No', 2, 0),
+(4, 'SÍ', 1, 0), 	(4, 'No', 2, 0),
+(5, 'SÍ', 1, 0), 	(5, 'No', 2, 0),
+(6, 'SÍ', 1, 0), 	(6, 'No', 2, 0),
+(7, 'SÍ', 1, 0), 	(7, 'No', 2, 0),
+(8, 'SÍ', 1, 0), 	(8, 'No', 2, 0),
+(9, 'SÍ', 1, 1), 	(9, 'No', 2, 0),
+(10, 'Sí', 1, 0), 	(10, 'No', 2, 0),
+(11, 'Sí', 1, 0), 	(11, 'No', 2, 0),
+(12, 'Sí', 1, 0), 	(12, 'No', 2, 0),
+(13, 'Sí', 1, 0), 	(13, 'No', 2, 0),
+(14, '1 a 4', 1, 0), 	(14, '5 a 8', 2, 0), 	(14, 'Más de 8', 3, 0),
+(15, '3', 1, 0), 	(15, '2', 2, 0), 	(15, '1', 3, 0),
+(16, 'Excelente', 1, 0), 	(16, 'Buena', 2, 0), 	(16, 'Regular', 3, 0), 	(16, 'Mala', 4, 0),
+(17, 'Excelente', 1, 0), 	(17, 'Buena', 2, 0), 	(17, 'Regular', 3, 0), 	(17, 'Mala', 4, 0),
+(18, 'Excelente', 1, 0), 	(18, 'Buena', 2, 0), 	(18, 'Regular', 3, 0), 	(18, 'Mala', 4, 0),
+(19, 'Excelente', 1, 0), 	(19, 'Buena', 2, 0), 	(19, 'Regular', 3, 0), 	(19, 'Mala', 4, 0),
+(20, 'Excelente', 1, 0), 	(20, 'Buena', 2, 0), 	(20, 'Regular', 3, 0), 	(20, 'Mala', 4, 0),
+(21, 'Excelente', 1, 0), 	(21, 'Buena', 2, 0), 	(21, 'Regular', 3, 0), 	(21, 'Mala', 4, 0),
+(22, 'Excelente', 1, 0), 	(22, 'Buena', 2, 0), 	(22, 'Regular', 3, 0), 	(22, 'Mala', 4, 0),
+(23, 'Excelente', 1, 0), 	(23, 'Buena', 2, 0), 	(23, 'Regular', 3, 0), 	(23, 'Mala', 4, 0),
+(24, 'Excelente', 1, 0), 	(24, 'Buena', 2, 0), 	(24, 'Regular', 3, 0), 	(24, 'Mala', 4, 0),
+(25, 'Excelente', 1, 0), 	(25, 'Buena', 2, 0), 	(25, 'Regular', 3, 0), 	(25, 'Mala', 4, 0),
+(26, 'Excelente', 1, 0), 	(26, 'Buena', 2, 0), 	(26, 'Regular', 3, 0), 	(26, 'Mala', 4, 0),
+(27, 'Excelente', 1, 0), 	(27, 'Buena', 2, 0), 	(27, 'Regular', 3, 0), 	(27, 'Mala', 4, 0),
+(28, 'Excelente', 1, 0), 	(28, 'Buena', 2, 0), 	(28, 'Regular', 3, 0), 	(28, 'Mala', 4, 0),
+(29, 'Excelente', 1, 0), 	(29, 'Buena', 2, 0), 	(29, 'Regular', 3, 0), 	(29, 'Mala', 4, 0),
+(30, 'Triste', 1, 0), 	(30, 'Alegre', 2, 0), 	(30, 'Ansioso', 3, 0), 	(30, 'Tranquilo', 4, 0),
+(31, 'Sí', 1, 0), 	(31, 'No', 2, 0)
 ;
 
 /* ******************************** *
@@ -304,21 +305,22 @@ SET IDENTITY_INSERT CAT_PREGUNTA OFF;
 INSERT INTO CAT_RESPUESTA_POSIBLE(
     FK_PREGUNTA,
     RESPUESTA,
-    ORDEN
+    ORDEN,
+    ES_MIXTA
 ) VALUES
-(32, 'Padres', 1), (32, 'Solo', 1), (32, 'Con familiares', 1), (32, 'Otro', 1),
-(33, 'Soltero', 1), (33, 'Casado', 1), (33, 'Divorciado', 1), (33, 'Unión libre', 1),
-(34, 'Sí', 1), (34, 'No', 1),
-(35, 'Menos de 10 hrs', 1), (35, 'De 10 a 20 hrs', 1), (35, 'De 21 a 30 hrs', 1),
-(36, 'Apoyar a la familia', 1), (36, 'Solventar mis estudios', 1), (36, 'Tener ingreso para gastos personales', 1), (36, 'Todas las anteriores', 1),
-(37, 'Sí', 1), (37, 'No', 1),
-(38, 'Sin estudio', 1), (38, 'Primaria incompleta', 1), (38, 'Primaria terminada', 1), (38, 'Secundaria incompleta', 1), (38, 'Secundaria terminada', 1), (38, 'Bachillerato incompleto', 1), (38, 'Bachillerato terminado', 1), (38, 'Estudios técnicos', 1), (38, 'TSU', 1), (38, 'Licenciatura incompleta', 1), (38, 'Licenciatura terminada', 1), (38, 'Postgrado', 1), (38, 'Otro', 1), (38, 'Lo desconozco', 1),
-(39, 'Sin estudio', 1), (39, 'Primaria incompleta', 1), (39, 'Primaria terminada', 1), (39, 'Secundaria incompleta', 1), (39, 'Secundaria terminada', 1), (39, 'Bachillerato incompleto', 1), (39, 'Bachillerato terminado', 1), (39, 'Estudios técnicos', 1), (39, 'TSU', 1), (39, 'Licenciatura incompleta', 1), (39, 'Licenciatura terminada', 1), (39, 'Postgrado', 1), (39, 'Otro', 1), (39, 'Lo desconozco', 1),
-(40, 'Mi padre', 1), (40, 'Mi madre', 1), (40, 'Yo', 1), (40, 'Todos los que trabajan en mi familia', 1), (40, 'Otro (indica quién)', 1),
-(41, 'Altos', 1), (41, 'Regulares', 1), (41, 'Bajos', 1), (41, 'Muy bajos', 1),
-(42, '', 1),
-(43, 'Robo a casa habitación', 1), (43, 'Pandillerismo', 1), (43, 'Robo de autos', 1), (43, 'Drogas', 1), (43, 'Asalto a peatones', 1), (43, 'Otro (especifica)', 1), (43, 'Ninguno', 1),
-(44, 'Autobús', 1), (44, 'Auto propio', 1), (44, 'Auto de la familia', 1), (44, 'Motocicleta', 1), (44, 'Bicicleta', 1), (44, 'Taxi', 1), (44, 'Caminando', 1), (44, 'Otro', 1)
+(32, 'Padres', 1, 0), 	(32, 'Solo', 2, 0), 	(32, 'Con familiares', 3, 0), 	(32, 'Otro', 4, 0),
+(33, 'Soltero', 1, 0), 	(33, 'Casado', 2, 0), 	(33, 'Divorciado', 3, 0), 	(33, 'Unión libre', 4, 0),
+(34, 'Sí     ', 1, 0), 	(34, 'No  (pasa a la pregunta no. 7)', 2, 0),
+(35, 'Menos de 10 hrs', 1, 0), 	(35, 'De 10 a 20 hrs', 2, 0), 	(35, 'De 21 a 30 hrs', 3, 0),
+(36, 'Apoyar a la familia', 1, 0), 	(36, 'Solventar mis estudios', 2, 0), 	(36, 'Tener ingreso para gastos personales', 3, 0), 	(36, 'Todas las anteriores', 4, 0),
+(37, 'Sí', 1, 0), 	(37, 'No', 2, 0),
+(38, 'Sin estudio', 1, 0), 	(38, 'Primaria incompleta', 2, 0), 	(38, 'Primaria terminada', 3, 0), 	(38, 'Secundaria incompleta', 4, 0), 	(38, 'Secundaria terminada', 5, 0), 	(38, 'Bachillerato incompleto', 6, 0), 	(38, 'Bachillerato terminado', 7, 0), 	(38, 'Estudios técnicos', 8, 0), 	(38, 'TSU', 9, 0), 	(38, 'Licenciatura incompleta', 10, 0), 	(38, 'Licenciatura terminada', 11, 0), 	(38, 'Postgrado', 12, 0), 	(38, 'Otro', 13, 0), 	(38, 'Lo desconozco', 14, 0),
+(39, 'Sin estudio', 1, 0), 	(39, 'Primaria incompleta', 2, 0), 	(39, 'Primaria terminada', 3, 0), 	(39, 'Secundaria incompleta', 4, 0), 	(39, 'Secundaria terminada', 5, 0), 	(39, 'Bachillerato incompleto', 6, 0), 	(39, 'Bachillerato terminado', 7, 0), 	(39, 'Estudios técnicos', 8, 0), 	(39, 'TSU', 9, 0), 	(39, 'Licenciatura incompleta', 10, 0), 	(39, 'Licenciatura terminada', 11, 0), 	(39, 'Postgrado', 12, 0), 	(39, 'Otro', 13, 0), 	(39, 'Lo desconozco', 14, 0),
+(40, 'Mi padre', 1, 0), 	(40, 'Mi madre', 2, 0), 	(40, 'Yo', 3, 0), 	(40, 'Todos los que trabajan en mi familia', 4, 0), 	(40, 'Otro (indica quién)', 5, 1),
+(41, 'Altos', 1, 0), 	(41, 'Regulares', 2, 0), 	(41, 'Bajos', 3, 0), 	(41, 'Muy bajos', 4, 0),
+(42, '', 1, 0),
+(43, 'Robo a casa habitación', 1, 0), 	(43, 'Pandillerismo', 2, 0), 	(43, 'Robo de autos', 3, 0), 	(43, 'Drogas', 4, 0), 	(43, 'Asalto a peatones', 5, 0), 	(43, 'Otro (especifica)', 6, 0), 	(43, 'Ninguno', 7, 0),
+(44, 'Autobús', 1, 0), 	(44, 'Auto propio', 2, 0), 	(44, 'Auto de la familia', 3, 0), 	(44, 'Motocicleta', 4, 0), 	(44, 'Bicicleta', 5, 0), 	(44, 'Taxi', 6, 0), 	(44, 'Caminando', 7, 0), 	(44, 'Otro', 8, 0)
 ;
 
 INSERT INTO CAT_RESPUESTA_POSIBLE(
@@ -327,17 +329,20 @@ INSERT INTO CAT_RESPUESTA_POSIBLE(
     ORDEN,
     VALOR_NUMERICO
 ) VALUES
-(45, '1 a 4', 1, 0), (45, '5 a 6', 1, 8), (45, '7 o más', 1, 13),
-(46, '0', 1, 0), (46, '1', 1, 16), (46, '2', 1, 36), (46, '3', 1, 36), (46, '4 o más ', 1, 52),
-(47, 'Sí', 1, 10), (47, 'No', 1, 0),
-(48, '0 - 5', 1, 0), (48, '06 - 10', 1, 15), (48, '11 - 15', 1, 27), (48, '16 - 20', 1, 32), (48, '21 o  más', 1, 46),
-(49, '(firme de) Tierra o cemento', 1, 0), (49, 'Otro tipo de material o acabado', 1, 11),
-(50, '0', 1, 0), (50, '1', 1, 32), (50, '2', 1, 41), (50, '3 o más', 1, 58),
-(51, 'Sí', 1, 20), (51, 'No', 1, 0),
-(52, 'No estudió', 1, 0), (52, 'Primaria incompleta', 1, 0), (52, 'Primaria completa', 1, 22), (52, 'Secundaria incompleta', 1, 22),
-(52, 'Secundaria completa', 1, 22), (52, 'Carrera comercial', 1, 38), (52, 'Carrera técnica', 1, 38), (52, 'Preparatoria incompleta', 1, 38),
-(52, 'Preparatoria completa', 1, 38), (52, 'Licenciatura incompleta', 1, 52), (52, 'Licenciatura completa', 1, 52), (52, 'Diplomado o Maestría', 1, 72),
-(52, 'Doctorado', 1, 72), (52, 'No sé', 1, 0)
+(45, '1 a 4', 1, 0), 		(45, '5 a 6', 2, 8), 		(45, '7 o más', 3, 13),
+(46, '0', 1, 0), 		(46, '1', 2, 16), 		(46, '2', 3, 36), 		(46, '3', 4, 36), 		(46, '4 o más ', 5, 52),
+(47, 'Sí', 1, 10), 		(47, 'No', 2, 0),
+(48, '0 - 5', 1, 0), 		(48, '06 - 10', 2, 15), 		(48, '11 - 15', 3, 27), 		(48, '16 - 20', 4, 32), 		(48, '21 o  más', 5, 46),
+(49, '(firme de) Tierra o cemento', 1, 0), 		(49, 'Otro tipo de material o acabado', 2, 11),
+(50, '0', 1, 0), 		(50, '1', 2, 32), 		(50, '2', 3, 41), 		(50, '3 o más', 4, 58),
+(51, 'Sí', 1, 20), 		(51, 'No', 2, 0),
+(52, 'No estudió', 1, 0), 		(52, 'Primaria incompleta', 2, 0), 		(52, 'Primaria completa', 3, 22),
+(52, 'Secundaria incompleta', 4, 22), 		(52, 'Secundaria completa', 5, 22),
+(52, 'Carrera comercial', 6, 38), 		(52, 'Carrera técnica', 7, 38),
+(52, 'Preparatoria incompleta', 8, 38), 		(52, 'Preparatoria completa', 9, 38),
+(52, 'Licenciatura incompleta', 10, 52), 		(52, 'Licenciatura completa', 11, 52),
+(52, 'Diplomado o Maestría', 12, 72), 		(52, 'Doctorado', 13, 72),
+(52, 'No sé', 14, 0)
 ;
 
 /* ******************************** *

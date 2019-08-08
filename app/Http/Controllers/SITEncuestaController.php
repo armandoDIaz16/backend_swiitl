@@ -166,7 +166,8 @@ class SITEncuestaController extends Controller
                             'VALOR_NUMERICO' => $respuesta->VALOR_NUMERICO,
                             'MINIMO' => $respuesta->MINIMO,
                             'MAXIMO' => $respuesta->MAXIMO,
-                            'ORDEN' => $respuesta->ORDEN
+                            'ORDEN' => $respuesta->ORDEN,
+                            'ES_MIXTA' => $respuesta->ES_MIXTA
                         );
                     }
                     $array_preguntas[] = array(
