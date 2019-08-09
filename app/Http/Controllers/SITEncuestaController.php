@@ -24,25 +24,23 @@ class SITEncuestaController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function guarda_respuestas_pasatiempos(Request $request) {
+    public function guarda_respuestas_encuesta(Request $request) {
         try{
             //guardar respuestas de encuesta
-            DB::table('TR_RESPUESTA_USUARIO_ENCUESTA')->insert(
-                $this->get_respuestas_pasatiempos($request->PK_APLICACION, $request->RESPUESTAS)
-            );
+            if ($this->guarda_respuestas($request)){
+                // actualizar estatus de encuesta
+                $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $request->PK_APLICACION)->first();
+                $aplicacion->FECHA_RESPUESTA = date('Y-m-d H:i:s');
+                $aplicacion->ESTADO = 2;
+                $aplicacion->save();
 
-            // actualizar estatus de encuesta
-            $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $request->PK_APLICACION)->first();
-            $aplicacion->FECHA_RESPUESTA = date('Y-m-d H:i:s');
-            $aplicacion->ESTADO = 2;
-            $aplicacion->save();
-
-            return response()->json(
-                ['data' => true],
-                Response::HTTP_OK
-            );
+                return response()->json(
+                    ['data' => true],
+                    Response::HTTP_OK
+                );
+            }
         } catch(Exception $e){
-            error_log("Error en respuesta de encuesta: ");
+            error_log("Error en actualización de aplicación de encuesta: ");
             error_log("Detalles:");
             error_log($e->getMessage());
 
@@ -50,6 +48,49 @@ class SITEncuestaController extends Controller
                 ['error' => "Ha ocurrido un error, inténtelo de nuevo"],
                 Response::HTTP_NOT_FOUND
             );
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    public function guarda_respuestas(Request $request) {
+        try{
+            //guardar respuestas de encuesta
+            switch ($request->PK_ENCUESTA){
+                case 1:
+                    DB::table('TR_RESPUESTA_USUARIO_ENCUESTA')->insert(
+                        $this->get_respuestas_pasatiempos($request->PK_APLICACION, $request->RESPUESTAS)
+                    );
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
+                    break;
+                case 10:
+                    break;
+            }
+
+            return true;
+        } catch(Exception $e){
+            error_log("Error guardar detalle de respuesta de encuesta: ");
+            error_log("Detalles:");
+            error_log($e->getMessage());
+
+            return false;
         }
     }
 

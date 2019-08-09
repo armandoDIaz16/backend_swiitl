@@ -418,6 +418,6 @@ Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
     Route::get('get_encuesta_aplicacion/{pk_aplicacion_encuesta}', 'SITEncuestaController@get_encuesta_aplicacion');
 
     // Guarda respuestas pasatiempos
-    Route::post('guarda_respuestas_pasatiempos', 'SITEncuestaController@guarda_respuestas_pasatiempos');
+    Route::post('guarda_respuestas_encuesta', 'SITEncuestaController@guarda_respuestas_encuesta');
 
 // });
