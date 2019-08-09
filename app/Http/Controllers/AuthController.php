@@ -38,12 +38,12 @@ class AuthController extends Controller
             $pk_usuario = $this->crear_usuario($request);
             if ($pk_usuario) {
                 // asigna roles a usuario
-                $this->asignar_roles($pk_usuario);
+                //$this->asignar_roles($pk_usuario);
 
                 // enviar correo de notificación al usuario
-                /*if (!$this->notifica_usuario($request->email)){
+                if (!$this->notifica_usuario($request->email)){
                     error_log("Error al enviar correo al receptor: " . $request->email);
-                }*/
+                }
 
                 return response()->json(
                     ['data' => true],
@@ -245,6 +245,8 @@ class AuthController extends Controller
     private function notifica_usuario($correo_receptor)
     {
         $datos_sistema = Sistema::where('ABREVIATURA', 'SIT')->first();
+        $datos_usuario = User::where('CORREO1', $correo_receptor)->first();
+        $curp_token = $datos_usuario->TOKEN_CURP;
         $mailer = new Mailer(
             array(
                 // correo de origen
@@ -262,7 +264,7 @@ class AuthController extends Controller
                 'asunto' => 'TecVirtual - Activación de cuenta',
 
                 // cuerpo en HTML del correo
-                'cuerpo_html' => "<h1>CUERPO DEL CORREO EN HTML DESDE PHP MAILER</h1>"
+                'cuerpo_html' => view('mails.activacion_cuenta')->with('curp', $curp_token)->render()
             )
         );
 
