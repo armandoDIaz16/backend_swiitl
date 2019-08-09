@@ -214,6 +214,15 @@ CREATE TABLE TR_RESPUESTA_USUARIO_ENCUESTA
 
 /* INICIO TABLA PARA RESPUESTA DE ENCUESTAS */
 
+/* *************************************************** *
+ * ********** MODIFICACION DE TABLAS ******** *
+ * *************************************************** */
+ALTER TABLE TR_RESPUESTA_USUARIO_ENCUESTA
+    ADD ORDEN SMALLINT DEFAULT NULL;
+
+ALTER TABLE CAT_RESPUESTA_POSIBLE
+    ADD ES_MIXTA SMALLINT DEFAULT 0;
+
 
 /*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
 
