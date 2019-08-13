@@ -36,7 +36,7 @@ class SITEncuestaController extends Controller
                 $aplicacion->ESTADO = 2;
                 // $aplicacion->save();
 
-                // error_log(print_r($request->RESPUESTAS, true));
+                error_log(print_r($request->RESPUESTAS, true));
 
                 return response()->json(
                     ['data' => true],

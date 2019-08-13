@@ -38,10 +38,10 @@ class AuthController extends Controller
             $pk_usuario = $this->crear_usuario($request);
             if ($pk_usuario) {
                 // asigna roles a usuario
-                //$this->asignar_roles($pk_usuario);
+                $this->asignar_roles($pk_usuario);
 
                 // enviar correo de notificación al usuario
-                if (!$this->notifica_usuario($request->email)){
+                if (!$this->notifica_usuario($request->email, $request->curp)){
                     error_log("Error al enviar correo al receptor: " . $request->email);
                 }
 
@@ -50,6 +50,21 @@ class AuthController extends Controller
                     Response::HTTP_OK
                 );
             }
+        } else if ($usuario->ESTADO == Constantes_Alumnos::ALUMNO_REGISTRADO) {
+            //si la CURP ya está registrada, se actualiza el correo
+            $usuario->CORREO1          = $request->email;
+            $usuario->TELEFONO_CASA    = $request->TELEFONO_FIJO;
+            $usuario->TELEFONO_MOVIL   = $request->TELEFONO_MOVIL;
+            $usuario->save();
+
+            if (!$this->notifica_usuario($request->email, $request->curp)){
+                error_log("Error al enviar correo al receptor: " . $request->email);
+            }
+
+            return response()->json(
+                ['data' => true],
+                Response::HTTP_OK
+            );
         } else {
             //mandar mensaje de CURP registrada
             return response()->json(
@@ -243,10 +258,10 @@ class AuthController extends Controller
     /*
      * FUNCIONES PRIVADAS DE LA CASE
      * */
-    private function notifica_usuario($correo_receptor)
+    private function notifica_usuario($correo_receptor, $curp)
     {
         $datos_sistema = Sistema::where('ABREVIATURA', 'SIT')->first();
-        $datos_usuario = User::where('CORREO1', $correo_receptor)->first();
+        $datos_usuario = User::where('CURP', $curp)->first();
         $curp_token = $datos_usuario->TOKEN_CURP;
         $mailer = new Mailer(
             array(
@@ -255,14 +270,15 @@ class AuthController extends Controller
                 'password_origen' =>  $datos_sistema->INDICIO1,
 
                 // datos que se mostrarán del emisor
-                'correo_emisor' => $datos_sistema->CORREO1,
-                'nombre_emisor' => 'Tecnológico Nacional de México en León',
+                // 'correo_emisor' => $datos_sistema->CORREO1,
+                'correo_emisor' => 'tecvirtual@itleon.edu.mx',
+                'nombre_emisor' => utf8_decode('Tecnológico Nacional de México en León'),
 
                 // array correos receptores
                 'correos_receptores' => array($correo_receptor),
 
                 // asunto del correo
-                'asunto' => 'TecVirtual - Activación de cuenta',
+                'asunto' => utf8_decode('TecVirtual - Activación de cuenta'),
 
                 // cuerpo en HTML del correo
                 'cuerpo_html' => view('mails.activacion_cuenta')->with('curp', $curp_token)->render()

@@ -31,6 +31,8 @@ class NumeroControl extends Controller
                 $usuario  = User::where('NUMERO_CONTROL', $request->control)->first();
                 if (!isset($usuario->NUMERO_CONTROL)) {
                     return $this->successResponse($alumno);
+                } else if ($usuario->ESTADO == 1) {
+                    return $this->successResponse($alumno);
                 } else {
                     return $this->failedResponse(
                         "El número de control ya tiene una cuenta activa. 
