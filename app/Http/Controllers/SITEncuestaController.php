@@ -30,9 +30,13 @@ class SITEncuestaController extends Controller
             if ($this->guarda_respuestas($request)){
                 // actualizar estatus de encuesta
                 $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $request->PK_APLICACION)->first();
-                $aplicacion->FECHA_RESPUESTA = date('Y-m-d H:i:s');
+                $aplicacion->FECHA_RESPUESTA         = date('Y-m-d H:i:s');
+                $aplicacion->FECHA_MODIFICACION      = date('Y-m-d H:i:s');
+                $aplicacion->FK_USUARIO_MODIFICACION = $aplicacion->FK_USUARIO;
                 $aplicacion->ESTADO = 2;
-                $aplicacion->save();
+                // $aplicacion->save();
+
+                // error_log(print_r($request->RESPUESTAS, true));
 
                 return response()->json(
                     ['data' => true],
@@ -60,27 +64,28 @@ class SITEncuestaController extends Controller
             //guardar respuestas de encuesta
             switch ($request->PK_ENCUESTA){
                 case 1:
-                    DB::table('TR_RESPUESTA_USUARIO_ENCUESTA')->insert(
+                    return true;
+                    /*DB::table('TR_RESPUESTA_USUARIO_ENCUESTA')->insert(
                         $this->get_respuestas_pasatiempos($request->PK_APLICACION, $request->RESPUESTAS)
-                    );
+                    );*/
                     break;
-                case 2:
+                case 2: return true;
                     break;
-                case 3:
+                case 3: return true;
                     break;
-                case 4:
+                case 4: return true;
                     break;
-                case 5:
+                case 5: return true;
                     break;
-                case 6:
+                case 6: return true;
                     break;
-                case 7:
+                case 7: return true;
                     break;
-                case 8:
+                case 8: return true;
                     break;
-                case 9:
+                case 9: return true;
                     break;
-                case 10:
+                case 10: return true;
                     break;
             }
 

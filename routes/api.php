@@ -18,6 +18,14 @@ Route::post('activar_cuenta', 'AuthController@activa_cuenta');
 // INICIO DE SESIÓN
 Route::post('login', 'AuthController@login');
 
+/* INICIO RUTAS PARA COMPLETAR PERFIL */
+// OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
+Route::get('perfil/{id_usuario}', 'PerfilController@get_perfil');
+
+// GUARDAR DATOS PARA COMPLETAR PERFIL
+Route::post('perfil', 'PerfilController@save_perfil');
+/* FIN RUTAS PARA COMPLETAR PERFIL */
+
 // TERMINAR SESIÓN
 Route::post('logout', 'AuthController@logout');
 
@@ -252,7 +260,7 @@ Route::get('eliminar-asistente-act/{PK_USUARIO}/{PK_ACTIVIDAD}', 'AsistenteActiv
 Route::get('eliminar-rol-asistente/{PK_USUARIO}', 'AsistenteActividadController@eliminarRolAsistente');
 Route::get('lista-actividades-creditos/{FK_ALUMNO_ACTIVIDAD}', 'AsistenciaAlumnoActividadController@pruebaActByLineamiento');
 Route::get('actividades-credito-cumplidos/{PK_ALUMNO_CREDITO}', 'CreditoActividadController@getActByCredito');
-Route::get('prueba-ver-pdf', 'pruebaVerPdf@verpdf');
+// Route::get('prueba-ver-pdf', 'pruebaVerPdf@verpdf');
 Route::get('generar-constancia/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@generarConstancia');
 Route::get('constancia-view-o_o_s_e/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@verConstanciaOficial');
 Route::get('constancia-preview/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@verConstanciaVistaPrevia');
