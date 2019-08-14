@@ -4,16 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Encuesta extends Model
+class RespuestaUsuarioEncuesta extends Model
 {
-    //
     protected $fillable = [
-        'NOMBRE',
-        'OBJETIVO',
-        'INSTRUCCIONES',
-        'FUENTE_CITA',
-        'ES_ADMINISTRABLE',
+        'FK_RESPUESTA_POSIBLE',
+        'FK_APLICACION_ENCUESTA',
+        'RESPUESTA_ABIERTA',
         'ESTADO',
+        'ORDEN',
         'FK_USUARIO_REGISTRO',
         'FECHA_REGISTRO',
         'FK_USUARIO_MODIFICACION',
@@ -23,7 +21,7 @@ class Encuesta extends Model
 
     public $timestamps = false;
 
-    protected $primaryKey = 'PK_ENCUESTA';
+    protected $primaryKey = 'PK_RESPUESTA_USUARIO_ENCUESTA';
 
-    protected $table = 'CAT_ENCUESTA';
+    protected $table = 'TR_RESPUESTA_USUARIO_ENCUESTA';
 }

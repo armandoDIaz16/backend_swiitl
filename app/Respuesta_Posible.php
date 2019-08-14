@@ -20,5 +20,5 @@ class Respuesta_Posible extends Model
 
     protected $primaryKey = 'PK_RESPUESTA_POSIBLE';
 
-    protected $table = 'CATR_RESPUESTA_POSIBLE';
+    protected $table = 'CAT_RESPUESTA_POSIBLE';
 }
