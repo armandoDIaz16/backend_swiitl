@@ -12,7 +12,7 @@
 <p>Para poder activar tu cuenta da click en el siguiente enlace:</p>
 <br>
 <div class="text-center">
-    <a href="http://localhost:4200/#/activa-cuenta?token={{$curp}}">Activa tu cuenta</a>
+    <a href="http://10.0.6.120/#/activa-cuenta?token={{$curp}}">Activa tu cuenta</a>
 </div>
 </body>
 </html>

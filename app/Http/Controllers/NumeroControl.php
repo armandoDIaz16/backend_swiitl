@@ -26,7 +26,7 @@ class NumeroControl extends Controller
         $alumno = $this->get_alumno_siia($request->control);
         if (!empty($alumno)) {
             // Validar que no esté dado de baja definitiva
-            if ($alumno->ESTADO != NULL) {
+            if ($alumno->Estado != NULL) {
                 // Validar que no tenga su cuenta activa
                 $usuario  = User::where('NUMERO_CONTROL', $request->control)->first();
                 if (!isset($usuario->NUMERO_CONTROL)) {
@@ -66,24 +66,24 @@ class NumeroControl extends Controller
     public function successResponse($alumno)
     {
         // CUANDO SE CONECTA CON TABLA LOCAL
-        $datos_alumno = [
+       /* $datos_alumno = [
             'nombre'           => trim($alumno->NOMBRE),
             'primer_apellido'  => trim($alumno->APELLIDO_PATERNO),
             'segundo_apellido' => trim($alumno->APELLIDO_MATERNO),
             'clave_carrera'    => trim($alumno->CLAVE_CARRERA),
             'semestre'         => trim($alumno->SEMESTRE),
             'numero_control'   => trim($alumno->NUMERO_CONTORL)
-        ];
+        ];*/
 
         // CUANDO SE CONECTA CON EL SIIA
-        /*$datos_alumno = [
+        $datos_alumno = [
             'nombre'           => trim($alumno->Nombre),
             'primer_apellido' => trim($alumno->ApellidoPaterno),
             'segundo_apellido' => trim($alumno->ApellidoMaterno),
             'clave_carrera' => trim($alumno->ClaveCarrera),
             'semestre' => trim($alumno->Semestre),
             'numero_control'   => trim($alumno->NumeroControl)
-        ];*/
+        ];
 
 
         return response()->json(
@@ -95,20 +95,20 @@ class NumeroControl extends Controller
     private function get_alumno_siia($numero_control)
     {
         // CUANDO SE CONECTA CON TABLA LOCAL
-        return
+        /*return
             DB::connection('sqlsrv')
                 ->table('SIIA')
                 ->select('*')
                 ->where('NUMERO_CONTORL', $numero_control)
                 ->get()
-                ->first();
+                ->first();*/
 
         // CUANDO SE CONECTA CON EL SIIA
-        /*return DB::connection('sqlsrv2')
+        return DB::connection('sqlsrv2')
             ->table('view_alumnos')
             ->select('Estado', 'Nombre', 'ApellidoPaterno', 'ApellidoMaterno', 'NumeroControl','ClaveCarrera','Semestre')
-            ->where('NumeroControl',$request->control)
-            ->get()->first();*/
+            ->where('NumeroControl', $numero_control)
+            ->get()->first();
 
     }
 }

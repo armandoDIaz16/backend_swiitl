@@ -35,10 +35,10 @@ class AuthController extends Controller
         $usuario = User::where('CURP', $request->curp)->first();
         if (!isset($usuario->CURP)) {
             //si el CURP no se encuentra registrado, registrar usuario
-            $pk_usuario = $this->crear_usuario($request);
-            if ($pk_usuario) {
+            $usuario = $this->crear_usuario($request);
+            if ($usuario->PK_USUARIO) {
                 // asigna roles a usuario
-                $this->asignar_roles($pk_usuario);
+                $this->asignar_roles($usuario->PK_USUARIO, $usuario->SEMESTRE);
 
                 // enviar correo de notificación al usuario
                 if (!$this->notifica_usuario($request->email, $request->curp)){
@@ -293,14 +293,41 @@ class AuthController extends Controller
      * @param $pk_usuario
      * @return void
      */
-    private function asignar_roles($pk_usuario)
+    private function asignar_roles($pk_usuario, $semestre)
     {
-        $usuario_rol = new Usuario_Rol;
 
         /* Inicio asignación de rol de alumno en sistema de tutorías */
-        $usuario_rol->FK_ROL = 1;
-        $usuario_rol->FK_USUARIO = $pk_usuario;
-        $usuario_rol->save();
+        if ($semestre == 1) {
+            $usuario_rol = new Usuario_Rol;
+            $usuario_rol->FK_ROL = 1;
+            $usuario_rol->FK_USUARIO = $pk_usuario;
+            $usuario_rol->save();
+
+            // Activación de encuestas para primer semestre
+            DB::table('TR_APLICACION_ENCUESTA')->insert([
+                [
+                    'FK_USUARIO' => $pk_usuario,
+                    'FK_ENCUESTA' => 1,
+                    'FECHA_APLICACION' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'FK_USUARIO' => $pk_usuario,
+                    'FK_ENCUESTA' => 2,
+                    'FECHA_APLICACION' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'FK_USUARIO' => $pk_usuario,
+                    'FK_ENCUESTA' => 3,
+                    'FECHA_APLICACION' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'FK_USUARIO' => $pk_usuario,
+                    'FK_ENCUESTA' => 6,
+                    'FECHA_APLICACION' => date('Y-m-d H:i:s')
+                ]
+            ]);
+        }
+
         /* Fin asignación de rol de alumno en sistema de tutorías */
     }
 
@@ -330,6 +357,6 @@ class AuthController extends Controller
 
         $usuario->save();
 
-        return $usuario->PK_USUARIO;
+        return $usuario;
     }
 }
