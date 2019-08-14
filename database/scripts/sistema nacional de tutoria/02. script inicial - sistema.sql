@@ -203,7 +203,7 @@ INSERT INTO CAT_RESPUESTA_POSIBLE(
 (6, 'SÍ', 1, 0), 	(6, 'No', 2, 0),
 (7, 'SÍ', 1, 0), 	(7, 'No', 2, 0),
 (8, 'SÍ', 1, 0), 	(8, 'No', 2, 0),
-(9, 'SÍ', 1, 1), 	(9, 'No', 2, 0),
+(9, 'SÍ ()', 1, 1), 	(9, 'No', 2, 0),
 (10, 'Sí', 1, 0), 	(10, 'No', 2, 0),
 (11, 'Sí', 1, 0), 	(11, 'No', 2, 0),
 (12, 'Sí', 1, 0), 	(12, 'No', 2, 0),
@@ -475,7 +475,7 @@ INSERT INTO CAT_PREGUNTA(
 (62, 5, 2, 62, '¿Cuántos integrantes conforman tu familia?', ''),
 (63, 5, 2, 63, '¿Cuántos hermanos tienes?', ''),
 (64, 5, 2, 64, 'Lugar que ocupas entre tus hermanos', ''),
-(65, 5, 2, 65, '¿De qué tipo es tu familia?', ''),
+(65, 5, 3, 65, '¿De qué tipo es tu familia?', ''),
 (66, 5, 2, 66, 'Comunicación', ''),
 (67, 5, 2, 67, 'Expresión de afecto', ''),
 (68, 5, 2, 68, 'Establecimiento de normas', ''),
@@ -518,9 +518,28 @@ INSERT INTO CAT_RESPUESTA_POSIBLE(
 ) VALUES
 (62, '2 a 3', 1), (62, '4 a 6', 1), (62, '7 a 10', 1), (62, 'Más de 10', 1),
 (63, 'Ninguno', 1), (63, '1', 1), (63, '2', 1), (63, '3', 1), (63, '4', 1), (63, '5', 1),
-(64, '1º', 1), (64, '2º', 1), (64, '3º', 1), (64, '4º', 1),
-(65, 'Nuclear (papá, mamá e hijos)', 1), (65, 'Extensa (viven en casa papá, mamá, hijos y otros familiares)', 1),
-(65, 'Monoparental (Madre o padre soltero)', 1), (65, 'Padres separados', 1), (65, 'Padres divorciados', 1), (65, 'Otro (especifica)', 1),
+(64, '1º', 1), (64, '2º', 1), (64, '3º', 1), (64, '4º', 1)
+;
+
+INSERT INTO CAT_RESPUESTA_POSIBLE(
+    FK_PREGUNTA,
+    RESPUESTA,
+    ORDEN,
+    ES_MIXTA
+) VALUES
+(65, 'Nuclear (papá, mamá e hijos)', 1, 0),
+(65, 'Extensa (viven en casa papá, mamá, hijos y otros familiares)', 1, 0),
+(65, 'Monoparental (Madre o padre soltero)', 1, 0),
+(65, 'Padres separados', 1, 0),
+(65, 'Padres divorciados', 1, 0),
+(65, 'Otro (especifica)', 1, 1)
+;
+
+INSERT INTO CAT_RESPUESTA_POSIBLE(
+    FK_PREGUNTA,
+    RESPUESTA,
+    ORDEN
+) VALUES
 (66, 'Excelente', 1), (66, 'Buena', 1), (66, 'Regular', 1), (66, 'Deficiente', 1),
 (67, 'Excelente', 1), (67, 'Buena', 1), (67, 'Regular', 1), (67, 'Deficiente', 1),
 (68, 'Excelente', 1), (68, 'Buena', 1), (68, 'Regular', 1), (68, 'Deficiente', 1),

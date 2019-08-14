@@ -24,26 +24,25 @@ class SITEncuestaController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function guarda_respuestas_encuesta(Request $request) {
-        try{
+    public function guarda_respuestas_encuesta(Request $request)
+    {
+        try {
             //guardar respuestas de encuesta
-            if ($this->guarda_respuestas($request)){
+            if ($this->guarda_respuestas($request)) {
                 // actualizar estatus de encuesta
                 $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $request->PK_APLICACION)->first();
-                $aplicacion->FECHA_RESPUESTA         = date('Y-m-d H:i:s');
-                $aplicacion->FECHA_MODIFICACION      = date('Y-m-d H:i:s');
+                $aplicacion->FECHA_RESPUESTA = date('Y-m-d H:i:s');
+                $aplicacion->FECHA_MODIFICACION = date('Y-m-d H:i:s');
                 $aplicacion->FK_USUARIO_MODIFICACION = $aplicacion->FK_USUARIO;
                 $aplicacion->ESTADO = 2;
-                // $aplicacion->save();
-
-                error_log(print_r($request->RESPUESTAS, true));
+                $aplicacion->save();
 
                 return response()->json(
                     ['data' => true],
                     Response::HTTP_OK
                 );
             }
-        } catch(Exception $e){
+        } catch (Exception $e) {
             error_log("Error en actualización de aplicación de encuesta: ");
             error_log("Detalles:");
             error_log($e->getMessage());
@@ -59,38 +58,22 @@ class SITEncuestaController extends Controller
      * @param Request $request
      * @return bool
      */
-    public function guarda_respuestas(Request $request) {
-        try{
+    public function guarda_respuestas(Request $request)
+    {
+        try {
             //guardar respuestas de encuesta
-            switch ($request->PK_ENCUESTA){
-                case 1:
-                    return true;
-                    /*DB::table('TR_RESPUESTA_USUARIO_ENCUESTA')->insert(
-                        $this->get_respuestas_pasatiempos($request->PK_APLICACION, $request->RESPUESTAS)
-                    );*/
-                    break;
-                case 2: return true;
-                    break;
-                case 3: return true;
-                    break;
-                case 4: return true;
-                    break;
-                case 5: return true;
-                    break;
-                case 6: return true;
-                    break;
-                case 7: return true;
-                    break;
-                case 8: return true;
-                    break;
-                case 9: return true;
-                    break;
-                case 10: return true;
-                    break;
+            if ($request->PK_ENCUESTA == 1) {
+                DB::table('TR_RESPUESTA_USUARIO_ENCUESTA')->insert(
+                    $this->get_respuestas_pasatiempos($request->PK_APLICACION, $request->RESPUESTAS)
+                );
+            } else {
+                DB::table('TR_RESPUESTA_USUARIO_ENCUESTA')->insert(
+                    $this->get_respuestas_encuesta($request->PK_APLICACION, $request->RESPUESTAS)
+                );
             }
 
             return true;
-        } catch(Exception $e){
+        } catch (Exception $e) {
             error_log("Error guardar detalle de respuesta de encuesta: ");
             error_log("Detalles:");
             error_log($e->getMessage());
@@ -104,14 +87,37 @@ class SITEncuestaController extends Controller
      * @param $request
      * @return array
      */
-    private function get_respuestas_pasatiempos($pk_aplicacion, $request){
+    private function get_respuestas_encuesta($pk_aplicacion, $respuestas_request)
+    {
+        $respuestas = [];
+
+        foreach ($respuestas_request['PREGUNTAS'] as $respuesta) {
+            $respuestas[] = [
+                'FK_RESPUESTA_POSIBLE'   => $respuesta['RESPUESTAS'][0]['PK_RESPUESTA'],
+                'FK_APLICACION_ENCUESTA' => $pk_aplicacion,
+                'RESPUESTA_ABIERTA'      => $respuesta['RESPUESTAS'][0]['ABIERTA'],
+                'ORDEN'                  => 0,
+                'RANGO'                  => $respuesta['RESPUESTAS'][0]['RANGO']
+            ];
+        }
+
+        return $respuestas;
+    }
+
+    /**
+     * @param $pk_aplicacion
+     * @param $request
+     * @return array
+     */
+    private function get_respuestas_pasatiempos($pk_aplicacion, $request)
+    {
         $respuestas = [];
 
         foreach ($request as $respuesta) {
             $respuestas[] = [
-                'FK_RESPUESTA_POSIBLE'   => $respuesta['pk_respuesta'],
+                'FK_RESPUESTA_POSIBLE' => $respuesta['pk_respuesta'],
                 'FK_APLICACION_ENCUESTA' => $pk_aplicacion,
-                'ORDEN'                  => $respuesta['orden']
+                'ORDEN' => $respuesta['orden']
             ];
         }
 
@@ -128,7 +134,7 @@ class SITEncuestaController extends Controller
             ->where('FK_USUARIO', $id_usuario)
             ->get();
 
-        if (count($encuestas) > 0){
+        if (count($encuestas) > 0) {
             return response()->json(
                 ['data' => $encuestas],
                 Response::HTTP_OK
@@ -149,7 +155,7 @@ class SITEncuestaController extends Controller
     {
         $encuesta = $this->get_encuesta_por_pk($pk_cuestionario);
 
-        if ($encuesta > 0){
+        if ($encuesta > 0) {
             return response()->json(
                 ['data' => $encuesta],
                 Response::HTTP_OK
@@ -166,14 +172,15 @@ class SITEncuestaController extends Controller
      * @param $pk_aplicacion_encuesta
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get_encuesta_aplicacion($pk_aplicacion_encuesta) {
+    public function get_encuesta_aplicacion($pk_aplicacion_encuesta)
+    {
         $encuesta = DB::table('VIEW_LISTA_ENCUESTAS')
             ->where('PK_APLICACION_ENCUESTA', $pk_aplicacion_encuesta)
             ->first();
 
         $encuesta = $this->get_encuesta_por_pk($encuesta->PK_ENCUESTA);
 
-        if ($encuesta > 0){
+        if ($encuesta > 0) {
             return response()->json(
                 ['data' => $encuesta],
                 Response::HTTP_OK
@@ -190,7 +197,8 @@ class SITEncuestaController extends Controller
      * @param $pk_encuesta
      * @return array
      */
-    private function get_encuesta_por_pk($pk_encuesta){
+    private function get_encuesta_por_pk($pk_encuesta)
+    {
         $array_secciones = array();
         $cuestionario = Encuesta::where('PK_ENCUESTA', $pk_encuesta)->first();
         if ($cuestionario) {

@@ -415,7 +415,7 @@ Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
 /* *********************************************************** *
  * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
-// Route::group(['middleware' => ['jwt.verify']], function() {
+Route::group(['middleware' => ['jwt.verify']], function() {
     // Buscar encuesta por pk de encuesta
     Route::get('cuestionario/{id}', 'SITEncuestaController@get_encuesta');
 
@@ -425,7 +425,7 @@ Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
     // Buscar encuesta por pk de aplicacion de encuesta
     Route::get('get_encuesta_aplicacion/{pk_aplicacion_encuesta}', 'SITEncuestaController@get_encuesta_aplicacion');
 
-    // Guarda respuestas pasatiempos
+    // Guarda respuestas de encuesta
     Route::post('guarda_respuestas_encuesta', 'SITEncuestaController@guarda_respuestas_encuesta');
 
-// });
+});
