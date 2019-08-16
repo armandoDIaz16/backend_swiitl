@@ -55,11 +55,11 @@ class DocumentacionResidenciasController extends Controller
     {
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
-        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, users.name, CAT_DOCUMENTACION.CARTA_FINALIZACION, PRIMER_APELLIDO,
+        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, CAT_USUARIO.NOMBRE, CAT_DOCUMENTACION.CARTA_FINALIZACION, PRIMER_APELLIDO,
                                     SEGUNDO_APELLIDO, PK_USUARIO 
                                   FROM CAT_DOCUMENTACION 
                                   JOIN CATR_ALUMNO ON CAT_DOCUMENTACION.ALUMNO = CATR_ALUMNO.ID_PADRE
-                                  JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
+                                  JOIN CAT_USUARIO ON CATR_ALUMNO.ID_PADRE = CAT_USUARIO.PK_USUARIO
                                   JOIN CATR_CARRERA ON CATR_ALUMNO.CLAVE_CARRERA = CATR_CARRERA.CLAVE
                                   WHERE CATR_CARRERA.FK_AREA_ACADEMICA = :caa
                                   AND CAT_DOCUMENTACION.PERIODO = :periodo',['caa'=>$id,'periodo'=>$actual]);
@@ -162,11 +162,11 @@ class DocumentacionResidenciasController extends Controller
     public function verdoc($id){
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
-        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, users.name, CAT_DOCUMENTACION.CARTA_FINALIZACION, PRIMER_APELLIDO,
+        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, CAT_USUARIO.NOMBRE, CAT_DOCUMENTACION.CARTA_FINALIZACION, PRIMER_APELLIDO,
                                     SEGUNDO_APELLIDO, PK_USUARIO 
                                   FROM CAT_DOCUMENTACION 
                                   JOIN CATR_ALUMNO ON CAT_DOCUMENTACION.ALUMNO = CATR_ALUMNO.ID_PADRE
-                                  JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
+                                  JOIN CAT_USUARIO ON CATR_ALUMNO.ID_PADRE = CAT_USUARIO.PK_USUARIO
                                   JOIN CATR_CARRERA ON CATR_ALUMNO.CLAVE_CARRERA = CATR_CARRERA.CLAVE
                                   WHERE CATR_CARRERA.FK_AREA_ACADEMICA = (SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :caa)
                                   AND CAT_DOCUMENTACION.PERIODO = :periodo',['caa'=>$id,'periodo'=>$actual]);
