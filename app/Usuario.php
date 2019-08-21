@@ -19,6 +19,7 @@ class Usuario extends Model
     'CALLE',
     'NUMERO_EXTERIOR',
     'NUMERO_INTERIOR',
+    'NUMERO_CONTROL',
     'FK_COLONIA',
     'TELEFONO_CASA',
     'TELEFONO_MOVIL',
@@ -31,5 +32,5 @@ class Usuario extends Model
 
     protected $primaryKey = 'PK_USUARIO';
 
-    protected $table = 'users';
+    protected $table = 'CAT_USUARIO';
 }

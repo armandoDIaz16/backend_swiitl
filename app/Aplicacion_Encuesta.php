@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Aplicacion_Encuesta extends Model
 {
     protected $fillable = [
-        'FECHA_APLICACION',
         'FK_USUARIO',
         'FK_ENCUESTA',
+        'FECHA_APLICACION',
+        'FECHA_RESPUESTA',
+        'ESTADO',
         'FK_USUARIO_REGISTRO',
         'FECHA_REGISTRO',
-        'FK_USUARIO_MODIFICACION',
-        'FECHA_MODIFICACION',
-        'BORRADO'
+        'FK_USUARIO_MODIFICACION'
     ];
     public $timestamps = false;
 

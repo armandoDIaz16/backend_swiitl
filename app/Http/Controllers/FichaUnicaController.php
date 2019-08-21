@@ -23,12 +23,12 @@ class FichaUnicaController extends Controller
             $alumnos = $pdf->alumnos($id,$y);
             foreach ($alumnos as $al){
                 $alumno[] = array(
-                    'Nombre' => $al->name,
+                    'Nombre' => $al->NOMBREALUMNO,
                     'PApellido' => $al->PRIMER_APELLIDO,
                     'SApellido' => $al->SEGUNDO_APELLIDO,
                     'Carrera' => $al->NOMBRE,
                     'Numero' => $al->NUMERO_CONTROL,
-                    'CorreoA' => $al->email,
+                    'CorreoA' => $al->CORREO1,
                     'Proyecto' => $al->Proyecto,
                     'Empresa' => $al->Empresa,
                     'NombreDocente' => $al->NombreDocente,

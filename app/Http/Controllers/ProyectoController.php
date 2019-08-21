@@ -192,7 +192,7 @@ class ProyectoController extends Controller
     public function maestros($id){
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
-        $maestros = DB::select('SELECT ID_PADRE, name, PRIMER_APELLIDO, SEGUNDO_APELLIDO FROM CATR_DOCENTE JOIN users ON CATR_DOCENTE.ID_PADRE = users.PK_USUARIO WHERE ID_AREA_ACADEMICA = (SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :padre)',['padre'=>$id]);
+        $maestros = DB::select('SELECT ID_PADRE, NOMBRE, PRIMER_APELLIDO, SEGUNDO_APELLIDO FROM CATR_DOCENTE JOIN CAT_USUARIO ON CATR_DOCENTE.ID_PADRE = CAT_USUARIO.PK_USUARIO WHERE ID_AREA_ACADEMICA = (SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :padre)',['padre'=>$id]);
         foreach ($maestros as $index => $value){
             $te = $value->ID_PADRE;
             $cantidad = DB::select('SELECT COUNT(PK_PROYECTO) FROM CATR_PROYECTO WHERE FK_DOCENTE = :te and PERIODO = :periodo',['te'=>$te, 'periodo'=>$actual]);

@@ -28,17 +28,17 @@ class ComentariosController extends Controller
             $comentario->save();
             return json_encode('Guardado con exito!');}
         catch(\Exception $exception){
-            return json_encode('Error al subir archivo');
+            return json_encode('Error al subir comentario');
         }
 
     }
 
     public function show($id)
     {
-        $comentario = DB::select('select CATR_COMENTARIO_REPORTE.COMENTARIO, CATR_COMENTARIO_REPORTE.FK_USUARIO, CAT_REPORTE_RESIDENCIA.NOMBRE, users.name
+        $comentario = DB::select('select CATR_COMENTARIO_REPORTE.COMENTARIO, CATR_COMENTARIO_REPORTE.FK_USUARIO, CAT_REPORTE_RESIDENCIA.NOMBRE, CAT_USUARIO.NOMBRE as NOMBREUSUARIO
                                         FROM CATR_COMENTARIO_REPORTE
                                         join CAT_REPORTE_RESIDENCIA ON CATR_COMENTARIO_REPORTE.FK_REPORTE = CAT_REPORTE_RESIDENCIA.PK_REPORTE
-                                        join users ON CATR_COMENTARIO_REPORTE.FK_USUARIO = users.PK_USUARIO
+                                        join CAT_USUARIO ON CATR_COMENTARIO_REPORTE.FK_USUARIO = CAT_USUARIO.PK_USUARIO
                                         WHERE CAT_REPORTE_RESIDENCIA.PK_REPORTE = :id',['id'=>$id]);
         /*$x = DB::select('SELECT CATR_DOCENTE.NUMERO_EMPLEADO_DOCENTE FROM CATR_DOCENTE WHERE ID_PADRE = :padre',['padre'=>$id]);
         if($x != null){

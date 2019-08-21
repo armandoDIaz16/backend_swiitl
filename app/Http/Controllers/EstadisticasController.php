@@ -14,8 +14,8 @@ class EstadisticasController extends Controller
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
         $proyectos = DB::select('select count(NOMBRE) from CAT_ANTEPROYECTO_RESIDENCIA
-                                        JOIN users on CAT_ANTEPROYECTO_RESIDENCIA.AUTOR =users.PK_USUARIO
-                                        JOIN CATR_ALUMNO ON users.PK_USUARIO = CATR_ALUMNO.ID_PADRE
+                                        JOIN CAT_USUARIO on CAT_ANTEPROYECTO_RESIDENCIA.AUTOR = CAT_USUARIO.PK_USUARIO
+                                        JOIN CATR_ALUMNO ON CAT_USUARIO.PK_USUARIO = CATR_ALUMNO.ID_PADRE
                                         WHERE PERIODO = :periodo',['periodo'=>$actual]);
         $proyectos1 = json_decode(json_encode($proyectos),true);
         $proyectos2 = array_pop($proyectos1);

@@ -19,8 +19,8 @@ class InformacionActaCalificacionController extends Controller
         $anio = date('y');
         $residentes = DB::select('SELECT CATR_ALUMNO.NUMERO_CONTROL 
                                         FROM CATR_ALUMNO
-                                        JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
-                                        JOIN PER_TR_ROL_USUARIO ON users.PK_USUARIO = PER_TR_ROL_USUARIO.FK_USUARIO
+                                        JOIN CAT_USUARIO ON CATR_ALUMNO.ID_PADRE = CAT_USUARIO.PK_USUARIO
+                                        JOIN PER_TR_ROL_USUARIO ON CAT_USUARIO.PK_USUARIO = PER_TR_ROL_USUARIO.FK_USUARIO
                                         JOIN PER_CATR_ROL ON PER_TR_ROL_USUARIO.FK_ROL = PER_CATR_ROL.PK_ROL
                                         WHERE PER_CATR_ROL.NOMBRE = :rol',['rol'=>'Residente']);
         $residentes1 = json_decode(json_encode($residentes), true);

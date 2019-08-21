@@ -51,9 +51,9 @@ class InformeTecnicoController extends Controller
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
 
-        $proyectos = DB::select('SELECT CAT_INFORME_ALUMNO.INFORME, users.name FROM CAT_INFORME_ALUMNO
+        $proyectos = DB::select('SELECT CAT_INFORME_ALUMNO.INFORME, CAT_USUARIO.NOMBRE FROM CAT_INFORME_ALUMNO
                                         JOIN CATR_ALUMNO ON CAT_INFORME_ALUMNO.FK_ALUMNO = CATR_ALUMNO.ID_PADRE
-                                        JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
+                                        JOIN CAT_USUARIO ON CATR_ALUMNO.ID_PADRE = CAT_USUARIO.PK_USUARIO
                                         JOIN CATR_CARRERA ON CATR_ALUMNO.CLAVE_CARRERA = CATR_CARRERA.PK_CARRERA
                                         WHERE CATR_CARRERA.FK_AREA_ACADEMICA = :area
                                         AND CAT_INFORME_ALUMNO.PERIODO = :periodo',['area'=>$area3, 'periodo'=>$actual]);

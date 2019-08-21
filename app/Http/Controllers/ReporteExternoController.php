@@ -71,7 +71,7 @@ class ReporteExternoController extends Controller
         $var = DB::select('SELECT * 
                            FROM CAT_REPORTE_EXTERNO 
                            JOIN CATR_EXTERNO ON CAT_REPORTE_EXTERNO.EXTERNO = CATR_EXTERNO.ID_PADRE
-                           JOIN users ON CAT_REPORTE_EXTERNO.ALUMNO = users.PK_USUARIO
+                           JOIN CAT_USUARIO ON CAT_REPORTE_EXTERNO.ALUMNO = CAT_USUARIO.PK_USUARIO
                            WHERE CATR_EXTERNO.ID_PADRE = :id',['id'=>$id]);
         return $var;
      }

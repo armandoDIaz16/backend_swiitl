@@ -2,19 +2,48 @@
 
 use Illuminate\Http\Request;
 
-Route::post('login', 'AuthController@login');    
-Route::post('login', 'AuthController@login');
-Route::post('signup', 'AuthController@signup');
-Route::post('logout', 'AuthController@logout');
-Route::post('refresh', 'AuthController@refresh');
-Route::post('me', 'AuthController@me');
-Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
-Route::post('resetPassword', 'ChangePasswordController@process');
+// BUSCAR Y VALIDAR NÚMERO DE CONTROL EN OBTENCIÓN DE CONTRASEÑA
 Route::post('control', 'NumeroControl@getControl');
+
+// REGISTRO EN SISTEMA
+// Route::post('signup', 'AuthController@signup');
+Route::post('signup', 'AuthController@registra_usuario');
+
+// OBTENCIÓN DE DATOS PARA ACTIVACIÓN DE CUENTA
+Route::post('get_datos_activacion', 'AuthController@get_datos_activacion');
+
+// ACTIVACIÓN DE CUENTA
+Route::post('activar_cuenta', 'AuthController@activa_cuenta');
+
+// INICIO DE SESIÓN
+Route::post('login', 'AuthController@login');
+
+/* INICIO RUTAS PARA COMPLETAR PERFIL */
+// OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
+Route::get('perfil/{id_usuario}', 'PerfilController@get_perfil');
+
+// GUARDAR DATOS PARA COMPLETAR PERFIL
+Route::post('perfil', 'PerfilController@save_perfil');
+/* FIN RUTAS PARA COMPLETAR PERFIL */
+
+// TERMINAR SESIÓN
+Route::post('logout', 'AuthController@logout');
+
+Route::post('refresh', 'AuthController@refresh');
+
+Route::post('me', 'AuthController@me');
+
+// ENVIAR URL PARA REESTABLECER CONTRASEÑA
+Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
+
+// CAMBIO DE CONTRASEÑA
+Route::post('resetPassword', 'ChangePasswordController@process');
+
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('GraficaCampus5/{PK_PERIODO}', 'AspiranteController@graficaCampus');
 });
+
 Route::middleware('jwt.auth')->get('users', function () {
     return auth('api')->user();
 });
@@ -79,7 +108,6 @@ Route::resource('Tipo_Pregunta', 'Tipo_PreguntaController');
 Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 Route::resource('Entidad_Federativa', 'Entidad_FederativaController');
 Route::resource('Ciudad', 'CiudadController');
-Route::resource('Usuario_Rol', 'Usuario_RolController');
 Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 route::resource('Bachillerato', 'BachilleratoController');
 route::resource('Colonia', 'ColoniaController');
@@ -162,7 +190,6 @@ Route::resource('CreditosSiia', 'CreditosSiiaController');
 
 Route::resource('Entidad_Federativa', 'Entidad_FederativaController');
 Route::resource('Ciudad', 'CiudadController');
-Route::resource('Usuario_Rol', 'Usuario_RolController');
 Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 
 
@@ -236,7 +263,9 @@ Route::get('eliminar-asistente-act/{PK_USUARIO}/{PK_ACTIVIDAD}', 'AsistenteActiv
 Route::get('eliminar-rol-asistente/{PK_USUARIO}', 'AsistenteActividadController@eliminarRolAsistente');
 Route::get('lista-actividades-creditos/{FK_ALUMNO_ACTIVIDAD}', 'AsistenciaAlumnoActividadController@pruebaActByLineamiento');
 Route::get('actividades-credito-cumplidos/{PK_ALUMNO_CREDITO}', 'CreditoActividadController@getActByCredito');
-Route::post('generar-constancia', 'constanciasCreditosController@generarConstancia');
+// Route::post('generar-constancia', 'constanciasCreditosController@generarConstancia');
+// Route::get('prueba-ver-pdf', 'pruebaVerPdf@verpdf');
+// Route::get('generar-constancia/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@generarConstancia');
 Route::get('constancia-view-o_o_s_e/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@verConstanciaOficial');
 Route::get('constancia-preview/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@verConstanciaVistaPrevia');
 Route::post('signupAdminCC', 'AuthController@signupAdminCredito');
@@ -393,3 +422,21 @@ Route::post('CreaFin', 'PAAE_Periodo@creaFinal');
 Route::post('AsignaSituacion', 'PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE', 'PAAE_Periodo@enviarCorreos');
 Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
+
+/* *********************************************************** *
+ * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
+ * *********************************************************** */
+Route::group(['middleware' => ['jwt.verify']], function() {
+    // Buscar encuesta por pk de encuesta
+    Route::get('cuestionario/{id}', 'SITEncuestaController@get_encuesta');
+
+    // Buscar las encuestas asignadas a un id de usuario
+    Route::get('cuestionarios_usuario/{id_usuario}', 'SITEncuestaController@get_cuestionarios_usuarios');
+
+    // Buscar encuesta por pk de aplicacion de encuesta
+    Route::get('get_encuesta_aplicacion/{pk_aplicacion_encuesta}', 'SITEncuestaController@get_encuesta_aplicacion');
+
+    // Guarda respuestas de encuesta
+    Route::post('guarda_respuestas_encuesta', 'SITEncuestaController@guarda_respuestas_encuesta');
+
+});

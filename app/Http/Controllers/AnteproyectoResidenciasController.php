@@ -208,7 +208,7 @@ class AnteproyectoResidenciasController extends Controller
         $area3 = array_pop($area2);
         $vistaante = DB::select('SELECT * 
                                         FROM CAT_ANTEPROYECTO_RESIDENCIA 
-                                        JOIN users ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = users.PK_USUARIO
+                                        JOIN CAT_USUARIO ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = CAT_USUARIO.PK_USUARIO
                                         WHERE AREA_ACADEMICA = :area AND ALUMNO <> :id',['area'=>$area3,'id'=>'NULL']);
         return $vistaante;
     }

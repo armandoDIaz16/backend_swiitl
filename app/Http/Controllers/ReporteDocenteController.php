@@ -71,7 +71,7 @@ class ReporteDocenteController extends Controller
         $var = DB::select('SELECT * 
                                   FROM CAT_REPORTE_DOCENTE 
                                   JOIN CATR_DOCENTE ON CAT_REPORTE_DOCENTE.DOCENTE = CATR_DOCENTE.ID_PADRE
-                                  JOIN users ON CAT_REPORTE_DOCENTE.ALUMNO = users.PK_USUARIO
+                                  JOIN CAT_USUARIO ON CAT_REPORTE_DOCENTE.ALUMNO = CAT_USUARIO.PK_USUARIO
                                 WHERE CATR_DOCENTE.ID_PADRE = :id',['id'=>$id]);
         return $var;
         /*$area = DB::select('SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :padre',['padre'=>$id]);
