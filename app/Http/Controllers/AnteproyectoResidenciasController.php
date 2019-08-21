@@ -84,7 +84,7 @@ class AnteproyectoResidenciasController extends Controller
             $anteproyecto->PERIODO = $periodo->periodo();
             $anteproyecto->save();
         }
-
+        return json_encode('Guardado con exito!');
 
     }
 
@@ -175,8 +175,12 @@ class AnteproyectoResidenciasController extends Controller
                     $anteproyecto->ALUMNO = NULL;
                 }
             }
-        $anteproyecto->save();
-        return json_encode('Guardado con exito');
+        try{
+            $anteproyecto->save();
+        return json_encode('Guardado con exito');}
+            catch(\Exception $exception){
+                return json_encode('Error al guardar');
+            }
     }
 
     /**

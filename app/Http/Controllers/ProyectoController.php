@@ -126,8 +126,12 @@ class ProyectoController extends Controller
                     }
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
-                $proyecto->save();
-                return json_encode('correcto');
+                try{
+                    $proyecto->save();
+                    return json_encode('correcto');}
+                catch(\Exception $exception){
+                    return response()->json('Error');
+                }
             }
             else {
                 $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
@@ -146,8 +150,12 @@ class ProyectoController extends Controller
                     }
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
-                $proyecto->save();
-                return json_encode('correcto');
+                try{
+                    $proyecto->save();
+                    return json_encode('correcto');}
+                catch(\Exception $exception){
+                    return response()->json('Error');
+                }
             }
         }
         if ($request->Externo){
@@ -164,8 +172,12 @@ class ProyectoController extends Controller
             }
             $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
             $proyecto->FK_ASESOR_EXT = $request->Externo;
+            try{
             $proyecto->save();
-            return json_encode('correcto');
+            return json_encode('correcto');}
+            catch(\Exception $exception){
+                return response()->json('Error');
+            }
         }
 
     }

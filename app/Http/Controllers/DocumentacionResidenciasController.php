@@ -111,7 +111,12 @@ class DocumentacionResidenciasController extends Controller
             $ruta = $carga->savefile($request);
             $documentacion->carta_aceptacion = $ruta;
         endif;
+        try{
             $documentacion->save();
+            return response()->json('Guardado con exito');}
+            catch(\Exception $exception){
+            return response()->json('Error al guardar');
+            }
     }
 
 
@@ -131,8 +136,12 @@ class DocumentacionResidenciasController extends Controller
             $File->move($destination_path, $real_name);  //line 5
             $Ruta = $sub_path . '/' . $real_name;
             $documentacion->SOLICITUD = $Ruta;
-            $documentacion->save();
-            return response()->json('Solicitud guardada');
+            try{
+                $documentacion->save();
+                return response()->json('Solicitud guardada');}
+            catch(\Exception $exception){
+                return response()->json('Error al guardar');
+            }
         }
         return response()->json('Fuera de fecha permitida');
     }
@@ -153,8 +162,12 @@ class DocumentacionResidenciasController extends Controller
             $File->move($destination_path, $real_name);  //line 5
             $Ruta = $sub_path . '/' . $real_name;
             $documentacion->CARTA_ACEPTACION = $Ruta;
-            $documentacion->save();
-            return response()->json('Carta de aceptacion guardada');
+            try{
+                $documentacion->save();
+                return response()->json('Carta de aceptacion guardada');}
+            catch(\Exception $exception){
+                return response()->json('Error al guardar');
+            }
         }
         return response()->json('Fuera de fecha permitida');
     }

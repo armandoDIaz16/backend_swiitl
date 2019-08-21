@@ -31,7 +31,12 @@ class CreditosSiiaController extends Controller
             $documentacion = new Documentacion();
             $documentacion->ALUMNO = $id_padre3;
             $documentacion->PERIODO = $var->periodo();
+            try{
             $documentacion->save();
+            return response()->json('Alumnos habilitados');}
+            catch(\Exception $exception){
+                return response()->json('Error al habilitar');
+            }
         }
     }
 
@@ -99,7 +104,7 @@ class CreditosSiiaController extends Controller
                 DB::table('CAT_DOCUMENTACION')->where('ALUMNO', $id_padre3)->delete();
             }
         }
-
+        return response()->json('Alumnos deshabilitados exitosamente');
 
     }
 

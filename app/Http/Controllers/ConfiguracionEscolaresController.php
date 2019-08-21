@@ -29,8 +29,12 @@ class ConfiguracionEscolaresController extends Controller
         $info->FOLIO = $request->FOLIO;
         $info->FECHA = $request->FECHA;
         $info->PERIODO = $periodo->periodo();
+        try{
         $info->save();
-        return response()->json('Gusrdado con exito');
+        return response()->json('Gusrdado con exito');}
+        catch(\Exception $exception){
+            return response()->json('Error al guardar');
+        }
     }
 
 
