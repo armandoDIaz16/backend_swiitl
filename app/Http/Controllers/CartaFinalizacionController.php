@@ -41,8 +41,12 @@ class CartaFinalizacionController extends Controller
         if ($diai<=$dia && $dia<=$diaf) {
             $Ruta = $carga->saveFile($request);
             $carta->CARTA = $Ruta;
+            try{
             $carta->save();
-            return response()->json('Carta guardada');
+            return response()->json('Carta guardada');}
+            catch(\Exception $exception){
+                return response()->json('Error al guardar');
+            }
         }
         return response()->json('No se puede entregar fuera de fecha');
     }

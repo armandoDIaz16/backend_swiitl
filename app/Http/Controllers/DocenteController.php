@@ -30,7 +30,7 @@ class DocenteController extends Controller
         $y = $x->ID_AREA_ACADEMICA;
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
-        $nombre = DB::select('select PK_USUARIO, name from users join CATR_DOCENTE on users.PK_USUARIO = CATR_DOCENTE.ID_PADRE where ID_AREA_ACADEMICA = :area',['area'=>$y]);
+        $nombre = DB::select('select PK_USUARIO, NOMBRE from CAT_USUARIO join CATR_DOCENTE on CAT_USUARIO.PK_USUARIO = CATR_DOCENTE.ID_PADRE where ID_AREA_ACADEMICA = :area',['area'=>$y]);
         foreach ($nombre as $index => $value) {
             $no = $value->PK_USUARIO;
             $nom = DB::select('SELECT COUNT(PK_PROYECTO) FROM CATR_PROYECTO WHERE FK_DOCENTE = :docente and PERIODO = :periodo',['docente'=>$no, 'periodo'=>$actual]);

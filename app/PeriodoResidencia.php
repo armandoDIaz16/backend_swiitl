@@ -17,8 +17,8 @@ class PeriodoResidencia extends Model
         $areaa = DB::select('SELECT CATR_CARRERA.FK_AREA_ACADEMICA
                                     FROM CATR_CARRERA
                                     JOIN CATR_ALUMNO ON CATR_CARRERA.PK_CARRERA = CATR_ALUMNO.CLAVE_CARRERA
-                                    JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
-                                    WHERE users.PK_USUARIO = :id',['id'=>$area]);
+                                    JOIN CAT_USUARIO ON CATR_ALUMNO.ID_PADRE = CAT_USUARIO.PK_USUARIO
+                                    WHERE CAT_USUARIO.PK_USUARIO = :id',['id'=>$area]);
 
         $areaa1 = json_decode(json_encode($areaa),true);
         $areaa2 = array_pop($areaa1);
@@ -42,8 +42,8 @@ class PeriodoResidencia extends Model
         $areaa = DB::select('SELECT CATR_CARRERA.FK_AREA_ACADEMICA
                                     FROM CATR_CARRERA
                                     JOIN CATR_ALUMNO ON CATR_CARRERA.PK_CARRERA = CATR_ALUMNO.CLAVE_CARRERA
-                                    JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
-                                    WHERE users.PK_USUARIO = :id',['id'=>$area]);
+                                    JOIN CAT_USUARIO ON CATR_ALUMNO.ID_PADRE = CAT_USUARIO.PK_USUARIO
+                                    WHERE CAT_USUARIO.PK_USUARIO = :id',['id'=>$area]);
 
         $areaa1 = json_decode(json_encode($areaa),true);
         $areaa2 = array_pop($areaa1);
@@ -66,7 +66,7 @@ class PeriodoResidencia extends Model
     public function FIniD($area, $proceso){
         $areaa = DB::select('SELECT CATR_DOCENTE.ID_AREA_ACADEMICA
                                     FROM CATR_DOCENTE
-                                    JOIN users ON CATR_DOCENTE.ID_PADRE = users.PK_USUARIO
+                                    JOIN CAT_USUARIO ON CATR_DOCENTE.ID_PADRE = CAT_USUARIO.PK_USUARIO
                                     WHERE PK_USUARIO = :id',['id'=>$area]);
 
         $areaa1 = json_decode(json_encode($areaa),true);
@@ -90,7 +90,7 @@ class PeriodoResidencia extends Model
     public function FFinD($area, $proceso){
         $areaa = DB::select('SELECT CATR_DOCENTE.ID_AREA_ACADEMICA
                                     FROM CATR_DOCENTE
-                                    JOIN users ON CATR_DOCENTE.ID_PADRE = users.PK_USUARIO
+                                    JOIN CAT_USUARIO ON CATR_DOCENTE.ID_PADRE = CAT_USUARIO.PK_USUARIO
                                     WHERE PK_USUARIO = :id',['id'=>$area]);
 
         $areaa1 = json_decode(json_encode($areaa),true);
