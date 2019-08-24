@@ -1,17 +1,12 @@
-use SWIITL;
-
-/*********************  INICIO MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************
+/*********************  INICIO MODIFICACIONES PUESTA EN PRODUCCIÓN (14-08-2019)  *********************************
  * CONTROL DE CAMBIOS EN AMBIENTES
- * LOCAL:      PENDIENTE (FECHA DE APLICACIÓN)
- * PRUEBAS:    PENDIENTE (FECHA DE APLICACIÓN)
- * PRODUCCIÓN: PENDIENTE (FECHA DE APLICACIÓN)
+ * LOCAL:      OK
+ * PRUEBAS:    OK
+ * PRODUCCIÓN: OK
 */
 
--- AQUÍ SE INDICAN TODOS LOS CAMBIOS QUE SE HAGAN DURANTE EL DÍA O RANGO DE FECHAS
 
-/*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
-
-/* LISTA DE ENCUESTAS */
+/* VISTA PARA EL LISTADO DE ENCUESTAS */
 DROP VIEW IF EXISTS VIEW_LISTA_ENCUESTAS;
 CREATE VIEW VIEW_LISTA_ENCUESTAS AS
 SELECT
@@ -28,4 +23,10 @@ FROM
         LEFT JOIN CAT_ENCUESTA on TR_APLICACION_ENCUESTA.FK_ENCUESTA = CAT_ENCUESTA.PK_ENCUESTA
 ;
 
+/*********************  FIN MODIFICACIONES PUESTA EN PRODUCCIÓN (14-08-2019) *********************************/
+
+
 -- --------------------------------------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------------------------------------
+
