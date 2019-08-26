@@ -51,7 +51,7 @@ class AspiranteController extends Controller
         //return redirect()->action('UserController@profile', [1]);
         //return redirect()->action('AspirantePasswordController@sendEmail', ['email' => $request->email]); 
         $pdo = DB::connection('sqlsrv')->select('EXEC GENERAR_PREFICHA ' . $request->PK_PERIODO . ', '
-            . $request->name . ', '
+            . $request->NOMBRE . ', '
             . $request->PRIMER_APELLIDO . ', '
             . $request->SEGUNDO_APELLIDO . ', '
             . $request->FECHA_NACIMIENTO . ', '
@@ -132,7 +132,7 @@ class AspiranteController extends Controller
     public function show($id)
     {
         $fk_aspirante = Aspirante::where('FK_PADRE', $id)->max('PK_ASPIRANTE');
-        $aspirante = DB::table('users')
+        $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CATR_ASPIRANTE.PREFICHA)) as PREFICHA'),
                 'CATR_ASPIRANTE.FECHA_REGISTRO',
@@ -140,36 +140,35 @@ class AspiranteController extends Controller
                 'CATR_ASPIRANTE.FK_ESTATUS',
                 'CAT_ESTATUS_ASPIRANTE.NOMBRE as NOMBRE_ESTATUS',
                 'CATR_ASPIRANTE.FOLIO_CENEVAL',
-                'users.name',
-                'users.PRIMER_APELLIDO',
-                DB::raw("CASE WHEN users.SEGUNDO_APELLIDO IS NULL THEN '' ELSE users.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
-                'users.FECHA_NACIMIENTO',
-                'users.SEXO',
-                'users.CURP',
+                'CAT_USUARIO.NOMBRE',
+                'CAT_USUARIO.PRIMER_APELLIDO',
+                DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
+                'CAT_USUARIO.FECHA_NACIMIENTO',
+                'CAT_USUARIO.SEXO',
+                'CAT_USUARIO.CURP',
                 'CAT_ESTADO_CIVIL.NOMBRE as NOMBRE_ESTADO_CIVIL',
-                'users.CALLE',
-                'TR_COLONIA_CODIGO_POSTAL.FK_NUMERO_CODIGO_POSTAL',
-                'users.TELEFONO_CASA',
-                'users.TELEFONO_MOVIL',
-                'users.email',
+                'CAT_USUARIO.CALLE',
+                'CAT_CODIGO_POSTAL.NUMERO',
+                'CAT_USUARIO.TELEFONO_CASA',
+                'CAT_USUARIO.TELEFONO_MOVIL',
+                'CAT_USUARIO.email',
                 'CATR_CIUDAD.NOMBRE as NOMBRE_CIUDAD',
                 'CATR_ASPIRANTE.PROMEDIO',
                 'CATR_ASPIRANTE.ESPECIALIDAD',
                 'CATR_ASPIRANTE.FK_CARRERA_1',
                 'CATR_ASPIRANTE.FK_CARRERA_2'
             )
-            ->join('CATR_ASPIRANTE', 'CATR_ASPIRANTE.FK_PADRE', '=', 'users.PK_USUARIO')
-            ->join('CAT_ESTADO_CIVIL', 'CAT_ESTADO_CIVIL.PK_ESTADO_CIVIL', '=', 'users.FK_ESTADO_CIVIL')
-            ->join('TR_COLONIA_CODIGO_POSTAL', 'TR_COLONIA_CODIGO_POSTAL.FK_COLONIA', '=', 'users.FK_COLONIA')
-            ->join('CATR_CODIGO_POSTAL', 'CATR_CODIGO_POSTAL.PK_NUMERO_CODIGO_POSTAL', '=', 'TR_COLONIA_CODIGO_POSTAL.FK_NUMERO_CODIGO_POSTAL')
-            ->join('CATR_CIUDAD', 'CATR_CIUDAD.PK_CIUDAD', '=', 'CATR_CODIGO_POSTAL.FK_CIUDAD')
+            ->join('CATR_ASPIRANTE', 'CATR_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
+            ->join('CAT_ESTADO_CIVIL', 'CAT_ESTADO_CIVIL.PK_ESTADO_CIVIL', '=', 'CAT_USUARIO.FK_ESTADO_CIVIL')
+            ->leftjoin('TR_COLONIA_CODIGO_POSTAL', 'TR_COLONIA_CODIGO_POSTAL.FK_COLONIA', '=', 'CAT_USUARIO.FK_COLONIA')
+            ->leftjoin('CAT_CODIGO_POSTAL', 'CAT_CODIGO_POSTAL.PK_CODIGO_POSTAL', '=', 'TR_COLONIA_CODIGO_POSTAL.FK_CODIGO_POSTAL')
+            ->leftjoin('CATR_CIUDAD', 'CATR_CIUDAD.PK_CIUDAD', '=', 'CAT_CODIGO_POSTAL.FK_CIUDAD')
             ->join('CAT_ESTATUS_ASPIRANTE', 'CAT_ESTATUS_ASPIRANTE.PK_ESTATUS_ASPIRANTE', '=', 'CATR_ASPIRANTE.FK_ESTATUS')
             ->where([
-                ['users.PK_USUARIO', '=', $id],
+                ['CAT_USUARIO.PK_USUARIO', '=', $id],
                 ['CATR_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante],
             ])
             ->get();
-
         return $aspirante;
     }
 
@@ -211,22 +210,22 @@ class AspiranteController extends Controller
     {
         $aspirantes = DB::table('CATR_ASPIRANTE')
             ->select(
-                'users.PK_USUARIO',
+                'CAT_USUARIO.PK_USUARIO',
                 DB::raw('LTRIM(RTRIM(CATR_ASPIRANTE.PREFICHA)) as PREFICHA'),
                 'CATR_ASPIRANTE.NUMERO_PREFICHA',
-                'users.CURP',
-                'users.name as NOMBRE',
-                'users.PRIMER_APELLIDO',
-                DB::raw("CASE WHEN users.SEGUNDO_APELLIDO IS NULL THEN '' ELSE users.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
-                'users.email as CORREO',
-                'users.TELEFONO_CASA',
-                DB::raw("CASE WHEN users.TELEFONO_MOVIL IS NULL THEN '' ELSE users.TELEFONO_MOVIL END as TELEFONO_MOVIL"),
+                'CAT_USUARIO.CURP',
+                'CAT_USUARIO.NOMBRE as NOMBRE',
+                'CAT_USUARIO.PRIMER_APELLIDO',
+                DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
+                'CAT_USUARIO.email as CORREO',
+                'CAT_USUARIO.TELEFONO_CASA',
+                DB::raw("CASE WHEN CAT_USUARIO.TELEFONO_MOVIL IS NULL THEN '' ELSE CAT_USUARIO.TELEFONO_MOVIL END as TELEFONO_MOVIL"),
                 'CATR_CARRERA1.NOMBRE as CARRERA1',
                 DB::raw("CASE WHEN CATR_CARRERA2.NOMBRE IS NULL THEN '' ELSE CATR_CARRERA2.NOMBRE END as CARRERA2"),
                 'CAT_ESTATUS_ASPIRANTE.NOMBRE as ESTATUS',
                 'CATR_ASPIRANTE.FECHA_REGISTRO'
             )
-            ->join('users', 'users.PK_USUARIO', '=',  'CATR_ASPIRANTE.FK_PADRE')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=',  'CATR_ASPIRANTE.FK_PADRE')
             ->join('CAT_ESTATUS_ASPIRANTE', 'CAT_ESTATUS_ASPIRANTE.PK_ESTATUS_ASPIRANTE', '=', 'CATR_ASPIRANTE.FK_ESTATUS')
             ->join(DB::raw('CATR_CARRERA CATR_CARRERA1'), 'CATR_CARRERA1.PK_CARRERA', '=',  'CATR_ASPIRANTE.FK_CARRERA_1')
             ->leftJoin(DB::raw('CATR_CARRERA CATR_CARRERA2'), 'CATR_CARRERA2.PK_CARRERA', '=',  'CATR_ASPIRANTE.FK_CARRERA_2')
@@ -373,18 +372,18 @@ class AspiranteController extends Controller
             ->select(
                 DB::raw('LTRIM(RTRIM(CATR_ASPIRANTE.PREFICHA)) as PREFICHA'),
                 'CATR_ASPIRANTE.FECHA_REGISTRO',
-                'users.name as NOMBRE',
-                'users.PRIMER_APELLIDO',
-                DB::raw("CASE WHEN users.SEGUNDO_APELLIDO IS NULL THEN '' ELSE users.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
-                'users.email as CORREO',
+                'CAT_USUARIO.NOMBRE as NOMBRE',
+                'CAT_USUARIO.PRIMER_APELLIDO',
+                DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
+                'CAT_USUARIO.email as CORREO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.REFERENCIA_BANCO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.TIPO_PAGO'
             )
-            ->join('users', 'users.PK_USUARIO', '=',  'CATR_ASPIRANTE.FK_PADRE')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=',  'CATR_ASPIRANTE.FK_PADRE')
             ->join('CAT_ESTATUS_ASPIRANTE', 'CAT_ESTATUS_ASPIRANTE.PK_ESTATUS_ASPIRANTE', '=', 'CATR_ASPIRANTE.FK_ESTATUS')
             ->join(DB::raw('CATR_CARRERA CATR_CARRERA1'), 'CATR_CARRERA1.PK_CARRERA', '=',  'CATR_ASPIRANTE.FK_CARRERA_1')
-            ->join('CATR_REFERENCIA_BANCARIA_USUARIO', 'CATR_REFERENCIA_BANCARIA_USUARIO.FK_USUARIO', '=',  'users.PK_USUARIO')
+            ->join('CATR_REFERENCIA_BANCARIA_USUARIO', 'CATR_REFERENCIA_BANCARIA_USUARIO.FK_USUARIO', '=',  'CAT_USUARIO.PK_USUARIO')
             ->leftJoin(DB::raw('CATR_CARRERA CATR_CARRERA2'), 'CATR_CARRERA2.PK_CARRERA', '=',  'CATR_ASPIRANTE.FK_CARRERA_2')
             ->where([
                 ['FK_PERIODO', '=', $request->PK_PERIODO],
@@ -401,16 +400,16 @@ class AspiranteController extends Controller
         $aspirantes = DB::table('CATR_ASPIRANTE')
             ->select(
                 DB::raw('LTRIM(RTRIM(CATR_ASPIRANTE.PREFICHA)) as PREFICHA'),
-                'users.name as NOMBRE',
-                'users.PRIMER_APELLIDO',
-                DB::raw("CASE WHEN users.SEGUNDO_APELLIDO IS NULL THEN '' ELSE users.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
+                'CAT_USUARIO.NOMBRE as NOMBRE',
+                'CAT_USUARIO.PRIMER_APELLIDO',
+                DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
                 DB::raw('100342 as CLAVE_INSTITUCION'),
                 DB::raw('4576 as CLAVE_SEDE'),
-                'users.FECHA_NACIMIENTO',
-                'users.email as CORREO',
+                'CAT_USUARIO.FECHA_NACIMIENTO',
+                'CAT_USUARIO.CORREO as CORREO',
                 'CATR_CARRERA.CLAVE_CARRERA'
             )
-            ->join('users', 'users.PK_USUARIO', '=',  'CATR_ASPIRANTE.FK_PADRE')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=',  'CATR_ASPIRANTE.FK_PADRE')
             ->join('CATR_CARRERA', 'CATR_CARRERA.PK_CARRERA', '=',  'CATR_ASPIRANTE.FK_CARRERA_1')
             ->where([
                 ['FK_PERIODO', '=', $PK_PERIODO],
@@ -698,7 +697,7 @@ class AspiranteController extends Controller
     {
 
 
-        $fk_padre = DB::table('users')
+        $fk_padre = DB::table('CAT_USUARIO')
             ->where('CURP', $request->CURP)
             ->max('PK_USUARIO');
 
@@ -716,7 +715,7 @@ class AspiranteController extends Controller
                 'FK_CARRERA_2' => $request->FK_CARRERA_2
             ]);
 
-        DB::table('users')
+        DB::table('CAT_USUARIO')
             ->where('CURP', $request->CURP)
             ->update([
                 'TELEFONO_CASA' => $request->TELEFONO_CASA,
