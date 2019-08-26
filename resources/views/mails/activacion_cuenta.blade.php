@@ -9,10 +9,17 @@
 </head>
 <body>
 <h4>Bienvenido a la plataforma TecVirtual del Tecnológico Nacional de México en León</h4>
-<p>Para poder activar tu cuenta da click en el siguiente enlace:</p>
+<p>
+    Para vincular una nueva contraseña a tu cuenta
+    <a href="http://localhost:4200/#/activa-cuenta?token={{$token}}">da clic aquí</a>.
+    <br><br>
+    O copia y pega el siguiente enlace en una ventana nueva del navegador:
+    <br>
+    http://localhost:4200/#/activa-cuenta?token={{$token}}
+    <br><br><br>
+    Posteriormente captura el código: <b><u>{{$clave}}</u></b> y escribe una nueva contraseña.
+    <br><br><br>
+</p>
 <br>
-<div class="text-center">
-    <a href="http://10.0.6.120/#/activa-cuenta?token={{$curp}}">Activa tu cuenta</a>
-</div>
 </body>
 </html>

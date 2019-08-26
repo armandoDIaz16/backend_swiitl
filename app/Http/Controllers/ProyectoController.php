@@ -10,32 +10,19 @@ use Illuminate\Support\Facades\DB;
 
 class ProyectoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         try{
@@ -53,12 +40,7 @@ class ProyectoController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         $a = DB::select('SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :numero', ['numero' => $id]);
@@ -78,24 +60,13 @@ class ProyectoController extends Controller
         return $f;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
        $periodo = new CreditosSiia();
@@ -126,8 +97,12 @@ class ProyectoController extends Controller
                     }
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
-                $proyecto->save();
-                return json_encode('correcto');
+                try{
+                    $proyecto->save();
+                    return json_encode('correcto');}
+                catch(\Exception $exception){
+                    return response()->json('Error');
+                }
             }
             else {
                 $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
@@ -146,8 +121,12 @@ class ProyectoController extends Controller
                     }
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
-                $proyecto->save();
-                return json_encode('correcto');
+                try{
+                    $proyecto->save();
+                    return json_encode('correcto');}
+                catch(\Exception $exception){
+                    return response()->json('Error');
+                }
             }
         }
         if ($request->Externo){
@@ -164,18 +143,17 @@ class ProyectoController extends Controller
             }
             $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
             $proyecto->FK_ASESOR_EXT = $request->Externo;
+            try{
             $proyecto->save();
-            return json_encode('correcto');
+            return json_encode('correcto');}
+            catch(\Exception $exception){
+                return response()->json('Error');
+            }
         }
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         //
