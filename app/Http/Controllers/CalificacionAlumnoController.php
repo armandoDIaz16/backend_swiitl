@@ -43,8 +43,12 @@ class CalificacionAlumnoController extends Controller
                 $calificacion->FK_ALUMNO = $request->FK_ALUMNO;
                 $calificacion->FK_DOCENTE = $request->FK_DOCENTE;
                 $calificacion->PERIODO = $periodo->periodo();
+                try{
                 $calificacion->save();
-                return response()->json('Guardada con exito');
+                return response()->json('Guardada con exito');}
+                catch(\Exception $exception){
+                    return response()->json('Error al guardar');
+                }
             }
         }
         return response()->json('Fuera de fecha permitida');

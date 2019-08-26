@@ -1,10 +1,8 @@
-use SWIITL;
-
-/*********************  INICIO MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL)  *********************************
+/*********************  INICIO MODIFICACIONES PUESTA EN PRODUCCIÓN (14-08-2019)  *********************************
  * CONTROL DE CAMBIOS EN AMBIENTES
- * LOCAL:      PENDIENTE (FECHA DE APLICACIÓN)
- * PRUEBAS:    PENDIENTE (FECHA DE APLICACIÓN)
- * PRODUCCIÓN: PENDIENTE (FECHA DE APLICACIÓN)
+ * LOCAL:      OK
+ * PRUEBAS:    OK
+ * PRODUCCIÓN: OK
 */
 
 /* *************************************************** *
@@ -780,7 +778,7 @@ ALTER TABLE PER_TR_PERMISO
  * ********** CREACIÓN DE TABLA PROVISIONAL DEL SIIA ******** *
  * *************************************************** */
 
-/* INICIO TABLA PROVISIONAL DEL SIIA */
+/* INICIO TABLA PROVISIONAL DEL SIIA PARA OBTENER CONTRASEÑA*/
 /*CREATE TABLE SIIA
 (
     NOMBRE           NVARCHAR(100) NOT NULL,
@@ -803,8 +801,53 @@ ALTER TABLE CAT_USUARIO ADD PARENTESCO_CONTACTO NVARCHAR(100) DEFAULT NULL;
 
 ALTER TABLE CAT_USUARIO ADD SITUACION_RESIDENCIA INT DEFAULT NULL;
 
-/*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
+/*********************  FIN MODIFICACIONES PUESTA EN PRODUCCIÓN (14-08-2019) *********************************/
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
+
+/* ********************  INICIO MODIFICACIONES OBTENER Y RESTABLECER CONTRASEÑA (15-08-2019 AL ZZ-ZZ-ZZZZ)  *********************************
+ * CONTROL DE CAMBIOS EN AMBIENTES
+ * LOCAL:      OK (15-08-2019)
+ * PRUEBAS:    PENDIENTE
+ * PRODUCCIÓN: PENDIENTE
+*/
+
+/* *************************************************** *
+ * ********** CREACIÓN DE TABLA DE OBTENCIÓN DE CONTRASEÑA ******** *
+ * *************************************************** */
+
+/* INICIO TABLA OBTENER CONTRASEÑA */
+DROP TABLE IF EXISTS PER_TR_OBTENER_CONTRASENIA;
+
+CREATE TABLE PER_TR_OBTENER_CONTRASENIA
+(
+    PK_OBTENER_CONTRASENIA  INT           NOT NULL IDENTITY (1,1),
+    FK_USUARIO              INT           NOT NULL,
+
+    TOKEN                   NVARCHAR(100) NOT NULL, -- HASH DE (CURP + FECHA DE GENERACIÓN)
+    CLAVE_ACCESO            NVARCHAR(10)  NOT NULL,
+    FECHA_GENERACION        DATETIME      NOT NULL,
+    ESTADO                  SMALLINT      NOT NULL DEFAULT 1, -- 1 ACTIVO, 2 UTILIZADO
+
+    FK_USUARIO_REGISTRO     INT,
+    FECHA_REGISTRO          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT      NOT NULL DEFAULT 0
+);
+
+ALTER TABLE PER_TR_OBTENER_CONTRASENIA
+    ADD CONSTRAINT PRK_OBTENER_CONTRASENIA_PER_TR_OBTENER_CONTRASENIA PRIMARY KEY (PK_OBTENER_CONTRASENIA ASC);
+
+ALTER TABLE PER_TR_OBTENER_CONTRASENIA
+    ADD CONSTRAINT FRK_USUARIO_PER_TR_OBTENER_CONTRASENIA FOREIGN KEY (FK_USUARIO) REFERENCES CAT_USUARIO (PK_USUARIO);
+/* FIN TABLA PERMISOS */
+
+/* MODIFICACIONES OBTENER CONTRASEÑA */
+ALTER TABLE CAT_USUARIO ALTER COLUMN FK_CARRERA INT NULL;
+ALTER TABLE CAT_USUARIO ADD TIPO_USUARIO INT NULL;
+ALTER TABLE CAT_USUARIO ALTER COLUMN SEMESTRE INT NULL;
+
+/* ********************  INICIO MODIFICACIONES OBTENER Y RESTABLECER CONTRASEÑA (15-08-2019 AL ZZ-ZZ-ZZZZ) ******************************** */

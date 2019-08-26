@@ -1,10 +1,8 @@
-use SWIITL;
-
-/*********************  INICIO MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL)  *********************************
+/*********************  INICIO MODIFICACIONES PUESTA EN PRODUCCIÓN (14-08-2019)  *********************************
  * CONTROL DE CAMBIOS EN AMBIENTES
- * LOCAL:      PENDIENTE (FECHA DE APLICACIÓN)
- * PRUEBAS:    PENDIENTE (FECHA DE APLICACIÓN)
- * PRODUCCIÓN: PENDIENTE (FECHA DE APLICACIÓN)
+ * LOCAL:      OK
+ * PRUEBAS:    OK
+ * PRODUCCIÓN: OK
 */
 
 /* ****************************************************** *
@@ -227,7 +225,7 @@ ALTER TABLE CAT_RESPUESTA_POSIBLE
     ADD ES_MIXTA SMALLINT DEFAULT 0;
 
 
-/*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
+/*********************  FIN MODIFICACIONES PUESTA EN PRODUCCIÓN (14-08-2019) *********************************/
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------

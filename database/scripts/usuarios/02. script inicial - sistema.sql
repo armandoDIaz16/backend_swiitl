@@ -1,13 +1,11 @@
-use SWIITL;
-
-/*********************  INICIO MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************
+/*********************  INICIO MODIFICACIONES PUESTA EN PRODUCCIÓN (14-08-2019)  *********************************
  * CONTROL DE CAMBIOS EN AMBIENTES
- * LOCAL:      PENDIENTE (FECHA DE APLICACIÓN)
- * PRUEBAS:    PENDIENTE (FECHA DE APLICACIÓN)
- * PRODUCCIÓN: PENDIENTE (FECHA DE APLICACIÓN)
+ * LOCAL:      OK
+ * PRUEBAS:    OK
+ * PRODUCCIÓN: OK
 */
 
-/* INICIO REGISTROS PROVISIONALES SIIA */
+/* INICIO REGISTROS PROVISIONALES PARA OBTENER USUARIO SIIA */
 /*INSERT INTO SIIA(NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, NUMERO_CONTORL, CLAVE_CARRERA, FECHA_INGRESO, SEMESTRE, ESTADO, MOTIVO)
 VALUES('MIGUEL ANGEL', 'PEÑA', 'LOPEZ', '10420419', 'ISX', '2013-08-19 00:00:00.000', 19, 'BD', 'Concluir Creditos Carrera');*/
 /* FIN REGISTROS PROVISIONALES SIIA */
@@ -25,7 +23,9 @@ INSERT INTO CAT_CARRERA(NOMBRE, ABREVIATURA, CLAVE_TECNM, CLAVE_TECLEON, CLAVE_C
 /* FIN REGISTROS DEL CATÁLOGO DE CARRERAS */
 
 
-/*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
+/*********************  FIN MODIFICACIONES PUESTA EN PRODUCCIÓN (14-08-2019) *********************************/
 
 
+-- --------------------------------------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
