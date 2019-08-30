@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\GrupoTutorias;
 use App\Http\Requests\SignUpRequest;
+use App\Usuario;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
@@ -17,6 +19,7 @@ use App\Models\General\Sistema;
 
 use App\Helpers\Mailer;
 use App\Helpers\UsuariosHelper;
+use App\Helpers\Constantes;
 
 
 /**
@@ -47,13 +50,13 @@ class AuthController extends Controller
             $token = $this->get_datos_token($usuario);
 
             // enviar correo de notificación
-            if (!$this->notifica_usuario(
+            /*if (!$this->notifica_usuario(
                 $usuario->CORREO1,
                 $token->TOKEN,
                 $token->CLAVE_ACCESO)) {
                 error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
                 error_log("AuthController.php");
-            }
+            }*/
 
             // llamada exitosa
             return response()->json(['data' => true], Response::HTTP_OK);
@@ -379,18 +382,136 @@ class AuthController extends Controller
             }
         } else if ($usuario->TIPO_USUARIO == 2) { // lógica para docentes
             // consultar si es tutor en el periodo activo
-            $es_tutor = true;
+            $es_tutor = $this->es_tutor_siia($usuario->NUMERO_CONTROL);
             if ($es_tutor) {
                 // asigna rol de tutor
                 $usuario_rol = new Usuario_Rol;
                 $usuario_rol->FK_ROL     = 2;
                 $usuario_rol->FK_USUARIO = $usuario->PK_USUARIO;
                 $usuario_rol->save();
+
+                $this->verifica_grupo_tutorias($es_tutor[0]->clavegrupo, $usuario->PK_USUARIO, Constantes::get_periodo(), $usuario->NUMERO_CONTROL);
             }
 
         } else { // lógica para usuarios que no son docentes ni alumnos
 
         }
+    }
+
+    private function verifica_grupo_tutorias($clave_grupo, $pk_tutor, $periodo, $numero_control) {
+        // buscar grupo dado de alta
+        $grupo = GrupoTutorias::where('CLAVE', $clave_grupo)
+            ->where('FK_USUARIO', $pk_tutor)
+            ->where('PERIODO', Constantes::get_periodo())
+            ->where('ESTADO', 1)
+            ->first();
+
+        if (!isset($grupo->CLAVE)) { // no está registrado el grupo
+            // buscar carrera del grupo en el siia
+            $clave_carrera_siia = $this->get_carrera_grupo_siia($periodo, $clave_grupo)[0]->ClaveCarrera;
+
+            //buscar lista de alumnos del grupo en el siia
+            $grupo_siia = $this->get_grupo_siia($periodo, $numero_control);
+
+            //buscar fk_carrera en TEC_VITRUAL
+            $carrera = Carrera::where('CLAVE_TECLEON', $clave_carrera_siia)->first();
+
+            // crear grupo
+            $nuevo_grupo = new GrupoTutorias;
+            $nuevo_grupo->FK_CARRERA = $carrera->PK_CARRERA;
+            $nuevo_grupo->FK_USUARIO = $pk_tutor;
+            $nuevo_grupo->PERIODO    = Constantes::get_periodo();
+            $nuevo_grupo->CLAVE      = $clave_grupo;
+            $nuevo_grupo->TIPO_GRUPO = Constantes::GRUPO_TUTORIA_INICIAL;
+            $nuevo_grupo->FK_USUARIO_REGISTRO = $pk_tutor;
+            $nuevo_grupo->save();
+
+            //crear detalle de grupo
+            $array_detalle_grupo = [];
+            foreach ($grupo_siia as $alumno) {
+                $usuario = Usuario::where('NUMERO_CONTROL', $alumno->NumeroControl)->first();
+                if (isset($usuario->PK_USUARIO)) {
+                    $array_detalle_grupo[] = [
+                        'FK_GRUPO'   => $nuevo_grupo->PK_GRUPO_TUTORIA,
+                        'FK_USUARIO' => $usuario->PK_USUARIO,
+                        'FK_USUARIO_REGISTRO' => $usuario->PK_USUARIO
+                    ];
+                } else {
+                    error_log('No se ha encontrado al alumno: '
+                        . $alumno->NumeroControl
+                        . ' en generación de grupo. AuthController'
+                    );
+                }
+            }
+
+            DB::table('TR_GRUPO_TUTORIA_DETALLE')->insert($array_detalle_grupo);
+
+        } else { // sí está registrado el grupo
+            // obtener alumnos del grupo del siia
+
+            //actualizar el grupo en base de datos TEC_VIRTUAL
+        }
+    }
+
+    private function get_grupo_siia($periodo, $pk_tutor) {
+        $sql = "
+        SELECT
+            NumeroControl,
+            Nombre,
+            ApellidoPaterno,
+            ApellidoMaterno,
+            Semestre,
+            ClaveCarrera
+        FROM
+            dbo.view_alumnos
+        WHERE
+            NumeroControl IN (
+                SELECT DISTINCT
+                    NumeroControl
+                FROM
+                    dbo.view_horarioalumno
+                WHERE
+                    IdPeriodoEscolar = $periodo
+                    AND IdMaestro = $pk_tutor
+                    AND clavemateria = 'PDH'
+                    -- AND clavegrupo = ''
+            )
+        ;";
+
+        return DB::connection('sqlsrv2')->select($sql);
+    }
+
+    private function get_carrera_grupo_siia($periodo, $clave_grupo) {
+        $sql = "
+        SELECT
+            ClaveCarrera
+        FROM
+            dbo.view_alumnos
+        WHERE
+            NumeroControl = (
+                SELECT TOP 1 NumeroControl
+                FROM dbo.view_horarioalumno
+                WHERE IdPeriodoEscolar = $periodo
+                  AND clavemateria = 'PDH'
+                  AND clavegrupo = $clave_grupo
+            )
+        ;";
+
+        return DB::connection('sqlsrv2')->select($sql);
+    }
+
+    private function es_tutor_siia($numero_control) {
+        $sql = "SELECT DISTINCT
+                    IdMaestro,
+                    clavegrupo
+                FROM
+                    view_horarioalumno
+                WHERE
+                    IdPeriodoEscolar = " .Constantes::get_periodo(). "
+                    AND clavemateria = 'PDH'
+                    AND IdMaestro    = ". $numero_control .";";
+
+        return DB::connection('sqlsrv2')->select($sql);
     }
 
     private function activa_encuestas_tutorias($pk_usuario) {
@@ -400,37 +521,44 @@ class AuthController extends Controller
             [
                 'FK_USUARIO' => $pk_usuario,
                 'FK_ENCUESTA' => 1,
-                'FECHA_APLICACION' => $fecha
+                'FECHA_APLICACION' => $fecha,
+                'PERIODO' => Constantes::get_periodo()
             ],
             [
                 'FK_USUARIO' => $pk_usuario,
                 'FK_ENCUESTA' => 2,
-                'FECHA_APLICACION' => $fecha
+                'FECHA_APLICACION' => $fecha,
+                'PERIODO' => Constantes::get_periodo()
             ],
             [
                 'FK_USUARIO' => $pk_usuario,
                 'FK_ENCUESTA' => 3,
-                'FECHA_APLICACION' => $fecha
+                'FECHA_APLICACION' => $fecha,
+                'PERIODO' => Constantes::get_periodo()
             ],
             [
                 'FK_USUARIO' => $pk_usuario,
                 'FK_ENCUESTA' => 4,
-                'FECHA_APLICACION' => $fecha
+                'FECHA_APLICACION' => $fecha,
+                'PERIODO' => Constantes::get_periodo()
             ],
             [
                 'FK_USUARIO' => $pk_usuario,
                 'FK_ENCUESTA' => 5,
-                'FECHA_APLICACION' => $fecha
+                'FECHA_APLICACION' => $fecha,
+                'PERIODO' => Constantes::get_periodo()
             ],
             [
                 'FK_USUARIO' => $pk_usuario,
                 'FK_ENCUESTA' => 6,
-                'FECHA_APLICACION' => $fecha
+                'FECHA_APLICACION' => $fecha,
+                'PERIODO' => Constantes::get_periodo()
             ],
             [
                 'FK_USUARIO' => $pk_usuario,
                 'FK_ENCUESTA' => 8,
-                'FECHA_APLICACION' => $fecha
+                'FECHA_APLICACION' => $fecha,
+                'PERIODO' => Constantes::get_periodo()
             ]
         ]);
     }
