@@ -31,7 +31,7 @@ class Aspirante extends Model
     ];
     public $timestamps = false;
 
-    protected $table = 'CATR_ASPIRANTE';
+    protected $table = 'CAT_ASPIRANTE';
 
 
 }
