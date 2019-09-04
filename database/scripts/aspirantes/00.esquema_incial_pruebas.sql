@@ -1,17 +1,3 @@
-use SWIITL;
-
-/*********************  INICIO MODIFICACIONES LUNES 15 DE ABRIL 2019 *********************************
- * CONTROL DE CAMBIOS EN AMBIENTES
- * LOCAL:      PENDIENTE (FECHA DE APLICACIÓN)
- * PRUEBAS:    PENDIENTE (FECHA DE APLICACIÓN)
- * PRODUCCIÓN: PENDIENTE (FECHA DE APLICACIÓN)
-*/
--- AQUÍ SE INDICAN TODOS LOS CAMBIOS QUE SE HAGAN DURANTE EL DÍA O RANGO DE FECHAS
-
--- SCRIPT INICIAL PARA LAS TABLAS DEL ESQUEMA TECNOLÓGICO
-
---Tabla para almacenar el turno en que pueden tomar el examen
-
 CREATE TABLE dbo.CATR_REFERENCIA_BANCARIA_USUARIO 
   ( 
      PK_REFERENCIA_BANCARIA_USER INT IDENTITY PRIMARY KEY, 
@@ -319,10 +305,3 @@ CREATE TABLE dbo.CAT_ASPIRANTE
      FECHA_MODIFICACION          DATETIME, 
      BORRADO                     SMALLINT NOT NULL DEFAULT 0  
   ); 
-
-
-/*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
-
--- --------------------------------------------------------------------------------------------------------------------------------
--- --------------------------------------------------------------------------------------------------------------------------------
--- --------------------------------------------------------------------------------------------------------------------------------

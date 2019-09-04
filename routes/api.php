@@ -40,7 +40,7 @@ Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
 Route::post('resetPassword', 'ChangePasswordController@process');
 
 
-Route::group(['middleware' => ['jwt.verify']], function() {
+Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('GraficaCampus5/{PK_PERIODO}', 'AspiranteController@graficaCampus');
 });
 
@@ -303,7 +303,7 @@ Route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
 Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
 Route::get('ReferenciaCurso/{preficha}', 'FichaController@descargarReferenciaCurso');
 Route::get('ReferenciaInscripcion/{preficha}', 'FichaController@descargarReferenciaInscripcion');
-Route::group(['middleware' => ['jwt.verify']], function() {
+Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('Aspirante/{id}', 'AspiranteController@show');
     Route::post('Periodo', 'PeriodoController@store');
     Route::post('PeriodoCurso', 'PeriodoController@periodoCurso');
@@ -426,7 +426,7 @@ Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
 /* *********************************************************** *
  * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
-Route::group(['middleware' => ['jwt.verify']], function() {
+/*Route::group(['middleware' => ['jwt.verify']], function () {*/
     // Buscar encuesta por pk de encuesta
     Route::get('cuestionario/{id}', 'SITEncuestaController@get_encuesta');
 
@@ -439,4 +439,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     // Guarda respuestas de encuesta
     Route::post('guarda_respuestas_encuesta', 'SITEncuestaController@guarda_respuestas_encuesta');
 
-});
+    // Buscar grupos por tutor
+    Route::get('grupos_tutoria/{id_tutor}', 'SITGruposController@get_grupos');
+
+    // Buscar detalle de grupo por id
+    Route::get('detalle_grupo/{id_grupo}', 'SITGruposController@detalle_grupo');
+
+/*});*/
