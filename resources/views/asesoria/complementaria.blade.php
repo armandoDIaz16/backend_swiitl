@@ -10,7 +10,18 @@
 
 <div style="margin-left: .5cm; margin-right: .5cm; padding-top: -1cm; font-size: 0.7em;">
 <div align="center">
-    <img src="img/banner.jpg">
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
 </div>
 <br>
 <br>
