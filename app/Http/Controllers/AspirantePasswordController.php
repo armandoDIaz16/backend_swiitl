@@ -9,40 +9,40 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 class AspirantePasswordController extends Controller
 {
-    public function sendEmail($email)
+    public function sendEmail($CORREO1)
     {
-        if (!$this->validateEmail($email)) {
+        if (!$this->validateEmail($CORREO1)) {
             return $this->failedResponse();
         }
-        $this->send($email);
+        $this->send($CORREO1);
         return $this->successResponse();
     }
-    public function send($email)
+    public function send($CORREO1)
     {
-        $token = $this->createToken($email);
-        Mail::to($email)->send(new AspirantePasswordMail($token));
+        $token = $this->createToken($CORREO1);
+        Mail::to($CORREO1)->send(new AspirantePasswordMail($token));
     }
-    public function createToken($email)
+    public function createToken($CORREO1)
     {
-        $oldToken = DB::table('password_resets')->where('email', $email)->first();
+        $oldToken = DB::table('password_resets')->where('CORREO1', $CORREO1)->first();
         if ($oldToken) {
             return $oldToken->token;
         }
         $token = str_random(60);
-        $this->saveToken($token, $email);
+        $this->saveToken($token, $CORREO1);
         return $token;
     }
-    public function saveToken($token, $email)
+    public function saveToken($token, $CORREO1)
     {
         DB::table('password_resets')->insert([
-            'email' => $email,
+            'CORREO1' => $CORREO1,
             'token' => $token,
             'created_at' => '18-06-12 10:34:09'
         ]);
     }
-    public function validateEmail($email)
+    public function validateEmail($CORREO1)
     {
-        return !!User::where('email', $email)->first();
+        return !!User::where('CORREO1', $CORREO1)->first();
     }
     public function failedResponse()
     {

@@ -12,33 +12,20 @@ use function Psy\debug;
 
 class AnteproyectoResidenciasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         $vistaante = AnteproyectoResidencias::all();
         return $vistaante;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         $anteproyecto = new AnteproyectoResidencias();
@@ -79,44 +66,28 @@ class AnteproyectoResidenciasController extends Controller
             $anteproyecto->AREA_ACADEMICA = $request->AreaAcademica;
             $anteproyecto->AUTOR = $request->Autor;
             $anteproyecto->EMPRESA = $request->Empresa;
-            $anteproyecto->TIPO_ESPECIALIDAD = $request->Comentario;
+            $anteproyecto->COMENTARIO = $request->Comentario;
             $periodo = new CreditosSiia();
             $anteproyecto->PERIODO = $periodo->periodo();
             $anteproyecto->save();
         }
-
+        return json_encode('Guardado con exito!');
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         return AnteproyectoResidencias::where('ID_ANTEPROYECTO',$id)->get();
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         return AnteproyectoResidencias::where('ID_ANTEPROYECTO',$id)->get();
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $ID_ANTEPROYECTO)
     {
         $anteproyecto = AnteproyectoResidencias::where('ID_ANTEPROYECTO',$ID_ANTEPROYECTO)->first();
@@ -132,20 +103,26 @@ class AnteproyectoResidenciasController extends Controller
                 //$ruta = $carga->savefile($request);
                 //$anteproyecto->pdf = $ruta;
             }
-            if($request->Alumno){
-                $diai = $fecha->FIniA($request->Alumno,1);
-                $diaf = $fecha->FFinA($request->Alumno,1);
-                if($diai<=$dia && $dia<=$diaf) {
-                    $x = $request->Alumno;
-                    $etse = AnteproyectoResidencias::where('ALUMNO', $x)->first();
-                    if ($anteproyecto->Alumno != 'NULL') {
-                        if ($etse == NULL) {
-                            $anteproyecto->ALUMNO = $x;
-                            //return $f = json_encode('ok');
-                        } else ;//return $i = json_encode('Un alumno no puede tener más de un proyecto.');
-                    } else ;//return  $h = json_encode('Proyecto ya esta asignado a un alumno.');
-                    //$anteproyecto->Alumno = $request->Alumno;
-                }
+            if($request->Alumno) {
+                $alumno = DB::select('SELECT ID_PADRE FROM CATR_ALUMNO WHERE ID_PADRE = :id', ['id' => $request->Usuario]);
+                if ($alumno != NULL) {
+                   // \Log::debug('Test var fails 2');
+                    $diai = $fecha->FIniA($request->Alumno, 1);
+                   // \Log::debug('Test var fails 3');
+                    $diaf = $fecha->FFinA($request->Alumno, 1);
+                   // \Log::debug('Test var fails 4');
+                    if ($diai <= $dia && $dia <= $diaf) {
+                        $x = $request->Alumno;
+                        $etse = AnteproyectoResidencias::where('ALUMNO', $x)->first();
+                        if ($anteproyecto->Alumno != 'NULL') {
+                            if ($etse == NULL) {
+                                $anteproyecto->ALUMNO = $x;
+                                //return $f = json_encode('ok');
+                            } else ;//return $i = json_encode('Un alumno no puede tener más de un proyecto.');
+                        } else ;//return  $h = json_encode('Proyecto ya esta asignado a un alumno.');
+                        //$anteproyecto->Alumno = $request->Alumno;
+                    }
+                } else $anteproyecto->ALUMNO = $request->Alumno;
             }
             if($request->Estatus){
                 $anteproyecto->ESTATUS = $request->Estatus;
@@ -169,15 +146,15 @@ class AnteproyectoResidenciasController extends Controller
                     $anteproyecto->ALUMNO = NULL;
                 }
             }
-        $anteproyecto->save();
+        try{
+            $anteproyecto->save();
+        return json_encode('Guardado con exito');}
+            catch(\Exception $exception){
+                return json_encode('Error al guardar');
+            }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         //
@@ -201,7 +178,7 @@ class AnteproyectoResidenciasController extends Controller
         $area3 = array_pop($area2);
         $vistaante = DB::select('SELECT * 
                                         FROM CAT_ANTEPROYECTO_RESIDENCIA 
-                                        JOIN users ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = users.PK_USUARIO
+                                        JOIN CAT_USUARIO ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = CAT_USUARIO.PK_USUARIO
                                         WHERE AREA_ACADEMICA = :area AND ALUMNO <> :id',['area'=>$area3,'id'=>'NULL']);
         return $vistaante;
     }

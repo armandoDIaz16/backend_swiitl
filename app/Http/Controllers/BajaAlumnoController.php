@@ -11,7 +11,15 @@ class BajaAlumnoController extends Controller
 
     public function index()
     {
-
+        try {
+            $alumno = DB::statement('DELETE FROM PER_TR_ROL_USUARIO WHERE FK_ROL = (SELECT PK_ROL FROM PER_CATR_ROL WHERE NOMBRE = :fu)', ['fu' => 'Residente']);
+            $docente = DB::statement('DELETE FROM PER_TR_ROL_USUARIO WHERE FK_ROL = (SELECT PK_ROL FROM PER_CATR_ROL WHERE NOMBRE = :fa)', ['fa' => 'Asesor Docente']);
+            $externo = DB::statement('DELETE FROM PER_TR_ROL_USUARIO WHERE FK_ROL = (SELECT PK_ROL FROM PER_CATR_ROL WHERE NOMBRE = :fe)', ['fe' => 'Asesor Externo']);
+        }
+        catch(\Exception $exception){
+            return response()->json('Error al finalizar semestre');
+        }
+        return response()->json('Semestre finalizado correctamente');
     }
 
 

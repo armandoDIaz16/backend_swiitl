@@ -15,5 +15,5 @@ class Ciudad extends Model
       'FECHA_MODIFICACION',
       'BORRADO'
     ];
-    protected $table = 'CATR_CIUDAD';
+    protected $table = 'CAT_CIUDAD';
 }

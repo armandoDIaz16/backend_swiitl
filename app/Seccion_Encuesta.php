@@ -23,5 +23,5 @@ class Seccion_Encuesta extends Model
 
     protected $primaryKey = 'PK_SECCION';
 
-    protected $table = 'CATR_SECCION';
+    protected $table = 'CAT_SECCION';
 }

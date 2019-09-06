@@ -37,7 +37,7 @@ class ActaResidenciasController extends Controller
                 'empresa' => $in->EMPRESA,
                 'nombre' => $in->NOMBRE,
                 'numero_control' => $in->NUMERO_CONTROL,
-                'nombre_alumno' => $in->name,
+                'nombre_alumno' => $in->NOMBREALUMNO,
                 'primer_apellido' => $in->PRIMER_APELLIDO,
                 'segundo_apellido' => $in->SEGUNDO_APELLIDO,
                 'carrera' => $in->CARRERA,

@@ -10,32 +10,19 @@ use Illuminate\Support\Facades\DB;
 
 class ReporteResidenciaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         $reporte = new ReporteResidencia();
@@ -80,34 +67,29 @@ class ReporteResidenciaController extends Controller
         return response()->json('No se puede entregar fuera de fecha');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         $x = DB::select('SELECT CATR_DOCENTE.NUMERO_EMPLEADO_DOCENTE FROM CATR_DOCENTE WHERE ID_PADRE = :padre',['padre'=>$id]);
         $y = DB::select('SELECT CATR_EXTERNO.ID_PADRE FROM CATR_EXTERNO WHERE ID_PADRE = :padre',['padre'=>$id]);
        // \Log::debug($x);
         if($x != null){
-        $variable = DB::select('select CAT_REPORTE_RESIDENCIA.PK_REPORTE, CAT_REPORTE_RESIDENCIA.PDF, CAT_REPORTE_RESIDENCIA.ALUMNO, CAT_REPORTE_RESIDENCIA.NUMERO, CAT_REPORTE_RESIDENCIA.NOMBRE, users.name 
+        $variable = DB::select('select CAT_REPORTE_RESIDENCIA.PK_REPORTE, CAT_REPORTE_RESIDENCIA.PDF, CAT_REPORTE_RESIDENCIA.ALUMNO, CAT_REPORTE_RESIDENCIA.NUMERO, CAT_REPORTE_RESIDENCIA.NOMBRE, CAT_USUARIO.NOMBRE as NOMBREALUMNO 
                                               from CAT_REPORTE_RESIDENCIA
                                               join CAT_ANTEPROYECTO_RESIDENCIA ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = CAT_REPORTE_RESIDENCIA.ALUMNO
                                               JOIN CATR_PROYECTO ON CAT_ANTEPROYECTO_RESIDENCIA.ID_ANTEPROYECTO = CATR_PROYECTO.FK_ANTEPROYECTO
-                                              JOIN users ON users.PK_USUARIO = CAT_REPORTE_RESIDENCIA.ALUMNO
+                                              JOIN CAT_USUARIO ON CAT_USUARIO.PK_USUARIO = CAT_REPORTE_RESIDENCIA.ALUMNO
                                               WHERE CATR_PROYECTO.FK_DOCENTE = :id',['id'=>$id]);
         }elseif($y != null){
-            $variable = DB::select('SELECT CAT_REPORTE_RESIDENCIA.PK_REPORTE, CAT_REPORTE_RESIDENCIA.PDF, CAT_REPORTE_RESIDENCIA.ALUMNO, CAT_REPORTE_RESIDENCIA.NUMERO, CAT_REPORTE_RESIDENCIA.NOMBRE, users.name 
+            $variable = DB::select('SELECT CAT_REPORTE_RESIDENCIA.PK_REPORTE, CAT_REPORTE_RESIDENCIA.PDF, CAT_REPORTE_RESIDENCIA.ALUMNO, CAT_REPORTE_RESIDENCIA.NUMERO, CAT_REPORTE_RESIDENCIA.NOMBRE, CAT_USUARIO.NOMBRE as NOMBREALUMNO 
                                            FROM CAT_REPORTE_RESIDENCIA
                                            JOIN CAT_ANTEPROYECTO_RESIDENCIA ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = CAT_REPORTE_RESIDENCIA.ALUMNO
                                            JOIN CATR_PROYECTO ON CAT_ANTEPROYECTO_RESIDENCIA.ID_ANTEPROYECTO = CATR_PROYECTO.FK_ANTEPROYECTO
-                                           JOIN users ON users.PK_USUARIO = CAT_REPORTE_RESIDENCIA.ALUMNO
+                                           JOIN CAT_USUARIO ON CAT_USUARIO.PK_USUARIO = CAT_REPORTE_RESIDENCIA.ALUMNO
                                            WHERE CATR_PROYECTO.FK_ASESOR_EXT = :id',['id'=>$id]);
         }
         else{
-            $variable = DB::select('SELECT CAT_REPORTE_RESIDENCIA.PK_REPORTE, CAT_REPORTE_RESIDENCIA.PDF, CAT_REPORTE_RESIDENCIA.ALUMNO, CAT_REPORTE_RESIDENCIA.NUMERO, CAT_REPORTE_RESIDENCIA.NOMBRE, users.name
+            $variable = DB::select('SELECT CAT_REPORTE_RESIDENCIA.PK_REPORTE, CAT_REPORTE_RESIDENCIA.PDF, CAT_REPORTE_RESIDENCIA.ALUMNO, CAT_REPORTE_RESIDENCIA.NUMERO, CAT_REPORTE_RESIDENCIA.NOMBRE, CAT_USUARIO.NOMBRE as NOMBREALUMNO
                                           FROM CAT_REPORTE_RESIDENCIA
                                           JOIN users ON users.PK_USUARIO = CAT_REPORTE_RESIDENCIA.ALUMNO
                                           WHERE CAT_REPORTE_RESIDENCIA.ALUMNO = :id',['id'=>$id]);
@@ -115,34 +97,18 @@ class ReporteResidenciaController extends Controller
         return $variable;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         //

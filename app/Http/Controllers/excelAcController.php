@@ -27,13 +27,30 @@ class excelAcController extends Controller
              $pk_lineamiento = DB::table('LINEAMIENTOS')    
                 ->select('PK_LINEAMIENTO')
                 ->where('NOMBRE',$d->lineamiento)
-                ->get()->first(); 
+                ->get()->first();
 
-          if($d->aprobado == '1'){
+          switch($d->calificacion){
+              case "0":
+                $cali = "INSUFICIENTE";
+                break;
+              case "1":
+                $cali = "SUFICIENTE";
+                break;
+              case "2":
+                $cali = "BUENO";
+                break;
+              case "3":
+                $cali = "NOTABLE";
+                break;
+              case "4";
+                $cali = "SOBRESALIENTE";
+                break;
+          }
+          if($d->calificacion != '0'){
             $arr[] = [
                 'FK_ALUMNO' => $pk_usuario->PK_USUARIO,
                 'FK_LINEAMIENTO' => $pk_lineamiento->PK_LINEAMIENTO,
-                'CALIFICACION' => $d->calificacion,
+                'CALIFICACION' => $cali,
                 'PERIODO' => $d->periodo
             ]; 
           }
@@ -49,6 +66,8 @@ class excelAcController extends Controller
     } 
 
     public function generarExcel(){//traer una lista con el id de los alumnos y su cantidad de creditos registrados
+        $sumacali = 0;
+        $total = 0;
         $creditosCount = DB::table('ALUMNO_CREDITO')
             ->selectRaw('FK_ALUMNO, COUNT(FK_LINEAMIENTO) as creditos')
             ->where('VALIDADO',1)
@@ -77,6 +96,36 @@ class excelAcController extends Controller
                     ->where('PK_USUARIO',$count->FK_ALUMNO)
                     ->get()->first();
 
+                //-------------obtener le promedio final de los créditos con base en la calificación 
+                $calificaciones = DB::table('ALUMNO_CREDITO')//obtener todas las calificaiones
+                    ->select('CALIFICACION')
+                    ->where('FK_ALUMNO',$count->FK_ALUMNO)
+                    ->get();
+                
+                    foreach($calificaciones as $cal){//convertir las calificaciones en strings a numéricas 
+                        switch($cal->CALIFICACION){
+                            case "INSUFICIENTE":
+                                $calnumero = 0;
+                                break;
+                            case "SUFICIENTE":
+                                $calnumero = 1;
+                                break;
+                            case "BUENO":
+                                $calnumero = 2;
+                                break;
+                            case "NOTABLE":
+                                $calnumero = 3;
+                                break;
+                            case "SOBRESALIENTE":
+                                $calnumero = 4;
+                                break;
+                        }
+                        $sumacali = $sumacali + $calnumero; //realizar sumatoria de las calificaciones 
+                        $total = $total + 1; //sumar el numero de vueltas que da el ciclo para saber el número entre el que hay que dividir la sumatoria de calificaciones para obtener el promedio final (en teoría este número siempre debe ser 5, pero aquí se está estableciendo de manera dinámica)
+                    }
+
+                    $promedio = $sumacali / $total;
+
                 $data[] = [ //arreglo con la info del excel
                     'Numero_Control' => $infoAlumno->NUMERO_CONTROL,
                     'Clave_de_Materia' => 'ACA',
@@ -86,7 +135,8 @@ class excelAcController extends Controller
                     'Calificacoin' => '-2',
                     'Nivel_de_Curso' => 'CO',
                     'Tipo_Aprobacion' => 'COPO',
-                    'Folio' => 'AC'
+                    'Folio' => 'AC',
+                    'Promedio' => $promedio
                 ];
 
                   DB::table('ALUMNO_CREDITO')->where('FK_ALUMNO',$count->FK_ALUMNO)

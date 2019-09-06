@@ -115,11 +115,11 @@ GROUP BY
         for($i=0;$i<count($ncontrol);$i++) {
             $nprimero = array_pop($ncontrol);
             $tcorreo = DB::connection('sqlsrv')->select('SELECT 
-                email 
+                CORREO1 
             FROM 
-                users 
-                JOIN CATR_ALUMNO ON users.PK_USUARIO = CATR_ALUMNO.ID_PADRE 
-            WHERE NUMERO_CONTROL = :numerocontrol', ['numerocontrol' => $nprimero]);
+                CAT_USUARIO 
+                JOIN CATR_ALUMNO ON CAT_USUARIO.PK_USUARIO = CATR_ALUMNO.ID_PADRE 
+            WHERE CATR_ALUMNO.NUMERO_CONTROL = :numerocontrol', ['numerocontrol' => $nprimero]);
             if($tcorreo != null){
                 array_push($tcorreo2,$tcorreo);
             }

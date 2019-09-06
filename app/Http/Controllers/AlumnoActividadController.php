@@ -128,5 +128,16 @@ class AlumnoActividadController extends Controller
         $alumno_actividad = alumno_actividad::find($id);
         $alumno_actividad->delete();
     }
+
+    public function ctlAlumnoActividad ($FK_ACTIVIDAD, $FK_ALUMNO) {
+        //obtener el id de la actividad que se acaba de registrar
+        $actividad = alumno_actividad::select('PK_ALUMNO_ACTIVIDAD')
+        ->where('FK_ACTIVIDAD', '=', $FK_ACTIVIDAD)
+        ->where('FK_ALUMNO','=', $FK_ALUMNO)
+        ->get()->first();
+
+        $response = Response::json($actividad);
+       return $response;
+   }
 }
 

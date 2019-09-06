@@ -17,4 +17,17 @@ class Constantes_Alumnos{
             case self::ALUMNO_EG: return 'Egresado';
         }
     }
+
+    /* CONSTANTES DE ESTATUS CUENTA DE ALUMNO */
+    const ALUMNO_REGISTRADO      = 1;
+    const ALUMNO_CUENTA_ACTIVA   = 2;
+    const ALUMNO_CUENTA_INACTIVA = 0;
+
+    static function traduce_estatus_cuenta_alumno($estatus){
+        switch ($estatus){
+            case self::ALUMNO_REGISTRADO:      return 'Alumno registrado';
+            case self::ALUMNO_CUENTA_ACTIVA:   return 'Alumno con cuenta activa';
+            case self::ALUMNO_CUENTA_INACTIVA: return 'Alumno con cuenta inactiva';
+        }
+    }
 }

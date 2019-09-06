@@ -37,7 +37,12 @@ class PeriodoResidenciaController extends Controller
         $anteproyecto->FECHA_INICIO = $request->FECHA_INICIO;
         $anteproyecto->FECHA_FIN = $request->FECHA_FIN;
         $anteproyecto->PERIODO = $periodo->periodo();
-        $anteproyecto->save();
+        try{
+            $anteproyecto->save();
+            return response()->json('Guardado con exito');}
+        catch(\Exception $exception){
+            return response()->json('Error al guardar');
+        }
     }
 
 

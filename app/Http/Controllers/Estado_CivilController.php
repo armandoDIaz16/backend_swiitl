@@ -14,7 +14,7 @@ class Estado_CivilController extends Controller
      */
     public function index()
     {
-        return Estado_Civil::select('PK_ESTADO_CIVIL','NOMBRE')->get();
+        return Estado_Civil::select('PK_ESTADO_CIVIL', 'NOMBRE', 'ABREVIATURA')->get();
     }
 
     /**
@@ -46,7 +46,7 @@ class Estado_CivilController extends Controller
      */
     public function show($id)
     {
-       // 
+       //
     }
 
     /**

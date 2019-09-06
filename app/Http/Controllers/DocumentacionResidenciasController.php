@@ -12,32 +12,19 @@ use Illuminate\Support\Facades\Log;
 
 class DocumentacionResidenciasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         $documentacion = new Documentacion();
@@ -45,44 +32,43 @@ class DocumentacionResidenciasController extends Controller
         $documentacion->save();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
-        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, users.name, CAT_DOCUMENTACION.CARTA_FINALIZACION 
+        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, CAT_USUARIO.NOMBRE, CAT_DOCUMENTACION.CARTA_FINALIZACION, PRIMER_APELLIDO,
+                                    SEGUNDO_APELLIDO, PK_USUARIO 
                                   FROM CAT_DOCUMENTACION 
                                   JOIN CATR_ALUMNO ON CAT_DOCUMENTACION.ALUMNO = CATR_ALUMNO.ID_PADRE
-                                  JOIN users ON CATR_ALUMNO.ID_PADRE = users.PK_USUARIO
+                                  JOIN CAT_USUARIO ON CATR_ALUMNO.ID_PADRE = CAT_USUARIO.PK_USUARIO
                                   JOIN CATR_CARRERA ON CATR_ALUMNO.CLAVE_CARRERA = CATR_CARRERA.CLAVE
                                   WHERE CATR_CARRERA.FK_AREA_ACADEMICA = :caa
                                   AND CAT_DOCUMENTACION.PERIODO = :periodo',['caa'=>$id,'periodo'=>$actual]);
+
+        foreach ($documentos as $index => $value) {
+            $no = $value->PK_USUARIO;
+            $informe = DB::select('SELECT INFORME FROM CAT_INFORME_ALUMNO WHERE FK_ALUMNO = :alumno',['alumno'=>$no]);
+            $in = json_decode(json_encode($informe), true);
+            if( $in != null) {
+                $in2 = array_pop($in);
+                $in3 = array_pop($in2);
+                $value->INFORME = $in3;
+            } else {
+                $value->INFORME = $in;
+            }
+        }
+
             return $documentos;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         Return DocumentacionResidencias::where('ALUMNO',$id)->get();
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
         $documentacion = DocumentacionResidencias::find($id);
@@ -96,7 +82,12 @@ class DocumentacionResidenciasController extends Controller
             $ruta = $carga->savefile($request);
             $documentacion->carta_aceptacion = $ruta;
         endif;
+        try{
             $documentacion->save();
+            return response()->json('Guardado con exito');}
+            catch(\Exception $exception){
+            return response()->json('Error al guardar');
+            }
     }
 
 
@@ -116,8 +107,12 @@ class DocumentacionResidenciasController extends Controller
             $File->move($destination_path, $real_name);  //line 5
             $Ruta = $sub_path . '/' . $real_name;
             $documentacion->SOLICITUD = $Ruta;
-            $documentacion->save();
-            return response()->json('Solicitud guardada');
+            try{
+                $documentacion->save();
+                return response()->json('Solicitud guardada');}
+            catch(\Exception $exception){
+                return response()->json('Error al guardar');
+            }
         }
         return response()->json('Fuera de fecha permitida');
     }
@@ -138,18 +133,44 @@ class DocumentacionResidenciasController extends Controller
             $File->move($destination_path, $real_name);  //line 5
             $Ruta = $sub_path . '/' . $real_name;
             $documentacion->CARTA_ACEPTACION = $Ruta;
-            $documentacion->save();
-            return response()->json('Carta de aceptacion guardada');
+            try{
+                $documentacion->save();
+                return response()->json('Carta de aceptacion guardada');}
+            catch(\Exception $exception){
+                return response()->json('Error al guardar');
+            }
         }
         return response()->json('Fuera de fecha permitida');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function verdoc($id){
+        $periodo = new CreditosSiia();
+        $actual = $periodo->periodo();
+        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD, CAT_USUARIO.NOMBRE, CAT_DOCUMENTACION.CARTA_FINALIZACION, PRIMER_APELLIDO,
+                                    SEGUNDO_APELLIDO, PK_USUARIO 
+                                  FROM CAT_DOCUMENTACION 
+                                  JOIN CATR_ALUMNO ON CAT_DOCUMENTACION.ALUMNO = CATR_ALUMNO.ID_PADRE
+                                  JOIN CAT_USUARIO ON CATR_ALUMNO.ID_PADRE = CAT_USUARIO.PK_USUARIO
+                                  JOIN CATR_CARRERA ON CATR_ALUMNO.CLAVE_CARRERA = CATR_CARRERA.CLAVE
+                                  WHERE CATR_CARRERA.FK_AREA_ACADEMICA = (SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :caa)
+                                  AND CAT_DOCUMENTACION.PERIODO = :periodo',['caa'=>$id,'periodo'=>$actual]);
+
+        foreach ($documentos as $index => $value) {
+            $no = $value->PK_USUARIO;
+            $informe = DB::select('SELECT INFORME FROM CAT_INFORME_ALUMNO WHERE FK_ALUMNO = :alumno',['alumno'=>$no]);
+            $in = json_decode(json_encode($informe), true);
+            if( $in != null) {
+                $in2 = array_pop($in);
+                $in3 = array_pop($in2);
+                $value->INFORME = $in3;
+            } else {
+                $value->INFORME = $in;
+            }
+        }
+
+        return $documentos;
+    }
+
     public function destroy($id)
     {
         //

@@ -19,19 +19,13 @@ class ActividadController extends Controller
      */
     public function index()
     {
-        $actividad = DB::table('actividades_v')->get();
+        $hoy = Carbon::today();
+        $actividad = DB::table('actividades_v')
+        ->whereDate('FECHA','>=',$hoy)
+        ->orderBy('FECHA')->get();
         $response = Response::json($actividad);
         return $response;
-        /*
-        $actividad = Actividad::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
-        ->join('TIPOS','FK_TIPO','=','PK_TIPO')
-        ->SELECT('ACTIVIDADES.PK_ACTIVIDAD','ACTIVIDADES.NOMBRE','ACTIVIDADES.DESCRIPCION',
-        'ACTIVIDADES.LUGAR','ACTIVIDADES.FECHA','ACTIVIDADES.HORA',
-        'ACTIVIDADES.CUPO','LINEAMIENTOS.NOMBRE AS FK_LINEAMIENTO','TIPOS.NOMBRE AS FK_TIPO','ACTIVIDADES.FK_RESPONSABLE')
-        ->get();
 
-        echo json_encode($actividad);
-        */
     }
 
     /**

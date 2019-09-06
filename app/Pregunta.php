@@ -12,6 +12,7 @@ class Pregunta extends Model
         'PLANTEAMIENTO',
         'TEXTO_GUIA',
         'FK_TIPO_PREGUNTA',
+        'FK_SECCION',
         'FK_USUARIO_REGISTRO',
         'FECHA_REGISTRO',
         'FK_USUARIO_MODIFICACION',
@@ -22,5 +23,5 @@ class Pregunta extends Model
 
     protected $primaryKey = 'PK_PREGUNTA';
 
-    protected $table = 'CAT_PREGUNTA';
+    protected $table = 'CATR_PREGUNTA';
 }

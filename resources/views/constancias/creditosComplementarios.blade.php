@@ -29,8 +29,8 @@ $carrera = DB::connection('sqlsrv2')->table('view_alumnos as va')
     <br>
     <div  class="extrabold" style="font-size: 0.9em;">
     <p align="justify"><b>
-            MTI. EDGAR MANUEL DELGADO TOLENTINO
-            JEFE DEL DEPTO. DE SERVICIOS ESCOLARES
+            <p>MTI. EDGAR MANUEL DELGADO TOLENTINO</p>
+            <p>JEFE DEL DEPTO. DE SERVICIOS ESCOLARES</p>
             PRESENTE</b></p>
     </div>
     <div style="font-size: 0.9em; font-family: montserrat;">

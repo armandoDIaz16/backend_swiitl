@@ -10,32 +10,19 @@ use Illuminate\Support\Facades\DB;
 
 class ProyectoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         try{
@@ -53,12 +40,7 @@ class ProyectoController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         $a = DB::select('SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :numero', ['numero' => $id]);
@@ -78,24 +60,13 @@ class ProyectoController extends Controller
         return $f;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
        $periodo = new CreditosSiia();
@@ -109,40 +80,80 @@ class ProyectoController extends Controller
             $prueba2 = array_pop($prueba1);
             $prueba3 = array_pop($prueba2);
             if ($prueba3 == 0) {
+                DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '10', 'FK_USUARIO' => $maestro]);
                 $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
                 $proyecto->FK_DOCENTE = $maestro;
                 if($request->Externo){
+                    $externo = $request->Externo;
+                    $prueb = DB::select('SELECT COUNT(CATR_PROYECTO.PK_PROYECTO)
+                                        FROM CATR_PROYECTO
+                                        WHERE CATR_PROYECTO.FK_ASESOR_EXT = :cco
+                                        AND PERIODO = :periodo',['cco'=>$externo, 'periodo'=>$periodo->periodo()]);
+                    $prueb1 = json_decode(json_encode($prueb), true);
+                    $prueb2 = array_pop($prueb1);
+                    $prueb3 = array_pop($prueb2);
+                    if ($prueb3 == 0){
+                        DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '11', 'FK_USUARIO' => $externo]);
+                    }
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
-                $proyecto->save();
-                return json_encode('correcto');
+                try{
+                    $proyecto->save();
+                    return json_encode('correcto');}
+                catch(\Exception $exception){
+                    return response()->json('Error');
+                }
             }
-            if ($prueba3 < 3) {
+            else {
                 $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
                 $proyecto->FK_DOCENTE = $maestro;
                 if($request->Externo){
+                    $externo = $request->Externo;
+                    $prueb = DB::select('SELECT COUNT(CATR_PROYECTO.PK_PROYECTO)
+                                        FROM CATR_PROYECTO
+                                        WHERE CATR_PROYECTO.FK_ASESOR_EXT = :cco
+                                        AND PERIODO = :periodo',['cco'=>$externo, 'periodo'=>$periodo->periodo()]);
+                    $prueb1 = json_decode(json_encode($prueb), true);
+                    $prueb2 = array_pop($prueb1);
+                    $prueb3 = array_pop($prueb2);
+                    if ($prueb3 == 0){
+                        DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '11', 'FK_USUARIO' => $externo]);
+                    }
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
-                $proyecto->save();
-                return json_encode('correcto');
-            } else {
-                return json_encode('Maestro no puede tener más de 3 alumnos');
+                try{
+                    $proyecto->save();
+                    return json_encode('correcto');}
+                catch(\Exception $exception){
+                    return response()->json('Error');
+                }
             }
         }
         if ($request->Externo){
+            $externo = $request->Externo;
+            $prueb = DB::select('SELECT COUNT(CATR_PROYECTO.PK_PROYECTO)
+                                        FROM CATR_PROYECTO
+                                        WHERE CATR_PROYECTO.FK_ASESOR_EXT = :cco
+                                        AND PERIODO = :periodo',['cco'=>$externo, 'periodo'=>$periodo->periodo()]);
+            $prueb1 = json_decode(json_encode($prueb), true);
+            $prueb2 = array_pop($prueb1);
+            $prueb3 = array_pop($prueb2);
+            if ($prueb3 == 0){
+                DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '11', 'FK_USUARIO' => $externo]);
+            }
             $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
             $proyecto->FK_ASESOR_EXT = $request->Externo;
+            try{
             $proyecto->save();
+            return json_encode('correcto');}
+            catch(\Exception $exception){
+                return response()->json('Error');
+            }
         }
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         //
@@ -154,5 +165,20 @@ class ProyectoController extends Controller
         $proyecto = DB::table('CATR_PROYECTO')->join('CAT_ANTEPROYECTO_RESIDENCIA','CATR_PROYECTO.FK_ANTEPROYECTO','=','CAT_ANTEPROYECTO_RESIDENCIA.ID_ANTEPROYECTO')
         ->join('CATR_ALUMNO','CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO','=', 'CATR_ALUMNO.ID_PADRE')->where('NUMERO_CONTROL','=', $id)->first();
         return response()->json($proyecto1);
+    }
+
+    public function maestros($id){
+        $periodo = new CreditosSiia();
+        $actual = $periodo->periodo();
+        $maestros = DB::select('SELECT ID_PADRE, NOMBRE, PRIMER_APELLIDO, SEGUNDO_APELLIDO FROM CATR_DOCENTE JOIN CAT_USUARIO ON CATR_DOCENTE.ID_PADRE = CAT_USUARIO.PK_USUARIO WHERE ID_AREA_ACADEMICA = (SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE ID_PADRE = :padre)',['padre'=>$id]);
+        foreach ($maestros as $index => $value){
+            $te = $value->ID_PADRE;
+            $cantidad = DB::select('SELECT COUNT(PK_PROYECTO) FROM CATR_PROYECTO WHERE FK_DOCENTE = :te and PERIODO = :periodo',['te'=>$te, 'periodo'=>$actual]);
+            $c1 = json_decode(json_encode($cantidad), true);
+            $c2 = array_pop($c1);
+            $c3 = array_pop($c2);
+            $value->CANTIDAD = $c3;
+        }
+        return $maestros;
     }
 }
