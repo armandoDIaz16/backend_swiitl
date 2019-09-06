@@ -10,14 +10,25 @@
 
 <div style="margin-left: .5cm; margin-right: .5cm; padding-top: -1cm; font-size: 0.7em;">
 <div align="center">
-    <img src="img/banner.jpg">
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
+   <br>
 </div>
 <br>
 <br>
 <div align="right" class="negrita">
 León,Gto., {{$DATA->FECHA}}
 <br>
-OFICIO No. {{$DATA->OFICIO}}
+MEMORANDUM No. {{$DATA->OFICIO}}
 <br>
 DEPTO. DE DESARROLLO ACADÉMICO
 <br>
@@ -37,7 +48,7 @@ PRESENTE</b>
 <div align="right" class="negrita">
 <b>At´n: {{$DATA->ATENCION}}
 <br>
-ENCARGADA DEL DEPTO. GESTIÓN
+JEFA DEL DEPTO. GESTIÓN
 <br>
 TECNOLÓGICA Y VINCULACIÓN</b>
 </div>

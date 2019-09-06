@@ -19,13 +19,14 @@ Route::group([
     Route::post('control', 'NumeroControl@getControl');
     // Route::post('permisos', 'Sistema_permisos@getPermisos');
 
-    Route::group(['middleware' => ['jwt.auth']], function () {
+  /*   Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('logout', 'AuthController@logout');
+        //Route::get('me', 'AuthController@me');
         Route::post('PAAE_Periodo', 'PAAE_Periodo@store');
 
         //Route::post('control', 'NumeroControl@getControl');
 
-    });
+    }); */
     //Route::post('periodo', 'PAAE_Periodo@getPeriodo');
 
 });
@@ -201,6 +202,26 @@ Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 route::get('GraficaAsesorados', 'GraficasAsesoriaController@graficaAsesorados');
 route::get('GraficaNoAsesorados', 'GraficasAsesoriaController@graficaNoAsesorados');
 route::get('GraficaMaterias', 'GraficasAsesoriaController@graficaMaterias');
+route::get('Materias', 'GraficasAsesoriaController@materias');
+route::get('Institucion', 'GraficasAsesoriaController@institucion');
+route::get('CarreraMot', 'GraficasAsesoriaController@carrera');
+route::get('GraficaMotivosMaterias', 'GraficasAsesoriaController@graficaMotivosMaterias');
+route::get('GraficaMotivosInstitucion', 'GraficasAsesoriaController@graficaMotivosInstitucion');
+route::get('GraficaMotivosCarera', 'GraficasAsesoriaController@graficaMotivosCarera');
+route::get('GraficaGeneralEvalSemestre', 'GraficasAsesoriaController@graficaGeneralEvalSemestre');
+route::get('GraficaGeneralEvalCarrera', 'GraficasAsesoriaController@graficaGeneralEvalCarrera');
+route::get('GraficaGeneralEvalMateria', 'GraficasAsesoriaController@graficaGeneralEvalMateria');
+route::get('GraficaIntegralEval', 'GraficasAsesoriaController@graficaIntegralEval');
+route::get('GraficaIntegralMate', 'GraficasAsesoriaController@graficaIntegralMate');
+route::get('GraficaIntegralCarre', 'GraficasAsesoriaController@graficaIntegralCarre');
+route::get('GraficaGeneralSol', 'GraficasAsesoriaController@graficaGeneralSol');
+route::get('GraficaGeneralSolMat', 'GraficasAsesoriaController@graficaGeneralSolMat');
+route::get('GraficaGeneralSolCar', 'GraficasAsesoriaController@graficaGeneralSolCar');
+route::get('GraficaGeneralSolCarMat', 'GraficasAsesoriaController@graficaGeneralSolCarMat');
+route::get('GraficaGeneralAproRep', 'GraficasAsesoriaController@graficaGeneralAproRep');
+route::get('GraficaGeneralAproRepMat', 'GraficasAsesoriaController@graficaGeneralAproRepMat');
+route::get('GraficaGeneralAproRepCar', 'GraficasAsesoriaController@graficaGeneralAproRepCar');
+route::get('GraficaGeneralAproRepCarMat', 'GraficasAsesoriaController@graficaGeneralAproRepCarMat');
 
 
 
@@ -626,7 +647,7 @@ Route::resource('Colonia', 'ColoniaController');
 Route::resource('Bachillerato', 'BachilleratoController');
 Route::resource('CodigoPostal', 'CodigoPostalController');
 
-Route::group(['middleware' => ['jwt.auth']], function () {
+//Route::group(['middleware' => ['jwt.auth']], function () {
     Route::resource('Aspirante', 'AspiranteController');
     Route::post('Periodo', 'PeriodoController@store');
     Route::get('Referencia/{preficha}', 'AspiranteController@referencia');
@@ -656,7 +677,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
 
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
-});
+//});
 
 
 
@@ -813,6 +834,8 @@ Route::get('SesionAsesor','PAAE_Periodo@sesionPorAsesor');
 Route::get('CorreosAlumnos','PAAE_Periodo@correosAlumnos');
 Route::get('ListaAlumnos','PAAE_Periodo@listaAlumnos');
 Route::get('CorreoAsesor','PAAE_Periodo@correoAsesor');
+Route::get('CorreoIndividualAlumno','PAAE_Periodo@correoIndividualAlumno');
+Route::get('CorreoIndividualAses','PAAE_Periodo@correoIndividualAses');
 Route::post('SolicitudAsesoria','PAAE_Periodo@crearSolicitud');
 Route::post('SolicitudAsesor','PAAE_Periodo@crearSolicitudAsesor');
 Route::post('ActualizAsesor','PAAE_Periodo@actualizAsesor');

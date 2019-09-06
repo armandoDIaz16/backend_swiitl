@@ -156,25 +156,64 @@ class PAAE_Periodo extends Controller
             $month = 2;
         }
         $periodo = $year.$month;
-        //print_r($periodo);
-
-        $hora = DB::connection('sqlsrv2')
-        ->table('view_horarioalumno')
-            ->select('Dia','HoraInicial','MinutoInicial','HoraFinal','MinutoFinal')
-            ->where([['NumeroControl',$request->control],    
-                    ['IdPeriodoEscolar',$periodo]
-                    ])   
-            ->orderBy('dia')
-            ->orderBy('HoraInicial')
+        $final = array();
+        $horas = DB::connection('sqlsrv2')
+        ->table('view_horarioalumno as a')
+        ->select('a.clavegrupo','a.clavemateria',DB::raw('b.Nombre COLLATE Latin1_General_CI_AI AS [Nombre]'))
+        ->join('view_reticula as b', 'a.clavemateria', '=', 'B.ClaveMateria')
+        ->distinct()
+        ->where([['NumeroControl',$request->control],    
+                ['IdPeriodoEscolar',20182]
+                ])
+        ->get();
+        //return $horas;
+        //return $horas.indexOf('ACF0902');
+        foreach($horas as $hora){
+            $resultado = array();
+            $materias = DB::connection('sqlsrv2')
+            ->table('view_horarioalumno as a')
+            ->select('a.clavegrupo','a.clavemateria','b.Nombre','a.Dia','a.HoraInicial','a.MinutoInicial','a.HoraFinal','a.MinutoFinal','a.Aula')
+            ->join('view_reticula as b', 'a.clavemateria', '=', 'B.ClaveMateria')
+            ->distinct()
+            ->where([['a.clavemateria',$hora->clavemateria],    
+                ['NumeroControl',$request->control],
+                ['IdPeriodoEscolar',20182],
+                ['Nombre',$hora->Nombre]
+                ])
+            ->orderBy('a.Dia')
             ->get();
-         if($hora){
-             return $hora;
-            //return $hoy;
-        /* return response()->json(['data' => $horario], Response::HTTP_OK); */
-         }else{
-            return $this->failedResponse();
-         }
-    }
+            //return $materias;
+            $resultado = array_merge($resultado, array('clavegrupo' => $hora->clavegrupo));
+            $resultado = array_merge($resultado, array('clavemateria' => $hora->clavemateria));
+            $resultado = array_merge($resultado, array('nombre' => $hora->Nombre));
+            foreach($materias as $materia){
+                if($materia->Dia == 1){
+                $resultado = array_merge($resultado, array('Lunes' => $materia->HoraInicial.':'.$materia->MinutoInicial.'-'.$materia->HoraFinal.':'.$materia->MinutoFinal.'  '.$materia->Aula));
+
+                }else if($materia->Dia == 2){
+                    $resultado = array_merge($resultado, array('Martes' => $materia->HoraInicial.':'.$materia->MinutoInicial.'-'.$materia->HoraFinal.':'.$materia->MinutoFinal.'  '.$materia->Aula));
+    
+                    }else if($materia->Dia == 3){
+                        $resultado = array_merge($resultado, array('Miercoles' => $materia->HoraInicial.':'.$materia->MinutoInicial.'-'.$materia->HoraFinal.':'.$materia->MinutoFinal.'  '.$materia->Aula));
+        
+                        }else if($materia->Dia == 4){
+                            $resultado = array_merge($resultado, array('Jueves' => $materia->HoraInicial.':'.$materia->MinutoInicial.'-'.$materia->HoraFinal.':'.$materia->MinutoFinal.'  '.$materia->Aula));
+            
+                            }else if($materia->Dia == 5){
+                                $resultado = array_merge($resultado, array('Viernes' => $materia->HoraInicial.':'.$materia->MinutoInicial.'-'.$materia->HoraFinal.':'.$materia->MinutoFinal.'  '.$materia->Aula ));
+                
+                                }
+               // $resultado = array_merge($resultado, array(''.$materia->Dia.'' => $materia->HoraInicial.':'.$materia->MinutoInicial.'-'.$materia->HoraFinal.':'.$materia->MinutoFinal));
+             /*    $resultado = array_merge($resultado, array('horainicial' => $materia->HoraInicial));
+                $resultado = array_merge($resultado, array('minutoinicial' => $materia->MinutoInicial));
+                $resultado = array_merge($resultado, array('horafinal' => $materia->HoraFinal));
+                $resultado = array_merge($resultado, array('minutofinal' => $materia->MinutoFinal)); */
+            }
+            $final = array_merge($final, array($resultado));
+            //return $final;
+        }
+        return $final;
+}
     
     public function materia(Request $request){
         $hoy = getdate();
@@ -1732,7 +1771,7 @@ return $alumno;
         $periodo = $year.$month;
         $materia = DB::table('CATR_ASESORIA_ACEPTADA')
             ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA','CATR_ASESORIA_ACEPTADA.MATERIA',
-            'CATR_ASESORIA_ACEPTADA.DIA','CATR_ASESORIA_ACEPTADA.HORA','CATR_ASESORIA_ACEPTADA.CAMPUS','CATR_ASESORIA_ACEPTADA.ESPACIO','CATR_ASESORIA_ACEPTADA.PERIODO')
+            'CATR_ASESORIA_ACEPTADA.DIA','CATR_ASESORIA_ACEPTADA.HORA','CATR_ASESORIA_ACEPTADA.CAMPUS','CATR_ASESORIA_ACEPTADA.ESPACIO','CATR_ASESORIA_ACEPTADA.PERIODO','users.email')
             ->distinct()
             ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
             ->join('CATR_ASESOR_ASESORIA_HORARIO', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
@@ -1872,19 +1911,58 @@ return $alumno;
         }
        
     }
-    /*    [PK_ASESORIA_ACEPTADA]
-      ,[FK_ASESOR]
-      ,[FK_ALUMNO]
-      ,[MATERIA]
-      ,[DIA]
-      ,[HORA]
-      ,[PERIODO]
-      ,[CAMPUS]
-      ,[ESPACIO]
-      ,[FECHA_REGISTRO]
-      ,[STATUS]
-      ,[VALIDA]
-  FROM [SWIITL].[dbo].[CATR_ASESORIA_ACEPTADA]*/
+
+    public function correoIndividualAlumno(Request $request){
+        $hoy = getdate();
+        $year = $hoy['year'];
+        $month = $hoy['mon'];
+        if($month <=6){
+            $month = 1;       
+        }
+        if($month > 7){
+            $month = 2;
+        }
+        $periodo = $year.$month;
+        $materia = DB::table('CATR_USER_ASESORIA_HORARIO')
+            ->select('users.email','users.name','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO')
+            ->distinct()
+            ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
+            ->where([['CATR_USER_ASESORIA_HORARIO.PERIODO',$periodo]
+                   ])
+            ->get();
+        if($materia){
+            return $materia;
+        }else{
+           return $this->failedResponse();
+        }
+       
+    }
+
+    public function correoIndividualAses(Request $request){
+        $hoy = getdate();
+        $year = $hoy['year'];
+        $month = $hoy['mon'];
+        if($month <=6){
+            $month = 1;       
+        }
+        if($month > 7){
+            $month = 2;
+        }
+        $periodo = $year.$month;
+        $materia = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
+            ->select('users.email','users.name','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO')
+            ->distinct()
+            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
+            ->where([['CATR_ASESOR_ASESORIA_HORARIO.PERIODO',$periodo]
+                   ])
+            ->get();
+        if($materia){
+            return $materia;
+        }else{
+           return $this->failedResponse();
+        }
+       
+    }
 
     public function failedResponse()
     {
