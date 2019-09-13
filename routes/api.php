@@ -34,19 +34,25 @@ Route::post('refresh', 'AuthController@refresh');
 Route::post('me', 'AuthController@me');
 
 // ENVIAR URL PARA REESTABLECER CONTRASEÑA
-Route::post('sendPasswordResetLink', 'ResetPasswordController@sendEmail');
+Route::post('recuperar_contrasena', 'AuthController@recuperarContrasena');
 
 // CAMBIO DE CONTRASEÑA
 Route::post('resetPassword', 'ChangePasswordController@process');
 
-
-Route::group(['middleware' => ['jwt.verify']], function () {
-    Route::get('GraficaCampus5/{PK_PERIODO}', 'AspiranteController@graficaCampus');
-});
-
 Route::middleware('jwt.auth')->get('users', function () {
     return auth('api')->user();
 });
+
+
+
+
+
+Route::get('leer_archivo', 'AspiranteController@leer_archivo');
+
+
+
+
+
 
 /* Route::group([
 
@@ -323,14 +329,17 @@ Route::get('Ficha/{preficha}', 'FichaController@descargarFicha');
 Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
 Route::get('ReferenciaCurso/{preficha}', 'FichaController@descargarReferenciaCurso');
 Route::get('ReferenciaInscripcion/{preficha}', 'FichaController@descargarReferenciaInscripcion');
+Route::get('ReferenciaInscripcionCero/{preficha}', 'FichaController@descargarReferenciaInscripcionCero');
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('Aspirante/{id}', 'AspiranteController@show');
     Route::post('Periodo', 'PeriodoController@store');
     Route::post('PeriodoCurso', 'PeriodoController@periodoCurso');
     Route::post('PeriodoInscripcion', 'PeriodoController@periodoInscripcion');
+    Route::post('PeriodoInscripcionCero', 'PeriodoController@periodoInscripcionCero');
     Route::post('MontoPreficha', 'PeriodoController@montoPreficha');
     Route::post('MontoCurso', 'PeriodoController@montoCurso');
     Route::post('MontoInscripcion', 'PeriodoController@montoInscripcion');
+    Route::post('MontoInscripcionCero', 'PeriodoController@montoInscripcionCero');
     Route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
     Route::get('Aspirantes2', 'AspiranteController@aspirantes2');
     Route::get('Aspirantes3/{PK_PERIODO}', 'AspiranteController@aspirantes3');
@@ -341,9 +350,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('CargarArchivoBanco/{PK_PERIODO}', 'AspiranteController@cargarArchivoBanco');
     Route::post('CargarArchivoPreRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoPreRegistroCENEVAL');
     Route::post('CargarArchivoRegistroCENEVAL/{PK_PERIODO}', 'AspiranteController@cargarArchivoRegistroCENEVAL');
+    Route::post('CargarArchivoResultados/{PK_PERIODO}', 'AspiranteController@cargarArchivoResultados');
     Route::post('CargarArchivoAceptados/{PK_PERIODO}', 'AspiranteController@cargarArchivoAceptados');
+    Route::post('CargarArchivoAcistencia/{PK_PERIODO}', 'AspiranteController@cargarArchivoAsistencia');
     Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
     Route::get('Grupo', 'GrupoController@listaGrupos');
+    Route::get('ListasGrupos', 'GrupoController@datosListas');
 
     Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
     Route::get('Turno', 'LugarExamenController@obtenerTurno');
@@ -357,7 +369,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
 });
 
-/* 
 ///////////////////////////////// PAAE ////////////////////////////////////
 Route::get('PAAE_Periodo', 'PAAE_Periodo@index');
 Route::get('Hora', 'PAAE_Periodo@horario');

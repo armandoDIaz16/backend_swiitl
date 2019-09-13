@@ -105,6 +105,15 @@ class PeriodoController extends Controller
                 'FECHA_FIN_INSCRIPCION' => $request->FECHA_FIN_INSCRIPCION
                 ]);
     }
+    public function periodoInscripcionCero(Request $request)
+    {
+        Periodo::select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO_INSCRIPCION_BIS', 'FECHA_FIN_INSCRIPCION_BIS')
+            ->where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)
+            ->update([
+                'FECHA_INICIO_INSCRIPCION_BIS' => $request->FECHA_INICIO_INSCRIPCION_BIS,
+                'FECHA_FIN_INSCRIPCION_BIS' => $request->FECHA_FIN_INSCRIPCION_BIS
+                ]);
+    }
     public function montoPreficha(Request $request)
     {
         Periodo::select('PK_PERIODO_PREFICHAS', 'MONTO_PREFICHA')
@@ -122,6 +131,12 @@ class PeriodoController extends Controller
         Periodo::select('PK_PERIODO_PREFICHAS', 'MONTO_INSCRIPCION')
             ->where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)
             ->update(['MONTO_INSCRIPCION' => $request->MONTO_INSCRIPCION]);
+    }
+    public function montoInscripcionCero(Request $request)
+    {
+        Periodo::select('PK_PERIODO_PREFICHAS', 'MONTO_INSCRIPCION_BIS')
+            ->where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)
+            ->update(['MONTO_INSCRIPCION_BIS' => $request->MONTO_INSCRIPCION_BIS]);
     }
 
     /**
