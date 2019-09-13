@@ -355,9 +355,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
 
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
-//});
+});
 
-
+/* 
 ///////////////////////////////// PAAE ////////////////////////////////////
 Route::get('PAAE_Periodo', 'PAAE_Periodo@index');
 Route::get('Hora', 'PAAE_Periodo@horario');
@@ -442,7 +442,7 @@ Route::post('CreaFin', 'PAAE_Periodo@creaFinal');
 Route::post('AsignaSituacion', 'PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE', 'PAAE_Periodo@enviarCorreos');
 Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
-
+ */
 /* *********************************************************** *
  * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
@@ -605,8 +605,8 @@ Route::get('TodosAsistencia','PAAE_Periodo@allAsistencia');
 Route::get('AsistenciaPeriodo','PAAE_Periodo@allAsistenciaPeriodo');
 Route::get('TodosReporteFinal','PAAE_Periodo@allReporteFinal');
 Route::get('ReporteFinalPeriodo','PAAE_Periodo@allReporteFinalPeriodo');
-Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica');
-Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo');
+/* Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica'); */
+/* Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo'); */
 Route::get('TodosAsesores','PAAE_Periodo@AsesoresListal');
 Route::get('AsesoresPeriodo','PAAE_Periodo@AsesoresListalPeriodo');
 Route::get('SesionAsesor','PAAE_Periodo@sesionPorAsesor');
@@ -635,6 +635,8 @@ Route::post('CreaFin','PAAE_Periodo@creaFinal');
 Route::post('AsignaSituacion','PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE','PAAE_Periodo@enviarCorreos');
 Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
+//});
+
 
 /* Route::resource('PAAE_Periodo','PAAE_Periodo');
 Route::get('PAAE_Periodo','PAAE_Periodo@index');
@@ -665,4 +667,4 @@ Route::post('SolicitudAsesor','PAAE_Periodo@crearSolicitudAsesor');
 Route::post('ActualizAsesor','PAAE_Periodo@actualizAsesor');
 Route::post('ActualizaSolicitud','PAAE_Periodo@actualizaSolicitud');
 Route::post('BorrAsesor','PAAE_Periodo@borrAsesor');
-Route::post('BorraSolicitud','PAAE_Periodo@borraSolicitud'); */
+Route::post('BorraSolicitud','PAAE_Periodo@borraSolicitud');*/

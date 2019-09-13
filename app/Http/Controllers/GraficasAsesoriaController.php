@@ -52,7 +52,7 @@ class GraficasAsesoriaController extends Controller
 
     return $materias;
     }
-
+    //modificar
     public function institucion()
     {
         $materias = DB::table('TR_ASESORIA_MOTIVO')
@@ -66,7 +66,7 @@ class GraficasAsesoriaController extends Controller
 
     return $materias;
     }
-
+    //modificar
     public function carrera()
     {
         $materias = DB::table('TR_ASESORIA_MOTIVO')

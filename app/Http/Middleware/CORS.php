@@ -18,14 +18,14 @@ class CORS
         header('Access-Control-Allow-Credentials: true');
         return $next($request);
     } */
-    public function handle($request, Closure $next)
+   /*  public function handle($request, Closure $next)
   {
     return $next($request)
     ->header('Access-Control-Allow-Origin', '*')
     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     ->header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, X-Token-Auth, Authorization');
-  }
-   /* public function handle($request, Closure $next)
+  } */
+   public function handle($request, Closure $next)
     {
         //All the domains you want to whitelist
         $trusted_domains = ["http://localhost:4200", "http://127.0.0.1:4200", "http://localhost:3000", "http://127.0.0.1:3000"];
@@ -39,5 +39,5 @@ class CORS
             }
         }
         return $next($request);
-    }*/
+    }
 }

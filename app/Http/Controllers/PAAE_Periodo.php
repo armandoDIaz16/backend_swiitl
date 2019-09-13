@@ -392,8 +392,9 @@ class PAAE_Periodo extends Controller
     }
     //hola
     public function getDatos(Request $request){
-        $alumno = DB::table('users')
-            ->select('NUMERO_CONTROL', 'PRIMER_APELLIDO', 'SEGUNDO_APELLIDO', 'name', 'CLAVE_CARRERA', 'email', 'TELEFONO_MOVIL','SEMESTRE')
+        $alumno = DB::table('CAT_USUARIO')
+            ->select('NUMERO_CONTROL', 'PRIMER_APELLIDO', 'SEGUNDO_APELLIDO', 'CAT_USUARIO.NOMBRE', 'CAT_CARRERA.NOMBRE', 'CORREO1', 'TELEFONO_MOVIL','SEMESTRE')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
             ->where('PK_USUARIO',$request->id)
             ->get()->first();
 
@@ -403,9 +404,9 @@ class PAAE_Periodo extends Controller
                     'control'           => trim($alumno->NUMERO_CONTROL),
                     'apep'           => trim($alumno->PRIMER_APELLIDO),
                     'apem'           => trim($alumno->SEGUNDO_APELLIDO),
-                    'name'           => trim($alumno->name),
+                    'NOMBRE'           => trim($alumno->NOMBRE),
                     'carrera'           => trim($alumno->CLAVE_CARRERA),
-                    'email'           => trim($alumno->email),
+                    'CORREO1'           => trim($alumno->CORREO1),
                     'semestre'           => trim($alumno->SEMESTRE),
                     'celular'           => trim($alumno->TELEFONO_MOVIL),
                 ];
@@ -429,14 +430,14 @@ class PAAE_Periodo extends Controller
         $periodo = $year.$month;
         $alumno = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
             ->select('CATR_ASESOR_ASESORIA_HORARIO.PK_ASESOR_ASESORIA_HORARIO', 
-            'users.name', 'users.PRIMER_APELLIDO', 'users.SEGUNDO_APELLIDO', 'users.email', 
-            'users.TELEFONO_MOVIL','CATR_ASESOR_ASESORIA_HORARIO.MATERIA',
+            'CAT_USUARIO.NOMBRE', 'CAT_USUARIO.PRIMER_APELLIDO', 'CAT_USUARIO.SEGUNDO_APELLIDO', 'CAT_USUARIO.CORREO1', 
+            'CAT_USUARIO.TELEFONO_MOVIL','CATR_ASESOR_ASESORIA_HORARIO.MATERIA',
             'CATR_ASESOR_ASESORIA_HORARIO.MATERIA1','CATR_ASESOR_ASESORIA_HORARIO.MATERIA2'
             ,'CATR_ASESOR_ASESORIA_HORARIO.DIA',
             'CATR_ASESOR_ASESORIA_HORARIO.HORA','CATR_ASESOR_ASESORIA_HORARIO.CAMPUS',
             'CATR_ASESOR_ASESORIA_HORARIO.STATUS','CATR_ASESOR_ASESORIA_HORARIO.PERIODO',
-            'users.NUMERO_CONTROL','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
+            'CAT_USUARIO.NUMERO_CONTROL','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
             ->where('PERIODO',$periodo)
             ->get();
 
@@ -450,13 +451,13 @@ class PAAE_Periodo extends Controller
     public function getAsesorPeriodo(Request $request){
         $alumno = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
             ->select('CATR_ASESOR_ASESORIA_HORARIO.PK_ASESOR_ASESORIA_HORARIO', 
-            'users.name', 'users.PRIMER_APELLIDO', 'users.SEGUNDO_APELLIDO', 'users.email', 
-            'users.TELEFONO_MOVIL','CATR_ASESOR_ASESORIA_HORARIO.MATERIA',
+            'CAT_USUARIO.NOMBRE', 'CAT_USUARIO.PRIMER_APELLIDO', 'CAT_USUARIO.SEGUNDO_APELLIDO', 'CAT_USUARIO.CORREO1', 
+            'CAT_USUARIO.TELEFONO_MOVIL','CATR_ASESOR_ASESORIA_HORARIO.MATERIA',
             'CATR_ASESOR_ASESORIA_HORARIO.MATERIA1','CATR_ASESOR_ASESORIA_HORARIO.MATERIA2'
             ,'CATR_ASESOR_ASESORIA_HORARIO.DIA',
             'CATR_ASESOR_ASESORIA_HORARIO.HORA','CATR_ASESOR_ASESORIA_HORARIO.CAMPUS',
             'CATR_ASESOR_ASESORIA_HORARIO.STATUS','CATR_ASESOR_ASESORIA_HORARIO.PERIODO')
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
             ->where('PERIODO',$request->periodo)
             ->get();
 
@@ -479,14 +480,14 @@ class PAAE_Periodo extends Controller
         }
         $periodo = $year.$month;
         $alumno = DB::table('CATR_USER_ASESORIA_HORARIO')
-        ->select('CATR_USER_ASESORIA_HORARIO.PK_USER_ASESORIA_HORARIO','users.name',
-        'users.PRIMER_APELLIDO', 'users.SEGUNDO_APELLIDO', 'users.email', 'users.TELEFONO_MOVIL',
+        ->select('CATR_USER_ASESORIA_HORARIO.PK_USER_ASESORIA_HORARIO','CAT_USUARIO.NOMBRE',
+        'CAT_USUARIO.PRIMER_APELLIDO', 'CAT_USUARIO.SEGUNDO_APELLIDO', 'CAT_USUARIO.CORREO1', 'CAT_USUARIO.TELEFONO_MOVIL',
         'CATR_USER_ASESORIA_HORARIO.MATERIA'
         , 'CATR_USER_ASESORIA_HORARIO.DIA',
         'CATR_USER_ASESORIA_HORARIO.HORA','CATR_USER_ASESORIA_HORARIO.CAMPUS', 'CATR_USER_ASESORIA_HORARIO.STATUS',
         'CATR_USER_ASESORIA_HORARIO.CAMPUS','CATR_USER_ASESORIA_HORARIO.STATUS','CATR_USER_ASESORIA_HORARIO.PERIODO',
-        'users.NUMERO_CONTROL')
-        ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
+        'CAT_USUARIO.NUMERO_CONTROL')
+        ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
         ->where('PERIODO',$periodo)
         ->get();
 
@@ -499,13 +500,13 @@ class PAAE_Periodo extends Controller
 
     public function getSolicitudPeriodo(Request $request){
         $alumno = DB::table('CATR_USER_ASESORIA_HORARIO')
-        ->select('CATR_USER_ASESORIA_HORARIO.PK_USER_ASESORIA_HORARIO','users.name',
-        'users.PRIMER_APELLIDO', 'users.SEGUNDO_APELLIDO', 'users.email', 'users.TELEFONO_MOVIL',
+        ->select('CATR_USER_ASESORIA_HORARIO.PK_USER_ASESORIA_HORARIO','CAT_USUARIO.NOMBRE',
+        'CAT_USUARIO.PRIMER_APELLIDO', 'CAT_USUARIO.SEGUNDO_APELLIDO', 'CAT_USUARIO.CORREO1', 'CAT_USUARIO.TELEFONO_MOVIL',
         'CATR_USER_ASESORIA_HORARIO.MATERIA'
         , 'CATR_USER_ASESORIA_HORARIO.DIA',
         'CATR_USER_ASESORIA_HORARIO.HORA','CATR_USER_ASESORIA_HORARIO.CAMPUS', 'CATR_USER_ASESORIA_HORARIO.STATUS',
         'CATR_USER_ASESORIA_HORARIO.CAMPUS','CATR_USER_ASESORIA_HORARIO.STATUS','CATR_USER_ASESORIA_HORARIO.PERIODO')
-        ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
+        ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
         ->where('PERIODO',$request->periodo)
         ->get();
 
@@ -672,9 +673,9 @@ class PAAE_Periodo extends Controller
         }
         $periodo = $year.$month;
         $alumno = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
-            ->select('users.PK_USUARIO','users.name','users.PRIMER_APELLIDO', 'users.SEGUNDO_APELLIDO','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
+            ->select('CAT_USUARIO.PK_USUARIO','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO', 'CAT_USUARIO.SEGUNDO_APELLIDO','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
             ->where('PERIODO',$periodo)
             ->get();
 
@@ -697,9 +698,9 @@ class PAAE_Periodo extends Controller
         }
         $periodo = $year.$month;
         $alumno = DB::table('CATR_USER_ASESORIA_HORARIO')
-        ->select('users.PK_USUARIO','users.name','users.PRIMER_APELLIDO', 'users.SEGUNDO_APELLIDO')
+        ->select('CAT_USUARIO.PK_USUARIO','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO', 'CAT_USUARIO.SEGUNDO_APELLIDO')
         ->distinct()
-        ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
+        ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
         ->where('PERIODO',$periodo)
         ->get();
 
@@ -935,9 +936,9 @@ class PAAE_Periodo extends Controller
 
     public function nombreAsesor(Request $request){
         $materia = DB::table('CATR_ASESORIA_ACEPTADA')
-            ->select('users.PK_USUARIO','users.name','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','CATR_ASESORIA_ACEPTADA.MATERIA')
+            ->select('CAT_USUARIO.PK_USUARIO','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CATR_ASESORIA_ACEPTADA.MATERIA')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
             ->where([['FK_ALUMNO',$request->id]])
             ->get();
         if($materia){
@@ -1045,9 +1046,9 @@ class PAAE_Periodo extends Controller
 
     public function getAlumnoAsesorado(Request $request){
         $materia = DB::table('CATR_ASESORIA_ACEPTADA')
-            ->select('users.PK_USUARIO','users.name','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO')
+            ->select('CAT_USUARIO.PK_USUARIO','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO')
             ->where([['FK_ASESOR',$request->id]])
             ->get();
         if($materia){
@@ -1060,9 +1061,11 @@ class PAAE_Periodo extends Controller
 
     public function getAlumnoAsesoradoMateria(Request $request){
         $materia = DB::table('CATR_ASESORIA_ACEPTADA')
-            ->select('users.PK_USUARIO','users.name','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.NUMERO_CONTROL','users.CLAVE_CARRERA')
+            ->select('CAT_USUARIO.PK_USUARIO','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['FK_ASESOR',$request->id],
             ['MATERIA',$request->materialis]])
             ->get();
@@ -1102,7 +1105,7 @@ class PAAE_Periodo extends Controller
         $materia = DB::table('CATR_REPORTE_DE_SESIONES')
             ->select('PK_REPORTE_DE_SESIONES','FECHA','TEMA')
             ->distinct()
-            /* ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO') */
+            /* ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO') */
             ->where([['FK_ASESOR',$request->id],
             ['MATERIA',$request->materiafin]])
             ->get();
@@ -1265,10 +1268,12 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_REPORTE_FINAL')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA','CATR_REPORTE_FINAL.PERIODO','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE','CATR_REPORTE_FINAL.PERIODO','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
             ->join('CATR_ASESOR_ASESORIA_HORARIO', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['CATR_REPORTE_FINAL.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1281,10 +1286,12 @@ return $alumno;
 
     public function AsesorEntregoFinalPeriodo(Request $request){
         $materia = DB::table('CATR_REPORTE_FINAL')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA','CATR_REPORTE_FINAL.PERIODO','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE','CATR_REPORTE_FINAL.PERIODO','CATR_ASESOR_ASESORIA_HORARIO.VALIDA')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
             ->join('CATR_ASESOR_ASESORIA_HORARIO', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['CATR_REPORTE_FINAL.PERIODO',$request->periodo]])
             ->get();
         if($materia){
@@ -1340,12 +1347,13 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('TR_ASESORIA_MOTIVO')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA',
-            'CAT_MOTIVO_ASESORIA_ACADEMICA.NOMBRE','TR_ASESORIA_MOTIVO.EDAD','users.SEXO','TR_ASESORIA_MOTIVO.RESIDENCIA'
-            ,'TR_ASESORIA_MOTIVO.TURNO','users.email', 'TR_ASESORIA_MOTIVO.MATERIA_APOYO1','TR_ASESORIA_MOTIVO.DOCENTE1', 'TR_ASESORIA_MOTIVO.PERIODO')
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
+            'CAT_MOTIVO_ASESORIA_ACADEMICA.NOMBRE','TR_ASESORIA_MOTIVO.EDAD','CAT_USUARIO.SEXO','TR_ASESORIA_MOTIVO.RESIDENCIA'
+            ,'TR_ASESORIA_MOTIVO.TURNO','CAT_USUARIO.CORREO1', 'TR_ASESORIA_MOTIVO.MATERIA_APOYO1','TR_ASESORIA_MOTIVO.DOCENTE1', 'TR_ASESORIA_MOTIVO.PERIODO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
             ->join('CAT_MOTIVO_ASESORIA_ACADEMICA', 'CAT_MOTIVO_ASESORIA_ACADEMICA.PK_MOTIVO_ASESORIA_ACADEMICA', '=', 'TR_ASESORIA_MOTIVO.FK_MOTIVO')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
             ->where([['TR_ASESORIA_MOTIVO.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1358,12 +1366,13 @@ return $alumno;
 
     public function allMotivosPeriodo(Request $request){
         $materia = DB::table('TR_ASESORIA_MOTIVO')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA',
-            'CAT_MOTIVO_ASESORIA_ACADEMICA.NOMBRE','TR_ASESORIA_MOTIVO.EDAD','users.SEXO','TR_ASESORIA_MOTIVO.RESIDENCIA'
-            ,'TR_ASESORIA_MOTIVO.TURNO','users.email', 'TR_ASESORIA_MOTIVO.MATERIA_APOYO1','TR_ASESORIA_MOTIVO.DOCENTE1', 'TR_ASESORIA_MOTIVO.PERIODO')
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
+            'CAT_MOTIVO_ASESORIA_ACADEMICA.NOMBRE','TR_ASESORIA_MOTIVO.EDAD','CAT_USUARIO.SEXO','TR_ASESORIA_MOTIVO.RESIDENCIA'
+            ,'TR_ASESORIA_MOTIVO.TURNO','CAT_USUARIO.CORREO1', 'TR_ASESORIA_MOTIVO.MATERIA_APOYO1','TR_ASESORIA_MOTIVO.DOCENTE1', 'TR_ASESORIA_MOTIVO.PERIODO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
             ->join('CAT_MOTIVO_ASESORIA_ACADEMICA', 'CAT_MOTIVO_ASESORIA_ACADEMICA.PK_MOTIVO_ASESORIA_ACADEMICA', '=', 'TR_ASESORIA_MOTIVO.FK_MOTIVO')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
             ->where([['TR_ASESORIA_MOTIVO.PERIODO',$request->periodo]])
             ->get();
         if($materia){
@@ -1386,9 +1395,10 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_CARTA_COMPROMISO_USER')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA','CATR_CARTA_COMPROMISO_USER.FECHA_REGISTRO','CATR_CARTA_COMPROMISO_USER.PERIODO')
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE','CATR_CARTA_COMPROMISO_USER.FECHA_REGISTRO','CATR_CARTA_COMPROMISO_USER.PERIODO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_CARTA_COMPROMISO_USER.FK_USER')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_CARTA_COMPROMISO_USER.FK_USER')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
             ->where([['CATR_CARTA_COMPROMISO_USER.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1401,9 +1411,11 @@ return $alumno;
 
     public function allCompromisoUserPeriodo(Request $request){
         $materia = DB::table('CATR_CARTA_COMPROMISO_USER')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA','CATR_CARTA_COMPROMISO_USER.FECHA_REGISTRO','CATR_CARTA_COMPROMISO_USER.PERIODO')
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE','CATR_CARTA_COMPROMISO_USER.FECHA_REGISTRO','CATR_CARTA_COMPROMISO_USER.PERIODO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_CARTA_COMPROMISO_USER.FK_USER')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_CARTA_COMPROMISO_USER.FK_USER')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['CATR_CARTA_COMPROMISO_USER.PERIODO',$request->periodo1]])
             ->get();
         if($materia){
@@ -1426,9 +1438,10 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_CARTA_COMPROMISO_ASESOR')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA','CATR_CARTA_COMPROMISO_ASESOR.FECHA_REGISTRO','CATR_CARTA_COMPROMISO_ASESOR.PERIODO')
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE','CATR_CARTA_COMPROMISO_ASESOR.FECHA_REGISTRO','CATR_CARTA_COMPROMISO_ASESOR.PERIODO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_CARTA_COMPROMISO_ASESOR.FK_USER')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_CARTA_COMPROMISO_ASESOR.FK_USER')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
             ->where([['CATR_CARTA_COMPROMISO_ASESOR.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1451,9 +1464,10 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_CARTA_COMPROMISO_ASESOR')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA','CATR_CARTA_COMPROMISO_ASESOR.FECHA_REGISTRO','CATR_CARTA_COMPROMISO_ASESOR.PERIODO')
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE','CATR_CARTA_COMPROMISO_ASESOR.FECHA_REGISTRO','CATR_CARTA_COMPROMISO_ASESOR.PERIODO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_CARTA_COMPROMISO_ASESOR.FK_USER')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_CARTA_COMPROMISO_ASESOR.FK_USER')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
             ->where([['CATR_CARTA_COMPROMISO_ASESOR.PERIODO',$request->periodo2]])
             ->get();
         if($materia){
@@ -1476,14 +1490,15 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('TR_EVALUACION_SATISFACCION')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'TR_EVALUACION_SATISFACCION.RESPUESTA','TR_EVALUACION_SATISFACCION.MATERIA','TR_EVALUACION_SATISFACCION.SESIONES',
-            'TR_EVALUACION_SATISFACCION.SUGERENCIA','TR_EVALUACION_SATISFACCION.PERIODO','a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.name as namea',
+            'TR_EVALUACION_SATISFACCION.SUGERENCIA','TR_EVALUACION_SATISFACCION.PERIODO','a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.NOMBRE as namea',
             'CAT_AFIRMACIONES_EVALUACION.NOMBRE')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'TR_EVALUACION_SATISFACCION.FK_USER')
-            ->join('users as a', 'a.PK_USUARIO', '=', 'TR_EVALUACION_SATISFACCION.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'TR_EVALUACION_SATISFACCION.FK_USER')
+            ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'TR_EVALUACION_SATISFACCION.FK_ASESOR')
             ->join('CAT_AFIRMACIONES_EVALUACION', 'CAT_AFIRMACIONES_EVALUACION.PK_AFIRMACIONES_EVALUACION', '=', 'TR_EVALUACION_SATISFACCION.FK_AFIRMACION')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'u.FK_CARRERA')
             ->where([['TR_EVALUACION_SATISFACCION.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1496,14 +1511,16 @@ return $alumno;
 
     public function allEvaluacionPeriodo(Request $request){
         $materia = DB::table('TR_EVALUACION_SATISFACCION')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'TR_EVALUACION_SATISFACCION.RESPUESTA','TR_EVALUACION_SATISFACCION.MATERIA','TR_EVALUACION_SATISFACCION.SESIONES',
-            'TR_EVALUACION_SATISFACCION.SUGERENCIA','TR_EVALUACION_SATISFACCION.PERIODO','a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.name as namea',
+            'TR_EVALUACION_SATISFACCION.SUGERENCIA','TR_EVALUACION_SATISFACCION.PERIODO','a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.NOMBRE as namea',
             'CAT_AFIRMACIONES_EVALUACION.NOMBRE')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'TR_EVALUACION_SATISFACCION.FK_USER')
-            ->join('users as a', 'a.PK_USUARIO', '=', 'TR_EVALUACION_SATISFACCION.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'TR_EVALUACION_SATISFACCION.FK_USER')
+            ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'TR_EVALUACION_SATISFACCION.FK_ASESOR')
             ->join('CAT_AFIRMACIONES_EVALUACION', 'CAT_AFIRMACIONES_EVALUACION.PK_AFIRMACIONES_EVALUACION', '=', 'TR_EVALUACION_SATISFACCION.FK_AFIRMACION')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['TR_EVALUACION_SATISFACCION.PERIODO',$request->periodo3]])
             ->get();
         if($materia){
@@ -1526,14 +1543,16 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_CALIFICACION_PARCIAL')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'CATR_CALIFICACION_PARCIAL.MATERIA','CATR_CALIFICACION_PARCIAL.AULA','CATR_CALIFICACION_PARCIAL.DIA',
             'CATR_CALIFICACION_PARCIAL.HORA','CATR_CALIFICACION_PARCIAL.UNIDAD','CATR_CALIFICACION_PARCIAL.CALIFICACION',
             'CATR_CALIFICACION_PARCIAL.OBSERVACIONES','CATR_CALIFICACION_PARCIAL.PERIODO'
-            ,'a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.name as namea')
+            ,'a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.NOMBRE as namea')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_CALIFICACION_PARCIAL.FK_USUARIO')
-            ->join('users as a', 'a.PK_USUARIO', '=', 'CATR_CALIFICACION_PARCIAL.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_CALIFICACION_PARCIAL.FK_USUARIO')
+            ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'CATR_CALIFICACION_PARCIAL.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'u.FK_CARRERA')
+
             ->where([['CATR_CALIFICACION_PARCIAL.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1546,14 +1565,16 @@ return $alumno;
 
     public function allCalificacionPeriodo(Request $request){
         $materia = DB::table('CATR_CALIFICACION_PARCIAL')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'CATR_CALIFICACION_PARCIAL.MATERIA','CATR_CALIFICACION_PARCIAL.AULA','CATR_CALIFICACION_PARCIAL.DIA',
             'CATR_CALIFICACION_PARCIAL.HORA','CATR_CALIFICACION_PARCIAL.UNIDAD','CATR_CALIFICACION_PARCIAL.CALIFICACION',
             'CATR_CALIFICACION_PARCIAL.OBSERVACIONES','CATR_CALIFICACION_PARCIAL.PERIODO'
-            ,'a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.name as namea')
+            ,'a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.NOMBRE as namea')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_CALIFICACION_PARCIAL.FK_USUARIO')
-            ->join('users as a', 'a.PK_USUARIO', '=', 'CATR_CALIFICACION_PARCIAL.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_CALIFICACION_PARCIAL.FK_USUARIO')
+            ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'CATR_CALIFICACION_PARCIAL.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['CATR_CALIFICACION_PARCIAL.PERIODO',$request->periodo4]])
             ->get();
         if($materia){
@@ -1576,12 +1597,14 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_REPORTE_DE_SESIONES')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'CATR_REPORTE_DE_SESIONES.MATERIA','CATR_REPORTE_DE_SESIONES.SESION','CATR_REPORTE_DE_SESIONES.FECHA',
             'CATR_REPORTE_DE_SESIONES.ASISTENTES','CATR_REPORTE_DE_SESIONES.HORAINICIO','CATR_REPORTE_DE_SESIONES.HORAFINAL',
             'CATR_REPORTE_DE_SESIONES.TEMA','CATR_REPORTE_DE_SESIONES.ACTIVIDADES_OBSERVACIONES','CATR_REPORTE_DE_SESIONES.PERIODO')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_REPORTE_DE_SESIONES.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_REPORTE_DE_SESIONES.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'u.FK_CARRERA')
+
             ->where([['CATR_REPORTE_DE_SESIONES.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1604,12 +1627,14 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_REPORTE_DE_SESIONES')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'CATR_REPORTE_DE_SESIONES.MATERIA','CATR_REPORTE_DE_SESIONES.SESION','CATR_REPORTE_DE_SESIONES.FECHA',
             'CATR_REPORTE_DE_SESIONES.ASISTENTES','CATR_REPORTE_DE_SESIONES.HORAINICIO','CATR_REPORTE_DE_SESIONES.HORAFINAL',
             'CATR_REPORTE_DE_SESIONES.TEMA','CATR_REPORTE_DE_SESIONES.ACTIVIDADES_OBSERVACIONES','CATR_REPORTE_DE_SESIONES.PERIODO')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_REPORTE_DE_SESIONES.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_REPORTE_DE_SESIONES.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'u.FK_CARRERA')
+
             ->where([['CATR_REPORTE_DE_SESIONES.PERIODO',$request->periodo5]])
             ->get();
         if($materia){
@@ -1632,12 +1657,14 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_LISTA_DE_ASISTENCIA')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'CATR_LISTA_DE_ASISTENCIA.FECHA','CATR_LISTA_DE_ASISTENCIA.ASISTIO','CATR_LISTA_DE_ASISTENCIA.PERIODO',
-            'a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.name as namea')
+            'a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.NOMBRE as namea')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_LISTA_DE_ASISTENCIA.FK_ASESOR')
-            ->join('users as a', 'a.PK_USUARIO', '=', 'CATR_LISTA_DE_ASISTENCIA.FK_USER')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_LISTA_DE_ASISTENCIA.FK_ASESOR')
+            ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'CATR_LISTA_DE_ASISTENCIA.FK_USER')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'u.FK_CARRERA')
+
             ->where([['CATR_LISTA_DE_ASISTENCIA.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1650,12 +1677,14 @@ return $alumno;
 
     public function allAsistenciaPeriodo(Request $request){
         $materia = DB::table('CATR_LISTA_DE_ASISTENCIA')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'CATR_LISTA_DE_ASISTENCIA.FECHA','CATR_LISTA_DE_ASISTENCIA.ASISTIO','CATR_LISTA_DE_ASISTENCIA.PERIODO',
-            'a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.name as namea')
+            'a.PRIMER_APELLIDO as apellidop','a.SEGUNDO_APELLIDO as apellidom','a.NOMBRE as namea')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_LISTA_DE_ASISTENCIA.FK_ASESOR')
-            ->join('users as a', 'a.PK_USUARIO', '=', 'CATR_LISTA_DE_ASISTENCIA.FK_USER')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_LISTA_DE_ASISTENCIA.FK_ASESOR')
+            ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'CATR_LISTA_DE_ASISTENCIA.FK_USER')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['CATR_LISTA_DE_ASISTENCIA.PERIODO',$request->periodo6]])
             ->get();
         if($materia){
@@ -1678,12 +1707,14 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_REPORTE_FINAL')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'CATR_REPORTE_FINAL.MATERIA','CATR_REPORTE_FINAL.FECHA_ENTREGA','CATR_REPORTE_FINAL.FECHA_INICIO',
             'CATR_REPORTE_FINAL.FECHA_FIN','CATR_REPORTE_FINAL.LUGAR','CATR_REPORTE_FINAL.ASESORADOS',
             'CATR_REPORTE_FINAL.SESIONES','CATR_REPORTE_FINAL.SUGERENCIAS','CATR_REPORTE_FINAL.PERIODO')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'u.FK_CARRERA')
+
             ->where([['CATR_REPORTE_FINAL.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1696,12 +1727,14 @@ return $alumno;
 
     public function allReporteFinalPeriodo(Request $request){
         $materia = DB::table('CATR_REPORTE_FINAL')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','u.CLAVE_CARRERA',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE','u.NUMERO_CONTROL','CAT_CARRERA.NOMBRE',
             'CATR_REPORTE_FINAL.MATERIA','CATR_REPORTE_FINAL.FECHA_ENTREGA','CATR_REPORTE_FINAL.FECHA_INICIO',
             'CATR_REPORTE_FINAL.FECHA_FIN','CATR_REPORTE_FINAL.LUGAR','CATR_REPORTE_FINAL.ASESORADOS',
             'CATR_REPORTE_FINAL.SESIONES','CATR_REPORTE_FINAL.SUGERENCIAS','CATR_REPORTE_FINAL.PERIODO')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_REPORTE_FINAL.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['CATR_REPORTE_FINAL.PERIODO',$request->periodo7]])
             ->get();
         if($materia){
@@ -1712,7 +1745,7 @@ return $alumno;
        
     }
 
-    public function allSituacionAcademica(Request $request){
+    /* public function allSituacionAcademica(Request $request){
         $hoy = getdate();
         $year = $hoy['year'];
         $month = $hoy['mon'];
@@ -1724,12 +1757,12 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_ASESORIA_ACEPTADA_SITUACION')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE',
             'CATR_ASESORIA_ACEPTADA_SITUACION.CONTROL_ALUMNO','CATR_ASESORIA_ACEPTADA_SITUACION.MATERIA','CATR_ASESORIA_ACEPTADA_SITUACION.DIA',
             'CATR_ASESORIA_ACEPTADA_SITUACION.HORA','CATR_ASESORIA_ACEPTADA_SITUACION.CAMPUS','CATR_ASESORIA_ACEPTADA_SITUACION.ESPACIO',
             'CATR_ASESORIA_ACEPTADA_SITUACION.VALIDA','CATR_ASESORIA_ACEPTADA_SITUACION.PERIODO')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA_SITUACION.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA_SITUACION.FK_ASESOR')
             ->where([['CATR_ASESORIA_ACEPTADA_SITUACION.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1738,16 +1771,16 @@ return $alumno;
            return $this->failedResponse();
         }
        
-    }
+    } */
 
-    public function allSituacionAcademicaPeriodo(Request $request){
+   /*  public function allSituacionAcademicaPeriodo(Request $request){
         $materia = DB::table('CATR_ASESORIA_ACEPTADA_SITUACION')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name',
+            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE',
             'CATR_ASESORIA_ACEPTADA_SITUACION.CONTROL_ALUMNO','CATR_ASESORIA_ACEPTADA_SITUACION.MATERIA','CATR_ASESORIA_ACEPTADA_SITUACION.DIA',
             'CATR_ASESORIA_ACEPTADA_SITUACION.HORA','CATR_ASESORIA_ACEPTADA_SITUACION.CAMPUS','CATR_ASESORIA_ACEPTADA_SITUACION.ESPACIO',
             'CATR_ASESORIA_ACEPTADA_SITUACION.VALIDA','CATR_ASESORIA_ACEPTADA_SITUACION.PERIODO')
             ->distinct()
-            ->join('users as u', 'u.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA_SITUACION.FK_ASESOR')
+            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA_SITUACION.FK_ASESOR')
             ->where([['CATR_ASESORIA_ACEPTADA_SITUACION.PERIODO',$request->periodo2]])
             ->get();
         if($materia){
@@ -1756,7 +1789,7 @@ return $alumno;
            return $this->failedResponse();
         }
        
-    }
+    } */
 
     public function AsesoresListal(Request $request){
         $hoy = getdate();
@@ -1770,11 +1803,12 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_ASESORIA_ACEPTADA')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA','CATR_ASESORIA_ACEPTADA.MATERIA',
-            'CATR_ASESORIA_ACEPTADA.DIA','CATR_ASESORIA_ACEPTADA.HORA','CATR_ASESORIA_ACEPTADA.CAMPUS','CATR_ASESORIA_ACEPTADA.ESPACIO','CATR_ASESORIA_ACEPTADA.PERIODO','users.email')
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE','CATR_ASESORIA_ACEPTADA.MATERIA',
+            'CATR_ASESORIA_ACEPTADA.DIA','CATR_ASESORIA_ACEPTADA.HORA','CATR_ASESORIA_ACEPTADA.CAMPUS','CATR_ASESORIA_ACEPTADA.ESPACIO','CATR_ASESORIA_ACEPTADA.PERIODO','CAT_USUARIO.CORREO1')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
             ->join('CATR_ASESOR_ASESORIA_HORARIO', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
             ->where([['CATR_ASESORIA_ACEPTADA.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1787,11 +1821,13 @@ return $alumno;
 
     public function AsesoresListalPeriodo(Request $request){
         $materia = DB::table('CATR_ASESORIA_ACEPTADA')
-            ->select('users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','users.NUMERO_CONTROL','users.CLAVE_CARRERA','CATR_ASESORIA_ACEPTADA.MATERIA',
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','CAT_USUARIO.NUMERO_CONTROL','CAT_CARRERA.NOMBRE','CATR_ASESORIA_ACEPTADA.MATERIA',
             'CATR_ASESORIA_ACEPTADA.DIA','CATR_ASESORIA_ACEPTADA.HORA','CATR_ASESORIA_ACEPTADA.CAMPUS','CATR_ASESORIA_ACEPTADA.ESPACIO','CATR_ASESORIA_ACEPTADA.PERIODO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
             ->join('CATR_ASESOR_ASESORIA_HORARIO', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['CATR_ASESORIA_ACEPTADA.PERIODO',$request->periodo]])
             ->get();
         if($materia){
@@ -1818,7 +1854,7 @@ return $alumno;
             'CATR_REPORTE_DE_SESIONES.SESION','CATR_REPORTE_DE_SESIONES.FECHA','CATR_REPORTE_DE_SESIONES.ASISTENTES','CATR_REPORTE_DE_SESIONES.HORAINICIO','CATR_REPORTE_DE_SESIONES.HORAFINAL',
             'CATR_REPORTE_DE_SESIONES.TEMA','CATR_REPORTE_DE_SESIONES.ACTIVIDADES_OBSERVACIONES')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_REPORTE_DE_SESIONES.FK_ASESOR')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_REPORTE_DE_SESIONES.FK_ASESOR')
             ->where([['CATR_REPORTE_DE_SESIONES.PERIODO',$periodo],
                     ['CATR_REPORTE_DE_SESIONES.FK_ASESOR',$request->id]])
             ->get();
@@ -1842,9 +1878,9 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_ASESORIA_ACEPTADA')
-            ->select('users.email')
+            ->select('CAT_USUARIO.CORREO1')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO')
             ->where([['CATR_ASESORIA_ACEPTADA.PERIODO',$periodo],
                     ['CATR_ASESORIA_ACEPTADA.FK_ASESOR',$request->id]])
             ->get();
@@ -1870,9 +1906,11 @@ return $alumno;
         $materia = DB::table('CATR_ASESORIA_ACEPTADA')
             ->select('CATR_ASESORIA_ACEPTADA.MATERIA','CATR_ASESORIA_ACEPTADA.ESPACIO','CATR_ASESORIA_ACEPTADA.DIA'
             ,'CATR_ASESORIA_ACEPTADA.HORA','CATR_ASESORIA_ACEPTADA.PERIODO',
-            'users.NUMERO_CONTROL','users.name','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.email','users.CLAVE_CARRERA')
+            'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.CORREO1','CAT_CARRERA.NOMBRE')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['CATR_ASESORIA_ACEPTADA.PERIODO',$periodo],
                     ['CATR_ASESORIA_ACEPTADA.FK_ASESOR',$request->id]])
             ->get();
@@ -1896,11 +1934,13 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_ASESORIA_ACEPTADA')
-            ->select('users.email','CATR_ASESORIA_ACEPTADA.MATERIA','CATR_ASESORIA_ACEPTADA.ESPACIO','CATR_ASESORIA_ACEPTADA.DIA'
+            ->select('CAT_USUARIO.CORREO1','CATR_ASESORIA_ACEPTADA.MATERIA','CATR_ASESORIA_ACEPTADA.ESPACIO','CATR_ASESORIA_ACEPTADA.DIA'
             ,'CATR_ASESORIA_ACEPTADA.HORA','CATR_ASESORIA_ACEPTADA.PERIODO',
-            'users.NUMERO_CONTROL','users.name','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.email','users.CLAVE_CARRERA')
+            'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.CORREO1','CAT_CARRERA.NOMBRE')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+
             ->where([['CATR_ASESORIA_ACEPTADA.PERIODO',$periodo],
                     ['CATR_ASESORIA_ACEPTADA.FK_ALUMNO',$request->id]])
             ->get();
@@ -1924,9 +1964,9 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_USER_ASESORIA_HORARIO')
-            ->select('users.email','users.name','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO')
+            ->select('CAT_USUARIO.CORREO1','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_USER_ASESORIA_HORARIO.FK_USUARIO')
             ->where([['CATR_USER_ASESORIA_HORARIO.PERIODO',$periodo]
                    ])
             ->get();
@@ -1950,9 +1990,9 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_ASESOR_ASESORIA_HORARIO')
-            ->select('users.email','users.name','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO')
+            ->select('CAT_USUARIO.CORREO1','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO')
             ->distinct()
-            ->join('users', 'users.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESOR_ASESORIA_HORARIO.FK_USUARIO')
             ->where([['CATR_ASESOR_ASESORIA_HORARIO.PERIODO',$periodo]
                    ])
             ->get();
