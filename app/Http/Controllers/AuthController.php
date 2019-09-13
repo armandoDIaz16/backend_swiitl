@@ -73,7 +73,8 @@ class AuthController extends Controller
                 if (!$this->notifica_usuario(
                     $usuario->CORREO1,
                     $token->TOKEN,
-                    $token->CLAVE_ACCESO)) {
+                    $token->CLAVE_ACCESO
+                )) {
                     error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
                     error_log("AuthController.php");
                 }
@@ -222,7 +223,6 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
-
     }
 
     /**
@@ -392,13 +392,13 @@ class AuthController extends Controller
 
                 $this->verifica_grupo_tutorias($es_tutor[0]->clavegrupo, $usuario->PK_USUARIO, Constantes::get_periodo(), $usuario->NUMERO_CONTROL);
             }
-
         } else { // lógica para usuarios que no son docentes ni alumnos
 
         }
     }
 
-    private function verifica_grupo_tutorias($clave_grupo, $pk_tutor, $periodo, $numero_control) {
+    private function verifica_grupo_tutorias($clave_grupo, $pk_tutor, $periodo, $numero_control)
+    {
         // buscar grupo dado de alta
         $grupo = GrupoTutorias::where('CLAVE', $clave_grupo)
             ->where('FK_USUARIO', $pk_tutor)
@@ -437,15 +437,15 @@ class AuthController extends Controller
                         'FK_USUARIO_REGISTRO' => $usuario->PK_USUARIO
                     ];
                 } else {
-                    error_log('No se ha encontrado al alumno: '
-                        . $alumno->NumeroControl
-                        . ' en generación de grupo. AuthController'
+                    error_log(
+                        'No se ha encontrado al alumno: '
+                            . $alumno->NumeroControl
+                            . ' en generación de grupo. AuthController'
                     );
                 }
             }
 
             DB::table('TR_GRUPO_TUTORIA_DETALLE')->insert($array_detalle_grupo);
-
         } else { // sí está registrado el grupo
             // obtener alumnos del grupo del siia
 
@@ -453,7 +453,8 @@ class AuthController extends Controller
         }
     }
 
-    private function get_grupo_siia($periodo, $pk_tutor) {
+    private function get_grupo_siia($periodo, $pk_tutor)
+    {
         $sql = "
         SELECT
             NumeroControl,
@@ -481,7 +482,8 @@ class AuthController extends Controller
         return DB::connection('sqlsrv2')->select($sql);
     }
 
-    private function get_carrera_grupo_siia($periodo, $clave_grupo) {
+    private function get_carrera_grupo_siia($periodo, $clave_grupo)
+    {
         $sql = "
         SELECT
             ClaveCarrera
@@ -500,21 +502,23 @@ class AuthController extends Controller
         return DB::connection('sqlsrv2')->select($sql);
     }
 
-    private function es_tutor_siia($numero_control) {
+    private function es_tutor_siia($numero_control)
+    {
         $sql = "SELECT DISTINCT
                     IdMaestro,
                     clavegrupo
                 FROM
                     view_horarioalumno
                 WHERE
-                    IdPeriodoEscolar = " .Constantes::get_periodo(). "
+                    IdPeriodoEscolar = " . Constantes::get_periodo() . "
                     AND clavemateria = 'PDH'
-                    AND IdMaestro    = ". $numero_control .";";
+                    AND IdMaestro    = " . $numero_control . ";";
 
         return DB::connection('sqlsrv2')->select($sql);
     }
 
-    private function activa_encuestas_tutorias($pk_usuario) {
+    private function activa_encuestas_tutorias($pk_usuario)
+    {
         // Activación de encuestas para primer semestre0
         $fecha = date('Y-m-d H:i:s');
         DB::table('TR_APLICACION_ENCUESTA')->insert([
@@ -599,5 +603,26 @@ class AuthController extends Controller
         $usuario->save();
 
         return $usuario;
+    }
+    public function recuperarContrasena(Request $request)
+    {
+        $usuario = Usuario::where('CURP', $request->CURP)->first();
+        if (isset($usuario->PK_USUARIO)) {
+            error_log(print_r($usuario, true));
+            $token = $this->get_datos_token($usuario);
+            if (!$this->notifica_usuario(
+                $usuario->CORREO1,
+                $token->TOKEN,
+                $token->CLAVE_ACCESO
+            )) {
+                error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
+                error_log("AuthController.php");
+            }
+        }else{// mandar mensaje de cuenta activa y vinculada a CURP
+            return response()->json(
+                ['error' => "La CURP proporcionada no se encuentra registrada"],
+                Response::HTTP_NOT_FOUND
+            );            
+        }
     }
 }

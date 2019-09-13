@@ -16,7 +16,7 @@ class FichaController extends Controller
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
-                DB::raw("CAT_USUARIO.name + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
+                DB::raw("CAT_USUARIO.NOMBRE + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
                 DB::raw("'' as REFERENCIA"),
                 DB::raw("'' as FECHA_LIMITE_PAGO"),
                 DB::raw("'' as CONSEPTO"),
@@ -69,7 +69,7 @@ class FichaController extends Controller
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO="Solicitud de ficha de pago para examen de admisión";
-        $aspirante[0]->CLAVE = DB::table('CAT_TECNM')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
 
         return $this->generarPDF($aspirante,'aspirante.referencia'); 
@@ -172,7 +172,7 @@ class FichaController extends Controller
             'CAT_CARRERA.NOMBRE as NOMBRE_CARRERA',
             'CAT_CAMPUS.NOMBRE as CAMPUS',
             'CAT_ASPIRANTE.FOLIO_CENEVAL',
-            'CAT_USUARIO.name as NOMBRE',
+            'CAT_USUARIO.NOMBRE as NOMBRE',
             'CAT_USUARIO.PRIMER_APELLIDO',
             DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
             'CAT_TURNO.DIA',
@@ -271,7 +271,7 @@ class FichaController extends Controller
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
-                DB::raw("CAT_USUARIO.name + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
+                DB::raw("CAT_USUARIO.NOMBRE + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
                 DB::raw("'' as REFERENCIA"),
                 DB::raw("'' as FECHA_LIMITE_PAGO"),
                 DB::raw("'' as CONSEPTO"),
@@ -324,9 +324,9 @@ class FichaController extends Controller
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO="Referencia de pago para curso de nivelación";
-        $aspirante[0]->CLAVE = DB::table('CAT_TECNM')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
-        $fk_aspirante = DB::table('CAT_TECNM')->where('NOMBRE', 'ITL');
+        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
         return $this->generarPDF($aspirante,'aspirante.referencia'); 
 
     }
@@ -336,7 +336,7 @@ class FichaController extends Controller
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
-                DB::raw("CAT_USUARIO.name + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
+                DB::raw("CAT_USUARIO.NOMBRE + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
                 DB::raw("'' as REFERENCIA"),
                 DB::raw("'' as FECHA_LIMITE_PAGO"),
                 DB::raw("'' as CONSEPTO"),
@@ -389,12 +389,76 @@ class FichaController extends Controller
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO="Referencia de pago para inscripción";
-        $aspirante[0]->CLAVE = DB::table('CAT_TECNM')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
-        $fk_aspirante = DB::table('CAT_TECNM')->where('NOMBRE', 'ITL');
+        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
         return $this->generarPDF($aspirante,'aspirante.referencia'); 
 
     }
+    public function descargarReferenciaInscripcionCero($id)
+    {
+        $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
+        $aspirante = DB::table('CAT_USUARIO')
+            ->select(
+                DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
+                DB::raw("CAT_USUARIO.NOMBRE + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
+                DB::raw("'' as REFERENCIA"),
+                DB::raw("'' as FECHA_LIMITE_PAGO"),
+                DB::raw("'' as CONSEPTO"),
+                DB::raw("'' as CLAVE"),
+                DB::raw("'' as MONTO")
+                )
+            ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
+            ->where([
+                ['CAT_USUARIO.PK_USUARIO', '=', $id],
+                ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante],
+            ])
+            ->get();
 
+        $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
+
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS','FECHA_INICIO_INSCRIPCION_BIS','FECHA_FIN_INSCRIPCION_BIS','MONTO_INSCRIPCION_BIS')
+        ->where('PK_PERIODO_PREFICHAS',$PK_PERIODO_PREFICHAS)
+        ->get();
+
+        $fecha = date('Y-m-j');
+        $fechaFin = strtotime($periodo[0]->FECHA_FIN_INSCRIPCION_BIS);        
+        $nuevafecha = strtotime('+3 day', strtotime($fecha));
+        if($nuevafecha > $fechaFin){         
+            $nuevafecha = strtotime('+2 day', strtotime($fecha));   
+            if($nuevafecha > $fechaFin){
+                $nuevafecha = strtotime('+1 day', strtotime($fecha)); 
+                if($nuevafecha > $fechaFin){ 
+                    $nuevafecha = strtotime('+0 day', strtotime($fecha)); 
+                    if($nuevafecha > $fechaFin){
+                        $nuevafecha = $fechaFin;  
+                    }
+                }                
+            }
+        }       
+        
+        $fechaLimitePago = date('Y-m-j', $nuevafecha);
+
+        $datosReferencia =
+            [
+                'tipo_persona' => '0',
+                'control' => $aspirante[0]->PREFICHA,
+                'servicio' => '004',
+                'valorvariable' => '2',
+                'monto' => $periodo[0]->MONTO_INSCRIPCION_BIS,
+                'yearC' => date('Y', strtotime($fechaLimitePago)),
+                'mesC' => date('m', strtotime($fechaLimitePago)),
+                'diaC' => date('j', strtotime($fechaLimitePago)),
+            ];
+
+        $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
+        $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
+        $aspirante[0]->CONCEPTO="Referencia de pago para inscripción semestre cero";
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->MONTO = $datosReferencia['monto'];
+        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
+        return $this->generarPDF($aspirante,'aspirante.referencia'); 
+
+    }
 }
 
