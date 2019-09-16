@@ -356,12 +356,15 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
     Route::get('Grupo', 'GrupoController@listaGrupos');
     Route::get('ListasGrupos', 'GrupoController@datosListas');
-
     Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
     Route::get('Turno', 'LugarExamenController@obtenerTurno');
     Route::get('Turno2', 'LugarExamenController@obtenerTurno2');
+    Route::get('Grupo', 'LugarExamenController@obtenerGrupo');
     Route::get('Edificio', 'LugarExamenController@obtenerEdificio');
     Route::get('TipoEspacio', 'LugarExamenController@obtenerTipoEspacio');
+    Route::post('ModificarEspacio', 'LugarExamenController@modificarEspacio');
+    Route::post('ModificarTurno', 'LugarExamenController@modificarTurno');
+    Route::post('ModificarGrupo', 'LugarExamenController@modificarGrupo');
     Route::post('AgregarTurno', 'LugarExamenController@agregarTurno');
     Route::post('AgregarEspacio', 'LugarExamenController@agregarEspacio');
     Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
@@ -453,7 +456,7 @@ Route::post('CreaFin', 'PAAE_Periodo@creaFinal');
 Route::post('AsignaSituacion', 'PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE', 'PAAE_Periodo@enviarCorreos');
 Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
- */
+ 
 /* *********************************************************** *
  * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
