@@ -57,7 +57,7 @@
             <tr>
                 <td colspan="2" style="text-align: center">
 
-                    <img src="img/banner-tecnmleon.jpeg" width="300px">
+                    <img src="public/img/banner-tecnmleon.jpeg" width="300px">
 
                 </td>
 
@@ -99,7 +99,7 @@
                     <font size=6>{{$ASPIRANTE->REFERENCIA}}</font>
                 </td>
                 <td>
-                    <img src="img/bancomer.png" width="140px">
+                    <img src="public/img/bancomer.png" width="140px">
                 </td>
             </tr>
         </table>
