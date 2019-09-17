@@ -31,12 +31,28 @@ class LugarExamenController extends Controller
             ]
         );
     }
+
     public function obtenerEspacio()
     {
         return DB::table('CATR_ESPACIO')
-            ->select('PK_ESPACIO', 'NOMBRE')
+            ->select('PK_ESPACIO', 'NOMBRE', DB::raw('ROW_NUMBER() OVER(ORDER BY PK_ESPACIO) AS ESPACIO'), 'FK_EDIFICIO', 'FK_TIPO_ESPACIO', 'NOMBRE', 'IDENTIFICADOR', 'CAPACIDAD')
+            ->orderby('PK_ESPACIO')
             ->get();
     }
+
+    public function modificarEspacio(Request $request)
+    {
+        return DB::table('CATR_ESPACIO')
+            ->where('PK_ESPACIO', $request->PK_ESPACIO)
+            ->update([
+                'FK_EDIFICIO' => $request->FK_EDIFICIO,
+                'FK_TIPO_ESPACIO' => $request->FK_TIPO_ESPACIO,
+                'NOMBRE' => $request->NOMBRE,
+                'IDENTIFICADOR' => $request->IDENTIFICADOR,
+                'CAPACIDAD' => $request->CAPACIDAD
+            ]);
+    }
+
     public function obtenerEdificio()
     {
         return DB::table('CATR_EDIFICIO')
@@ -50,6 +66,7 @@ class LugarExamenController extends Controller
             ->orderBy('CATR_EDIFICIO.PK_EDIFICIO')
             ->get();
     }
+
     public function obtenerTipoEspacio()
     {
         return DB::table('CAT_TIPO_ESPACIO')
@@ -57,14 +74,45 @@ class LugarExamenController extends Controller
                 'PK_TIPO_ESPACIO',
                 'NOMBRE'
             )
+            ->orderBy('PK_TIPO_ESPACIO')
             ->get();
     }
-        public function obtenerTurno2()
+
+    public function obtenerTurno2()
     {
         return DB::table('CAT_TURNO')
-            ->select('PK_TURNO','DIA','HORA')
+            ->select('PK_TURNO', 'DIA', 'HORA', DB::raw('ROW_NUMBER() OVER(ORDER BY PK_TURNO) AS TURNO'))
+            ->orderby('PK_TURNO')
             ->get();
     }
+
+    public function modificarTurno(Request $request)
+    {
+        return DB::table('CAT_TURNO')
+            ->where('PK_TURNO', $request->PK_TURNO)
+            ->update([
+                'DIA' => $request->DIA,
+                'HORA' => $request->HORA
+            ]);
+    }
+
+    public function obtenerGrupo()
+    {
+        return DB::table('CATR_EXAMEN_ADMISION')
+            ->select('PK_EXAMEN_ADMISION', DB::raw('ROW_NUMBER() OVER(ORDER BY PK_EXAMEN_ADMISION) AS GRUPO'), 'FK_ESPACIO', 'FK_TURNO')
+            ->orderby('PK_EXAMEN_ADMISION')
+            ->get();
+    }
+    public function modificarGrupo(Request $request)
+    {
+        return DB::table('CATR_EXAMEN_ADMISION')
+            ->where('PK_EXAMEN_ADMISION', $request->PK_EXAMEN_ADMISION)
+            ->update([
+                'FK_ESPACIO' => $request->FK_ESPACIO,
+                'FK_TURNO' => $request->FK_TURNO
+            ]);
+    }
+
     public function agregarTurno(Request $request)
     {
         DB::table('CAT_TURNO')->insert([
@@ -72,6 +120,7 @@ class LugarExamenController extends Controller
             'HORA' => $request->HORA
         ]);
     }
+
     public function agregarEspacio(Request $request)
     {
         DB::table('CATR_ESPACIO')->insert([
@@ -82,6 +131,7 @@ class LugarExamenController extends Controller
             'CAPACIDAD' => $request->CAPACIDAD
         ]);
     }
+
     public function agregarGrupo(Request $request)
     {
         DB::table('CATR_EXAMEN_ADMISION')->insert([
