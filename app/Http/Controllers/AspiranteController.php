@@ -474,8 +474,8 @@ class AspiranteController extends Controller
             ->join('CAT_ESTATUS_ASPIRANTE', 'CAT_ESTATUS_ASPIRANTE.PK_ESTATUS_ASPIRANTE', '=', 'CAT_ASPIRANTE.FK_ESTATUS')
             ->join('CATR_REFERENCIA_BANCARIA_USUARIO', 'CATR_REFERENCIA_BANCARIA_USUARIO.FK_USUARIO', '=',  'CAT_USUARIO.PK_USUARIO')
             ->where([
-                ['FK_PERIODO', '=', $request->PK_PERIODO],
-                ['FK_ESTATUS', '=', 2]
+                ['FK_PERIODO', '=', $request->PK_PERIODO]//,
+                //['FK_ESTATUS', '=', 2]
             ])
             ->whereBetween('CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO', [$request->FECHA_INICIO, $request->FECHA_FIN])
             ->get();
