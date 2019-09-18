@@ -514,11 +514,11 @@ class AspiranteController extends Controller
                 DB::raw('100342 as CLAVE_INSTITUCION'),
                 DB::raw('4576 as CLAVE_SEDE'),
                 'CAT_USUARIO.FECHA_NACIMIENTO',
-                'CAT_USUARIO.CORREO as CORREO',
+                'CAT_USUARIO.CORREO1 as CORREO',
                 'CAT_CARRERA.CLAVE_CARRERA'
             )
             ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=',  'CAT_ASPIRANTE.FK_PADRE')
-            ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
+            ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.PK_CARRERA_CAMPUS', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
             ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=',  'TR_CARRERA_CAMPUS.FK_CARRERA')
             ->where([
                 ['FK_PERIODO', '=', $PK_PERIODO],
