@@ -12,8 +12,39 @@ use SWIITL;
 
 --Tabla para almacenar el turno en que pueden tomar el examen
 
+alter table CAT_CARRERA
+	add CLAVE_CARRERA nvarchar(30) default NULL
+go
+
 alter table CAT_INSTITUCION
 	add CLAVE_CIE int
+go
+
+alter table CAT_INSTITUCION alter column FK_ZONA int null
+go
+
+alter table CAT_INSTITUCION alter column FK_ENTIDAD_FEDERATIVA int null
+go
+
+alter table CAT_AREA_ACADEMICA alter column NOMBRE nvarchar(50) not null
+go
+
+alter table CAT_AREA_ACADEMICA alter column ABREVIATURA nvarchar(10) null
+go
+
+alter table CAT_USUARIO alter column TOKEN_CURP nvarchar(150) null
+go
+
+alter table CAT_USUARIO alter column NUMERO_CONTROL nvarchar(8) null
+go
+
+alter table CAT_COLONIA alter column NOMBRE nvarchar(150) not null
+go
+
+alter table CAT_COLONIA alter column FK_TIPO_ASENTAMIENTO int null
+go
+
+alter table CAT_ENTIDAD_FEDERATIVA alter column FK_PAIS int null
 go
 
 CREATE TABLE dbo.CATR_REFERENCIA_BANCARIA_USUARIO 
