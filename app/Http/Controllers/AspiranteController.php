@@ -191,6 +191,7 @@ class AspiranteController extends Controller
                 'CAT_ASPIRANTE.FK_CARRERA_2',
                 'CAT_ASPIRANTE.ICNE',
                 'CAT_ASPIRANTE.DDD_MG_MAT',
+                'CAT_ASPIRANTE.ASISTENCIA',
                 'CAT_ASPIRANTE.ACEPTADO'
             )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')

@@ -25,9 +25,9 @@
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 60px;
+            height: 35px;
             /* Set the fixed height of the footer here */
-            line-height: 60px;
+            line-height: 35px;
             /* Vertically center the text there */
             background-color: #1A5276;
         }
@@ -37,9 +37,9 @@
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 60px;
+            height: 35px;
             /* Set the fixed height of the footer here */
-            line-height: 60px;
+            line-height: 35px;
             /* Vertically center the text there */
             background-color: #154360;
         }
@@ -96,6 +96,8 @@
             </tr>
             <tr>
                 <td>
+                    <font size=1>Referencia bancaria</font>
+                    <br>
                     <font size=6>{{$ASPIRANTE->REFERENCIA}}</font>
                 </td>
                 <td>
@@ -109,7 +111,7 @@
         <br>
         <br>
         <footer class="footer">
-        <font size=6>Ubicación</font>
+            <font size=6>Ubicación</font>
             <br>
             <font color="white" size=5>Av Tecnológico S/N Fracc. Industrial Julián de Obregón</font>
             <br>
@@ -122,12 +124,9 @@
             <font size=6>Teléfono directo</font>
             <br>
             <font color="white" size=5>(477) 7105-203</font>
-
-
         </footer>
-
         <footer class="footer2">
-        <font color="white" size=5>Copyright &copy; TecNM - Sistema de admisión</font>
+            <font color="white" size=5>Copyright &copy; TecNM - Sistema de admisión</font>
         </footer>
     </div>
 </body>
