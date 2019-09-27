@@ -362,12 +362,13 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('Grupo', 'LugarExamenController@obtenerGrupo');
     Route::get('Edificio', 'LugarExamenController@obtenerEdificio');
     Route::get('TipoEspacio', 'LugarExamenController@obtenerTipoEspacio');
-    Route::post('ModificarEspacio', 'LugarExamenController@modificarEspacio');
-    Route::post('ModificarTurno', 'LugarExamenController@modificarTurno');
-    Route::post('ModificarGrupo', 'LugarExamenController@modificarGrupo');
+    Route::get('Grupo2', 'LugarExamenController@obtenerGrupo');
     Route::post('AgregarTurno', 'LugarExamenController@agregarTurno');
     Route::post('AgregarEspacio', 'LugarExamenController@agregarEspacio');
     Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
+    Route::post('ModificarEspacio', 'LugarExamenController@modificarEspacio');
+    Route::post('ModificarTurno', 'LugarExamenController@modificarTurno');
+    Route::post('ModificarGrupo', 'LugarExamenController@modificarGrupo');
 
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
 });

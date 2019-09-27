@@ -63,7 +63,7 @@ class GrupoController extends Controller
     private function get_aspirantes($PK_EXAMEN_ADMISION)
     {
         $aspirantes = DB::table('CAT_ASPIRANTE as CA')
-            ->select(DB::raw("PREFICHA, CONCAT(NOMBRE,' ',PRIMER_APELLIDO,' ',SEGUNDO_APELLIDO) as NOMBRE"))
+            ->select(DB::raw("PREFICHA, CONCAT(NOMBRE,' ',PRIMER_APELLIDO,' ',SEGUNDO_APELLIDO) as NOMBRE, ASISTENCIA"))
             ->join('CAT_USUARIO as CU', 'CA.FK_PADRE', '=', 'CU.PK_USUARIO')
             ->where('FK_EXAMEN_ADMISION', $PK_EXAMEN_ADMISION)
             ->get();

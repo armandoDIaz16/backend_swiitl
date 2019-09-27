@@ -132,13 +132,15 @@ class AspiranteController extends Controller
                         DB::connection('sqlsrv')->select('EXEC INSERTAR_INCAPACIDAD ' . $request->CURP . ', ' . $valor);
                         $datos = $datos . $valor;
                     }
-                    return $pdo[0]->RESPUESTA;
+                    return [
+                        array('RESPUESTA'  => $pdo[0]->RESPUESTA)
+                    ];
                 } else {
-                    return $pdo[0]->RESPUESTA;
+                    return [array('RESPUESTA'  => $pdo[0]->RESPUESTA)];
                     //return "No tiene discapacidades";
                 }
             }
-            return $pdo[0]->RESPUESTA;
+            return [array('RESPUESTA'  => $pdo[0]->RESPUESTA)];
         }
 
         /*
@@ -189,6 +191,7 @@ class AspiranteController extends Controller
                 'CAT_ASPIRANTE.FK_CARRERA_2',
                 'CAT_ASPIRANTE.ICNE',
                 'CAT_ASPIRANTE.DDD_MG_MAT',
+                'CAT_ASPIRANTE.ASISTENCIA',
                 'CAT_ASPIRANTE.ACEPTADO'
             )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
@@ -474,8 +477,8 @@ class AspiranteController extends Controller
             ->join('CAT_ESTATUS_ASPIRANTE', 'CAT_ESTATUS_ASPIRANTE.PK_ESTATUS_ASPIRANTE', '=', 'CAT_ASPIRANTE.FK_ESTATUS')
             ->join('CATR_REFERENCIA_BANCARIA_USUARIO', 'CATR_REFERENCIA_BANCARIA_USUARIO.FK_USUARIO', '=',  'CAT_USUARIO.PK_USUARIO')
             ->where([
-                ['FK_PERIODO', '=', $request->PK_PERIODO],
-                ['FK_ESTATUS', '=', 2]
+                ['FK_PERIODO', '=', $request->PK_PERIODO] //,
+                //['FK_ESTATUS', '=', 2]
             ])
             ->whereBetween('CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO', [$request->FECHA_INICIO, $request->FECHA_FIN])
             ->get();
@@ -514,11 +517,11 @@ class AspiranteController extends Controller
                 DB::raw('100342 as CLAVE_INSTITUCION'),
                 DB::raw('4576 as CLAVE_SEDE'),
                 'CAT_USUARIO.FECHA_NACIMIENTO',
-                'CAT_USUARIO.CORREO as CORREO',
+                'CAT_USUARIO.CORREO1 as CORREO',
                 'CAT_CARRERA.CLAVE_CARRERA'
             )
             ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=',  'CAT_ASPIRANTE.FK_PADRE')
-            ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
+            ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.PK_CARRERA_CAMPUS', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
             ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=',  'TR_CARRERA_CAMPUS.FK_CARRERA')
             ->where([
                 ['FK_PERIODO', '=', $PK_PERIODO],
