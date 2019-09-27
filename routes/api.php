@@ -202,6 +202,26 @@ Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 route::get('GraficaAsesorados', 'GraficasAsesoriaController@graficaAsesorados');
 route::get('GraficaNoAsesorados', 'GraficasAsesoriaController@graficaNoAsesorados');
 route::get('GraficaMaterias', 'GraficasAsesoriaController@graficaMaterias');
+route::get('Materias', 'GraficasAsesoriaController@materias');
+route::get('Institucion', 'GraficasAsesoriaController@institucion');
+route::get('CarreraMot', 'GraficasAsesoriaController@carrera');
+route::get('GraficaMotivosMaterias', 'GraficasAsesoriaController@graficaMotivosMaterias');
+route::get('GraficaMotivosInstitucion', 'GraficasAsesoriaController@graficaMotivosInstitucion');
+route::get('GraficaMotivosCarera', 'GraficasAsesoriaController@graficaMotivosCarera');
+route::get('GraficaGeneralEvalSemestre', 'GraficasAsesoriaController@graficaGeneralEvalSemestre');
+route::get('GraficaGeneralEvalCarrera', 'GraficasAsesoriaController@graficaGeneralEvalCarrera');
+route::get('GraficaGeneralEvalMateria', 'GraficasAsesoriaController@graficaGeneralEvalMateria');
+route::get('GraficaIntegralEval', 'GraficasAsesoriaController@graficaIntegralEval');
+route::get('GraficaIntegralMate', 'GraficasAsesoriaController@graficaIntegralMate');
+route::get('GraficaIntegralCarre', 'GraficasAsesoriaController@graficaIntegralCarre');
+route::get('GraficaGeneralSol', 'GraficasAsesoriaController@graficaGeneralSol');
+route::get('GraficaGeneralSolMat', 'GraficasAsesoriaController@graficaGeneralSolMat');
+route::get('GraficaGeneralSolCar', 'GraficasAsesoriaController@graficaGeneralSolCar');
+route::get('GraficaGeneralSolCarMat', 'GraficasAsesoriaController@graficaGeneralSolCarMat');
+route::get('GraficaGeneralAproRep', 'GraficasAsesoriaController@graficaGeneralAproRep');
+route::get('GraficaGeneralAproRepMat', 'GraficasAsesoriaController@graficaGeneralAproRepMat');
+route::get('GraficaGeneralAproRepCar', 'GraficasAsesoriaController@graficaGeneralAproRepCar');
+route::get('GraficaGeneralAproRepCarMat', 'GraficasAsesoriaController@graficaGeneralAproRepCarMat');
 
 
 /* Route::get('Ficha/{preficha}',function(){
@@ -336,10 +356,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
     Route::get('Grupo', 'GrupoController@listaGrupos');
     Route::get('ListasGrupos', 'GrupoController@datosListas');
-
     Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
     Route::get('Turno', 'LugarExamenController@obtenerTurno');
     Route::get('Turno2', 'LugarExamenController@obtenerTurno2');
+    Route::get('Grupo', 'LugarExamenController@obtenerGrupo');
     Route::get('Edificio', 'LugarExamenController@obtenerEdificio');
     Route::get('TipoEspacio', 'LugarExamenController@obtenerTipoEspacio');
     Route::get('Grupo2', 'LugarExamenController@obtenerGrupo');
@@ -437,7 +457,7 @@ Route::post('CreaFin', 'PAAE_Periodo@creaFinal');
 Route::post('AsignaSituacion', 'PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE', 'PAAE_Periodo@enviarCorreos');
 Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
-
+ 
 /* *********************************************************** *
  * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
@@ -461,3 +481,205 @@ Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
     Route::get('detalle_grupo/{id_grupo}', 'SITGruposController@detalle_grupo');
 
 /*});*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////// PAAE ////////////////////////////////////
+Route::get('PAAE_Periodo','PAAE_Periodo@index');
+Route::get('Hora','PAAE_Periodo@horario');
+Route::get('HoraAll','PAAE_Periodo@horarioAll');
+Route::get('Materia','PAAE_Periodo@materia');
+Route::get('Datos','PAAE_Periodo@getDatos');
+Route::get('Promedio','PAAE_Periodo@promedio');
+Route::get('MateriAsesor','PAAE_Periodo@materiAsesor');
+Route::get('Asesor','PAAE_Periodo@getAsesor');
+Route::get('AsesorAsigna','PAAE_Periodo@getAsesorAsigna');
+Route::get('AsesorPeriodo','PAAE_Periodo@getAsesorPeriodo');
+Route::get('Solicitudes','PAAE_Periodo@getSolicitud');
+Route::get('SolicitudesAsigna','PAAE_Periodo@getSolicitudAsigna');
+Route::get('SolicitudesPeriodo','PAAE_Periodo@getSolicitudPeriodo');
+Route::get('Seguimiento','PAAE_Periodo@seguimiento');
+Route::get('AllMaterias','PAAE_Periodo@allMaterias');
+Route::get('ClaveGrupo','PAAE_Periodo@claveGrupo');
+Route::get('ClaveHorario','PAAE_Periodo@claveHorario');
+Route::get('Asesoria','PAAE_Periodo@getAsesoria');
+Route::get('AsesoriaPeriodo','PAAE_Periodo@getAsesoriaPeriodo');
+Route::get('AsesoriaGrupo','PAAE_Periodo@getAsesoriaGrupo');
+Route::get('AsesoriaGrupoPeriodo','PAAE_Periodo@getAsesoriaGrupoPeriodo');
+Route::get('AsesoriaId','PAAE_Periodo@getAsesoriaId');
+Route::get('Docentes','PAAE_Periodo@allDocente');
+Route::get('NameAses','PAAE_Periodo@nombreAsesor');
+Route::get('AsesorSesion','PAAE_Periodo@allAsesor');
+Route::get('AlumnosAsesoria','PAAE_Periodo@getAlumnoAsesorado');
+Route::get('AlumnosAsesoriaMateria','PAAE_Periodo@getAlumnoAsesoradoMateria');
+Route::get('Sesion','PAAE_Periodo@getSesion');
+Route::get('PdfComplementaria','PAEEPDF@complementaria');
+Route::get('PdfServicio','PAEEPDF@servicio');
+Route::get('Reprobados','PAAE_Periodo@situacionAcademica');
+Route::get('Recursando','PAAE_Periodo@recursando');
+Route::get('MateriaRepeticion','PAAE_Periodo@materiaRepeticion');
+Route::get('AsesorAsigna','PAAE_Periodo@getAsesorAsigna');
+Route::get('SolicitudesAsigna','PAAE_Periodo@getSolicitudAsigna');
+Route::get('AsesorFinal','PAAE_Periodo@AsesorEntregoFinal');
+Route::get('AsesorFinalPeriodo','PAAE_Periodo@AsesorEntregoFinalPeriodo');
+Route::get('TodosMotivos','PAAE_Periodo@allMotivos');
+Route::get('MotivosPeriodo','PAAE_Periodo@allMotivosPeriodo');
+Route::get('TodosCompromisoUser','PAAE_Periodo@allCompromisoUser');
+Route::get('CompromisoUserPeriodo','PAAE_Periodo@allCompromisoUserPeriodo');
+Route::get('TodosCompromisoAsesor','PAAE_Periodo@allCompromisoAsesor');
+Route::get('CompromisoAsesorPeriodo','PAAE_Periodo@allCompromisoAsesorPeriodo');
+Route::get('TodosEvaluacion','PAAE_Periodo@allEvaluacion');
+Route::get('EvaluacionPeriodo','PAAE_Periodo@allEvaluacionPeriodo');
+Route::get('TodosCalificacion','PAAE_Periodo@allCalificacion');
+Route::get('CalificacionPeriodo','PAAE_Periodo@allCalificacionPeriodo');
+Route::get('TodosSesiones','PAAE_Periodo@allReporteSesion');
+Route::get('SesionesPeriodo','PAAE_Periodo@allReporteSesionPeriodo');
+Route::get('TodosAsistencia','PAAE_Periodo@allAsistencia');
+Route::get('AsistenciaPeriodo','PAAE_Periodo@allAsistenciaPeriodo');
+Route::get('TodosReporteFinal','PAAE_Periodo@allReporteFinal');
+Route::get('ReporteFinalPeriodo','PAAE_Periodo@allReporteFinalPeriodo');
+/* Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica'); */
+/* Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo'); */
+Route::get('TodosAsesores','PAAE_Periodo@AsesoresListal');
+Route::get('AsesoresPeriodo','PAAE_Periodo@AsesoresListalPeriodo');
+Route::get('SesionAsesor','PAAE_Periodo@sesionPorAsesor');
+Route::get('CorreosAlumnos','PAAE_Periodo@correosAlumnos');
+Route::get('ListaAlumnos','PAAE_Periodo@listaAlumnos');
+Route::get('CorreoAsesor','PAAE_Periodo@correoAsesor');
+Route::post('SolicitudAsesoria','PAAE_Periodo@crearSolicitud');
+Route::post('SolicitudAsesor','PAAE_Periodo@crearSolicitudAsesor');
+Route::post('ActualizAsesor','PAAE_Periodo@actualizAsesor');
+Route::post('ActualizaSolicitud','PAAE_Periodo@actualizaSolicitud');
+Route::post('BorrAsesor','PAAE_Periodo@borrAsesor');
+Route::post('BorraSolicitud','PAAE_Periodo@borraSolicitud');
+Route::post('AsignaIndividual','PAAE_Periodo@asignacionIndividual');
+Route::post('AsignaGrupal','PAAE_Periodo@asignacionGrupal');
+Route::post('ActualizaInd','PAAE_Periodo@actualizAsigInd');
+Route::post('BorraInd','PAAE_Periodo@borrInd');
+Route::post('ActualizaGrupo','PAAE_Periodo@actualizGrupo');
+Route::post('BorraGru','PAAE_Periodo@borrGru');
+Route::post('Motivo','PAAE_Periodo@motivo');
+Route::post('CompromisoUser','PAAE_Periodo@compromisoUser');
+Route::post('EvaluacionSatisfaccion','PAAE_Periodo@evaluacionSatisfaccion');
+Route::post('CompromisoAsesor','PAAE_Periodo@compromisoAsesor');
+Route::post('CreaSesion','PAAE_Periodo@crearSesion');
+Route::post('CreaLista','PAAE_Periodo@crearAsistencia');
+Route::post('CreaFin','PAAE_Periodo@creaFinal');
+Route::post('AsignaSituacion','PAAE_Periodo@asignacionSituacion');
+Route::post('EnviarCorreoPAAE','PAAE_Periodo@enviarCorreos');
+Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
+//});
+
+
+/* Route::resource('PAAE_Periodo','PAAE_Periodo');
+Route::get('PAAE_Periodo','PAAE_Periodo@index');
+Route::get('Hora','PAAE_Periodo@horario');
+Route::get('HoraAll','PAAE_Periodo@horarioAll');
+Route::get('Materia','PAAE_Periodo@materia');
+Route::get('Datos','PAAE_Periodo@getDatos');
+Route::get('Promedio','PAAE_Periodo@promedio');
+Route::get('MateriAsesor','PAAE_Periodo@materiAsesor');
+Route::get('Asesor','PAAE_Periodo@getAsesor');
+Route::get('AsesorPeriodo','PAAE_Periodo@getAsesorPeriodo');
+Route::get('Solicitudes','PAAE_Periodo@getSolicitud');
+Route::get('SolicitudesPeriodo','PAAE_Periodo@getSolicitudPeriodo');
+Route::get('Seguimiento','PAAE_Periodo@seguimiento');
+Route::get('AllMaterias','PAAE_Periodo@allMaterias');
+Route::get('ClaveGrupo','PAAE_Periodo@claveGrupo');
+Route::get('ClaveHorario','PAAE_Periodo@claveHorario');
+Route::get('Asesoria','PAAE_Periodo@getAsesoria');
+Route::get('AsesoriaPeriodo','PAAE_Periodo@getAsesoriaPeriodo');
+Route::get('AsesoriaGrupo','PAAE_Periodo@getAsesoriaGrupo');
+Route::get('AsesoriaGrupoPeriodo','PAAE_Periodo@getAsesoriaGrupoPeriodo');
+Route::get('AsesoriaId','PAAE_Periodo@getAsesoriaId');
+Route::get('Docentes','PAAE_Periodo@allDocente');
+Route::get('NameAses','PAAE_Periodo@nombreAsesor');
+Route::get('AsesorSesion','PAAE_Periodo@allAsesor');
+Route::post('SolicitudAsesoria','PAAE_Periodo@crearSolicitud');
+Route::post('SolicitudAsesor','PAAE_Periodo@crearSolicitudAsesor');
+Route::post('ActualizAsesor','PAAE_Periodo@actualizAsesor');
+Route::post('ActualizaSolicitud','PAAE_Periodo@actualizaSolicitud');
+Route::post('BorrAsesor','PAAE_Periodo@borrAsesor');
+Route::post('BorraSolicitud','PAAE_Periodo@borraSolicitud');*/
