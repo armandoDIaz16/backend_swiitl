@@ -96,7 +96,7 @@
             </tr>
             <tr>
                 <td>
-                    <font size=1>Referencia bancaria</font>
+                    <font size=1>Número de Referencia</font>
                     <br>
                     <font size=6>{{$ASPIRANTE->REFERENCIA}}</font>
                 </td>

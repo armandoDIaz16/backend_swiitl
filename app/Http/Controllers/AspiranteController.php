@@ -187,8 +187,8 @@ class AspiranteController extends Controller
                 'CAT_CIUDAD.NOMBRE as NOMBRE_CIUDAD',
                 'CAT_ASPIRANTE.PROMEDIO',
                 'CAT_ASPIRANTE.ESPECIALIDAD',
-                'CAT_ASPIRANTE.FK_CARRERA_1',
-                'CAT_ASPIRANTE.FK_CARRERA_2',
+                DB::raw("CAT_CARRERA1.NOMBRE+' CAMPUS ' +CAT_CAMPUS1.NOMBRE as CARRERA1"),
+                DB::raw("CASE WHEN CAT_CARRERA2.NOMBRE IS NULL THEN '' ELSE CAT_CARRERA2.NOMBRE+' CAMPUS ' +CAT_CAMPUS2.NOMBRE  END as CARRERA2"),
                 'CAT_ASPIRANTE.ICNE',
                 'CAT_ASPIRANTE.DDD_MG_MAT',
                 'CAT_ASPIRANTE.ASISTENCIA',
@@ -200,6 +200,15 @@ class AspiranteController extends Controller
 
             ->leftjoin('CAT_CODIGO_POSTAL', 'CAT_CODIGO_POSTAL.PK_CODIGO_POSTAL', '=', 'CAT_USUARIO.FK_CODIGO_POSTAL')
             ->leftjoin('CAT_CIUDAD', 'CAT_CIUDAD.PK_CIUDAD', '=', 'CAT_CODIGO_POSTAL.FK_CIUDAD')
+
+            ->join(DB::raw('TR_CARRERA_CAMPUS TR_CARRERA_CAMPUS1'), 'TR_CARRERA_CAMPUS1.PK_CARRERA_CAMPUS', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
+            ->join(DB::raw('CAT_CAMPUS CAT_CAMPUS1'), 'CAT_CAMPUS1.PK_CAMPUS', '=',  'TR_CARRERA_CAMPUS1.FK_CAMPUS')
+            ->join(DB::raw('CAT_CARRERA CAT_CARRERA1'), 'CAT_CARRERA1.PK_CARRERA', '=',  'TR_CARRERA_CAMPUS1.FK_CARRERA')
+
+            ->leftJoin(DB::raw('TR_CARRERA_CAMPUS TR_CARRERA_CAMPUS2'), 'TR_CARRERA_CAMPUS2.PK_CARRERA_CAMPUS', '=',  'CAT_ASPIRANTE.FK_CARRERA_2')
+            ->leftJoin(DB::raw('CAT_CAMPUS CAT_CAMPUS2'), 'CAT_CAMPUS2.PK_CAMPUS', '=',  'TR_CARRERA_CAMPUS2.FK_CAMPUS')
+            ->leftJoin(DB::raw('CAT_CARRERA CAT_CARRERA2'), 'CAT_CARRERA2.PK_CARRERA', '=',  'TR_CARRERA_CAMPUS2.FK_CARRERA')
+
             ->where([
                 ['CAT_USUARIO.PK_USUARIO', '=', $id],
                 ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante],

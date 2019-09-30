@@ -374,7 +374,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 });
 
 ///////////////////////////////// PAAE ////////////////////////////////////
-Route::get('PAAE_Periodo', 'PAAE_Periodo@index');
+/* Route::get('PAAE_Periodo', 'PAAE_Periodo@index');
 Route::get('Hora', 'PAAE_Periodo@horario');
 Route::get('HoraAll', 'PAAE_Periodo@horarioAll');
 Route::get('Materia', 'PAAE_Periodo@materia');
@@ -456,7 +456,7 @@ Route::post('CreaLista', 'PAAE_Periodo@crearAsistencia');
 Route::post('CreaFin', 'PAAE_Periodo@creaFinal');
 Route::post('AsignaSituacion', 'PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE', 'PAAE_Periodo@enviarCorreos');
-Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
+Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion'); */
  
 /* *********************************************************** *
  * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
@@ -567,6 +567,8 @@ Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
 
 
 ///////////////////////////////// PAAE ////////////////////////////////////
+
+Route::group(['middleware' => ['jwt.verify']], function () {
 Route::get('PAAE_Periodo','PAAE_Periodo@index');
 Route::get('Hora','PAAE_Periodo@horario');
 Route::get('HoraAll','PAAE_Periodo@horarioAll');
@@ -650,7 +652,7 @@ Route::post('CreaFin','PAAE_Periodo@creaFinal');
 Route::post('AsignaSituacion','PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE','PAAE_Periodo@enviarCorreos');
 Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
-//});
+});
 
 
 /* Route::resource('PAAE_Periodo','PAAE_Periodo');
