@@ -141,6 +141,12 @@ class PeriodoController extends Controller
             ->where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)
             ->update(['MONTO_INSCRIPCION_BIS' => $request->MONTO_INSCRIPCION_BIS]);
     }
+    public function publicarResultados(Request $request)
+    {
+        Periodo::select('PK_PERIODO_PREFICHAS', 'MONTO_INSCRIPCION_BIS')->where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)->update(['RESULTADOS' => $request->RESULTADOS]);
+        
+        return response()->json($request->PK_PERIODO_PREFICHAS);
+    }
 
     /**
      * Display the specified resource.

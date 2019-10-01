@@ -51,18 +51,13 @@
 </head>
 
 <body>
-
     <div style="margin-left: .5cm; margin-right: .5cm; padding-top: 0cm; font-size: 0.7em;">
         <table>
             <tr>
                 <td colspan="2" style="text-align: center">
-
                     <img src="public/img/banner-tecnmleon.jpeg" width="300px">
-
                 </td>
-
             </tr>
-
             <tr>
                 <td>Preficha</td>
                 <td>
@@ -102,6 +97,11 @@
                 </td>
                 <td>
                     <img src="public/img/bancomer.png" width="140px">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center">
+                    <font size=6>Si la vigencia de la referencia a expirado, descarga una nueva desde la plataforma <a target="blank" href="http://tecvirtual.itleon.edu.mx/"><u>http://tecvirtual.itleon.edu.mx/</u></a></font>
                 </td>
             </tr>
         </table>
