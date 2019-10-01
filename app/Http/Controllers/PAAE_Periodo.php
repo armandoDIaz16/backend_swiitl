@@ -21,6 +21,8 @@ class PAAE_Periodo extends Controller
     {
         $PK_PAAE_PERIODO = PAAE::select('FECHA_INICIO','FECHA_FIN')->max('PK_PAAE_PERIODO');
 
+        return $PK_PAAE_PERIODO;
+
         $periodo = PAAE::select('FECHA_INICIO','FECHA_FIN')
         ->where('PK_PAAE_PERIODO',$PK_PAAE_PERIODO)
         ->get()[0];
