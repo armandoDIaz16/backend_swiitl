@@ -330,6 +330,7 @@ class FichaController extends Controller
         return $this->generarPDF($aspirante,'aspirante.referencia'); 
 
     }
+    
     public function descargarReferenciaInscripcion($id)
     {
         $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
@@ -395,6 +396,7 @@ class FichaController extends Controller
         return $this->generarPDF($aspirante,'aspirante.referencia'); 
 
     }
+
     public function descargarReferenciaInscripcionCero($id)
     {
         $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
