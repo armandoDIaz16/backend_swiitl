@@ -79,7 +79,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::resource('Usuario_Rol', 'Usuario_RolController');
-Route::get('PAAE_Periodo', 'PAAE_Periodo@index');
+/* Route::get('PAAE_Periodo', 'PAAE_Periodo@index');
 Route::get('Hora', 'PAAE_Periodo@horario');
 Route::get('HoraAll', 'PAAE_Periodo@horarioAll');
 Route::get('Materia', 'PAAE_Periodo@materia');
@@ -107,14 +107,14 @@ Route::post('SolicitudAsesor', 'PAAE_Periodo@crearSolicitudAsesor');
 Route::post('ActualizAsesor', 'PAAE_Periodo@actualizAsesor');
 Route::post('ActualizaSolicitud', 'PAAE_Periodo@actualizaSolicitud');
 Route::post('BorrAsesor', 'PAAE_Periodo@borrAsesor');
-Route::post('BorraSolicitud', 'PAAE_Periodo@borraSolicitud');
+Route::post('BorraSolicitud', 'PAAE_Periodo@borraSolicitud'); */
 Route::resource('Encuestas', 'EncuestaController');
 Route::resource('Seccion_Encuesta', 'Seccion_EncuestaController');
 Route::resource('Tipo_Pregunta', 'Tipo_PreguntaController');
-Route::resource('PAAE_Periodo', 'PAAE_Periodo');
+//Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 Route::resource('Entidad_Federativa', 'Entidad_FederativaController');
 Route::resource('Ciudad', 'CiudadController');
-Route::resource('PAAE_Periodo', 'PAAE_Periodo');
+//Route::resource('PAAE_Periodo', 'PAAE_Periodo');
 route::resource('Bachillerato', 'BachilleratoController');
 route::resource('Colonia', 'ColoniaController');
 route::get('Periodo', 'PeriodoController@index');
