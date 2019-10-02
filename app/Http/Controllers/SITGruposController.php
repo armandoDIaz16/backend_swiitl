@@ -31,8 +31,6 @@ class SITGruposController extends Controller
                 'AULA'                  => $horario_grupo[0]->Aula,
                 'HORARIO'               => $horario_grupo,
                 'CANTIDAD_ALUMNOS'      => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
-                'ENCUESTAS_ACTIVAS'     => 20,
-                'ENCUESTAS_CONTESTADAS' => 17,
                 'EVALUACION_GRUPO'      => $grupo->EVALUACION,
                 'LISTA_ALUMNOS'         => $this->get_lista_grupo(SiiaHelper::get_lista_grupo($condiciones_siia))
             ];
@@ -53,16 +51,26 @@ class SITGruposController extends Controller
     private function get_lista_grupo($lista_alumnos) {
         $lista = [];
         foreach ($lista_alumnos as $alumno) {
-            $usuario = Usuario::where('NUMERO_CONTROL', $alumno->NumeroControl)->first();
+            $usuario = Usuario::where('NUMERO_CONTROL', trim($alumno->NumeroControl))->first();
             if (isset($usuario->PK_USUARIO)) {
                 $lista[] = [
-                    'PK_USUARIO'       => $usuario->PK_USUARIO,
-                    'NUMERO_CONTROL'   => $usuario->NUMERO_CONTROL,
-                    'NOMBRE'           => $usuario->NOMBRE,
-                    'PRIMER_APELLIDO'  => $usuario->PRIMER_APELLIDO,
-                    'SEGUNDO_APELLIDO' => $usuario->SEGUNDO_APELLIDO,
-                    'SEMESTRE'         => $alumno->Semestre,
-                    'CARRERA'          => $alumno->ClaveCarrera
+                    'PK_USUARIO'            => $usuario->PK_USUARIO,
+                    'NUMERO_CONTROL'        => $usuario->NUMERO_CONTROL,
+                    'NOMBRE'                => $usuario->NOMBRE,
+                    'PRIMER_APELLIDO'       => $usuario->PRIMER_APELLIDO,
+                    'SEGUNDO_APELLIDO'      => $usuario->SEGUNDO_APELLIDO,
+                    'SEMESTRE'              => $alumno->Semestre,
+                    'CARRERA'               => $alumno->ClaveCarrera,
+                    'ENCUESTAS_ACTIVAS'     => $this->get_encuestas_grupo(
+                        Constantes::ENCUESTA_PENDIENTE,
+                        NULL,
+                        $usuario->PK_USUARIO
+                    )[0]->CANTIDAD_ENCUESTAS,
+                    'ENCUESTAS_CONTESTADAS' => $this->get_encuestas_grupo(
+                        Constantes::ENCUESTA_RESPONDIDA,
+                        NULL,
+                        $usuario->PK_USUARIO
+                    )[0]->CANTIDAD_ENCUESTAS
                 ];
             }
         }
@@ -87,6 +95,18 @@ class SITGruposController extends Controller
 
                 $horario_grupo = SiiaHelper::get_horario_grupo($condiciones_siia);
 
+                $encuestas_respondidas =
+                    $this->get_encuestas_grupo(
+                        Constantes::ENCUESTA_RESPONDIDA,
+                        $grupo->PK_GRUPO_TUTORIA
+                    )[0]->CANTIDAD_ENCUESTAS;
+
+                $encuestas_activas     =
+                    $this->get_encuestas_grupo(
+                        Constantes::ENCUESTA_PENDIENTE,
+                        $grupo->PK_GRUPO_TUTORIA
+                    )[0]->CANTIDAD_ENCUESTAS;
+
                 $data[] = [
                     'PK_GRUPO_TUTORIA'      => $grupo->PK_GRUPO_TUTORIA,
                     'FK_USUARIO'            => $grupo->FK_USUARIO,
@@ -94,8 +114,8 @@ class SITGruposController extends Controller
                     'AULA'                  => $horario_grupo[0]->Aula,
                     'HORARIO'               => $horario_grupo,
                     'CANTIDAD_ALUMNOS'      => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
-                    'ENCUESTAS_ACTIVAS'     => 20,
-                    'ENCUESTAS_CONTESTADAS' => 17,
+                    'ENCUESTAS_ACTIVAS'     => $encuestas_activas,
+                    'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
                     'EVALUACION_GRUPO'      => $grupo->EVALUACION
                 ];
             }
@@ -111,5 +131,30 @@ class SITGruposController extends Controller
                 Response::HTTP_NOT_FOUND
             );
         }
+    }
+
+    private function get_encuestas_grupo($estado_encuesta, $grupo = NULL, $alumno = NULL) {
+        $sql = "
+        SELECT
+            COUNT(*) AS CANTIDAD_ENCUESTAS
+        FROM
+            TR_APLICACION_ENCUESTA
+            LEFT JOIN TR_GRUPO_TUTORIA_DETALLE
+                ON TR_GRUPO_TUTORIA_DETALLE.FK_USUARIO = TR_APLICACION_ENCUESTA.FK_USUARIO
+            LEFT JOIN TR_GRUPO_TUTORIA
+                ON TR_GRUPO_TUTORIA.PK_GRUPO_TUTORIA = TR_GRUPO_TUTORIA_DETALLE.FK_GRUPO
+        WHERE
+            TR_APLICACION_ENCUESTA.ESTADO = $estado_encuesta 
+            AND TR_APLICACION_ENCUESTA.PERIODO = '" . Constantes::get_periodo() ."' ";
+
+        if ($grupo) {
+            $sql .= " AND TR_GRUPO_TUTORIA.PK_GRUPO_TUTORIA = $grupo ";
+        }
+
+        if ($alumno) {
+            $sql .= " AND TR_GRUPO_TUTORIA_DETALLE.FK_USUARIO = $alumno ";
+        }
+
+        return DB::select($sql);
     }
 }

@@ -9,6 +9,7 @@ use App\Pregunta;
 use App\Tipo_Pregunta;
 use App\Respuesta_Posible;
 use Illuminate\Support\Facades\DB;
+use Monolog\Handler\IFTTTHandler;
 use Symfony\Component\HttpFoundation\Response;
 use App\Aplicacion_Encuesta;
 use App\RespuestaUsuarioEncuesta;
@@ -211,6 +212,95 @@ class SITEncuestaController extends Controller
                     ->get();
                 foreach ($preguntas as $pregunta) {
                     $respuestas = Respuesta_Posible::where('FK_PREGUNTA', $pregunta->PK_PREGUNTA)->get();
+                    $array_respuestas = array();
+                    foreach ($respuestas as $respuesta) {
+                        $array_respuestas[] = array(
+                            'PK_RESPUESTA_POSIBLE' => $respuesta->PK_RESPUESTA_POSIBLE,
+                            'FK_PREGUNTA' => $respuesta->FK_PREGUNTA,
+                            'RESPUESTA' => $respuesta->RESPUESTA,
+                            'VALOR_NUMERICO' => $respuesta->VALOR_NUMERICO,
+                            'MINIMO' => $respuesta->MINIMO,
+                            'MAXIMO' => $respuesta->MAXIMO,
+                            'ORDEN' => $respuesta->ORDEN,
+                            'ES_MIXTA' => $respuesta->ES_MIXTA
+                        );
+                    }
+                    $array_preguntas[] = array(
+                        'PK_PREGUNTA' => $pregunta->PK_PREGUNTA,
+                        'FK_SECCION' => $pregunta->FK_SECCION,
+                        'ORDEN' => $pregunta->ORDEN,
+                        'PLANTEAMIENTO' => $pregunta->PLANTEAMIENTO,
+                        'TEXTO_GUIA' => $pregunta->TEXTO_GUIA,
+                        'FK_TIPO_PREGUNTA' => $pregunta->FK_TIPO_PREGUNTA,
+                        'NOMBRE_TIPO_PREGUNTA' => $pregunta->NOMBRE_TIPO_PREGUNTA,
+                        'RESPUESTAS' => $array_respuestas
+                    );
+                }
+                $array_secciones[] = array(
+                    'PK_SECCION' => $seccion->PK_SECCION,
+                    'FK_ENCUESTA' => $seccion->FK_ENCUESTA,
+                    'NOMBRE' => $seccion->NOMBRE,
+                    'NUMERO' => $seccion->NUMERO,
+                    'ORDEN' => $seccion->ORDEN,
+                    'OBJETIVO' => $seccion->OBJETIVO,
+                    'INSTRUCCIONES' => $seccion->INSTRUCCIONES,
+                    'PREGUNTAS' => $array_preguntas
+                );
+            }
+            $cuestionario_completo = array(
+                'PK_ENCUESTA' => $cuestionario->PK_ENCUESTA,
+                'NOMBRE' => $cuestionario->NOMBRE,
+                'OBJETIVO' => $cuestionario->OBJETIVO,
+                'INSTRUCCIONES' => $cuestionario->INSTRUCCIONES,
+                'FUENTE_CITA' => $cuestionario->FUENTE_CITA,
+                'ES_ADMINISTRABLE' => $cuestionario->ES_ADMINISTRABLE,
+                'SECCIONES' => $array_secciones
+            );
+        }
+
+        return $cuestionario_completo;
+    }
+
+    /**
+     * @param $pk_encuesta
+     * @return array
+     */
+    public function get_encuesta_resuelta_aplicacion($pk_aplicacion)
+    {
+        error_log($pk_aplicacion);
+        $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $pk_aplicacion)->first();
+
+        if (isset($aplicacion->FK_ENCUESTA)) {
+            if ($aplicacion->FK_ENCUESTA == 1) {
+                // es la encuesta de ordenar
+                $cuestionario_completo = $this->get_cuestionario_resuelto($aplicacion->FK_ENCUESTA, $pk_aplicacion);
+                error_log($aplicacion->FK_ENCUESTA);
+            } else {
+                $cuestionario_completo = [];
+            }
+
+            return $cuestionario_completo;
+        } else {
+            // encuesta no encontrada
+            return [];
+        }
+    }
+
+    private function get_cuestionario_resuelto($fk_encuesta, $pk_aplicacion) {
+        $array_secciones = array();
+        $cuestionario = Encuesta::where('PK_ENCUESTA', $fk_encuesta)->first();
+        if ($cuestionario) {
+            $secciones = Seccion_Encuesta::where('FK_ENCUESTA', $cuestionario->PK_ENCUESTA)->get();
+            foreach ($secciones as $seccion) {
+                $array_preguntas = array();
+                $preguntas = DB::table('CAT_PREGUNTA')
+                    ->leftJoin('CAT_TIPO_PREGUNTA', 'CAT_TIPO_PREGUNTA.PK_TIPO_PREGUNTA', '=', 'CAT_PREGUNTA.FK_TIPO_PREGUNTA')
+                    ->where('FK_SECCION', $seccion->PK_SECCION)
+                    ->get();
+                foreach ($preguntas as $pregunta) {
+
+                    //consultar respuesta de usuario
+                    $respuestas = Respuesta_Posible::where('FK_PREGUNTA', $pregunta->PK_PREGUNTA)->orderBy('ORDEN', 'ASC')->get();
                     $array_respuestas = array();
                     foreach ($respuestas as $respuesta) {
                         $array_respuestas[] = array(
