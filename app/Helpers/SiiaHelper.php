@@ -52,9 +52,75 @@ class SiiaHelper {
      * @param bool $multi_result
      * @return array|bool
      */
-    public static function get_horario_alumno($data, $multi_result = true) {
-        $sql = "";
-        $bindings = [];
+    public static function get_materias_alumno($data, $multi_result = true) {
+        $sql = "
+            SELECT DISTINCT
+                view_reticula.ClaveMateria,
+                view_reticula.Nombre,
+                CONCAT(
+                    view_docentes.Nombre, ' ',
+                    view_docentes.ApellidoPaterno, ' ',
+                    view_docentes.ApellidoMaterno, ' '
+                ) AS Docente,
+                -- view_horarioalumno.NumeroControl,
+                ClaveCarrera,
+                view_horarioalumno.Aula
+            FROM
+                dbo.view_horarioalumno
+                LEFT JOIN dbo.view_reticula
+                    ON view_reticula.ClaveMateria = view_horarioalumno.ClaveMateria
+                LEFT JOIN dbo.view_docentes
+                    ON view_docentes.Idusuario = view_horarioalumno.IdMaestro
+            WHERE
+                view_horarioalumno.NumeroControl = '" .$data['NUMERO_CONTROL'] ."'
+                and ClaveCarrera = '" .$data['CLAVE_CARRERA'] ."'
+            and IdPeriodoEscolar = '" .$data['PERIODO'] ."' ;";
+
+        return SiiaHelper::procesa_consulta($sql, $multi_result);
+    }
+
+    /**
+     * @param $data
+     * @param bool $multi_result
+     * @return array|bool
+     */
+    public static function get_horario_materia($data, $multi_result = true) {
+        $sql = "
+        SELECT
+            view_reticula.ClaveMateria,
+            view_horarioalumno.NumeroControl,
+            ClaveCarrera,
+            CASE
+                WHEN Dia = 1 THEN 
+                    CONCAT('Lunes ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
+            END AS Lunes,
+               CASE
+                WHEN Dia = 2 THEN 
+                    CONCAT('Martes ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
+            END AS Martes,
+            CASE
+                WHEN Dia = 3 THEN 
+                    CONCAT('Miércoles ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
+            END AS Miercoles,
+            CASE
+                WHEN Dia = 4 THEN 
+                    CONCAT('Jueves ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
+            END AS Jueves,
+            CASE
+                WHEN Dia = 5 THEN 
+                    CONCAT('Viernes ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
+            END AS Viernes
+        FROM
+            dbo.view_horarioalumno
+            LEFT JOIN dbo.view_reticula 
+                ON view_reticula.ClaveMateria = view_horarioalumno.ClaveMateria
+        WHERE
+            view_horarioalumno.NumeroControl = '" .$data['NUMERO_CONTROL']. "'
+            AND ClaveCarrera                 = '" .$data['CLAVE_CARRERA']. "'
+            AND IdPeriodoEscolar             = '" .$data['PERIODO']. "'
+            AND view_reticula.ClaveMateria   = '" .$data['CLAVE_MATERIA']. "'
+        order by
+            view_horarioalumno.Dia asc ; ";
 
         return SiiaHelper::procesa_consulta($sql, $multi_result);
     }

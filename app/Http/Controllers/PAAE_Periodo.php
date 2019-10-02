@@ -393,8 +393,9 @@ class PAAE_Periodo extends Controller
     //hola
     public function getDatos(Request $request){
         $alumno = DB::table('CAT_USUARIO')
-            ->select('NUMERO_CONTROL', 'PRIMER_APELLIDO', 'SEGUNDO_APELLIDO', 'CAT_USUARIO.NOMBRE', 'CAT_CARRERA.NOMBRE', 'CORREO1', 'TELEFONO_MOVIL','SEMESTRE')
-            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'CAT_USUARIO.FK_CARRERA')
+            ->select('NOMBRE')
+            //->select('NUMERO_CONTROL', 'PRIMER_APELLIDO', 'SEGUNDO_APELLIDO', 'NOMBRE', 'CORREO1', 'TELEFONO_MOVIL','SEMESTRE')
+            //->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'A.FK_CARRERA')
             ->where('PK_USUARIO',$request->id)
             ->get()->first();
 
