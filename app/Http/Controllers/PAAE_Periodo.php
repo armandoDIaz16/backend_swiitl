@@ -395,7 +395,7 @@ class PAAE_Periodo extends Controller
         $alumno = DB::table('CAT_USUARIO AS A')
             ->select('A.NUMERO_CONTROL', 'A.PRIMER_APELLIDO', 'A.SEGUNDO_APELLIDO', 'A.NOMBRE', 'CAT_CARRERA.NOMBRE', 'A.CORREO1', 'A.TELEFONO_MOVIL','A.SEMESTRE')
             ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'A.FK_CARRERA')
-            ->where('A.PK_USUARIO',$request->id)
+            ->where('A.NUMERO_CONTROL',$request->control)
             ->get()->first();
 
         if(!empty($alumno)){
