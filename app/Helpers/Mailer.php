@@ -27,6 +27,9 @@ class Mailer
         // require 'vendor/autoload.php'; // load Composer's autoloader
 
         $mail = new PHPMailer(true); // Passing `true` enables exceptions
+        $obtenerCorreo = new ObtenerCorreo;
+        $correoDatos = $obtenerCorreo->getCorreo();
+        //error_log(print_r($correoDatos,true));
 
         try {
             // Server settings
@@ -34,8 +37,8 @@ class Mailer
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = $this->config['correo_origen'];
-            $mail->Password   = $this->config['password_origen'];
+            $mail->Username   = $correoDatos->DIRECCION;
+            $mail->Password   = $correoDatos->INDICIO;
             $mail->SMTPSecure = $this->smtp_secure;
             $mail->Port       = $this->puerto;
 
@@ -75,7 +78,10 @@ class Mailer
             $mail->Subject = $this->config['asunto'];
             $mail->Body    = $this->config['cuerpo_html'];
 
-            return $mail->send();
+            if($mail->send()){
+                $obtenerCorreo->aumentarContador($correoDatos->PK_ENVIO_CORREO,$correoDatos->PK_CORREO);
+                return true;
+            }
         } catch (Exception $e) {
             error_log("Error en envío de correo desde clase: App/Helpers/Mailer.php");
             error_log("Detalle del error:");

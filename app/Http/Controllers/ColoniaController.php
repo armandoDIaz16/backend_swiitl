@@ -46,11 +46,11 @@ class ColoniaController extends Controller
      */
     public function show($id)
     {
-        $colonias = Colonia::select('CATR_COLONIA.PK_COLONIA','CATR_COLONIA.NOMBRE')
-            ->join('TR_COLONIA_CODIGO_POSTAL', 'TR_COLONIA_CODIGO_POSTAL.FK_COLONIA', '=', 'CATR_COLONIA.PK_COLONIA')
-            ->where('TR_COLONIA_CODIGO_POSTAL.FK_NUMERO_CODIGO_POSTAL', $id)
+        $colonias = Colonia::select('CAT_COLONIA.PK_COLONIA','CAT_COLONIA.NOMBRE')
+        ->join('TR_COLONIA_CODIGO_POSTAL', 'TR_COLONIA_CODIGO_POSTAL.FK_COLONIA', '=', 'CAT_COLONIA.PK_COLONIA')
+        ->join('CAT_CODIGO_POSTAL', 'CAT_CODIGO_POSTAL.PK_CODIGO_POSTAL', '=', 'TR_COLONIA_CODIGO_POSTAL.FK_CODIGO_POSTAL')
+            ->where('CAT_CODIGO_POSTAL.NUMERO', $id)
             ->get();
-
         return $colonias;
     }
 
