@@ -397,7 +397,6 @@ class PAAE_Periodo extends Controller
             ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'A.FK_CARRERA')
             ->where('A.NUMERO_CONTROL',$request->control)
             ->get()->first();
-        return $alumno;    
 
         if(!empty($alumno)){
                 //return $this->successResponse($alumno);
