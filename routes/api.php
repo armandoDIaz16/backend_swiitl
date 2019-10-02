@@ -445,4 +445,10 @@ Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
     // Buscar detalle de grupo por id
     Route::get('detalle_grupo/{id_grupo}', 'SITGruposController@detalle_grupo');
 
+    //Generar pdf ingreso individual
+    Route::get('generarPdfIndividual', 'SITPdfController@generarPdfIndividual');
+
+    //Generar pdf ingreso grupal
+    Route::get('generarPdfGrupo', 'SITPdfController@generarPdfGrupo');
+
 /*});*/
