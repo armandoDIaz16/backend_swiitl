@@ -446,3 +446,9 @@ Route::post('CreaCalificacion', 'PAAE_Periodo@creaCalificacion');
     Route::get('detalle_grupo/{id_grupo}', 'SITGruposController@detalle_grupo');
 
 /*});*/
+
+/* *********************************************************** *
+ * ************* RUTAS DE SISTEMA SERVICIO SOCIAL *************** *
+ * *********************************************************** */
+
+ Route::resource('convocatorias', 'ServicioSocial\ConvocatoriaController');
