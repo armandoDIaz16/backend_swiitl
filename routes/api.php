@@ -390,6 +390,13 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     // Buscar detalle de grupo por id
     Route::get('detalle_grupo/{id_grupo}', 'SITGruposController@detalle_grupo');
 
+
+    //Generar pdf ingreso individual
+    Route::get('generarPdfIndividual', 'SITPdfController@generarPdfIndividual');
+
+    //Generar pdf ingreso grupal
+    Route::get('generarPdfGrupo', 'SITPdfController@generarPdfGrupo');
+
     // Buscar horario por pk usuario
     Route::get('get_horario_alumno/{id_usuario}', 'SITAlumnoController@get_horario');
 
