@@ -82,7 +82,7 @@ INSERT INTO CAT_ENTIDAD_FEDERATIVA(PK_ENTIDAD_FEDERATIVA, FK_PAIS, NOMBRE, ALIAS
 (5, 1,  'Chiapas', 'Chis', 5, 'Chis'),
 (6, 1,  'Chihuahua', 'Chih', 6, 'Chih'),
 (7, 1,  'Ciudad de México', 'CDMX', 7, 'CDMX'),
-(8, 1,  'Coahuila de Zaragoza2', 'Coah', 8, 'Coah'),
+(8, 1,  'Coahuila de Zaragoza', 'Coah', 8, 'Coah'),
 (9, 1,  'Colima', 'Col', 9, 'Col'),
 (10, 1,  'Durango', 'Dgo', 10, 'Dgo'),
 (11, 1,  'Guanajuato', 'Gto', 11, 'Gto'),
