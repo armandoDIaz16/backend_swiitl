@@ -334,6 +334,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('MontoInscripcion', 'PeriodoController@montoInscripcion');
     Route::post('MontoInscripcionCero', 'PeriodoController@montoInscripcionCero');
     Route::post('PublicarResultados', 'PeriodoController@publicarResultados');
+    Route::post('ModificarTipoExamen', 'PeriodoController@modificarTipoExamen');
     Route::post('MensajesAceptacion', 'PeriodoController@mensajesAceptacion');
     Route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
     Route::get('Aspirantes2', 'AspiranteController@aspirantes2');
