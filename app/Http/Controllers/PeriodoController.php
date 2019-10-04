@@ -16,7 +16,7 @@ class PeriodoController extends Controller
     {
         $PK_PERIODO_PREFICHAS = Periodo::max('PK_PERIODO_PREFICHAS');
 
-        $periodo = Periodo::select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO', 'FECHA_FIN', 'MONTO_PREFICHA', 'FECHA_INICIO_CURSO', 'FECHA_FIN_CURSO', 'MONTO_CURSO', 'FECHA_INICIO_INSCRIPCION', 'FECHA_FIN_INSCRIPCION', 'MONTO_INSCRIPCION', 'FECHA_INICIO_INSCRIPCION_BIS', 'FECHA_FIN_INSCRIPCION_BIS', 'MONTO_INSCRIPCION_BIS', 'MENSAJE_SEMESTRE', 'MENSAJE_SEMESTRE_BIS', 'RESULTADOS')
+        $periodo = Periodo::select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO', 'FECHA_FIN', 'MONTO_PREFICHA', 'FECHA_INICIO_CURSO', 'FECHA_FIN_CURSO', 'MONTO_CURSO', 'FECHA_INICIO_INSCRIPCION', 'FECHA_FIN_INSCRIPCION', 'MONTO_INSCRIPCION', 'FECHA_INICIO_INSCRIPCION_BIS', 'FECHA_FIN_INSCRIPCION_BIS', 'MONTO_INSCRIPCION_BIS', 'MENSAJE_SEMESTRE', 'MENSAJE_SEMESTRE_BIS', 'RESULTADOS', 'TIPO_APLICACION')
             ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO_PREFICHAS)
             ->get();
 
@@ -39,7 +39,8 @@ class PeriodoController extends Controller
                     'MONTO_INSCRIPCION_BIS' => $periodo[0]->MONTO_INSCRIPCION_BIS,
                     'MENSAJE_SEMESTRE' => $periodo[0]->MENSAJE_SEMESTRE,
                     'MENSAJE_SEMESTRE_BIS' =>  $periodo[0]->MENSAJE_SEMESTRE_BIS,
-                    'RESULTADOS' => $periodo[0]->RESULTADOS
+                    'RESULTADOS' => $periodo[0]->RESULTADOS,
+                    'TIPO_APLICACION' => $periodo[0]->TIPO_APLICACION
                 )
             ];
         }
@@ -148,6 +149,10 @@ class PeriodoController extends Controller
     public function mensajesAceptacion(Request $request)
     {
         Periodo::where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)->update(['MENSAJE_SEMESTRE' => $request->MENSAJE_SEMESTRE,'MENSAJE_SEMESTRE_BIS' => $request->MENSAJE_SEMESTRE_BIS]);
+    }
+    public function modificarTipoExamen(Request $request)
+    {
+        Periodo::where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)->update(['TIPO_APLICACION' => $request->TIPO_APLICACION]);
     }
 
     /**

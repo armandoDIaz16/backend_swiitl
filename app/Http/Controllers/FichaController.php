@@ -22,7 +22,7 @@ class FichaController extends Controller
                 DB::raw("'' as CONSEPTO"),
                 DB::raw("'' as CLAVE"),
                 DB::raw("'' as MONTO")
-                )
+            )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
             ->where([
                 ['CAT_USUARIO.PK_USUARIO', '=', $id],
@@ -32,26 +32,26 @@ class FichaController extends Controller
 
         $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
 
-        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS','FECHA_INICIO','FECHA_FIN','MONTO_PREFICHA')
-        ->where('PK_PERIODO_PREFICHAS',$PK_PERIODO_PREFICHAS)
-        ->get();
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO', 'FECHA_FIN', 'MONTO_PREFICHA')
+            ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO_PREFICHAS)
+            ->get();
 
         $fecha = date('Y-m-j');
-        $fechaFin = strtotime($periodo[0]->FECHA_FIN);        
-        $nuevafecha = strtotime('+3 day', strtotime($fecha));
-        if($nuevafecha > $fechaFin){         
-            $nuevafecha = strtotime('+2 day', strtotime($fecha));   
-            if($nuevafecha > $fechaFin){
-                $nuevafecha = strtotime('+1 day', strtotime($fecha)); 
-                if($nuevafecha > $fechaFin){ 
-                    $nuevafecha = strtotime('+0 day', strtotime($fecha)); 
-                    if($nuevafecha > $fechaFin){
-                        $nuevafecha = $fechaFin;  
-                    }
-                }                
-            }
-        }       
-        
+        $dia = date("d", strtotime($fecha));
+        if ($dia > 15) {
+            $anio = date("Y", strtotime($fecha));
+            $mes = 1 + date("m", strtotime($fecha));
+            $dia = 2;
+        } else { 
+            $anio = date("Y", strtotime($fecha));
+            $mes = date("m", strtotime($fecha));
+            $dia = 17;            
+        }
+        $nuevafecha = strtotime($anio .'-'.$mes.'-'.$dia);     
+        $fechaFin = strtotime($periodo[0]->FECHA_FIN);
+        if ($nuevafecha > $fechaFin) {
+            $nuevafecha = strtotime('+2 day', $fechaFin);
+        }
         $fechaLimitePago = date('Y-m-j', $nuevafecha);
 
         $datosReferencia =
@@ -65,15 +65,13 @@ class FichaController extends Controller
                 'mesC' => date('m', strtotime($fechaLimitePago)),
                 'diaC' => date('j', strtotime($fechaLimitePago)),
             ];
-
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
-        $aspirante[0]->CONCEPTO="Solicitud de ficha de pago para examen de admisión";
+        $aspirante[0]->CONCEPTO = "Solicitud de ficha de pago para examen de admisión";
         $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
 
-        return $this->generarPDF($aspirante,'aspirante.referencia'); 
-
+        return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 
     private function RUTINA8250POSICIONES($datos)
@@ -133,7 +131,7 @@ class FichaController extends Controller
     public function descargarFicha($id)
     {
         $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
-        
+
         /* $aspirante = DB::table('CAT_USUARIO')
         ->select(
             DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
@@ -167,73 +165,88 @@ class FichaController extends Controller
 
 
         $aspirante = DB::table('CAT_USUARIO')
-        ->select(
-            DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
-            'CAT_CARRERA.NOMBRE as NOMBRE_CARRERA',
-            'CAT_CAMPUS.NOMBRE as CAMPUS',
-            'CAT_ASPIRANTE.FOLIO_CENEVAL',
-            'CAT_USUARIO.NOMBRE as NOMBRE',
-            'CAT_USUARIO.PRIMER_APELLIDO',
-            DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
-            'CAT_TURNO.DIA',
-            'CAT_TURNO.DIA as NOMBRE_DIA',
-            'CAT_TURNO.HORA',
-            'CATR_EDIFICIO.NOMBRE as NOMBRE_EDIFICIO',
-            'CATR_EDIFICIO.PREFIJO',
-            'CAT_CAMPUS.NOMBRE as NOMBRE_CAMPUS',
-            'CATR_ESPACIO.NOMBRE as NOMBRE_ESPACIO',
-            'CAT_ASPIRANTE.FECHA_MODIFICACION'
-        )
-        ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
-        ->join('CATR_EXAMEN_ADMISION', 'CATR_EXAMEN_ADMISION.PK_EXAMEN_ADMISION', '=', 'CAT_ASPIRANTE.FK_EXAMEN_ADMISION')
-        ->join('CAT_TURNO', 'CAT_TURNO.PK_TURNO', '=', 'CATR_EXAMEN_ADMISION.FK_TURNO')
-        ->join('CATR_ESPACIO', 'CATR_ESPACIO.PK_ESPACIO', '=', 'CATR_EXAMEN_ADMISION.FK_ESPACIO')
-        ->join('CATR_EDIFICIO', 'CATR_EDIFICIO.PK_EDIFICIO', '=', 'CATR_ESPACIO.FK_EDIFICIO')
-        ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
-        ->join('CAT_CAMPUS', 'CAT_CAMPUS.PK_CAMPUS', '=',  'TR_CARRERA_CAMPUS.FK_CAMPUS')
-        ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=',  'TR_CARRERA_CAMPUS.FK_CARRERA')
+            ->select(
+                DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
+                'CAT_CARRERA.NOMBRE as NOMBRE_CARRERA',
+                'CAT_CAMPUS.NOMBRE as CAMPUS',
+                'CAT_ASPIRANTE.FOLIO_CENEVAL',
+                'CAT_USUARIO.NOMBRE as NOMBRE',
+                'CAT_USUARIO.PRIMER_APELLIDO',
+                DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
+                'CAT_TURNO.DIA',
+                'CAT_TURNO.DIA as NOMBRE_DIA',
+                'CAT_TURNO.HORA',
+                'CATR_EDIFICIO.NOMBRE as NOMBRE_EDIFICIO',
+                'CATR_EDIFICIO.PREFIJO',
+                'CAT_CAMPUS.NOMBRE as NOMBRE_CAMPUS',
+                'CATR_ESPACIO.NOMBRE as NOMBRE_ESPACIO',
+                'CAT_ASPIRANTE.FECHA_MODIFICACION'
+            )
+            ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
+            ->join('CATR_EXAMEN_ADMISION', 'CATR_EXAMEN_ADMISION.PK_EXAMEN_ADMISION', '=', 'CAT_ASPIRANTE.FK_EXAMEN_ADMISION')
+            ->join('CAT_TURNO', 'CAT_TURNO.PK_TURNO', '=', 'CATR_EXAMEN_ADMISION.FK_TURNO')
+            ->join('CATR_ESPACIO', 'CATR_ESPACIO.PK_ESPACIO', '=', 'CATR_EXAMEN_ADMISION.FK_ESPACIO')
+            ->join('CATR_EDIFICIO', 'CATR_EDIFICIO.PK_EDIFICIO', '=', 'CATR_ESPACIO.FK_EDIFICIO')
+            ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
+            ->join('CAT_CAMPUS', 'CAT_CAMPUS.PK_CAMPUS', '=',  'TR_CARRERA_CAMPUS.FK_CAMPUS')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=',  'TR_CARRERA_CAMPUS.FK_CARRERA')
 
-        ->where([
-            ['CAT_USUARIO.PK_USUARIO', '=', $id],
-            ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante]
-        ])
-        ->get();
-
-
+            ->where([
+                ['CAT_USUARIO.PK_USUARIO', '=', $id],
+                ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante]
+            ])
+            ->get();
 
 
 
-        $fecha=$aspirante[0]->FECHA_MODIFICACION;
-        $aspirante[0]->FECHA_MODIFICACION = substr($fecha, 8, 2)."/" .substr($fecha, 5, 2). "/".substr($fecha, 0, 4);
 
-        
+
+        $fecha = $aspirante[0]->FECHA_MODIFICACION;
+        $aspirante[0]->FECHA_MODIFICACION = substr($fecha, 8, 2) . "/" . substr($fecha, 5, 2) . "/" . substr($fecha, 0, 4);
+
+
         $dayofweek = date('w', strtotime($aspirante[0]->NOMBRE_DIA));
-        switch ($dayofweek){
-                case 0: $dayofweek ="Domingo"; break; 
-                case 1: $dayofweek ="Lunes"; break; 
-                case 2: $dayofweek ="Martes"; break; 
-                case 3: $dayofweek ="Miercoles"; break; 
-                case 4: $dayofweek ="Jueves"; break; 
-                case 5: $dayofweek ="Viernes"; break; 
-                case 6: $dayofweek ="Sabado"; break; 
+        switch ($dayofweek) {
+            case 0:
+                $dayofweek = "Domingo";
+                break;
+            case 1:
+                $dayofweek = "Lunes";
+                break;
+            case 2:
+                $dayofweek = "Martes";
+                break;
+            case 3:
+                $dayofweek = "Miercoles";
+                break;
+            case 4:
+                $dayofweek = "Jueves";
+                break;
+            case 5:
+                $dayofweek = "Viernes";
+                break;
+            case 6:
+                $dayofweek = "Sabado";
+                break;
         }
 
         $aspirante[0]->NOMBRE_DIA = $dayofweek;
 
-        $dia=$aspirante[0]->DIA;        
+        $dia = $aspirante[0]->DIA;
         setlocale(LC_TIME, 'es_ES.UTF-8');
         $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
         $mes = strftime("%B", $fecha->getTimestamp()); // marzo
-        $aspirante[0]->DIA = substr($dia, 8, 2). " de " . $mes . " del " . substr($dia, 0, 4);
-        $aspirante[0]->HORA = date("g:i a",strtotime($aspirante[0]->HORA));
+        $aspirante[0]->DIA = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
+        $aspirante[0]->HORA = date("g:i a", strtotime($aspirante[0]->HORA));
 
-        return $this->generarPDF($aspirante,'aspirante.ficha'); 
+        return $this->generarPDF($aspirante, 'aspirante.ficha');
     }
 
-    public function generarPDF($aspirante,$plantilla){
+    public function generarPDF($aspirante, $plantilla)
+    {
         $mpdf = new Mpdf(['orientation' => 'p']);
 
-        $html_final = view($plantilla,['ASPIRANTE' => $aspirante]);
+        $html_final = view($plantilla, ['ASPIRANTE' => $aspirante]);
         /*Fuenres*/
         /** @noinspection PhpLanguageLevelInspection */
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
@@ -248,11 +261,11 @@ class FichaController extends Controller
                 __DIR__ . '/custom/font/directory',
             ]),
             'fontdata' => $fontData + [
-                    'montserrat' => [
-                        'R' => 'Montserrat-Medium.ttf',
-                        'B' => 'Montserrat-ExtraBold.ttf',
-                    ]
-                ],
+                'montserrat' => [
+                    'R' => 'Montserrat-Medium.ttf',
+                    'B' => 'Montserrat-ExtraBold.ttf',
+                ]
+            ],
             'default_font' => 'montserrat'
         ]);
 
@@ -277,7 +290,7 @@ class FichaController extends Controller
                 DB::raw("'' as CONSEPTO"),
                 DB::raw("'' as CLAVE"),
                 DB::raw("'' as MONTO")
-                )
+            )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
             ->where([
                 ['CAT_USUARIO.PK_USUARIO', '=', $id],
@@ -287,26 +300,26 @@ class FichaController extends Controller
 
         $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
 
-        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS','FECHA_INICIO_CURSO','FECHA_FIN_CURSO','MONTO_CURSO')
-        ->where('PK_PERIODO_PREFICHAS',$PK_PERIODO_PREFICHAS)
-        ->get();
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO_CURSO', 'FECHA_FIN_CURSO', 'MONTO_CURSO')
+            ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO_PREFICHAS)
+            ->get();
 
         $fecha = date('Y-m-j');
-        $fechaFin = strtotime($periodo[0]->FECHA_FIN_CURSO);        
+        $fechaFin = strtotime($periodo[0]->FECHA_FIN_CURSO);
         $nuevafecha = strtotime('+3 day', strtotime($fecha));
-        if($nuevafecha > $fechaFin){         
-            $nuevafecha = strtotime('+2 day', strtotime($fecha));   
-            if($nuevafecha > $fechaFin){
-                $nuevafecha = strtotime('+1 day', strtotime($fecha)); 
-                if($nuevafecha > $fechaFin){ 
-                    $nuevafecha = strtotime('+0 day', strtotime($fecha)); 
-                    if($nuevafecha > $fechaFin){
-                        $nuevafecha = $fechaFin;  
+        if ($nuevafecha > $fechaFin) {
+            $nuevafecha = strtotime('+2 day', strtotime($fecha));
+            if ($nuevafecha > $fechaFin) {
+                $nuevafecha = strtotime('+1 day', strtotime($fecha));
+                if ($nuevafecha > $fechaFin) {
+                    $nuevafecha = strtotime('+0 day', strtotime($fecha));
+                    if ($nuevafecha > $fechaFin) {
+                        $nuevafecha = $fechaFin;
                     }
-                }                
+                }
             }
-        }       
-        
+        }
+
         $fechaLimitePago = date('Y-m-j', $nuevafecha);
 
         $datosReferencia =
@@ -323,14 +336,13 @@ class FichaController extends Controller
 
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
-        $aspirante[0]->CONCEPTO="Referencia de pago para curso de nivelación";
+        $aspirante[0]->CONCEPTO = "Referencia de pago para curso de nivelación";
         $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
         $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
-        return $this->generarPDF($aspirante,'aspirante.referencia'); 
-
+        return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
-    
+
     public function descargarReferenciaInscripcion($id)
     {
         $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
@@ -343,7 +355,7 @@ class FichaController extends Controller
                 DB::raw("'' as CONSEPTO"),
                 DB::raw("'' as CLAVE"),
                 DB::raw("'' as MONTO")
-                )
+            )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
             ->where([
                 ['CAT_USUARIO.PK_USUARIO', '=', $id],
@@ -353,26 +365,26 @@ class FichaController extends Controller
 
         $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
 
-        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS','FECHA_INICIO_INSCRIPCION','FECHA_FIN_INSCRIPCION','MONTO_INSCRIPCION')
-        ->where('PK_PERIODO_PREFICHAS',$PK_PERIODO_PREFICHAS)
-        ->get();
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO_INSCRIPCION', 'FECHA_FIN_INSCRIPCION', 'MONTO_INSCRIPCION')
+            ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO_PREFICHAS)
+            ->get();
 
         $fecha = date('Y-m-j');
-        $fechaFin = strtotime($periodo[0]->FECHA_FIN_INSCRIPCION);        
+        $fechaFin = strtotime($periodo[0]->FECHA_FIN_INSCRIPCION);
         $nuevafecha = strtotime('+3 day', strtotime($fecha));
-        if($nuevafecha > $fechaFin){         
-            $nuevafecha = strtotime('+2 day', strtotime($fecha));   
-            if($nuevafecha > $fechaFin){
-                $nuevafecha = strtotime('+1 day', strtotime($fecha)); 
-                if($nuevafecha > $fechaFin){ 
-                    $nuevafecha = strtotime('+0 day', strtotime($fecha)); 
-                    if($nuevafecha > $fechaFin){
-                        $nuevafecha = $fechaFin;  
+        if ($nuevafecha > $fechaFin) {
+            $nuevafecha = strtotime('+2 day', strtotime($fecha));
+            if ($nuevafecha > $fechaFin) {
+                $nuevafecha = strtotime('+1 day', strtotime($fecha));
+                if ($nuevafecha > $fechaFin) {
+                    $nuevafecha = strtotime('+0 day', strtotime($fecha));
+                    if ($nuevafecha > $fechaFin) {
+                        $nuevafecha = $fechaFin;
                     }
-                }                
+                }
             }
-        }       
-        
+        }
+
         $fechaLimitePago = date('Y-m-j', $nuevafecha);
 
         $datosReferencia =
@@ -389,12 +401,11 @@ class FichaController extends Controller
 
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
-        $aspirante[0]->CONCEPTO="Referencia de pago para inscripción";
+        $aspirante[0]->CONCEPTO = "Referencia de pago para inscripción";
         $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
         $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
-        return $this->generarPDF($aspirante,'aspirante.referencia'); 
-
+        return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 
     public function descargarReferenciaInscripcionCero($id)
@@ -409,7 +420,7 @@ class FichaController extends Controller
                 DB::raw("'' as CONSEPTO"),
                 DB::raw("'' as CLAVE"),
                 DB::raw("'' as MONTO")
-                )
+            )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
             ->where([
                 ['CAT_USUARIO.PK_USUARIO', '=', $id],
@@ -419,26 +430,26 @@ class FichaController extends Controller
 
         $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
 
-        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS','FECHA_INICIO_INSCRIPCION_BIS','FECHA_FIN_INSCRIPCION_BIS','MONTO_INSCRIPCION_BIS')
-        ->where('PK_PERIODO_PREFICHAS',$PK_PERIODO_PREFICHAS)
-        ->get();
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO_INSCRIPCION_BIS', 'FECHA_FIN_INSCRIPCION_BIS', 'MONTO_INSCRIPCION_BIS')
+            ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO_PREFICHAS)
+            ->get();
 
         $fecha = date('Y-m-j');
-        $fechaFin = strtotime($periodo[0]->FECHA_FIN_INSCRIPCION_BIS);        
+        $fechaFin = strtotime($periodo[0]->FECHA_FIN_INSCRIPCION_BIS);
         $nuevafecha = strtotime('+3 day', strtotime($fecha));
-        if($nuevafecha > $fechaFin){         
-            $nuevafecha = strtotime('+2 day', strtotime($fecha));   
-            if($nuevafecha > $fechaFin){
-                $nuevafecha = strtotime('+1 day', strtotime($fecha)); 
-                if($nuevafecha > $fechaFin){ 
-                    $nuevafecha = strtotime('+0 day', strtotime($fecha)); 
-                    if($nuevafecha > $fechaFin){
-                        $nuevafecha = $fechaFin;  
+        if ($nuevafecha > $fechaFin) {
+            $nuevafecha = strtotime('+2 day', strtotime($fecha));
+            if ($nuevafecha > $fechaFin) {
+                $nuevafecha = strtotime('+1 day', strtotime($fecha));
+                if ($nuevafecha > $fechaFin) {
+                    $nuevafecha = strtotime('+0 day', strtotime($fecha));
+                    if ($nuevafecha > $fechaFin) {
+                        $nuevafecha = $fechaFin;
                     }
-                }                
+                }
             }
-        }       
-        
+        }
+
         $fechaLimitePago = date('Y-m-j', $nuevafecha);
 
         $datosReferencia =
@@ -455,12 +466,10 @@ class FichaController extends Controller
 
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
-        $aspirante[0]->CONCEPTO="Referencia de pago para inscripción semestre cero";
+        $aspirante[0]->CONCEPTO = "Referencia de pago para inscripción semestre cero";
         $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
         $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
-        return $this->generarPDF($aspirante,'aspirante.referencia'); 
-
+        return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 }
-

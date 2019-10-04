@@ -334,6 +334,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('MontoInscripcion', 'PeriodoController@montoInscripcion');
     Route::post('MontoInscripcionCero', 'PeriodoController@montoInscripcionCero');
     Route::post('PublicarResultados', 'PeriodoController@publicarResultados');
+    Route::post('ModificarTipoExamen', 'PeriodoController@modificarTipoExamen');
     Route::post('MensajesAceptacion', 'PeriodoController@mensajesAceptacion');
     Route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
     Route::get('Aspirantes2', 'AspiranteController@aspirantes2');
@@ -349,7 +350,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('CargarArchivoAceptados/{PK_PERIODO}', 'AspiranteController@cargarArchivoAceptados');
     Route::post('CargarArchivoAcistencia/{PK_PERIODO}', 'AspiranteController@cargarArchivoAsistencia');
     Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
-    Route::get('Grupo', 'GrupoController@listaGrupos');
+    Route::get('ListaGrupo', 'GrupoController@listaGrupos');
     Route::get('ListasGrupos', 'GrupoController@datosListas');
     Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
     Route::get('Turno', 'LugarExamenController@obtenerTurno');
@@ -357,7 +358,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('Grupo', 'LugarExamenController@obtenerGrupo');
     Route::get('Edificio', 'LugarExamenController@obtenerEdificio');
     Route::get('TipoEspacio', 'LugarExamenController@obtenerTipoEspacio');
-    Route::get('Grupo2', 'LugarExamenController@obtenerGrupo');
     Route::post('AgregarTurno', 'LugarExamenController@agregarTurno');
     Route::post('AgregarEspacio', 'LugarExamenController@agregarEspacio');
     Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
@@ -389,6 +389,13 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     // Buscar detalle de grupo por id
     Route::get('detalle_grupo/{id_grupo}', 'SITGruposController@detalle_grupo');
+
+
+    //Generar pdf ingreso individual
+    Route::get('generarPdfIndividual', 'SITPdfController@generarPdfIndividual');
+
+    //Generar pdf ingreso grupal
+    Route::get('generarPdfGrupo', 'SITPdfController@generarPdfGrupo');
 
     // Buscar horario por pk usuario
     Route::get('get_horario_alumno/{id_usuario}', 'SITAlumnoController@get_horario');

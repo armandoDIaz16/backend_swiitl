@@ -187,6 +187,8 @@ class AspiranteController extends Controller
                 'CAT_CIUDAD.NOMBRE as NOMBRE_CIUDAD',
                 'CAT_ASPIRANTE.PROMEDIO',
                 'CAT_ASPIRANTE.ESPECIALIDAD',
+                'CAT_ASPIRANTE.FK_CARRERA_1',
+                'CAT_ASPIRANTE.FK_CARRERA_2',
                 DB::raw("CAT_CARRERA1.NOMBRE+' CAMPUS ' +CAT_CAMPUS1.NOMBRE as CARRERA1"),
                 DB::raw("CASE WHEN CAT_CARRERA2.NOMBRE IS NULL THEN '' ELSE CAT_CARRERA2.NOMBRE+' CAMPUS ' +CAT_CAMPUS2.NOMBRE  END as CARRERA2"),
                 'CAT_ASPIRANTE.ICNE',
