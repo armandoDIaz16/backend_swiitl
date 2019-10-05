@@ -42,12 +42,12 @@ class FichaController extends Controller
             $anio = date("Y", strtotime($fecha));
             $mes = 1 + date("m", strtotime($fecha));
             $dia = 2;
-        } else { 
+        } else {
             $anio = date("Y", strtotime($fecha));
             $mes = date("m", strtotime($fecha));
-            $dia = 17;            
+            $dia = 17;
         }
-        $nuevafecha = strtotime($anio .'-'.$mes.'-'.$dia);     
+        $nuevafecha = strtotime($anio . '-' . $mes . '-' . $dia);
         $fechaFin = strtotime($periodo[0]->FECHA_FIN);
         if ($nuevafecha > $fechaFin) {
             $nuevafecha = strtotime('+2 day', $fechaFin);
@@ -68,7 +68,7 @@ class FichaController extends Controller
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO = "Solicitud de ficha de pago para examen de admisión";
-        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
 
         return $this->generarPDF($aspirante, 'aspirante.referencia');
@@ -187,18 +187,14 @@ class FichaController extends Controller
             ->join('CAT_TURNO', 'CAT_TURNO.PK_TURNO', '=', 'CATR_EXAMEN_ADMISION.FK_TURNO')
             ->join('CATR_ESPACIO', 'CATR_ESPACIO.PK_ESPACIO', '=', 'CATR_EXAMEN_ADMISION.FK_ESPACIO')
             ->join('CATR_EDIFICIO', 'CATR_EDIFICIO.PK_EDIFICIO', '=', 'CATR_ESPACIO.FK_EDIFICIO')
-            ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
-            ->join('CAT_CAMPUS', 'CAT_CAMPUS.PK_CAMPUS', '=',  'TR_CARRERA_CAMPUS.FK_CAMPUS')
-            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=',  'TR_CARRERA_CAMPUS.FK_CARRERA')
-
+            ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=', 'CAT_ASPIRANTE.FK_CARRERA_1')
+            ->join('CAT_CAMPUS', 'CAT_CAMPUS.PK_CAMPUS', '=', 'TR_CARRERA_CAMPUS.FK_CAMPUS')
+            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'TR_CARRERA_CAMPUS.FK_CARRERA')
             ->where([
                 ['CAT_USUARIO.PK_USUARIO', '=', $id],
                 ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante]
             ])
             ->get();
-
-
-
 
 
         $fecha = $aspirante[0]->FECHA_MODIFICACION;
@@ -261,11 +257,11 @@ class FichaController extends Controller
                 __DIR__ . '/custom/font/directory',
             ]),
             'fontdata' => $fontData + [
-                'montserrat' => [
-                    'R' => 'Montserrat-Medium.ttf',
-                    'B' => 'Montserrat-ExtraBold.ttf',
-                ]
-            ],
+                    'montserrat' => [
+                        'R' => 'Montserrat-Medium.ttf',
+                        'B' => 'Montserrat-ExtraBold.ttf',
+                    ]
+                ],
             'default_font' => 'montserrat'
         ]);
 
@@ -337,9 +333,9 @@ class FichaController extends Controller
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO = "Referencia de pago para curso de nivelación";
-        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
-        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
+        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('ALIAS', 'ITL');
         return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 
@@ -402,9 +398,9 @@ class FichaController extends Controller
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO = "Referencia de pago para inscripción";
-        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
-        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
+        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('ALIAS', 'ITL');
         return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 
@@ -467,9 +463,9 @@ class FichaController extends Controller
         $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO = "Referencia de pago para inscripción semestre cero";
-        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
-        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
+        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('ALIAS', 'ITL');
         return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 }

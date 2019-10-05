@@ -58,7 +58,7 @@ class AspiranteController extends Controller
     public function store(Request $request)
     {
         //return redirect()->action('UserController@profile', [1]);
-        //return redirect()->action('AspirantePasswordController@sendEmail', ['CORREO1' => $request->CORREO1]); 
+        //return redirect()->action('AspirantePasswordController@sendEmail', ['CORREO1' => $request->CORREO1]);
 
 
 
@@ -382,7 +382,7 @@ class AspiranteController extends Controller
         $datos = array();
         while (!feof($File)) {
             $fila = fgets($File);
-            //return substr($fila,0,7);            
+            //return substr($fila,0,7);
             //array_push($datos, $fila);
             if (is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319') {
                 array_push($datos, [
@@ -395,14 +395,14 @@ class AspiranteController extends Controller
                     'FECHA_LIMITE' => substr($fila, 140, 10)
                 ]);
             }
-            if ($this->guardarDatosBD($datos, $PK_PERIODO, $nombre) == 1) {
-                return 1;
-            } else {
-                return 2;
+
+            if (!$this->guardarDatosBD($datos, $PK_PERIODO, $nombre) == 1) {
+                error_log("AspiranteController (399) ========================== Error al procesar el pago de preficha: " . $datos['IDCONTROL']);
             }
             //return $datos;
         }
     }
+
     private function guardarDatosBD($datos, $PK_PERIODO, $real_name)
     {
 
@@ -665,14 +665,14 @@ class AspiranteController extends Controller
                     if (!$bool) {
                         foreach ($turnos as $turno) { */
 
-        //Insertar por orden dias                    
+        //Insertar por orden dias
         foreach ($diasSemana as $dia) {
             if (!$bool) {
                 foreach ($turnos as $turno) {
                     if (!$bool) {
                         foreach ($espacios as $espacio) {
                             if (!$bool) {
-                                //$espacioAplicacion = AEspacio::model()->findByAttributes(array('pk_espacio' => $espacio));                              
+                                //$espacioAplicacion = AEspacio::model()->findByAttributes(array('pk_espacio' => $espacio));
                                 $espacioAplicacion = DB::table('CATR_ESPACIO')
                                     ->select(
                                         'PK_ESPACIO',

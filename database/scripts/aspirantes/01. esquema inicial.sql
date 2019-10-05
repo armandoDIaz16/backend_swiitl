@@ -12,7 +12,7 @@ alter table CAT_CARRERA
 ;
 
 alter table CAT_INSTITUCION
-    add CLAVE_CIE int
+    add CLAVE_CIE NVARCHAR(20)
 ;
 
 alter table CAT_INSTITUCION
