@@ -1,22 +1,30 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\tutorias;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Mpdf\Mpdf;
 
+/**
+ * Class SITPdfController
+ * @package App\Http\Controllers\tutorias
+ */
 class SITPdfController extends Controller
 {
-    public function generarPdfGrupo(){
+    /**
+     * @return string
+     * @throws \Mpdf\MpdfException
+     */
+    public function get_pdf_perfil_grupal_ingreso()
+    {
         $mpdf = new Mpdf(['orientation' => 'p']);
 
         $html_final = view('tutorias.perfil_grupal_ingreso');
-        /*Fuenres*/
-        /** @noinspection PhpLanguageLevelInspection */
+        /* Fuentes */
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
 
-        /** @noinspection PhpLanguageLevelInspection */
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
 
@@ -38,16 +46,20 @@ class SITPdfController extends Controller
         return $mpdf->Output();
     }
 
-    public function generarPdfIndividual(){
+    /**
+     * @return string
+     * @throws \Mpdf\MpdfException
+     */
+    public function get_pdf_perfil_personal_ingreso()
+    {
         $mpdf = new Mpdf(['orientation' => 'p']);
 
         $html_final = view('tutorias.perfil_individual_ingreso');
-        /*Fuenres*/
-        /** @noinspection PhpLanguageLevelInspection */
+
+        /* Fuentes */
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
 
-        /** @noinspection PhpLanguageLevelInspection */
         $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
 

@@ -397,7 +397,9 @@ class AspiranteController extends Controller
             }
 
             if (!$this->guardarDatosBD($datos, $PK_PERIODO, $nombre) == 1) {
-                error_log("AspiranteController (399) ========================== Error al procesar el pago de preficha: " . $datos['IDCONTROL']);
+                if (isset($datos['IDCONTROL'])) {
+                    error_log("AspiranteController (399) ========================== Error al procesar el pago de preficha: " . $datos['IDCONTROL']);
+                }
             }
             //return $datos;
         }

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\tutorias;
 
+use App\Http\Controllers\Controller;
 use App\GrupoTutorias;
 use App\Helpers\Constantes;
 use App\Helpers\SiiaHelper;
