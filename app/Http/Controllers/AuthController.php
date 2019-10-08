@@ -53,7 +53,8 @@ class AuthController extends Controller
             if (!$this->notifica_usuario(
                 $usuario->CORREO1,
                 $token->TOKEN,
-                $token->CLAVE_ACCESO)) {
+                $token->CLAVE_ACCESO
+            )) {
                 error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
                 error_log("AuthController.php");
             }
@@ -266,6 +267,11 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        User::where([
+            ['PRIMER_LOGIN', 0],
+            ['PK_USUARIO', auth()->user()->PK_USUARIO]]
+        )->update(['PRIMER_LOGIN' => 1]);
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
@@ -273,7 +279,8 @@ class AuthController extends Controller
             'user' => auth()->user()->CORREO1,
             'IdUsuario' => auth()->user()->PK_USUARIO,
             'control' => auth()->user()->NUMERO_CONTROL,
-            'perfil_completo' => auth()->user()->PERFIL_COMPLETO
+            'perfil_completo' => auth()->user()->PERFIL_COMPLETO,
+            'primer_login' => auth()->user()->PRIMER_LOGIN
         ]);
     }
 
@@ -611,7 +618,7 @@ class AuthController extends Controller
                 error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
                 error_log("AuthController.php");
             }
-        }else{// mandar mensaje de cuenta activa y vinculada a CURP
+        } else { // mandar mensaje de cuenta activa y vinculada a CURP
             return response()->json(
                 ['error' => "La CURP proporcionada no se encuentra registrada"],
                 Response::HTTP_NOT_FOUND
