@@ -919,8 +919,9 @@ class AspiranteController extends Controller
             ]);
 
         DB::table('CAT_USUARIO')
-            ->where('CURP', $request->CURP)
+            ->where('PK_USUARIO', $request->PK_USUARIO)
             ->update([
+                'CURP' => $request->CURP,
                 'TELEFONO_CASA' => $request->TELEFONO_CASA,
                 'TELEFONO_MOVIL' => $request->TELEFONO_MOVIL,
                 'CORREO1' => $request->CORREO1
