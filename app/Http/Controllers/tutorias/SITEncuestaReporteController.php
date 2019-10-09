@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\tutorias;
 
+use App\Http\Controllers\Controller;
 use App\Helpers\Constantes;
 use Illuminate\Http\Request;
 use App\Encuesta;

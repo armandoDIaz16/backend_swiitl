@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\tutorias;
+
+use App\Http\Controllers\Controller;
 
 use App\Carrera;
 use App\Helpers\Constantes;

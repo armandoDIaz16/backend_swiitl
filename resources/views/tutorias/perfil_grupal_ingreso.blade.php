@@ -4,35 +4,39 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
     <link href="" rel="stylesheet" media="mpdf">
     <title>Perfil Grupal de Ingreso</title>
-    <style type="text/css">table .gris {background-color:#AFAFAF;}</style>
+    <style type="text/css">table .gris {
+            background-color: #AFAFAF;
+        }</style>
 </head>
 <body>
 <div style="margin-left: 1cm; margin-right: 1cm; padding-top: 3cm;">
     <p align="center"><b>PERFIL GRUPAL DE INGRESO</b></p>
     <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
-        <center>
-            <tr>
-                <th class="gris" colspan="3"> <b>DATOS GENERALES</b> </th>
-            </tr>
-        </center>
+        <tr>
+            <th class="gris" colspan="3"><b>DATOS GENERALES</b></th>
+        </tr>
         <tr>
             <td valign="middle" align="left" colspan="2"><b>NOMBRE DEL TUTOR:</b></td>
             <td valign="middle" align="left"><b>PERIODO: enero-junio___ &nbsp; agosto-dic.___ año___</b>
-                <p><b>FECHA DE CONSULTA:_____</b>	</td>
+                <p><b>FECHA DE CONSULTA:_____</b></td>
         </tr>
         <tr>
             <th class="gris" colspan="3"><b>ASPECTOS ACADÉMICOS</b></th>
         </tr>
         <tr>
-            <td rowspan="2"><b>GRUPO:_____</b></td><td rowspan="2"><b>N° DE ALUMNOS______</b></td><td rowspan="2"><b>SEMESTRE:__ CARRERA:__ </b></td>
+            <td rowspan="2"><b>GRUPO:_____</b></td>
+            <td rowspan="2"><b>N° DE ALUMNOS______</b></td>
+            <td rowspan="2"><b>SEMESTRE:__ CARRERA:__ </b></td>
         </tr>
         <tr></tr>
         <tr>
-            <th class="gris" colspan="3"><b>INDICADORES DE ÁREAS DE OPORTUNIDAD Y/O FORTALEZAS. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I. Reportes Grupales de SIT I</b></th>
+            <th class="gris" colspan="3"><b>INDICADORES DE ÁREAS DE OPORTUNIDAD Y/O FORTALEZAS. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    I. Reportes Grupales de SIT I</b></th>
         </tr>
         <tr>
             <td><b>Datos Personales</b></td>
-            <td colspan="2"><b>Porcentaje grupal de:</b><p><b>Sexo: ___ % Hombre - ___ % Mujer &nbsp; Edad ___%</b>
+            <td colspan="2"><b>Porcentaje grupal de:</b>
+                <p><b>Sexo: ___ % Hombre - ___ % Mujer &nbsp; Edad ___%</b>
                 <p><b>Edo.Civil:___% Soltero ___% Casado ___%Unión libre</b>
                 <p><b>Colonia donde vive:</b>
                 <p><b>Lugar de residencia: % &nbsp; %</b></td>
@@ -68,12 +72,14 @@
         </tr>
         <tr>
             <td><b>Pasatiempos</b></td>
-            <td colspan="2"><b>Mencionar las actividades que más realiza en su tiempo libre: ___%(las que número como 1,2,3)</b>
-                <p><b>Mencionar las actividades que menos hace en su tiempo libre: ___% (las que número como 13, 14, 15)</b></td>
+            <td colspan="2"><b>Mencionar las actividades que más realiza en su tiempo libre: ___%(las que número como
+                    1,2,3)</b>
+                <p><b>Mencionar las actividades que menos hace en su tiempo libre: ___% (las que número como 13, 14,
+                        15)</b></td>
         </tr>
         <tr>
             <td><b>Salud</b></td>
-            <td colspan="2"> <b>Retomar % como grupo y mencionar información</b>
+            <td colspan="2"><b>Retomar % como grupo y mencionar información</b>
                 <p><b>En general ¿Cómo calificas tu salud física?_____</b>
                 <p><b>Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ</b>
                 <p><b>Evaluación de habilidades: Mencionar 16-28 sólo si su respuesta es "Mala" Y "Excelente"</b>
