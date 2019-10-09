@@ -384,7 +384,7 @@ class AspiranteController extends Controller
             $fila = fgets($File);
             //return substr($fila,0,7);
             //array_push($datos, $fila);
-            if (is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319') {
+            if (is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319' || substr($fila, 37, 5) == '03201') {
                 array_push($datos, [
                     'CLAVE' => substr($fila, 0, 7),
                     'REFERENCIA_BANCO' => substr($fila, 37, 20),
@@ -395,14 +395,16 @@ class AspiranteController extends Controller
                     'FECHA_LIMITE' => substr($fila, 140, 10)
                 ]);
             }
+            //error_log(print_r(substr($fila, 42, 4),true));
 
-            if (!$this->guardarDatosBD($datos, $PK_PERIODO, $nombre) == 1) {
+            /* if (!$this->guardarDatosBD($datos, $PK_PERIODO, $nombre) == 1) {
                 if (isset($datos['IDCONTROL'])) {
                     error_log("AspiranteController (399) ========================== Error al procesar el pago de preficha: " . $datos['IDCONTROL']);
                 }
-            }
+            } */
             //return $datos;
         }
+        $this->guardarDatosBD($datos, $PK_PERIODO, $nombre);
     }
 
     private function guardarDatosBD($datos, $PK_PERIODO, $real_name)
