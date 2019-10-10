@@ -80,14 +80,14 @@ class PeriodoController extends Controller
                     'FECHA_FIN' => $request->FECHA_FIN,
                     'FK_USUARIO_MODIFICACION' => $request->FK_USUARIO_MODIFICACION
                 ]);
+            return response()->json('Se modifico correctamente');
         } else {
             $periodo = new Periodo();
             $periodo->FECHA_INICIO = $request->FECHA_INICIO;
             $periodo->FECHA_FIN = $request->FECHA_FIN;
             $periodo->FK_USUARIO_REGISTRO = $request->FK_USUARIO_REGISTRO;
             $periodo->save();
-
-            return Periodo::max('PK_PERIODO_PREFICHAS');
+            return response()->json('Se registro correctamente');
         }
     }
 
@@ -98,8 +98,9 @@ class PeriodoController extends Controller
             ->update([
                 'FECHA_INICIO_CURSO' => $request->FECHA_INICIO_CURSO,
                 'FECHA_FIN_CURSO' => $request->FECHA_FIN_CURSO
-                ]);
-    }    
+            ]);
+        return response()->json('Se modifico correctamente');
+    }
     public function periodoInscripcion(Request $request)
     {
         Periodo::select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO_INSCRIPCION', 'FECHA_FIN_INSCRIPCION')
@@ -107,7 +108,8 @@ class PeriodoController extends Controller
             ->update([
                 'FECHA_INICIO_INSCRIPCION' => $request->FECHA_INICIO_INSCRIPCION,
                 'FECHA_FIN_INSCRIPCION' => $request->FECHA_FIN_INSCRIPCION
-                ]);
+            ]);
+        return response()->json('Se modifico correctamente');
     }
     public function periodoInscripcionCero(Request $request)
     {
@@ -116,43 +118,51 @@ class PeriodoController extends Controller
             ->update([
                 'FECHA_INICIO_INSCRIPCION_BIS' => $request->FECHA_INICIO_INSCRIPCION_BIS,
                 'FECHA_FIN_INSCRIPCION_BIS' => $request->FECHA_FIN_INSCRIPCION_BIS
-                ]);
+            ]);
+        return response()->json('Se modifico correctamente');
     }
     public function montoPreficha(Request $request)
     {
         Periodo::select('PK_PERIODO_PREFICHAS', 'MONTO_PREFICHA')
             ->where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)
             ->update(['MONTO_PREFICHA' => $request->MONTO_PREFICHA]);
+        return response()->json('Se modifico correctamente');
     }
     public function montoCurso(Request $request)
     {
         Periodo::select('PK_PERIODO_PREFICHAS', 'MONTO_CURSO')
             ->where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)
             ->update(['MONTO_CURSO' => $request->MONTO_CURSO]);
+        return response()->json('Se modifico correctamente');
     }
     public function montoInscripcion(Request $request)
     {
         Periodo::select('PK_PERIODO_PREFICHAS', 'MONTO_INSCRIPCION')
             ->where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)
             ->update(['MONTO_INSCRIPCION' => $request->MONTO_INSCRIPCION]);
+        return response()->json('Se modifico correctamente');
     }
     public function montoInscripcionCero(Request $request)
     {
         Periodo::select('PK_PERIODO_PREFICHAS', 'MONTO_INSCRIPCION_BIS')
             ->where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)
             ->update(['MONTO_INSCRIPCION_BIS' => $request->MONTO_INSCRIPCION_BIS]);
+        return response()->json('Se modifico correctamente');
     }
     public function publicarResultados(Request $request)
     {
         Periodo::where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)->update(['RESULTADOS' => $request->RESULTADOS]);
+        return response()->json('Se modifico correctamente');
     }
     public function mensajesAceptacion(Request $request)
     {
-        Periodo::where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)->update(['MENSAJE_SEMESTRE' => $request->MENSAJE_SEMESTRE,'MENSAJE_SEMESTRE_BIS' => $request->MENSAJE_SEMESTRE_BIS]);
+        Periodo::where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)->update(['MENSAJE_SEMESTRE' => $request->MENSAJE_SEMESTRE, 'MENSAJE_SEMESTRE_BIS' => $request->MENSAJE_SEMESTRE_BIS]);
+        return response()->json('Se modifico correctamente');
     }
     public function modificarTipoExamen(Request $request)
     {
         Periodo::where('PK_PERIODO_PREFICHAS', $request->PK_PERIODO_PREFICHAS)->update(['TIPO_APLICACION' => $request->TIPO_APLICACION]);
+        return response()->json('Se modifico correctamente');
     }
 
     /**

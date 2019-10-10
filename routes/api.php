@@ -368,6 +368,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
 });
 
+Route::get('Prueba', 'UsuarioController@prueba');
+Route::get('Prueba2', 'UsuarioController@prueba2');
 /* *********************************************************** *
  * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */

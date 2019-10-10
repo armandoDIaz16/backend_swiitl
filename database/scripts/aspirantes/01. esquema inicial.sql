@@ -398,7 +398,19 @@ alter table CAT_USUARIO
 	add PRIMER_LOGIN smallint default 0
 go
 
-
+CREATE TABLE CATR_CARRERAS_PERIODO
+(
+    PK_CARRERAS_PERIODO              INT IDENTITY PRIMARY KEY,
+    FK_CARRERA            INT      NOT NULL        CONSTRAINT            CATR_CARRERAS_PERIODO_FK_CARRERA_FOREIGN REFERENCES            CAT_CARRERA,
+    FK_PERIODO          INT      NOT NULL        CONSTRAINT            CATR_CARRERAS_PERIODO_FK_PERIODO_FOREIGN REFERENCES            CAT_PERIODO_PREFICHAS,
+    CANTIDAD INT NOT NULL,
+    ESTADO                  SMALLINT NOT NULL DEFAULT 1,
+    FK_USUARIO_REGISTRO     INT,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_REGISTRO          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT NOT NULL DEFAULT 0
+);
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
