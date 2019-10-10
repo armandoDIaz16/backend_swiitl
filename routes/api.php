@@ -44,14 +44,7 @@ Route::middleware('jwt.auth')->get('users', function () {
 });
 
 
-
-
-
 Route::get('leer_archivo', 'AspiranteController@leer_archivo');
-
-
-
-
 
 
 /* Route::group([
@@ -330,6 +323,7 @@ Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
 Route::get('ReferenciaCurso/{preficha}', 'FichaController@descargarReferenciaCurso');
 Route::get('ReferenciaInscripcion/{preficha}', 'FichaController@descargarReferenciaInscripcion');
 Route::get('ReferenciaInscripcionCero/{preficha}', 'FichaController@descargarReferenciaInscripcionCero');
+
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('Aspirante/{id}', 'AspiranteController@show');
     Route::post('Periodo', 'PeriodoController@store');
@@ -341,6 +335,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('MontoInscripcion', 'PeriodoController@montoInscripcion');
     Route::post('MontoInscripcionCero', 'PeriodoController@montoInscripcionCero');
     Route::post('PublicarResultados', 'PeriodoController@publicarResultados');
+    Route::post('ModificarTipoExamen', 'PeriodoController@modificarTipoExamen');
     Route::post('MensajesAceptacion', 'PeriodoController@mensajesAceptacion');
     Route::get('Aspirantes/{PK_PERIODO}', 'AspiranteController@aspirantes');
     Route::get('Aspirantes2', 'AspiranteController@aspirantes2');
@@ -356,7 +351,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('CargarArchivoAceptados/{PK_PERIODO}', 'AspiranteController@cargarArchivoAceptados');
     Route::post('CargarArchivoAcistencia/{PK_PERIODO}', 'AspiranteController@cargarArchivoAsistencia');
     Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
-    Route::get('Grupo', 'GrupoController@listaGrupos');
+    Route::get('ListaGrupo', 'GrupoController@listaGrupos');
     Route::get('ListasGrupos', 'GrupoController@datosListas');
     Route::get('Espacio', 'LugarExamenController@obtenerEspacio');
     Route::get('Turno', 'LugarExamenController@obtenerTurno');
@@ -364,7 +359,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('Grupo', 'LugarExamenController@obtenerGrupo');
     Route::get('Edificio', 'LugarExamenController@obtenerEdificio');
     Route::get('TipoEspacio', 'LugarExamenController@obtenerTipoEspacio');
-    Route::get('Grupo2', 'LugarExamenController@obtenerGrupo');
     Route::post('AgregarTurno', 'LugarExamenController@agregarTurno');
     Route::post('AgregarEspacio', 'LugarExamenController@agregarEspacio');
     Route::post('AgregarGrupo', 'LugarExamenController@agregarGrupo');
@@ -374,107 +368,91 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
 });
- 
+
+/*
+Route::get('Prueba', 'UsuarioController@prueba');
+Route::get('Prueba2', 'UsuarioController@prueba2');
+*/
+
 /* *********************************************************** *
- * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
-/*Route::group(['middleware' => ['jwt.verify']], function () {*/
+Route::group(['middleware' => ['jwt.verify']], function () {
     // Buscar encuesta por pk de encuesta
-    Route::get('cuestionario/{id}', 'SITEncuestaController@get_encuesta');
+    Route::get(
+        'cuestionario/{id}',
+        'tutorias\SITEncuestaController@get_encuesta'
+    );
 
     // Buscar las encuestas asignadas a un id de usuario
-    Route::get('cuestionarios_usuario/{id_usuario}', 'SITEncuestaController@get_cuestionarios_usuarios');
+    Route::get(
+        'cuestionarios_usuario/{id_usuario}',
+        'tutorias\SITEncuestaController@get_cuestionarios_usuarios'
+    );
 
     // Buscar encuesta por pk de aplicacion de encuesta
-    Route::get('get_encuesta_aplicacion/{pk_aplicacion_encuesta}', 'SITEncuestaController@get_encuesta_aplicacion');
+    Route::get(
+        'get_encuesta_aplicacion/{pk_aplicacion_encuesta}',
+        'tutorias\SITEncuestaController@get_encuesta_aplicacion'
+    );
 
     // Guarda respuestas de encuesta
-    Route::post('guarda_respuestas_encuesta', 'SITEncuestaController@guarda_respuestas_encuesta');
+    Route::post(
+        'guarda_respuestas_encuesta',
+        'tutorias\SITEncuestaController@guarda_respuestas_encuesta'
+    );
 
     // Buscar grupos por tutor
-    Route::get('grupos_tutoria/{id_tutor}', 'SITGruposController@get_grupos');
+    Route::get(
+        'grupos_tutoria/{id_tutor}',
+        'tutorias\SITGruposController@get_grupos'
+    );
 
     // Buscar detalle de grupo por id
-    Route::get('detalle_grupo/{id_grupo}', 'SITGruposController@detalle_grupo');
-
-/*});*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    Route::get(
+        'detalle_grupo/{id_grupo}',
+        'tutorias\SITGruposController@detalle_grupo'
+    );
+
+    // Buscar horario por pk usuario
+    Route::get(
+        'get_horario_alumno/{id_usuario}',
+        'tutorias\tutorias/SITAlumnoController@get_horario'
+    );
+
+    // Buscar datos personales por pk usuario
+    Route::get(
+        'get_alumno/{pk_usuario}',
+        'tutorias\SITAlumnoController@get_alumno'
+    );
+
+    // Buscar respuestas por pk_aplicacion
+    Route::get(
+        'get_encuesta_resuelta_aplicacion/{pk_aplicacion}',
+        'tutorias\SITEncuestaController@get_encuesta_resuelta_aplicacion'
+    );
+
+    // Buscar reporte por pk_aplicacion
+    Route::get(
+        'get_reporte_encuesta/{pk_aplicacion}',
+        'SITEncuestaReporteController@get_reporte_encuesta'
+    );
+});
+
+/* *********************************************************** *
+ * ************* RUTAS LIBRES DEL SISTEMA DE TUTORIAS *************** *
+ * *********************************************************** */
+//Generar pdf perfil individual de ingreso
+Route::get(
+    'get_pdf_perfil_personal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+);
+
+//Generar pdf perfil grupal de ingreso
+Route::get(
+    'get_pdf_perfil_grupal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_grupal_ingreso'
+);
 
 
 

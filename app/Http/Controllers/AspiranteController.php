@@ -16,6 +16,7 @@ use App\Helpers\UsuariosHelper;
 
 use App\Aspirante;
 use App\Helpers\Base64ToFile;
+use App\Helpers\EncriptarUsuario;
 use App\Helpers\ObtenerCorreo;
 use App\Mail\AspirantePasswordMail;
 use App\Mail\CorreoAspirantesMail;
@@ -58,7 +59,7 @@ class AspiranteController extends Controller
     public function store(Request $request)
     {
         //return redirect()->action('UserController@profile', [1]);
-        //return redirect()->action('AspirantePasswordController@sendEmail', ['CORREO1' => $request->CORREO1]); 
+        //return redirect()->action('AspirantePasswordController@sendEmail', ['CORREO1' => $request->CORREO1]);
 
 
 
@@ -105,7 +106,7 @@ class AspiranteController extends Controller
 
         if (isset($pdo[0]->RESPUESTA)) {
             if ($pdo[0]->RESPUESTA == 3 || $pdo[0]->RESPUESTA == 5) {
-
+                User::where('PK_USUARIO', $pdo[0]->PK_USUARIO)->update(['PK_ENCRIPTADA' => EncriptarUsuario::getPkEncriptada($pdo[0]->PK_USUARIO, $pdo[0]->FECHA_REGISTRO)]);
                 $token = $this->get_datos_token($pdo[0]);
                 if (!$this->notifica_usuario(
                     $pdo[0]->CORREO1,
@@ -187,6 +188,8 @@ class AspiranteController extends Controller
                 'CAT_CIUDAD.NOMBRE as NOMBRE_CIUDAD',
                 'CAT_ASPIRANTE.PROMEDIO',
                 'CAT_ASPIRANTE.ESPECIALIDAD',
+                'CAT_ASPIRANTE.FK_CARRERA_1',
+                'CAT_ASPIRANTE.FK_CARRERA_2',
                 DB::raw("CAT_CARRERA1.NOMBRE+' CAMPUS ' +CAT_CAMPUS1.NOMBRE as CARRERA1"),
                 DB::raw("CASE WHEN CAT_CARRERA2.NOMBRE IS NULL THEN '' ELSE CAT_CARRERA2.NOMBRE+' CAMPUS ' +CAT_CAMPUS2.NOMBRE  END as CARRERA2"),
                 'CAT_ASPIRANTE.ICNE',
@@ -380,9 +383,12 @@ class AspiranteController extends Controller
         $datos = array();
         while (!feof($File)) {
             $fila = fgets($File);
-            //return substr($fila,0,7);            
+            //return substr($fila,0,7);
             //array_push($datos, $fila);
-            if (is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319') {
+            if (
+                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319' ||
+                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03201'
+            ) {
                 array_push($datos, [
                     'CLAVE' => substr($fila, 0, 7),
                     'REFERENCIA_BANCO' => substr($fila, 37, 20),
@@ -393,14 +399,22 @@ class AspiranteController extends Controller
                     'FECHA_LIMITE' => substr($fila, 140, 10)
                 ]);
             }
-            if ($this->guardarDatosBD($datos, $PK_PERIODO, $nombre) == 1) {
-                return 1;
-            } else {
-                return 2;
-            }
+            //error_log(print_r(substr($fila, 42, 4),true));
+
+            /* if (!$this->guardarDatosBD($datos, $PK_PERIODO, $nombre) == 1) {
+                if (isset($datos['IDCONTROL'])) {
+                    error_log("AspiranteController (399) ========================== Error al procesar el pago de preficha: " . $datos['IDCONTROL']);
+                }
+            } */
             //return $datos;
         }
+        if ($this->guardarDatosBD($datos, $PK_PERIODO, $nombre)) {
+            return 1;
+        } else {
+            return 2;
+        }
     }
+
     private function guardarDatosBD($datos, $PK_PERIODO, $real_name)
     {
 
@@ -440,7 +454,7 @@ class AspiranteController extends Controller
                         ->update(['FK_ESTATUS' => 2]);
                 }
             }
-            return 1;
+            return true;
         }
     }
 
@@ -663,14 +677,14 @@ class AspiranteController extends Controller
                     if (!$bool) {
                         foreach ($turnos as $turno) { */
 
-        //Insertar por orden dias                    
+        //Insertar por orden dias
         foreach ($diasSemana as $dia) {
             if (!$bool) {
                 foreach ($turnos as $turno) {
                     if (!$bool) {
                         foreach ($espacios as $espacio) {
                             if (!$bool) {
-                                //$espacioAplicacion = AEspacio::model()->findByAttributes(array('pk_espacio' => $espacio));                              
+                                //$espacioAplicacion = AEspacio::model()->findByAttributes(array('pk_espacio' => $espacio));
                                 $espacioAplicacion = DB::table('CATR_ESPACIO')
                                     ->select(
                                         'PK_ESPACIO',
@@ -824,7 +838,7 @@ class AspiranteController extends Controller
                     $preficha = $objPHPExcel->getCell("A" . $row)->getValue();
                     $asistencia = $objPHPExcel->getCell("C" . $row)->getValue();
                     if ($preficha && $asistencia == 1) {
-                        error_log(print_r($asistencia, true));
+                        //error_log(print_r($asistencia, true));
                         //Actualiza el estatus por preficha
                         DB::table('CAT_ASPIRANTE')
                             ->where([
@@ -915,8 +929,9 @@ class AspiranteController extends Controller
             ]);
 
         DB::table('CAT_USUARIO')
-            ->where('CURP', $request->CURP)
+            ->where('PK_USUARIO', $request->PK_USUARIO)
             ->update([
+                'CURP' => $request->CURP,
                 'TELEFONO_CASA' => $request->TELEFONO_CASA,
                 'TELEFONO_MOVIL' => $request->TELEFONO_MOVIL,
                 'CORREO1' => $request->CORREO1
