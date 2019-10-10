@@ -394,9 +394,6 @@ CREATE TABLE TR_INCAPACIDAD_ASPIRANTE
 /*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
 
 
-alter table CAT_USUARIO
-	add PRIMER_LOGIN smallint default 0
-go
 
 CREATE TABLE CATR_CARRERAS_PERIODO
 (
