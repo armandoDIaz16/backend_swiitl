@@ -323,6 +323,7 @@ Route::get('Referencia/{preficha}', 'FichaController@descargarReferencia');
 Route::get('ReferenciaCurso/{preficha}', 'FichaController@descargarReferenciaCurso');
 Route::get('ReferenciaInscripcion/{preficha}', 'FichaController@descargarReferenciaInscripcion');
 Route::get('ReferenciaInscripcionCero/{preficha}', 'FichaController@descargarReferenciaInscripcionCero');
+
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('Aspirante/{id}', 'AspiranteController@show');
     Route::post('Periodo', 'PeriodoController@store');
@@ -369,7 +370,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 });
 
 /* *********************************************************** *
- * ************* RUTAS DEL SISTEMA DE TUTORIAS *************** *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
 Route::group(['middleware' => ['jwt.verify']], function () {
     // Buscar encuesta por pk de encuesta
@@ -431,20 +432,28 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'get_reporte_encuesta/{pk_aplicacion}',
         'SITEncuestaReporteController@get_reporte_encuesta'
     );
-
-    //Generar pdf perfil individual de ingreso
-    Route::get(
-        'get_pdf_perfil_personal_ingreso',
-        'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
-    );
-
-    //Generar pdf perfil grupal de ingreso
-    Route::get(
-        'get_pdf_perfil_grupal_ingreso',
-        'tutorias\SITPdfController@get_pdf_perfil_grupal_ingreso'
-    );
-
 });
+
+/* *********************************************************** *
+ * ************* RUTAS LIBRES DEL SISTEMA DE TUTORIAS *************** *
+ * *********************************************************** */
+//Generar pdf perfil individual de ingreso
+Route::get(
+    'get_pdf_perfil_personal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+);
+
+//Generar pdf perfil grupal de ingreso
+Route::get(
+    'get_pdf_perfil_grupal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_grupal_ingreso'
+);
+
+
+
+
+
+
 
 
 ///////////////////////////////// PAAE ////////////////////////////////////

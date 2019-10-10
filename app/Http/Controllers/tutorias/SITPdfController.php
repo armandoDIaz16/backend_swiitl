@@ -53,6 +53,7 @@ class SITPdfController extends Controller
     public function get_pdf_perfil_personal_ingreso()
     {
         $mpdf = new Mpdf(['orientation' => 'p']);
+        $mpdf->use_kwt = true;
 
         $html_final = view('tutorias.perfil_individual_ingreso');
 

@@ -28,8 +28,8 @@ class Constantes
     public static function get_periodo_texto()
     {
         return (date('m') > 6)
-            ? 'Enero - Julio ' . date('Y')
-            : 'Agosto - Diciembre ' . date('Y');
+            ? 'Agosto - Diciembre ' . date('Y')
+            : 'Enero - Julio ' . date('Y');
     }
 
     CONST ENCUESTA_PENDIENTE  = 1;
