@@ -280,7 +280,8 @@ class AuthController extends Controller
             'IdUsuario' => auth()->user()->PK_USUARIO,
             'control' => auth()->user()->NUMERO_CONTROL,
             'perfil_completo' => auth()->user()->PERFIL_COMPLETO,
-            'primer_login' => auth()->user()->PRIMER_LOGIN
+            'primer_login' => auth()->user()->PRIMER_LOGIN,
+            'IdEncriptada' => auth()->user()->PK_ENCRIPTADA
         ]);
     }
 

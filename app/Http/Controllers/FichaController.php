@@ -12,7 +12,7 @@ class FichaController extends Controller
     public function descargarReferencia($id)
     {
 
-        $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
+        $fk_aspirante = DB::table('CAT_ASPIRANTE')->join('CAT_USUARIO','CAT_USUARIO.PK_USUARIO','=','CAT_ASPIRANTE.FK_PADRE')->where('PK_ENCRIPTADA', $id)->max('PK_ASPIRANTE');
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
@@ -25,7 +25,7 @@ class FichaController extends Controller
             )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
             ->where([
-                ['CAT_USUARIO.PK_USUARIO', '=', $id],
+                ['CAT_USUARIO.PK_ENCRIPTADA', '=', $id],
                 ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante],
             ])
             ->get();
@@ -130,40 +130,7 @@ class FichaController extends Controller
 
     public function descargarFicha($id)
     {
-        $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
-
-        /* $aspirante = DB::table('CAT_USUARIO')
-        ->select(
-            DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
-            'CAT_CARRERA.NOMBRE as NOMBRE_CARRERA',
-            'CAT_CARRERA.CAMPUS',
-            'CAT_ASPIRANTE.FOLIO_CENEVAL',
-            'CAT_USUARIO.name as NOMBRE',
-            'CAT_USUARIO.PRIMER_APELLIDO',
-            DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
-            'CAT_TURNO.DIA',
-            'CAT_TURNO.DIA as NOMBRE_DIA',
-            'CAT_TURNO.HORA',
-            'CATR_EDIFICIO.NOMBRE as NOMBRE_EDIFICIO',
-            'CATR_EDIFICIO.PREFIJO',
-            'CAT_CAMPUS.NOMBRE as NOMBRE_CAMPUS',
-            'CATR_ESPACIO.NOMBRE as NOMBRE_ESPACIO',
-            'CAT_ASPIRANTE.FECHA_MODIFICACION'
-        )
-        ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
-        ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
-        ->join('CATR_EXAMEN_ADMISION', 'CATR_EXAMEN_ADMISION.PK_EXAMEN_ADMISION', '=', 'CAT_ASPIRANTE.FK_EXAMEN_ADMISION')
-        ->join('CAT_TURNO', 'CAT_TURNO.PK_TURNO', '=', 'CATR_EXAMEN_ADMISION.FK_TURNO')
-        ->join('CATR_ESPACIO', 'CATR_ESPACIO.PK_ESPACIO', '=', 'CATR_EXAMEN_ADMISION.FK_ESPACIO')
-        ->join('CATR_EDIFICIO', 'CATR_EDIFICIO.PK_EDIFICIO', '=', 'CATR_ESPACIO.FK_EDIFICIO')
-        ->join('CAT_CAMPUS', 'CAT_CAMPUS.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
-        ->where([
-            ['CAT_USUARIO.PK_USUARIO', '=', $id],
-            ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante]
-        ])
-        ->get(); */
-
-
+        $fk_aspirante = DB::table('CAT_ASPIRANTE')->join('CAT_USUARIO','CAT_USUARIO.PK_USUARIO','=','CAT_ASPIRANTE.FK_PADRE')->where('PK_ENCRIPTADA', $id)->max('PK_ASPIRANTE');
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
@@ -191,7 +158,7 @@ class FichaController extends Controller
             ->join('CAT_CAMPUS', 'CAT_CAMPUS.PK_CAMPUS', '=', 'TR_CARRERA_CAMPUS.FK_CAMPUS')
             ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'TR_CARRERA_CAMPUS.FK_CARRERA')
             ->where([
-                ['CAT_USUARIO.PK_USUARIO', '=', $id],
+                ['CAT_USUARIO.PK_ENCRIPTADA', '=', $id],
                 ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante]
             ])
             ->get();
@@ -276,7 +243,7 @@ class FichaController extends Controller
 
     public function descargarReferenciaCurso($id)
     {
-        $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
+        $fk_aspirante = DB::table('CAT_ASPIRANTE')->join('CAT_USUARIO','CAT_USUARIO.PK_USUARIO','=','CAT_ASPIRANTE.FK_PADRE')->where('PK_ENCRIPTADA', $id)->max('PK_ASPIRANTE');
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
@@ -289,7 +256,7 @@ class FichaController extends Controller
             )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
             ->where([
-                ['CAT_USUARIO.PK_USUARIO', '=', $id],
+                ['CAT_USUARIO.PK_ENCRIPTADA', '=', $id],
                 ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante],
             ])
             ->get();
@@ -341,7 +308,7 @@ class FichaController extends Controller
 
     public function descargarReferenciaInscripcion($id)
     {
-        $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
+        $fk_aspirante = DB::table('CAT_ASPIRANTE')->join('CAT_USUARIO','CAT_USUARIO.PK_USUARIO','=','CAT_ASPIRANTE.FK_PADRE')->where('PK_ENCRIPTADA', $id)->max('PK_ASPIRANTE');
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
@@ -354,7 +321,7 @@ class FichaController extends Controller
             )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
             ->where([
-                ['CAT_USUARIO.PK_USUARIO', '=', $id],
+                ['CAT_USUARIO.PK_ENCRIPTADA', '=', $id],
                 ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante],
             ])
             ->get();
@@ -406,7 +373,7 @@ class FichaController extends Controller
 
     public function descargarReferenciaInscripcionCero($id)
     {
-        $fk_aspirante = DB::table('CAT_ASPIRANTE')->where('FK_PADRE', $id)->max('PK_ASPIRANTE');
+        $fk_aspirante = DB::table('CAT_ASPIRANTE')->join('CAT_USUARIO','CAT_USUARIO.PK_USUARIO','=','CAT_ASPIRANTE.FK_PADRE')->where('PK_ENCRIPTADA', $id)->max('PK_ASPIRANTE');
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
@@ -419,7 +386,7 @@ class FichaController extends Controller
             )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
             ->where([
-                ['CAT_USUARIO.PK_USUARIO', '=', $id],
+                ['CAT_USUARIO.PK_ENCRIPTADA', '=', $id],
                 ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante],
             ])
             ->get();

@@ -16,6 +16,7 @@ use App\Helpers\UsuariosHelper;
 
 use App\Aspirante;
 use App\Helpers\Base64ToFile;
+use App\Helpers\EncriptarUsuario;
 use App\Helpers\ObtenerCorreo;
 use App\Mail\AspirantePasswordMail;
 use App\Mail\CorreoAspirantesMail;
@@ -105,7 +106,7 @@ class AspiranteController extends Controller
 
         if (isset($pdo[0]->RESPUESTA)) {
             if ($pdo[0]->RESPUESTA == 3 || $pdo[0]->RESPUESTA == 5) {
-
+                User::where('PK_USUARIO', $pdo[0]->PK_USUARIO)->update(['PK_ENCRIPTADA' => EncriptarUsuario::getPkEncriptada($pdo[0]->PK_USUARIO, $pdo[0]->FECHA_REGISTRO)]);
                 $token = $this->get_datos_token($pdo[0]);
                 if (!$this->notifica_usuario(
                     $pdo[0]->CORREO1,
@@ -384,7 +385,10 @@ class AspiranteController extends Controller
             $fila = fgets($File);
             //return substr($fila,0,7);
             //array_push($datos, $fila);
-            if (is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319' || substr($fila, 37, 5) == '03201') {
+            if (
+                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319' ||
+                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03201'
+            ) {
                 array_push($datos, [
                     'CLAVE' => substr($fila, 0, 7),
                     'REFERENCIA_BANCO' => substr($fila, 37, 20),
@@ -404,7 +408,11 @@ class AspiranteController extends Controller
             } */
             //return $datos;
         }
-        $this->guardarDatosBD($datos, $PK_PERIODO, $nombre);
+        if ($this->guardarDatosBD($datos, $PK_PERIODO, $nombre)) {
+            return 1;
+        } else {
+            return 2;
+        }
     }
 
     private function guardarDatosBD($datos, $PK_PERIODO, $real_name)
@@ -446,7 +454,7 @@ class AspiranteController extends Controller
                         ->update(['FK_ESTATUS' => 2]);
                 }
             }
-            return 1;
+            return true;
         }
     }
 
@@ -830,7 +838,7 @@ class AspiranteController extends Controller
                     $preficha = $objPHPExcel->getCell("A" . $row)->getValue();
                     $asistencia = $objPHPExcel->getCell("C" . $row)->getValue();
                     if ($preficha && $asistencia == 1) {
-                        error_log(print_r($asistencia, true));
+                        //error_log(print_r($asistencia, true));
                         //Actualiza el estatus por preficha
                         DB::table('CAT_ASPIRANTE')
                             ->where([
