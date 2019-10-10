@@ -57,7 +57,7 @@ class GraficasAsesoriaController extends Controller
     {
         $materias = DB::table('TR_ASESORIA_MOTIVO')
         ->select('p.PK_TECNOLOGICO','p.Nombre')
-        ->join('users as a', 'a.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
         ->join('PAAE_TECNOLOGICO as p', 'p.PK_TECNOLOGICO', '=', 'a.FK_TECNOLOGICO')
         ->distinct()
         ->get();
@@ -70,8 +70,9 @@ class GraficasAsesoriaController extends Controller
     public function carrera()
     {
         $materias = DB::table('TR_ASESORIA_MOTIVO')
-        ->select('a.CLAVE_CARRERA')
-        ->join('users as a', 'a.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
+        ->select('b.NOMBRE')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
+        ->join('CAT_CARRERA as b', 'b.PK_CARRERA', '=', 'a.PK_USUARIO')
         ->distinct()
         ->get();
         //->leftJoin(DB::raw('(SELECT FK_ESTATUS, CANTIDAD = COUNT(* )  FROM CATR_ASPIRANTE WHERE FK_PERIODO=' . $PK_PERIODO . ' GROUP BY FK_ESTATUS) x'), 'x.FK_ESTATUS', '=', 'CAT_ESTATUS_ASPIRANTE.PK_ESTATUS_ASPIRANTE')
@@ -85,7 +86,7 @@ class GraficasAsesoriaController extends Controller
         $materias = DB::table('TR_ASESORIA_MOTIVO')
         ->select('a.NOMBRE as country',DB::raw('COUNT(a.NOMBRE)AS litres'))
         ->join('CAT_MOTIVO_ASESORIA_ACADEMICA as a', 'a.PK_MOTIVO_ASESORIA_ACADEMICA', '=', 'TR_ASESORIA_MOTIVO.FK_MOTIVO')
-        ->join('users as s', 's.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
+        ->join('CAT_USUARIO as s', 's.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
         ->where('s.FK_TECNOLOGICO',$request->tecnologico)
         ->groupBy('a.NOMBRE')
         ->get();
@@ -115,7 +116,7 @@ class GraficasAsesoriaController extends Controller
         $materias = DB::table('TR_ASESORIA_MOTIVO')
         ->select('a.NOMBRE as country',DB::raw('COUNT(a.NOMBRE)AS litres'))
         ->join('CAT_MOTIVO_ASESORIA_ACADEMICA as a', 'a.PK_MOTIVO_ASESORIA_ACADEMICA', '=', 'TR_ASESORIA_MOTIVO.FK_MOTIVO')
-        ->join('users as s', 's.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
+        ->join('CAT_USUARIO as s', 's.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
         ->where('s.CLAVE_CARRERA',$request->carrera)
         ->groupBy('a.NOMBRE')
         ->get();
@@ -130,14 +131,14 @@ class GraficasAsesoriaController extends Controller
         //$materias = DB::table('TR_EVALUACION_SATISFACCION')
         $materias = DB::table('ITL_SICH.dbo.view_alumnos as db1')
         ->select('db1.Semestre as country',DB::raw('COUNT(db1.Semestre)AS litres'))
-        ->join('SWIITL.dbo.users as db2', 'db1.NumeroControl', '=', 'db2.NUMERO_CONTROL')
+        ->join('CAT_USUARIO as db2', 'db1.NumeroControl', '=', 'db2.NUMERO_CONTROL')
         ->join('TR_EVALUACION_SATISFACCION as a', 'a.FK_USER', '=', 'db2.PK_USUARIO')
         //->where('db2.id', 5)
        ->groupBy('db1.Semestre')
         ->get();
         /* ->select('a.NOMBRE as country',DB::raw('COUNT(a.NOMBRE)AS litres'))
         ->join('CAT_MOTIVO_ASESORIA_ACADEMICA as a', 'a.PK_MOTIVO_ASESORIA_ACADEMICA', '=', 'TR_ASESORIA_MOTIVO.FK_MOTIVO')
-        ->join('users as s', 's.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
+        ->join('CAT_USUARIO as s', 's.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
         ->where('s.FK_TECNOLOGICO',$request->tecnologico)
         ->groupBy('a.NOMBRE')
         ->get(); */
@@ -152,14 +153,14 @@ class GraficasAsesoriaController extends Controller
         //$materias = DB::table('TR_EVALUACION_SATISFACCION')
         $materias = DB::table('ITL_SICH.dbo.view_alumnos as db1')
         ->select('db1.ClaveCarrera as country',DB::raw('COUNT(db1.ClaveCarrera)AS litres'))
-        ->join('SWIITL.dbo.users as db2', 'db1.NumeroControl', '=', 'db2.NUMERO_CONTROL')
+        ->join('CAT_USUARIO as db2', 'db1.NumeroControl', '=', 'db2.NUMERO_CONTROL')
         ->join('TR_EVALUACION_SATISFACCION as a', 'a.FK_USER', '=', 'db2.PK_USUARIO')
         //->where('db2.id', 5)
        ->groupBy('db1.ClaveCarrera')
         ->get();
         /* ->select('a.NOMBRE as country',DB::raw('COUNT(a.NOMBRE)AS litres'))
         ->join('CAT_MOTIVO_ASESORIA_ACADEMICA as a', 'a.PK_MOTIVO_ASESORIA_ACADEMICA', '=', 'TR_ASESORIA_MOTIVO.FK_MOTIVO')
-        ->join('users as s', 's.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
+        ->join('CAT_USUARIO as s', 's.PK_USUARIO', '=', 'TR_ASESORIA_MOTIVO.FK_USER')
         ->where('s.FK_TECNOLOGICO',$request->tecnologico)
         ->groupBy('a.NOMBRE')
         ->get(); */
@@ -296,7 +297,7 @@ class GraficasAsesoriaController extends Controller
         $pila2 = array();
         $nombres =  DB::table('TR_EVALUACION_SATISFACCION as b')
         ->select('a.CLAVE_CARRERA','b.FK_USER')
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_USER')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_USER')
         ->distinct()
         ->get();
 
@@ -366,20 +367,20 @@ class GraficasAsesoriaController extends Controller
         $resultado1 = array();        
         $solicitadas = DB::table('CATR_USER_ASESORIA_HORARIO as b')
         ->select('CLAVE_CARRERA as NOMBRE',DB::raw('COUNT(CLAVE_CARRERA)AS CANTIDAD'))
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_USUARIO')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_USUARIO')
         ->groupBy('CLAVE_CARRERA')
         ->get();
         //return $solicitadas;
         /* $aceptadas = DB::table('CATR_USER_ASESORIA_HORARIO as b')
         ->select('b.MATERIA  as NOMBRE', DB::raw('CANTIDAD = ISNULL(CANTIDAD,0)'),'a.CLAVE_CARRERA as CARRERA')
         ->distinct()
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_USUARIO')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_USUARIO')
         ->leftJoin(DB::raw('(SELECT MATERIA, CANTIDAD = COUNT(* )  FROM CATR_ASESORIA_ACEPTADA GROUP BY MATERIA) x'), 'x.MATERIA', '=', 'b.MATERIA')
         ->get(); */
         $aceptadas = DB::table('CATR_ASESORIA_ACEPTADA as b')
         ->select('CLAVE_CARRERA as NOMBRE', DB::raw('COUNT(CLAVE_CARRERA)AS CANTIDAD'),'FK_ALUMNO')
         ->distinct()
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
         ->groupBy('CLAVE_CARRERA')
         ->groupBy('FK_ALUMNO')
         //->leftJoin(DB::raw('(SELECT MATERIA, CANTIDAD = COUNT(* )  FROM CATR_ASESORIA_ACEPTADA GROUP BY MATERIA) x'), 'x.MATERIA', '=', 'b.MATERIA')
@@ -403,14 +404,14 @@ class GraficasAsesoriaController extends Controller
         $resultado1 = array();        
         $solicitadas = DB::table('CATR_USER_ASESORIA_HORARIO as b')
         ->select('MATERIA as NOMBRE',DB::raw('COUNT(MATERIA)AS CANTIDAD'),'CLAVE_CARRERA as CARRERA')
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_USUARIO')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_USUARIO')
         ->groupBy('MATERIA')
         ->groupBy('CLAVE_CARRERA')
         ->get();
         //return $solicitadas;
         $aceptadas = DB::table('CATR_USER_ASESORIA_HORARIO as b')
         ->select('b.MATERIA as NOMBRE', DB::raw('CANTIDAD = ISNULL(CANTIDAD,0)'),'CLAVE_CARRERA AS CARRERA')
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_USUARIO')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_USUARIO')
         ->distinct()
         ->leftJoin(DB::raw('(SELECT MATERIA, CANTIDAD = COUNT(* )  FROM CATR_ASESORIA_ACEPTADA GROUP BY MATERIA) x'), 'x.MATERIA', '=', 'b.MATERIA')
         ->groupBy('a.CLAVE_CARRERA')
@@ -420,7 +421,7 @@ class GraficasAsesoriaController extends Controller
         /* $aceptadas = DB::table('CATR_ASESORIA_ACEPTADA as b')
         ->select('MATERIA as NOMBRE', DB::raw('COUNT(MATERIA)AS CANTIDAD'),'CLAVE_CARRERA as CARRERA')
         ->distinct()
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
         ->groupBy('CLAVE_CARRERA')
         ->groupBy('MATERIA')
         ->groupBy('FK_ALUMNO')
@@ -449,7 +450,7 @@ class GraficasAsesoriaController extends Controller
         $final1 = array();
         $solicitadas = DB::table('CATR_ASESORIA_ACEPTADA as b')
         ->select('NUMERO_CONTROL as CONTROL','MATERIA')
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
         ->groupBy('NUMERO_CONTROL')
         ->groupBy('MATERIA')
         ->get();
@@ -501,7 +502,7 @@ class GraficasAsesoriaController extends Controller
         $final1 = array();
         $solicitadas = DB::table('CATR_ASESORIA_ACEPTADA as b')
         ->select('NUMERO_CONTROL as CONTROL','MATERIA')
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
         ->groupBy('NUMERO_CONTROL')
         ->groupBy('MATERIA')
         ->get();
@@ -551,7 +552,7 @@ class GraficasAsesoriaController extends Controller
         $final1 = array();
         $solicitadas = DB::table('CATR_ASESORIA_ACEPTADA as b')
         ->select('NUMERO_CONTROL as CONTROL','MATERIA','CLAVE_CARRERA as CARRERA')
-        ->join('users as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
+        ->join('CAT_USUARIO as a', 'a.PK_USUARIO', '=', 'b.FK_ALUMNO')
         ->groupBy('NUMERO_CONTROL')
         ->groupBy('CLAVE_CARRERA')
         ->groupBy('MATERIA')

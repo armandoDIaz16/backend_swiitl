@@ -545,6 +545,7 @@ Route::get('AsesoresPeriodo','PAAE_Periodo@AsesoresListalPeriodo');
 Route::get('SesionAsesor','PAAE_Periodo@sesionPorAsesor');
 Route::get('CorreosAlumnos','PAAE_Periodo@correosAlumnos');
 Route::get('ListaAlumnos','PAAE_Periodo@listaAlumnos');
+Route::get('CorreoIndividualAlumno','PAAE_Periodo@correoIndividualAlumno');
 Route::get('CorreoAsesor','PAAE_Periodo@correoAsesor');
 Route::post('SolicitudAsesoria','PAAE_Periodo@crearSolicitud');
 Route::post('SolicitudAsesor','PAAE_Periodo@crearSolicitudAsesor');
