@@ -19,21 +19,6 @@
     </style>
 </head>
 <body>
-{{--
-
-<pageheader name="encabezado_reporte"
-            content-left="{DATE j-m-Y}" content-center="{PAGENO}/{nbpg}"
-            content-right="My document" header-style="font-family: serif; font-size: 8pt;
-  font-weight: bold; font-style: italic; color: #000000;" />
-
-<pagefooter name="pie_pagina_reporte"
-            content-left="{DATE j-m-Y}" content-center="{PAGENO}/{nbpg}"
-            content-right="My document" footer-style="font-family: serif; font-size: 8pt;
-  font-weight: bold; font-style: italic; color: #000000;" />
-
-<setpageheader name="encabezado_reporte" value="on" show-this-page="1" />
-<setpagefooter name="pie_pagina_reporte" value="on" />
---}}
 
 <!-- INICIO ESTILOS ENCABEZADO -->
 <htmlpageheader name="MyHeader1">
