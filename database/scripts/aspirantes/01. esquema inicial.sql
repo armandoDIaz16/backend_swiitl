@@ -409,6 +409,30 @@ CREATE TABLE CATR_CARRERAS_PERIODO
     BORRADO                 SMALLINT NOT NULL DEFAULT 0
 );
 
+/* Nuevos cambios */
+
+ALTER TABLE CAT_ASPIRANTE DROP CONSTRAINT DF__CAT_ASPIR__ASIST__4AD81681
+ALTER TABLE CAT_ASPIRANTE DROP column ASISTENCIA
+
+alter table CAT_TURNO
+drop constraint DIA_HORA
+go
+
+create unique index DIA_HORA_PERIODO
+	on CAT_TURNO (DIA, HORA, FK_PERIODO)
+go
+
+alter table CATR_ESPACIO
+    drop constraint NOMBRE_IDENTIFICADOR
+go
+create unique index NOMBRE_IDENTIFICADOR_PERIODO
+	on CATR_ESPACIO (NOMBRE, IDENTIFICADOR, FK_PERIODO)
+go
+
+alter table CATR_EXAMEN_ADMISION
+    drop constraint ESPACIO_TURNO
+go
+
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------

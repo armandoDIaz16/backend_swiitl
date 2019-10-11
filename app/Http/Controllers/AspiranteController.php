@@ -194,7 +194,7 @@ class AspiranteController extends Controller
                 DB::raw("CASE WHEN CAT_CARRERA2.NOMBRE IS NULL THEN '' ELSE CAT_CARRERA2.NOMBRE+' CAMPUS ' +CAT_CAMPUS2.NOMBRE  END as CARRERA2"),
                 'CAT_ASPIRANTE.ICNE',
                 'CAT_ASPIRANTE.DDD_MG_MAT',
-                'CAT_ASPIRANTE.ASISTENCIA',
+                //'CAT_ASPIRANTE.ASISTENCIA',
                 'CAT_ASPIRANTE.ACEPTADO'
             )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
@@ -596,7 +596,6 @@ class AspiranteController extends Controller
             $objReader = PHPExcel_IOFactory::createReader($inputFileType);
             $objPHPExcel = $objReader->load($ruta)->getSheet(1);
 
-
             for ($row = 4; $row <= $objPHPExcel->getHighestRow(); $row++) {
                 $preficha = $objPHPExcel->getCell("F" . $row)->getValue();
                 $folioCeneval = $objPHPExcel->getCell("G" . $row)->getValue();
@@ -622,7 +621,7 @@ class AspiranteController extends Controller
                                 'FOLIO_CENEVAL' => $folioCeneval,
                                 'FK_ESTATUS' => 4,
                                 'FECHA_MODIFICACION' => date('Y-m-d H:i:s'),
-                                'FK_EXAMEN_ADMISION' => $this->asignaExamen()
+                                'FK_EXAMEN_ADMISION' => $this->asignaExamen($PK_PERIODO)
                             ]);
                     }
                 } else {
@@ -634,7 +633,7 @@ class AspiranteController extends Controller
             return response()->json("El archivo de carga de ceneval no ha podido ser procesado");
         }
     }
-    private function asignaExamen()
+    private function asignaExamen($PK_PERIODO)
     {
         $bool = false;
 
@@ -651,6 +650,7 @@ class AspiranteController extends Controller
                 'DIA',
                 'HORA'
             )
+            ->where('FK_PERIODO', $PK_PERIODO)
             ->get();
 
         $diasSemanaTotal = [];
@@ -701,7 +701,8 @@ class AspiranteController extends Controller
                                     )
                                     ->where([
                                         ['DIA', '=', $dia],
-                                        ['HORA', '=', $turno]
+                                        ['HORA', '=', $turno],
+                                        ['FK_PERIODO', '=', $PK_PERIODO]
                                     ])
                                     ->get();
 
@@ -713,7 +714,8 @@ class AspiranteController extends Controller
                                         )
                                         ->where([
                                             ['FK_ESPACIO', '=', $espacioAplicacion[0]->PK_ESPACIO],
-                                            ['FK_TURNO', '=', $modelTurnoDia[0]->PK_TURNO]
+                                            ['FK_TURNO', '=', $modelTurnoDia[0]->PK_TURNO],
+                                            ['FK_PERIODO', '=', $PK_PERIODO]
                                         ])
                                         ->get();
                                     if (isset($examen[0])) {
@@ -723,7 +725,8 @@ class AspiranteController extends Controller
                                             DB::table('CATR_EXAMEN_ADMISION')
                                                 ->where([
                                                     ['FK_ESPACIO', '=', $espacioAplicacion[0]->PK_ESPACIO],
-                                                    ['FK_TURNO', '=', $modelTurnoDia[0]->PK_TURNO]
+                                                    ['FK_TURNO', '=', $modelTurnoDia[0]->PK_TURNO],
+                                                    ['FK_PERIODO', '=', $PK_PERIODO]
                                                 ])
                                                 ->update(
                                                     ['LUGARES_OCUPADOS' => $examen[0]->LUGARES_OCUPADOS + 1]
@@ -843,13 +846,11 @@ class AspiranteController extends Controller
                         DB::table('CAT_ASPIRANTE')
                             ->where([
                                 ['FK_PERIODO', '=', $PK_PERIODO],
-                                ['PREFICHA', '=', $preficha] //,
-                                //['FK_ESTATUS', '=', 4]
+                                ['PREFICHA', '=', $preficha],
+                                ['FK_ESTATUS', '=', 4]
                             ])
-                            ->update(['ASISTENCIA' => 1]);
-                    } else {
-                        break;
-                    }
+                            ->update(['FK_ESTATUS' => 5]);
+                    } 
                 }
             }
             return response()->json("Se registro correctamente");
