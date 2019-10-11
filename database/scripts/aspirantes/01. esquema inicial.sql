@@ -8,48 +8,37 @@
 -- SCRIPT INICIAL PARA LAS TABLAS DEL ESQUEMA TECNOLÓGICO
 
 alter table CAT_CARRERA
-    add CLAVE_CARRERA nvarchar(30) default NULL
-;
+    add CLAVE_CARRERA nvarchar(30) default NULL;
 
 alter table CAT_INSTITUCION
-    add CLAVE_CIE NVARCHAR(20)
-;
+    add CLAVE_CIE NVARCHAR(20);
 
 alter table CAT_INSTITUCION
-    alter column FK_ZONA int null
-;
+    alter column FK_ZONA int null;
 
 alter table CAT_INSTITUCION
-    alter column FK_ENTIDAD_FEDERATIVA int null
-;
+    alter column FK_ENTIDAD_FEDERATIVA int null;
 
 alter table CAT_AREA_ACADEMICA
-    alter column NOMBRE nvarchar(50) not null
-;
+    alter column NOMBRE nvarchar(50) not null;
 
 alter table CAT_AREA_ACADEMICA
-    alter column ABREVIATURA nvarchar(10) null
-;
+    alter column ABREVIATURA nvarchar(10) null;
 
 alter table CAT_USUARIO
-    alter column TOKEN_CURP nvarchar(150) null
-;
+    alter column TOKEN_CURP nvarchar(150) null;
 
 alter table CAT_USUARIO
-    alter column NUMERO_CONTROL nvarchar(8) null
-;
+    alter column NUMERO_CONTROL nvarchar(8) null;
 
 alter table CAT_COLONIA
-    alter column NOMBRE nvarchar(150) not null
-;
+    alter column NOMBRE nvarchar(150) not null;
 
 alter table CAT_COLONIA
-    alter column FK_TIPO_ASENTAMIENTO int null
-;
+    alter column FK_TIPO_ASENTAMIENTO int null;
 
 alter table CAT_ENTIDAD_FEDERATIVA
-    alter column FK_PAIS int null
-;
+    alter column FK_PAIS int null;
 
 CREATE TABLE CATR_REFERENCIA_BANCARIA_USUARIO
 (
@@ -394,13 +383,14 @@ CREATE TABLE TR_INCAPACIDAD_ASPIRANTE
 /*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
 
 
-
 CREATE TABLE CATR_CARRERAS_PERIODO
 (
-    PK_CARRERAS_PERIODO              INT IDENTITY PRIMARY KEY,
-    FK_CARRERA            INT      NOT NULL        CONSTRAINT            CATR_CARRERAS_PERIODO_FK_CARRERA_FOREIGN REFERENCES            CAT_CARRERA,
-    FK_PERIODO          INT      NOT NULL        CONSTRAINT            CATR_CARRERAS_PERIODO_FK_PERIODO_FOREIGN REFERENCES            CAT_PERIODO_PREFICHAS,
-    CANTIDAD INT NOT NULL,
+    PK_CARRERAS_PERIODO     INT IDENTITY PRIMARY KEY,
+    FK_CARRERA              INT      NOT NULL
+        CONSTRAINT CATR_CARRERAS_PERIODO_FK_CARRERA_FOREIGN REFERENCES CAT_CARRERA,
+    FK_PERIODO              INT      NOT NULL
+        CONSTRAINT CATR_CARRERAS_PERIODO_FK_PERIODO_FOREIGN REFERENCES CAT_PERIODO_PREFICHAS,
+    CANTIDAD                INT      NOT NULL,
     ESTADO                  SMALLINT NOT NULL DEFAULT 1,
     FK_USUARIO_REGISTRO     INT,
     FK_USUARIO_MODIFICACION INT,
