@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\Base64ToFile;
 use App\InformeTecnico;
 use App\CreditosSiia;
 use App\PeriodoResidencia;
@@ -30,10 +31,12 @@ class InformeTecnicoController extends Controller
         $diaf = $fecha->FFinD($request->FK_ALUMNO,5);
         if ($diai<=$dia && $dia<=$diaf){
             $informe = new InformeTecnico();
-            $carga = new CargaArchivo();
+            //$carga = new CargaArchivo();
+            $archivo = new Base64ToFile();
+            $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
             $periodo = new CreditosSiia();
-            $ruta = $carga->saveFile($request);
-            $informe->INFORME = $ruta;
+            //$ruta = $carga->saveFile($request);
+            $informe->INFORME = $Ruta;
             $informe->FK_ALUMNO = $request->FK_ALUMNO;
             $informe->PERIODO = $periodo->periodo();
             try{
