@@ -444,6 +444,25 @@ CREATE TABLE CATR_EXAMEN_ADMISION_ESCRITO
     CONSTRAINT CARRERA_EEDIFICIO_TURNO_PERIODO UNIQUE (FK_CARRERA, FK_EDIFICIO, FK_TURNO, FK_PERIODO)
 );
 
+alter table CATR_EXAMEN_ADMISION_ESCRITO
+	add LUGARES_OCUPADOS int default 0
+go
+
+alter table CATR_EDIFICIO
+	add CAPACIDAD int default 0
+go
+
+alter table CAT_ASPIRANTE
+	add FK_EXAMEN_ADMISION_ESCRITO int
+go
+
+alter table CAT_ASPIRANTE
+	add constraint CAT_ASPIRANTE_FK_EXAMEN_ADMISION_ESCRITO
+		foreign key (FK_EXAMEN_ADMISION_ESCRITO) references CATR_EXAMEN_ADMISION_ESCRITO
+go
+
+
+
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
