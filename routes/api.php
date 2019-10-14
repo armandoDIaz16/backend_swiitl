@@ -357,6 +357,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('Turno/{PK_PERIODO}', 'LugarExamenController@obtenerTurno');
     Route::get('Turno2/{PK_PERIODO}', 'LugarExamenController@obtenerTurno2');
     Route::get('Grupo/{PK_PERIODO}', 'LugarExamenController@obtenerGrupo');
+    Route::get('GrupoEscrito/{PK_PERIODO}', 'LugarExamenController@obtenerGrupoEscrito');
     Route::get('Edificio', 'LugarExamenController@obtenerEdificio');
     Route::get('TipoEspacio', 'LugarExamenController@obtenerTipoEspacio');
     Route::post('AgregarTurno', 'LugarExamenController@agregarTurno');
@@ -366,7 +367,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('ModificarEspacio', 'LugarExamenController@modificarEspacio');
     Route::post('ModificarTurno', 'LugarExamenController@modificarTurno');
     Route::post('ModificarGrupo', 'LugarExamenController@modificarGrupo');
-
+    Route::post('ModificarGrupoEscrito', 'LugarExamenController@modificarGrupoEscrito');
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
 });
 
