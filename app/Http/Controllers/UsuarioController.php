@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\EncriptarUsuario;
+use App\User;
 use App\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
 {
@@ -82,5 +85,16 @@ class UsuarioController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function prueba()
+    {
+        $usuarios = User::select('PK_USUARIO', 'FECHA_REGISTRO')->get();
+        foreach ($usuarios as $usuario) {
+            User::where('PK_USUARIO', $usuario->PK_USUARIO)->update(['PK_ENCRIPTADA' => EncriptarUsuario::getPkEncriptada($usuario->PK_USUARIO,$usuario->FECHA_REGISTRO)]);
+        }
+    }
+    public function prueba2()
+    {
+        return User::select('PK_USUARIO','FECHA_REGISTRO','PK_ENCRIPTADA')->get();
     }
 }

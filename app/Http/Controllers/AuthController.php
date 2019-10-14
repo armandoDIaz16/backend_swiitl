@@ -50,13 +50,14 @@ class AuthController extends Controller
             $token = $this->get_datos_token($usuario);
 
             // enviar correo de notificación
-            /*if (!$this->notifica_usuario(
+            if (!$this->notifica_usuario(
                 $usuario->CORREO1,
                 $token->TOKEN,
-                $token->CLAVE_ACCESO)) {
+                $token->CLAVE_ACCESO
+            )) {
                 error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
                 error_log("AuthController.php");
-            }*/
+            }
 
             // llamada exitosa
             return response()->json(['data' => true], Response::HTTP_OK);
@@ -107,7 +108,7 @@ class AuthController extends Controller
 
         if ($datos_token_vigente) {
             $usuario = User::where('PK_USUARIO', $datos_token_vigente->FK_USUARIO)->first();
-            if ($usuario->ESTADO == Constantes_Alumnos::ALUMNO_REGISTRADO) {
+            if ($usuario->ESTADO == Constantes_Alumnos::ALUMNO_REGISTRADO || $usuario->ESTADO == Constantes_Alumnos::ALUMNO_CUENTA_ACTIVA) {
                 return response()->json(
                     [
                         'data' => [
@@ -266,6 +267,11 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        User::where([
+            ['PRIMER_LOGIN', 0],
+            ['PK_USUARIO', auth()->user()->PK_USUARIO]]
+        )->update(['PRIMER_LOGIN' => 1]);
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
@@ -273,7 +279,9 @@ class AuthController extends Controller
             'user' => auth()->user()->CORREO1,
             'IdUsuario' => auth()->user()->PK_USUARIO,
             'control' => auth()->user()->NUMERO_CONTROL,
-            'perfil_completo' => auth()->user()->PERFIL_COMPLETO
+            'perfil_completo' => auth()->user()->PERFIL_COMPLETO,
+            'primer_login' => auth()->user()->PRIMER_LOGIN,
+            'IdEncriptada' => auth()->user()->PK_ENCRIPTADA
         ]);
     }
 
@@ -328,16 +336,9 @@ class AuthController extends Controller
      * */
     private function notifica_usuario($correo_receptor, $token, $clave)
     {
-        //obtener correo del sistema
-        $datos_sistema = Sistema::where('ABREVIATURA', 'SIT')->first();
-
         //enviar correo de notificación
         $mailer = new Mailer(
             array(
-                // correo de origen
-                'correo_origen' => $datos_sistema->CORREO1,
-                'password_origen' => $datos_sistema->INDICIO1,
-
                 // datos que se mostrarán del emisor
                 // 'correo_emisor' => $datos_sistema->CORREO1,
                 'correo_emisor' => 'tecvirtual@itleon.edu.mx',
@@ -618,11 +619,11 @@ class AuthController extends Controller
                 error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
                 error_log("AuthController.php");
             }
-        }else{// mandar mensaje de cuenta activa y vinculada a CURP
+        } else { // mandar mensaje de cuenta activa y vinculada a CURP
             return response()->json(
                 ['error' => "La CURP proporcionada no se encuentra registrada"],
                 Response::HTTP_NOT_FOUND
-            );            
+            );
         }
     }
 }
