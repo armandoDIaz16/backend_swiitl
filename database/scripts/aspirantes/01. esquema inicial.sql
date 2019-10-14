@@ -401,27 +401,27 @@ CREATE TABLE CATR_CARRERAS_PERIODO
 
 /* Nuevos cambios */
 
-ALTER TABLE CAT_ASPIRANTE DROP CONSTRAINT DF__CAT_ASPIR__ASIST__4AD81681
+ALTER TABLE CAT_ASPIRANTE DROP CONSTRAINT DF__CAT_ASPIR__ASIST__5E1FF51F
 ALTER TABLE CAT_ASPIRANTE DROP column ASISTENCIA
 
-alter table CAT_TURNO
-drop constraint DIA_HORA
-go
+    alter table CAT_TURNO
+    drop constraint DIA_HORA
+    go
+select LTRIM
+    create unique index DIA_HORA_PERIODO
+    	on CAT_TURNO (DIA, HORA, FK_PERIODO)
+    go
 
-create unique index DIA_HORA_PERIODO
-	on CAT_TURNO (DIA, HORA, FK_PERIODO)
-go
+    alter table CATR_ESPACIO
+        drop constraint NOMBRE_IDENTIFICADOR
+    go
+    create unique index NOMBRE_IDENTIFICADOR_PERIODO
+    	on CATR_ESPACIO (NOMBRE, IDENTIFICADOR, FK_PERIODO)
+    go
 
-alter table CATR_ESPACIO
-    drop constraint NOMBRE_IDENTIFICADOR
-go
-create unique index NOMBRE_IDENTIFICADOR_PERIODO
-	on CATR_ESPACIO (NOMBRE, IDENTIFICADOR, FK_PERIODO)
-go
-
-alter table CATR_EXAMEN_ADMISION
-    drop constraint ESPACIO_TURNO
-go
+    alter table CATR_EXAMEN_ADMISION
+        drop constraint ESPACIO_TURNO
+    go
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
