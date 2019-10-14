@@ -610,7 +610,7 @@ class AuthController extends Controller
     {
         $usuario = Usuario::where('CURP', $request->CURP)->first();
         if (isset($usuario->PK_USUARIO)) {
-            error_log(print_r($usuario, true));
+            // error_log(print_r($usuario, true));
             $token = $this->get_datos_token($usuario);
             if (!$this->notifica_usuario(
                 $usuario->CORREO1,
