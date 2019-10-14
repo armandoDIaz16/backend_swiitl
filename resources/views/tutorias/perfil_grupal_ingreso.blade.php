@@ -95,7 +95,7 @@
                 <p class="bold">SEMESTRE: <u>1</u></p>
             </td>
             <td width="25%">
-                <p class="bold">CARRERA:</p>
+                <p class="bold">CARRERA: <u>{{$data['carrera']}}</u></p>
             </td>
         </tr>
         <tr>

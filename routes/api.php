@@ -419,7 +419,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     // Buscar horario por pk usuario
     Route::get(
         'get_horario_alumno/{id_usuario}',
-        'tutorias\tutorias/SITAlumnoController@get_horario'
+        'tutorias\SITAlumnoController@get_horario'
     );
 
     // Buscar datos personales por pk usuario
@@ -437,7 +437,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     // Buscar reporte por pk_aplicacion
     Route::get(
         'get_reporte_encuesta/{pk_aplicacion}',
-        'SITEncuestaReporteController@get_reporte_encuesta'
+        'tutorias\SITEncuestaReporteController@get_reporte_encuesta'
     );
 });
 
