@@ -8,16 +8,16 @@ class AspirantePasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $token;
-    public $email;
+    public $CORREO1;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($token,$email)
+    public function __construct($token,$CORREO1)
     {
         $this->token = $token;
-        $this->email = $email;
+        $this->CORREO1 = $CORREO1;
     }
     /**
      * Build the message.
@@ -28,7 +28,7 @@ class AspirantePasswordMail extends Mailable
     {
         return $this->markdown('mails.aspirantePassword')->from('us@example.com', 'ITL')->with([
             'token' => $this->token,
-            'email' => $this->email
+            'CORREO1' => $this->CORREO1
         ]);
     }
 }

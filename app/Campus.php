@@ -13,5 +13,5 @@ class Campus extends Model{
         'FECHA_MODIFICACION',
         'BORRADO'
     ];
-    protected $table = 'CATR_CAMPUS';
+    protected $table = 'CAT_CAMPUS';
 }

@@ -9,7 +9,7 @@ Para completar el registro y poder acceder al sistema, es necesario que actives 
 
 - Escribir una contraseña y presionar el botón "Guardar"
 
-@component('mail::button', ['url' => 'http://localhost:4200/#/response-password-reset?token='.$token.'&email='.$email])
+@component('mail::button', ['url' => 'http://10.0.31.10/#/response-password-reset?token='.$token.'&CORREO1='.$CORREO1])
 Sistema
 @endcomponent
 

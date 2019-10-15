@@ -49,7 +49,8 @@ class User extends Authenticatable implements JWTSubject
         'BORRADO',
         'NUMERO_CONTROL',
         'CLAVE_CARRERA',
-        'SEMESTRE'
+        'SEMESTRE',
+        'PK_ENCRIPTADA'
     ];
 
     protected $table = 'CAT_USUARIO';

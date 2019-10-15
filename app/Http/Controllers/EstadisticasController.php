@@ -13,7 +13,7 @@ class EstadisticasController extends Controller
     {
         $periodo = new CreditosSiia();
         $actual = $periodo->periodo();
-        $proyectos = DB::select('select count(NOMBRE) from CAT_ANTEPROYECTO_RESIDENCIA
+        $proyectos = DB::select('select count(CAT_ANTEPROYECTO_RESIDENCIA.NOMBRE) from CAT_ANTEPROYECTO_RESIDENCIA
                                         JOIN CAT_USUARIO on CAT_ANTEPROYECTO_RESIDENCIA.AUTOR = CAT_USUARIO.PK_USUARIO
                                         JOIN CATR_ALUMNO ON CAT_USUARIO.PK_USUARIO = CATR_ALUMNO.ID_PADRE
                                         WHERE PERIODO = :periodo',['periodo'=>$actual]);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CargaArchivo;
+use App\Helpers\Base64ToFile;
 use App\CreditosSiia;
 use App\ReporteDocente;
 use App\PeriodoResidencia;
@@ -26,7 +27,7 @@ class ReporteDocenteController extends Controller
     public function store(Request $request)
     {
         $reporte = new ReporteDocente();
-        $cargar = new CargaArchivo();
+        //$cargar = new CargaArchivo();
         $periodo = new CreditosSiia();
         $fecha = new PeriodoResidencia();
         $x = $request->ID;
@@ -52,7 +53,9 @@ class ReporteDocenteController extends Controller
         $dia = date('Y-m-d');
         if ($diai<=$dia && $dia<=$diaf) {
             $reporte->ALUMNO = $request->alumno;
-            $reporte->PDF = $cargar->saveFile($request);
+            $archivo = new Base64ToFile();
+            $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
+            $reporte->PDF = $Ruta;//$cargar->saveFile($request);
             $reporte->DOCENTE = $request->id;
             $reporte->NUMERO = $request->ID;
             $reporte->PERIODO = $periodo->periodo();
