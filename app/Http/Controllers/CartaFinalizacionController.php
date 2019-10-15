@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CargaArchivo;
 use App\CartaFinalizacion;
+use App\Helpers\Base64ToFile;
 use App\CreditosSiia;
 use App\DocumentacionResidencias;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class CartaFinalizacionController extends Controller
     {
         $periodo = new CreditosSiia();
         $carta = DocumentacionResidencias::where([['ALUMNO',$request->FK_ALUMNO],['PERIODO',$periodo->periodo()]])->get();
-        $carga = new CargaArchivo();
+        //$carga = new CargaArchivo();
         $fecha = new PeriodoResidencia();
         try{
         $diai = $fecha->FIniA($request->FK_ALUMNO, 5);
@@ -39,7 +40,9 @@ class CartaFinalizacionController extends Controller
         }
         $dia = date('Y-m-d');
         if ($diai<=$dia && $dia<=$diaf) {
-            $Ruta = $carga->saveFile($request);
+            //$Ruta = $carga->saveFile($request);
+            $archivo = new Base64ToFile();
+            $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
             $carta->CARTA = $Ruta;
             try{
             $carta->save();

@@ -46,16 +46,16 @@ class LugarExamenController extends Controller
 
     public function modificarEspacio(Request $request)
     {
-        try{
+        try {
             DB::table('CATR_ESPACIO')
-            ->where('PK_ESPACIO', $request->PK_ESPACIO)
-            ->update([
-                'FK_EDIFICIO' => $request->FK_EDIFICIO,
-                'FK_TIPO_ESPACIO' => $request->FK_TIPO_ESPACIO,
-                'NOMBRE' => $request->NOMBRE,
-                'IDENTIFICADOR' => $request->IDENTIFICADOR,
-                'CAPACIDAD' => $request->CAPACIDAD
-            ]);
+                ->where('PK_ESPACIO', $request->PK_ESPACIO)
+                ->update([
+                    'FK_EDIFICIO' => $request->FK_EDIFICIO,
+                    'FK_TIPO_ESPACIO' => $request->FK_TIPO_ESPACIO,
+                    'NOMBRE' => $request->NOMBRE,
+                    'IDENTIFICADOR' => $request->IDENTIFICADOR,
+                    'CAPACIDAD' => $request->CAPACIDAD
+                ]);
             return response()->json('Se modifico correctamente');
         } catch (QueryException $ex) {
             return response()->json('El nombre y el identificador ya estan registrados');
@@ -98,16 +98,22 @@ class LugarExamenController extends Controller
 
     public function modificarTurno(Request $request)
     {
-        try{
-        DB::table('CAT_TURNO')
-            ->where('PK_TURNO', $request->PK_TURNO)
-            ->update([
-                'DIA' => $request->DIA,
-                'HORA' => $request->HORA
-            ]);
+        try {
+            DB::table('CAT_TURNO')
+                ->where(
+                    [
+                        ['PK_TURNO', $request->PK_TURNO],
+                        ['FK_PERIODO', $request->FK_PERIODO]
+                    ]
+                )
+                ->update([
+                    'DIA' => $request->DIA,
+                    'HORA' => $request->HORA
+                ]);
             return response()->json('Se modifico correctamente');
         } catch (QueryException $ex) {
-            return response()->json('La fecha y la hora ya estan registradas');
+            //return response()->json('La fecha y la hora ya estan registradas');
+            return response()->json($ex->getMessage());
         }
     }
 
@@ -121,18 +127,43 @@ class LugarExamenController extends Controller
             ->orderby('PK_EXAMEN_ADMISION')
             ->get();
     }
+    public function obtenerGrupoEscrito($pkPeriodo)
+    {
+        return DB::table('CATR_EXAMEN_ADMISION_ESCRITO')
+            ->select('PK_EXAMEN_ADMISION_ESCRITO', DB::raw('ROW_NUMBER() OVER(ORDER BY PK_EXAMEN_ADMISION_ESCRITO) AS GRUPO'), 'FK_CARRERA', 'FK_EDIFICIO', 'FK_TURNO', 'FK_EDIFICIO')
+            ->where('FK_PERIODO', $pkPeriodo)
+            ->orderby('PK_EXAMEN_ADMISION_ESCRITO')
+            ->get();
+    }
     public function modificarGrupo(Request $request)
     {
-        try{
-         DB::table('CATR_EXAMEN_ADMISION')
-            ->where('PK_EXAMEN_ADMISION', $request->PK_EXAMEN_ADMISION)
-            ->update([
-                'FK_ESPACIO' => $request->FK_ESPACIO,
-                'FK_TURNO' => $request->FK_TURNO
-            ]);
+        try {
+            DB::table('CATR_EXAMEN_ADMISION')
+                ->where('PK_EXAMEN_ADMISION', $request->PK_EXAMEN_ADMISION)
+                ->update([
+                    'FK_ESPACIO' => $request->FK_ESPACIO,
+                    'FK_TURNO' => $request->FK_TURNO
+                ]);
             return response()->json('Se modifico correctamente');
         } catch (QueryException $ex) {
             return response()->json('El espacio y el turno ya estan registrados');
+        }
+    }
+
+    public function modificarGrupoEscrito(Request $request)
+    {
+        try {
+            DB::table('CATR_EXAMEN_ADMISION_ESCRITO')
+                ->where('PK_EXAMEN_ADMISION_ESCRITO', $request->PK_EXAMEN_ADMISION_ESCRITO)
+                ->update([
+                    'FK_CARRERA' => $request->FK_CARRERA,
+                    'FK_EDIFICIO' => $request->FK_EDIFICIO,
+                    'FK_TURNO' => $request->FK_TURNO,
+                    'FK_PERIODO' => $request->FK_PERIODO
+                ]);
+            return response()->json('Se modifico correctamente');
+        } catch (QueryException $ex) {
+            return response()->json('La carrera, el edificio y el turno ya estan registrados');
         }
     }
 
