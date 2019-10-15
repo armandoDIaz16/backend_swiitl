@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CreditosSiia;
 use Illuminate\Http\Request;
 use App\CargaArchivo;
+use App\Helpers\Base64ToFile;
 use App\AnteproyectoResidencias;
 use App\PeriodoResidencia;
 use Illuminate\Support\Facades\DB;
@@ -191,9 +192,11 @@ class AnteproyectoResidenciasController extends Controller
     public function proyecto(Request $request){
         $ALUMNO = $request->id;
         $anteproyecto = AnteproyectoResidencias::where('ALUMNO',$ALUMNO)->first();
-        $carga = new CargaArchivo();
-        $ruta = $carga->savefile($request);
-        $anteproyecto->PDF = $ruta;
+/*        $carga = new CargaArchivo();
+        $ruta = $carga->savefile($request);*/
+        $archivo = new Base64ToFile();
+        $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
+        $anteproyecto->PDF = $Ruta;
         try{
         $anteproyecto->save();
         return json_encode('Guardado con exito!');}

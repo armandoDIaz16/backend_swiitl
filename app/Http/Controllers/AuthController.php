@@ -280,7 +280,9 @@ class AuthController extends Controller
             'IdUsuario' => auth()->user()->PK_USUARIO,
             'control' => auth()->user()->NUMERO_CONTROL,
             'perfil_completo' => auth()->user()->PERFIL_COMPLETO,
-            'primer_login' => auth()->user()->PRIMER_LOGIN
+            'primer_login' => auth()->user()->PRIMER_LOGIN,
+            'IdEncriptada' => auth()->user()->PK_ENCRIPTADA,
+            'tipo_usuario' => auth()->user()->TIPO_USUARIO
         ]);
     }
 
@@ -608,7 +610,7 @@ class AuthController extends Controller
     {
         $usuario = Usuario::where('CURP', $request->CURP)->first();
         if (isset($usuario->PK_USUARIO)) {
-            error_log(print_r($usuario, true));
+            // error_log(print_r($usuario, true));
             $token = $this->get_datos_token($usuario);
             if (!$this->notifica_usuario(
                 $usuario->CORREO1,

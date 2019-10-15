@@ -4,101 +4,213 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
     <link href="" rel="stylesheet" media="mpdf">
     <title>Perfil Grupal de Ingreso</title>
-    <style type="text/css">table .gris {
-            background-color: #AFAFAF;
-        }</style>
+    <style type="text/css">
+        table .gris {
+            background-color: rgb(178, 179, 179);
+        }
+
+        p > *, p{
+            font-size: .8em;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<div style="margin-left: 1cm; margin-right: 1cm; padding-top: 3cm;">
+
+<!-- INICIO ESTILOS ENCABEZADO -->
+<htmlpageheader name="MyHeader1">
+    <div>
+        <table width="100%">
+            <tr>
+                <td width="50%" align="left">
+                    <img src="{{public_path('img/comun/sep_marca_agua.png')}}" alt="">
+                </td>
+                <td width="50%" align="right">
+                    <img src="{{public_path('img/comun/tecnm_itl_gris_marca_agua.png')}}" alt="">
+                </td>
+            </tr>
+        </table>
+    </div>
+</htmlpageheader>
+<!-- FIN ESTILOS ENCABEZADO -->
+
+<!-- INICIO ESTILOS FOOTER -->
+<htmlpagefooter name="MyFooter1">
+    <table width="100%">
+        <tr>
+            <td width="33%"><span style="font-weight: bold; font-style: italic;"></span></td>
+            <td width="33%" style="text-align: center; "></td>
+            <td width="33%" align="right" style="font-style: italic; font-size: .6em">
+                Página {PAGENO} de {nbpg}
+            </td>
+        </tr>
+    </table>
+</htmlpagefooter>
+<!-- FIN ESTILOS FOOTER -->
+
+<!-- FIJAR ENCABEZADO -->
+<sethtmlpageheader name="MyHeader1" value="on" show-this-page="1" />
+
+<!-- FIJAR FOOTER -->
+<sethtmlpagefooter name="MyFooter1" value="on" />
+
+<!-- INICIO CONTENIDO -->
+<div style="padding-top: 80px; page-break: auto;">
     <p align="center"><b>PERFIL GRUPAL DE INGRESO</b></p>
-    <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+    <table width="100%" border="1" cellpadding="7px" cellspacing="0" bordercolor="#000000" style="page-break-inside: avoid">
         <tr>
-            <th class="gris" colspan="3"><b>DATOS GENERALES</b></th>
+            <td class="gris" colspan="4" align="center">
+                <p class="bold">DATOS GENERALES</p>
+            </td>
         </tr>
         <tr>
-            <td valign="middle" align="left" colspan="2"><b>NOMBRE DEL TUTOR:</b></td>
-            <td valign="middle" align="left"><b>PERIODO: enero-junio___ &nbsp; agosto-dic.___ año___</b>
-                <p><b>FECHA DE CONSULTA:_____</b></td>
+            <td valign="middle" align="left" colspan="2">
+                <p class="bold">NOMBRE DEL TUTOR: <u>{{$data['tutor']}}</u></p>
+            </td>
+            <td valign="middle" align="left" colspan="2">
+                <p class="bold">
+                    PERIODO: <u>{{\App\Helpers\Constantes::get_periodo_texto()}}</u>
+                </p>
+                <p class="bold">
+                    FECHA DE CONSULTA: <u>{{date('j-m-Y')}}</u>
+                </p>
+            </td>
         </tr>
         <tr>
-            <th class="gris" colspan="3"><b>ASPECTOS ACADÉMICOS</b></th>
+            <td class="gris" colspan="4" align="center">
+                <p class="bold">ASPECTOS ACADÉMICOS</p>
+            </td>
         </tr>
         <tr>
-            <td rowspan="2"><b>GRUPO:_____</b></td>
-            <td rowspan="2"><b>N° DE ALUMNOS______</b></td>
-            <td rowspan="2"><b>SEMESTRE:__ CARRERA:__ </b></td>
-        </tr>
-        <tr></tr>
-        <tr>
-            <th class="gris" colspan="3"><b>INDICADORES DE ÁREAS DE OPORTUNIDAD Y/O FORTALEZAS. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    I. Reportes Grupales de SIT I</b></th>
-        </tr>
-        <tr>
-            <td><b>Datos Personales</b></td>
-            <td colspan="2"><b>Porcentaje grupal de:</b>
-                <p><b>Sexo: ___ % Hombre - ___ % Mujer &nbsp; Edad ___%</b>
-                <p><b>Edo.Civil:___% Soltero ___% Casado ___%Unión libre</b>
-                <p><b>Colonia donde vive:</b>
-                <p><b>Lugar de residencia: % &nbsp; %</b></td>
+            <td width="25%">
+                <p class="bold">GRUPO: <u>{{$data['grupo']}}</u></p>
+            </td>
+            <td width="25%">
+                <p class="bold">N° DE ALUMNOS: <u>{{$data['cantidad_alumnos']}}</u></p>
+            </td>
+            <td width="25%">
+                <p class="bold">SEMESTRE: <u>1</u></p>
+            </td>
+            <td width="25%">
+                <p class="bold">CARRERA: <u>{{$data['carrera']}}</u></p>
+            </td>
         </tr>
         <tr>
-            <td><b>Condición Académica</b></td>
-            <td colspan="2"><b>Porcentaje grupal de:</b>
-                <p><b>Tipo de preparatoria_____%Pública. _____%Privada</b>
-                <p><b>Área: ___%Humanidades. ___%CBQ ___%Físico-matemáticas</b>
-                <p><b>Promedio de calificación de preparatoria: ___%90-100 &nbsp; ___%80-89 ___%70-79</b>
-                <p><b>Materias difíciles: ___% Cálculo ___% Química</b>
-                <p><b>ITL como primera opción: ___% sí &nbsp; ___% no</b>
-                <p><b>Carrera actual como primera opción &nbsp; ___% sí &nbsp; ___% no</b></td>
+            <td class="gris" colspan="4" align="center">
+                <p class="bold">
+                    INDICADORES DE ÁREAS DE OPORTUNIDAD Y/O FORTALEZAS
+                </p>
+            </td>
         </tr>
         <tr>
-            <td><b>Condición Socioeconómica</b></td>
-            <td colspan="2"><b>Porcentaje grupal de:</b>
-                <p><b>Nivel Socioeconómico: A_____ C+_____ C_____ C-_____ y explicación del nivel____________</b>
-                <p><b>¿Con quién vive?_____ &nbsp; ¿Trabaja? &nbsp; _____% sí &nbsp; _____% no &nbsp; </b>
-                <p><b>¿Quién aporta $ para sus estudios? _____</b>
-                <p><b>Escolaridad del padre_________ &nbsp; Escolaridad de la madre_________</b></td>
+            <td>
+                <p class="bold">Datos Personales</p>
+            </td>
+            <td colspan="3">
+                <p class="bold">Porcentaje grupal de:</p>
+                <p>Sexo: ___ % Hombre - ___ % Mujer &nbsp; Edad ___%</p>
+                <p>Edo.Civil:___% Soltero ___% Casado ___%Unión libre</p>
+                <p>Colonia donde vive:</p>
+                <p>Lugar de residencia: % &nbsp; %</p>
+            </td>
         </tr>
         <tr>
-            <td><b>Condición Familiar</b></td>
-            <td colspan="2"><b>Porcentaje grupal de: (dos primeros porcentajes)</b>
-                <p><b>Tipo de familia _____% &nbsp; _____%</b>
-                <p><b>Condición familiar en aspectos excelentes_____ _____ _____ _____</b>
-                <p><b>Condición familiar en aspectos deficientes____ _____ _____ _____</b>
-                <p><b>FACE 20 ESP</b>
-                <p><b>Nivel de cohesión_____ &nbsp; Tipo de familia por cohesión_____ y expliación_____</b>
-                <p><b>Nivel de adaptabilidad_____ &nbsp; Tipo de familia por adaptabilidad_____ y expliación_____</b>
-                <p><b>Nivel de funcionamiento_____ y expliación_____</b></td>
+            <td>
+                <p class="bold">Condición Académica</p>
+            </td>
+            <td colspan="3">
+                <p class="bold">Porcentaje grupal de:</p>
+                <p>Tipo de preparatoria_____%Pública. _____%Privada</p>
+                <p>Área: ___%Humanidades. ___%CBQ ___%Físico-matemáticas</p>
+                <p>Promedio de calificación de preparatoria: ___%90-100 &nbsp; ___%80-89 ___%70-79</p>
+                <p>Materias difíciles: ___% Cálculo ___% Química</p>
+                <p>ITL como primera opción: ___% sí &nbsp; ___% no</p>
+                <p>Carrera actual como primera opción &nbsp; ___% sí &nbsp; ___% no</p>
+            </td>
         </tr>
         <tr>
-            <td><b>Pasatiempos</b></td>
-            <td colspan="2"><b>Mencionar las actividades que más realiza en su tiempo libre: ___%(las que número como
-                    1,2,3)</b>
-                <p><b>Mencionar las actividades que menos hace en su tiempo libre: ___% (las que número como 13, 14,
-                        15)</b></td>
+            <td>
+                <p class="bold">Condición Socioeconómica</p>
+            </td>
+            <td colspan="3">
+                <p class="bold">Porcentaje grupal de:</p>
+                <p>Nivel Socioeconómico: A_____ C+_____ C_____ C-_____ y explicación del nivel____________</p>
+                <p>¿Con quién vive?_____ &nbsp; ¿Trabaja? &nbsp; _____% sí &nbsp; _____% no &nbsp; </p>
+                <p>¿Quién aporta $ para sus estudios? _____</p>
+                <p>Escolaridad del padre_________ &nbsp; Escolaridad de la madre_________</p>
+            </td>
         </tr>
         <tr>
-            <td><b>Salud</b></td>
-            <td colspan="2"><b>Retomar % como grupo y mencionar información</b>
-                <p><b>En general ¿Cómo calificas tu salud física?_____</b>
-                <p><b>Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ</b>
-                <p><b>Evaluación de habilidades: Mencionar 16-28 sólo si su respuesta es "Mala" Y "Excelente"</b>
-                <p><b>La mayor parte del tiempo me siento: Triste &nbsp; Alegre &nbsp; Ansioso &nbsp; Tranquilo</b></td>
+            <td>
+                <p class="bold">Condición Familiar</p>
+            </td>
+            <td colspan="3">
+                <p class="bold">Porcentaje grupal de: (dos primeros porcentajes)</p>
+                <p>Tipo de familia _____% &nbsp; _____%</p>
+                <p>Condición familiar en aspectos excelentes_____ _____ _____ _____</p>
+                <p>Condición familiar en aspectos deficientes____ _____ _____ _____</p>
+                <p>FACE 20 ESP</p>
+                <p>Nivel de cohesión_____ &nbsp; Tipo de familia por cohesión_____ y expliación_____</p>
+                <p>Nivel de adaptabilidad_____ &nbsp; Tipo de familia por adaptabilidad_____ y expliación_____</p>
+                <p>Nivel de funcionamiento_____ y expliación_____</p>
+            </td>
         </tr>
         <tr>
-            <td><b>Hábitos de estudio</b></td>
-            <td colspan="2"><b>Mencionar puntos fuertes. Son aquellos aspectos con puntuación igual o mayor a 70</b>
-                <p><b>Mencionar puntos débiles. Son aquellos aspectos con puntuación menor a 70</b></td>
+            <td>
+                <p class="bold">Pasatiempos</p>
+            </td>
+            <td colspan="3">
+                <p>
+                    Mencionar las actividades que más realiza en su tiempo libre: ___%(las que número como
+                    1,2,3)
+                </p>
+                <p>
+                    Mencionar las actividades que menos hace en su tiempo libre: ___% (las que número como 13, 14,15)
+                </p>
+            </td>
         </tr>
         <tr>
-            <td><b>16 PF</b></td>
-            <td colspan="2"><b>PENDIENTE</b></td>
+            <td>
+                <p class="bold">Salud</p>
+            </td>
+            <td colspan="3">
+                <p class="bold">Retomar % como grupo y mencionar información</p>
+                <p>En general ¿Cómo calificas tu salud física?_____</p>
+                <p>Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ</p>
+                <p>Evaluación de habilidades: Mencionar 16-28 sólo si su respuesta es "Mala" Y "Excelente"</p>
+                <p>La mayor parte del tiempo me siento: Triste &nbsp; Alegre &nbsp; Ansioso &nbsp; Tranquilo</p>
+            </td>
         </tr>
         <tr>
-            <td><b>Resultados Ceneval</b></td>
-            <td colspan="2"><b></b></td>
+            <td>
+                <p class="bold" b>Hábitos de estudio</pb>
+            </td>
+            <td colspan="3">
+                <p>
+                    Mencionar puntos fuertes. Son aquellos aspectos con puntuación igual o mayor a 70
+                </p>
+                <p>
+                    Mencionar puntos débiles. Son aquellos aspectos con puntuación menor a 70
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="bold">16 PF</p>
+            </td>
+            <td colspan="3"></td>
+        </tr>
+        <tr>
+            <td>
+                <p class="bold">Resultados Ceneval</p>
+            </td>
+            <td colspan="3"></td>
         </tr>
     </table>
 </div>
+<!-- FIN CONTENIDO -->
 </body>
 </html>

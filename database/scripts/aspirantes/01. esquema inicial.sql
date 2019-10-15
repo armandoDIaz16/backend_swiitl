@@ -8,48 +8,37 @@
 -- SCRIPT INICIAL PARA LAS TABLAS DEL ESQUEMA TECNOLÓGICO
 
 alter table CAT_CARRERA
-    add CLAVE_CARRERA nvarchar(30) default NULL
-;
+    add CLAVE_CARRERA nvarchar(30) default NULL;
 
 alter table CAT_INSTITUCION
-    add CLAVE_CIE NVARCHAR(20)
-;
+    add CLAVE_CIE NVARCHAR(20);
 
 alter table CAT_INSTITUCION
-    alter column FK_ZONA int null
-;
+    alter column FK_ZONA int null;
 
 alter table CAT_INSTITUCION
-    alter column FK_ENTIDAD_FEDERATIVA int null
-;
+    alter column FK_ENTIDAD_FEDERATIVA int null;
 
 alter table CAT_AREA_ACADEMICA
-    alter column NOMBRE nvarchar(50) not null
-;
+    alter column NOMBRE nvarchar(50) not null;
 
 alter table CAT_AREA_ACADEMICA
-    alter column ABREVIATURA nvarchar(10) null
-;
+    alter column ABREVIATURA nvarchar(10) null;
 
 alter table CAT_USUARIO
-    alter column TOKEN_CURP nvarchar(150) null
-;
+    alter column TOKEN_CURP nvarchar(150) null;
 
 alter table CAT_USUARIO
-    alter column NUMERO_CONTROL nvarchar(8) null
-;
+    alter column NUMERO_CONTROL nvarchar(8) null;
 
 alter table CAT_COLONIA
-    alter column NOMBRE nvarchar(150) not null
-;
+    alter column NOMBRE nvarchar(150) not null;
 
 alter table CAT_COLONIA
-    alter column FK_TIPO_ASENTAMIENTO int null
-;
+    alter column FK_TIPO_ASENTAMIENTO int null;
 
 alter table CAT_ENTIDAD_FEDERATIVA
-    alter column FK_PAIS int null
-;
+    alter column FK_PAIS int null;
 
 CREATE TABLE CATR_REFERENCIA_BANCARIA_USUARIO
 (
@@ -392,6 +381,85 @@ CREATE TABLE TR_INCAPACIDAD_ASPIRANTE
 
 
 /*********************  FIN MODIFICACIONES (RANGO DE FECHA O DÍA) (EJEMPLO LUNES 8 DE ABRIL) *********************************/
+
+
+CREATE TABLE CATR_CARRERAS_PERIODO
+(
+    PK_CARRERAS_PERIODO     INT IDENTITY PRIMARY KEY,
+    FK_CARRERA              INT      NOT NULL
+        CONSTRAINT CATR_CARRERAS_PERIODO_FK_CARRERA_FOREIGN REFERENCES CAT_CARRERA,
+    FK_PERIODO              INT      NOT NULL
+        CONSTRAINT CATR_CARRERAS_PERIODO_FK_PERIODO_FOREIGN REFERENCES CAT_PERIODO_PREFICHAS,
+    CANTIDAD                INT      NOT NULL,
+    ESTADO                  SMALLINT NOT NULL DEFAULT 1,
+    FK_USUARIO_REGISTRO     INT,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_REGISTRO          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT NOT NULL DEFAULT 0
+);
+
+/* Nuevos cambios */
+
+ALTER TABLE CAT_ASPIRANTE DROP CONSTRAINT DF__CAT_ASPIR__ASIST__5E1FF51F
+ALTER TABLE CAT_ASPIRANTE DROP column ASISTENCIA
+
+    alter table CAT_TURNO
+    drop constraint DIA_HORA
+    go
+select LTRIM
+    create unique index DIA_HORA_PERIODO
+    	on CAT_TURNO (DIA, HORA, FK_PERIODO)
+    go
+
+    alter table CATR_ESPACIO
+        drop constraint NOMBRE_IDENTIFICADOR
+    go
+    create unique index NOMBRE_IDENTIFICADOR_PERIODO
+    	on CATR_ESPACIO (NOMBRE, IDENTIFICADOR, FK_PERIODO)
+    go
+
+    alter table CATR_EXAMEN_ADMISION
+        drop constraint ESPACIO_TURNO
+    go
+
+create unique index ESPACIO_TURNO_PERIODO
+	on CATR_EXAMEN_ADMISION (FK_ESPACIO, FK_TURNO, FK_PERIODO)
+go
+
+CREATE TABLE CATR_EXAMEN_ADMISION_ESCRITO
+(
+    PK_EXAMEN_ADMISION_ESCRITO      INT IDENTITY PRIMARY KEY,
+    FK_CARRERA              INT REFERENCES CAT_CARRERA,
+    FK_EDIFICIO             INT REFERENCES CATR_EDIFICIO,
+    FK_TURNO                INT REFERENCES CAT_TURNO,
+    FK_PERIODO              INT      NOT NULL
+        CONSTRAINT CATR_EXAMEN_ADMISION_ESCRITO_FK_PERIODO_FOREIGN REFERENCES CAT_PERIODO_PREFICHAS,
+    ESTADO                  SMALLINT NOT NULL DEFAULT 1,
+    FK_USUARIO_REGISTRO     INT,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_REGISTRO          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT NOT NULL DEFAULT 0,
+    CONSTRAINT CARRERA_EEDIFICIO_TURNO_PERIODO UNIQUE (FK_CARRERA, FK_EDIFICIO, FK_TURNO, FK_PERIODO)
+);
+
+alter table CATR_EXAMEN_ADMISION_ESCRITO
+	add LUGARES_OCUPADOS int default 0
+go
+
+alter table CATR_EDIFICIO
+	add CAPACIDAD int default 0
+go
+
+alter table CAT_ASPIRANTE
+	add FK_EXAMEN_ADMISION_ESCRITO int
+go
+
+alter table CAT_ASPIRANTE
+	add constraint CAT_ASPIRANTE_FK_EXAMEN_ADMISION_ESCRITO
+		foreign key (FK_EXAMEN_ADMISION_ESCRITO) references CATR_EXAMEN_ADMISION_ESCRITO
+go
 
 
 
