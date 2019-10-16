@@ -433,7 +433,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     // Buscar horario por pk usuario
     Route::get(
         'get_horario_alumno/{id_usuario}',
-        'tutorias\tutorias/SITAlumnoController@get_horario'
+        'tutorias\SITAlumnoController@get_horario'
     );
 
     // Buscar datos personales por pk usuario
@@ -451,7 +451,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     // Buscar reporte por pk_aplicacion
     Route::get(
         'get_reporte_encuesta/{pk_aplicacion}',
-        'SITEncuestaReporteController@get_reporte_encuesta'
+        'tutorias\SITEncuestaReporteController@get_reporte_encuesta'
     );
 });
 
@@ -532,8 +532,10 @@ Route::get('TodosAsistencia','PAAE_Periodo@allAsistencia');
 Route::get('AsistenciaPeriodo','PAAE_Periodo@allAsistenciaPeriodo');
 Route::get('TodosReporteFinal','PAAE_Periodo@allReporteFinal');
 Route::get('ReporteFinalPeriodo','PAAE_Periodo@allReporteFinalPeriodo');
-/* Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica'); */
-/* Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo'); */
+
+//Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica'); 
+Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo'); 
+
 Route::get('TodosAsesores','PAAE_Periodo@AsesoresListal');
 Route::get('AsesoresPeriodo','PAAE_Periodo@AsesoresListalPeriodo');
 Route::get('SesionAsesor','PAAE_Periodo@sesionPorAsesor');

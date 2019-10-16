@@ -41,8 +41,9 @@ class ConveniosController extends Controller
         $convenio->NO_RFC = $request->NoRFC;
         $convenio->DIR_EMPRESA = $request->DirEmpresa;
         $convenio->NOMBRE_TESTIGO = $request->NombreTestigo;
-        $carga = new CargaArchivo();
-        $ruta = $carga->savefile($request);
+        //$carga = new CargaArchivo();
+        $archivo = new Base64ToFile();
+        $ruta =  $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);//$carga->savefile($request);
         $convenio->LOGO_EMPRESA = $ruta;
         try{
         $convenio->save();

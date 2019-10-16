@@ -68,7 +68,7 @@
         </tr>
         <tr>
             <td valign="middle" align="left" colspan="2">
-                <p class="bold">NOMBRE DEL TUTOR:</p>
+                <p class="bold">NOMBRE DEL TUTOR: <u>{{$data['tutor']}}</u></p>
             </td>
             <td valign="middle" align="left" colspan="2">
                 <p class="bold">
@@ -86,16 +86,16 @@
         </tr>
         <tr>
             <td width="25%">
-                <p class="bold">GRUPO:</p>
+                <p class="bold">GRUPO: <u>{{$data['grupo']}}</u></p>
             </td>
             <td width="25%">
-                <p class="bold">N° DE ALUMNOS:</p>
+                <p class="bold">N° DE ALUMNOS: <u>{{$data['cantidad_alumnos']}}</u></p>
             </td>
             <td width="25%">
-                <p class="bold">SEMESTRE:</p>
+                <p class="bold">SEMESTRE: <u>1</u></p>
             </td>
             <td width="25%">
-                <p class="bold">CARRERA:</p>
+                <p class="bold">CARRERA: <u>{{$data['carrera']}}</u></p>
             </td>
         </tr>
         <tr>

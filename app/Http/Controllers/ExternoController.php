@@ -10,7 +10,7 @@ class ExternoController extends Controller
 
     public function index()
     {
-        $externo = DB::select('SELECT name, ID_PADRE FROM users JOIN CATR_EXTERNO ON CAT_USUARIO.PK_USUARIO = CATR_EXTERNO.ID_PADRE');
+        $externo = DB::select('SELECT NOMBRE, ID_PADRE FROM CAT_USUARIO JOIN CATR_EXTERNO ON CAT_USUARIO.PK_USUARIO = CATR_EXTERNO.ID_PADRE');
         return $externo;
     }
 
@@ -35,7 +35,7 @@ class ExternoController extends Controller
         $area3 = array_pop($area2);
         $externo = DB::select('SELECT NOMBRE, PK_USUARIO 
                                       FROM CAT_USUARIO
-                                      JOIN CATR_EXTERNO ON users.PK_USUARIO = CATR_EXTERNO.ID_PADRE
+                                      JOIN CATR_EXTERNO ON CAT_USUARIO.PK_USUARIO = CATR_EXTERNO.ID_PADRE
                                       JOIN CATR_PROYECTO ON CATR_EXTERNO.ID_PADRE = CATR_PROYECTO.FK_ASESOR_EXT
                                       JOIN CATR_DOCENTE ON CATR_PROYECTO.FK_DOCENTE = CATR_DOCENTE.ID_PADRE
                                       WHERE CATR_DOCENTE.ID_AREA_ACADEMICA = :area',['area'=>$area3]);

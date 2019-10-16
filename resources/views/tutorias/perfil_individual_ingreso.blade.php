@@ -175,6 +175,7 @@
                     Condición familiar en aspectos deficientes____ _____ _____ _____
                 </p>
 
+                <br>
                 <p class="bold">FACE 20 ESP</p>
 
                 <p>

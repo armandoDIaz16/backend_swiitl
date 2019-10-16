@@ -292,7 +292,8 @@ class AuthController extends Controller
             'control' => auth()->user()->NUMERO_CONTROL,
             'perfil_completo' => auth()->user()->PERFIL_COMPLETO,
             'primer_login' => auth()->user()->PRIMER_LOGIN,
-            'IdEncriptada' => auth()->user()->PK_ENCRIPTADA
+            'IdEncriptada' => auth()->user()->PK_ENCRIPTADA,
+            'tipo_usuario' => auth()->user()->TIPO_USUARIO
         ]);
     }
 
@@ -620,7 +621,7 @@ class AuthController extends Controller
     {
         $usuario = Usuario::where('CURP', $request->CURP)->first();
         if (isset($usuario->PK_USUARIO)) {
-            error_log(print_r($usuario, true));
+            // error_log(print_r($usuario, true));
             $token = $this->get_datos_token($usuario);
             if (!$this->notifica_usuario(
                 $usuario->CORREO1,
@@ -629,6 +630,11 @@ class AuthController extends Controller
             )) {
                 error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
                 error_log("AuthController.php");
+            } else {
+                return response()->json(
+                    ['data' => true],
+                    Response::HTTP_OK
+                );
             }
         } else { // mandar mensaje de cuenta activa y vinculada a CURP
             return response()->json(
