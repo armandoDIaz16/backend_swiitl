@@ -16,9 +16,9 @@ class PerfilController extends Controller
      * @param $id_usuario
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get_perfil($id_usuario) {
-        $perfil = DB::table('VIEW_PERFIL_ALUMNO')
-            ->where('PK_USUARIO', $id_usuario)
+    public function get_perfil($pk_usuario) {
+        $perfil = DB::table('VW_PERFIL_ALUMNO')
+            ->where('PK_ENCRIPTADA', $pk_usuario)
             ->first();
 
         if ($perfil){
