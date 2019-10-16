@@ -10,7 +10,7 @@
 
 <body>
 
-    <div style="margin-left: .5cm; margin-right: .5cm; padding-top: -1cm; font-size: 0.7em;">
+    <div style="margin-left: .5cm; margin-right: .5cm; padding-top: -1.5cm; font-size: 0.7em;">
         <div align="center">
             <img src="img/banner.jpg">
         </div>
@@ -74,16 +74,18 @@
                 </li>
                 <li>
                     {{$ASPIRANTE->MENSAJE}}
-
-                    <!-- Debes presentarte en el {{$ASPIRANTE->NOMBRE_EDIFICIO}} (Edificio {{$ASPIRANTE->PREFIJO}})
-            del Instituto Tecnológico de León Campus {{$ASPIRANTE->NOMBRE_CAMPUS}},
-            en el espacio "{{$ASPIRANTE->NOMBRE_ESPACIO}}",
-            el día {{$ASPIRANTE->NOMBRE_DIA}} {{$ASPIRANTE->DIA}} a las {{$ASPIRANTE->HORA}}. -->
                 </li>
                 <li>
                     Es indispensable que te presentes con tu ficha de admisión,
                     pase de ingreso al examen
                     y una identificación con fotografía (INE, Pasaporte, Credencial de la escuela).
+                </li>
+                <li>
+                    Examen de ingles.
+                    Deberas presentarte en el {{$ASPIRANTE->NOMBRE_EDIFICIO_INGLES}} (Edificio {{$ASPIRANTE->PREFIJO_INGLES}})
+                    del Instituto Tecnológico de León Campus {{$ASPIRANTE->NOMBRE_CAMPUS_INGLES}},
+                    en el espacio "{{$ASPIRANTE->NOMBRE_ESPACIO_INGLES}}-{{$ASPIRANTE->IDENTIFICADOR_INGLES}}",
+                    el día {{$ASPIRANTE->NOMBRE_DIA_INGLES}} {{$ASPIRANTE->DIA_INGLES}} a las {{$ASPIRANTE->HORA_INGLES}}.
                 </li>
             </ul>
         </div>
@@ -157,15 +159,19 @@
                     </ul>
                 </li>
                 <li>
-                    Debes presentarte en el {{$ASPIRANTE->NOMBRE_EDIFICIO}} (Edificio {{$ASPIRANTE->PREFIJO}})
-                    del Instituto Tecnológico de León Campus {{$ASPIRANTE->NOMBRE_CAMPUS}},
-                    en el espacio "{{$ASPIRANTE->NOMBRE_ESPACIO}}",
-                    el día {{$ASPIRANTE->NOMBRE_DIA}} {{$ASPIRANTE->DIA}} a las {{$ASPIRANTE->HORA}}.
+                    {{$ASPIRANTE->MENSAJE}}
                 </li>
                 <li>
                     Es indispensable que te presentes con tu ficha de admisión,
                     pase de ingreso al examen
                     y una identificación con fotografía (INE, Pasaporte, Credencial de la escuela).
+                </li>
+                <li>
+                    Examen de ingles.
+                    Deberas presentarte en el {{$ASPIRANTE->NOMBRE_EDIFICIO_INGLES}} (Edificio {{$ASPIRANTE->PREFIJO_INGLES}})
+                    del Instituto Tecnológico de León Campus {{$ASPIRANTE->NOMBRE_CAMPUS_INGLES}},
+                    en el espacio "{{$ASPIRANTE->NOMBRE_ESPACIO_INGLES}}-{{$ASPIRANTE->IDENTIFICADOR_INGLES}}",
+                    el día {{$ASPIRANTE->NOMBRE_DIA_INGLES}} {{$ASPIRANTE->DIA_INGLES}} a las {{$ASPIRANTE->HORA_INGLES}}.
                 </li>
             </ul>
         </div>

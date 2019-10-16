@@ -369,6 +369,20 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('ModificarGrupo', 'LugarExamenController@modificarGrupo');
     Route::post('ModificarGrupoEscrito', 'LugarExamenController@modificarGrupoEscrito');
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
+    Route::get('PlantillaSIIA/{id}', 'PlantillaSIIAController@getPlantillaSIIA');
+
+    Route::post('AgregarTurnoEscrito', 'LugarExamenController@agregarTurnoEscrito');
+    Route::get('TurnoEscrito/{PK_PERIODO}', 'LugarExamenController@obtenerTurnoEscrito');
+    Route::post('ModificarTurnoEscrito', 'LugarExamenController@modificarTurnoEscrito');
+    Route::post('AgregarTurnoIngles', 'LugarExamenController@agregarTurnoIngles');
+    Route::post('AgregarEspacioIngles', 'LugarExamenController@agregarEspacioIngles');
+    Route::post('AgregarGrupoIngles', 'LugarExamenController@agregarGrupoIngles');
+    Route::get('TurnoIngles/{PK_PERIODO}', 'LugarExamenController@obtenerTurnoIngles');
+    Route::get('EspacioIngles/{PK_PERIODO}', 'LugarExamenController@obtenerEspacioIngles');
+    Route::get('GrupoIngles/{PK_PERIODO}', 'LugarExamenController@obtenerGrupoIngles');
+    Route::post('ModificarTurnoIngles', 'LugarExamenController@modificarTurnoIngles');
+    Route::post('ModificarEspacioIngles', 'LugarExamenController@modificarEspacioIngles');
+    Route::post('ModificarGrupoIngles', 'LugarExamenController@modificarGrupoIngles');
 });
 
 /*
