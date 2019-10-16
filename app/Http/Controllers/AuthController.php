@@ -619,6 +619,11 @@ class AuthController extends Controller
             )) {
                 error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
                 error_log("AuthController.php");
+            } else {
+                return response()->json(
+                    ['data' => true],
+                    Response::HTTP_OK
+                );
             }
         } else { // mandar mensaje de cuenta activa y vinculada a CURP
             return response()->json(
