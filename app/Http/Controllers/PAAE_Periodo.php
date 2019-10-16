@@ -761,8 +761,13 @@ class PAAE_Periodo extends Controller
         $alumno = DB::table('CATR_ASESORIA_ACEPTADA')
         ->select('CATR_ASESORIA_ACEPTADA.PK_ASESORIA_ACEPTADA','CATR_ASESORIA_ACEPTADA.MATERIA','CATR_ASESORIA_ACEPTADA.DIA',
         'CATR_ASESORIA_ACEPTADA.HORA','CATR_ASESORIA_ACEPTADA.CAMPUS',
-        'CATR_ASESORIA_ACEPTADA.PERIODO','CATR_ASESORIA_ACEPTADA.FK_ASESOR','CATR_ASESORIA_ACEPTADA.FK_ALUMNO'
+        'CATR_ASESORIA_ACEPTADA.PERIODO','CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO',
+
+        'user.NOMBRE as n','user.PRIMER_APELLIDO as ap','user.SEGUNDO_APELLIDO as am'
+        
         ,'CATR_ASESORIA_ACEPTADA.ESPACIO','CATR_ASESORIA_ACEPTADA.VALIDA')
+        ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ASESOR')
+        ->join('CAT_USUARIO as user', 'user.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA.FK_ALUMNO')
         ->where('PERIODO',$periodo)
         ->get();
 
@@ -802,7 +807,9 @@ class PAAE_Periodo extends Controller
         $alumno = DB::table('CATR_ASESORIA_GRUPO')
         ->select('CATR_ASESORIA_GRUPO.PK_ASESORIA_GRUPO','CATR_ASESORIA_GRUPO.MATERIA','CATR_ASESORIA_GRUPO.DIA',
         'CATR_ASESORIA_GRUPO.HORA','CATR_ASESORIA_GRUPO.CAMPUS','CATR_ASESORIA_GRUPO.ESPACIO','CATR_ASESORIA_GRUPO.VALIDA',
-        'CATR_ASESORIA_GRUPO.PERIODO','CATR_ASESORIA_GRUPO.FK_ASESOR','CATR_ASESORIA_GRUPO.CLAVE_GRUPO')
+        'CATR_ASESORIA_GRUPO.PERIODO','CATR_ASESORIA_GRUPO.FK_ASESOR','CATR_ASESORIA_GRUPO.CLAVE_GRUPO',
+        'CAT_USUARIO.NOMBRE','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO')
+        ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_GRUPO.FK_ASESOR')
         ->where('PERIODO',$periodo)
         ->get();
 
@@ -1149,7 +1156,7 @@ class PAAE_Periodo extends Controller
 
         $materia = DB::connection('sqlsrv2')
             ->table('view_seguimiento')
-            ->select('view_seguimiento.NumeroControl','view_alumnos.Nombre','view_alumnos.ApellidoPaterno','view_alumnos.ApellidoMaterno')
+            ->select('view_seguimiento.NumeroControl','view_alumnos.Nombre','view_alumnos.ApellidoPaterno','view_alumnos.ApellidoMaterno','view_alumnos.ClaveCarrera')
             ->distinct()
             ->join('view_reticula', 'view_reticula.ClaveMateria', '=', 'view_seguimiento.ClaveMateria')
             ->join('view_alumnos', 'view_alumnos.NumeroControl', '=', 'view_seguimiento.NumeroControl')
@@ -1159,6 +1166,7 @@ class PAAE_Periodo extends Controller
             ['IdNivelCurso','CE']])
             ->orWhere([['view_alumnos.Estado','AR'],
             ['IdNivelCurso','CE2"']])
+            ->orderBy('ClaveCarrera')
             ->get();
         if($materia){          
              return $materia;
@@ -1744,7 +1752,7 @@ return $alumno;
        
     }
 
-    /* public function allSituacionAcademica(Request $request){
+  /*   public function allSituacionAcademica(Request $request){
         $hoy = getdate();
         $year = $hoy['year'];
         $month = $hoy['mon'];
@@ -1756,12 +1764,12 @@ return $alumno;
         }
         $periodo = $year.$month;
         $materia = DB::table('CATR_ASESORIA_ACEPTADA_SITUACION')
-            ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE',
+            ->select('CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE',
             'CATR_ASESORIA_ACEPTADA_SITUACION.CONTROL_ALUMNO','CATR_ASESORIA_ACEPTADA_SITUACION.MATERIA','CATR_ASESORIA_ACEPTADA_SITUACION.DIA',
             'CATR_ASESORIA_ACEPTADA_SITUACION.HORA','CATR_ASESORIA_ACEPTADA_SITUACION.CAMPUS','CATR_ASESORIA_ACEPTADA_SITUACION.ESPACIO',
             'CATR_ASESORIA_ACEPTADA_SITUACION.VALIDA','CATR_ASESORIA_ACEPTADA_SITUACION.PERIODO')
             ->distinct()
-            ->join('CAT_USUARIO as u', 'u.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA_SITUACION.FK_ASESOR')
+            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CATR_ASESORIA_ACEPTADA_SITUACION.FK_ASESOR')
             ->where([['CATR_ASESORIA_ACEPTADA_SITUACION.PERIODO',$periodo]])
             ->get();
         if($materia){
@@ -1772,7 +1780,7 @@ return $alumno;
        
     } */
 
-   /*  public function allSituacionAcademicaPeriodo(Request $request){
+    public function allSituacionAcademicaPeriodo(Request $request){
         $materia = DB::table('CATR_ASESORIA_ACEPTADA_SITUACION')
             ->select('u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE',
             'CATR_ASESORIA_ACEPTADA_SITUACION.CONTROL_ALUMNO','CATR_ASESORIA_ACEPTADA_SITUACION.MATERIA','CATR_ASESORIA_ACEPTADA_SITUACION.DIA',
@@ -1788,7 +1796,7 @@ return $alumno;
            return $this->failedResponse();
         }
        
-    } */
+    }
 
     public function AsesoresListal(Request $request){
         $hoy = getdate();

@@ -518,8 +518,10 @@ Route::get('TodosAsistencia','PAAE_Periodo@allAsistencia');
 Route::get('AsistenciaPeriodo','PAAE_Periodo@allAsistenciaPeriodo');
 Route::get('TodosReporteFinal','PAAE_Periodo@allReporteFinal');
 Route::get('ReporteFinalPeriodo','PAAE_Periodo@allReporteFinalPeriodo');
-/* Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica'); */
-/* Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo'); */
+
+//Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica'); 
+Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo'); 
+
 Route::get('TodosAsesores','PAAE_Periodo@AsesoresListal');
 Route::get('AsesoresPeriodo','PAAE_Periodo@AsesoresListalPeriodo');
 Route::get('SesionAsesor','PAAE_Periodo@sesionPorAsesor');
