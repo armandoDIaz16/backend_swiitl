@@ -107,7 +107,6 @@ class AspiranteController extends Controller
 
         if (isset($pdo[0]->RESPUESTA)) {
             if ($pdo[0]->RESPUESTA == 3 || $pdo[0]->RESPUESTA == 5) {
-                User::where('PK_USUARIO', $pdo[0]->PK_USUARIO)->update(['PK_ENCRIPTADA' => EncriptarUsuario::getPkEncriptada($pdo[0]->PK_USUARIO, $pdo[0]->FECHA_REGISTRO)]);
                 $token = $this->get_datos_token($pdo[0]);
                 if (!$this->notifica_usuario(
                     $pdo[0]->CORREO1,
@@ -624,7 +623,8 @@ class AspiranteController extends Controller
                                     'FOLIO_CENEVAL' => $folioCeneval,
                                     'FK_ESTATUS' => 4,
                                     'FECHA_MODIFICACION' => date('Y-m-d H:i:s'),
-                                    'FK_EXAMEN_ADMISION' => $this->asignaExamen($PK_PERIODO, $aspirante[0]->FK_CARRERA_1, $TIPO_APLICACION)
+                                    'FK_EXAMEN_ADMISION' => $this->asignaExamen($PK_PERIODO, $aspirante[0]->FK_CARRERA_1, $TIPO_APLICACION),
+                                    'FK_EXAMEN_INGLES' => $this->asignaExamenIngles($PK_PERIODO)
                                 ]);
                         } else {
                             DB::table('CAT_ASPIRANTE')
@@ -637,7 +637,8 @@ class AspiranteController extends Controller
                                     'FOLIO_CENEVAL' => $folioCeneval,
                                     'FK_ESTATUS' => 4,
                                     'FECHA_MODIFICACION' => date('Y-m-d H:i:s'),
-                                    'FK_EXAMEN_ADMISION_ESCRITO' => $this->asignaExamen($PK_PERIODO, $aspirante[0]->FK_CARRERA_1, $TIPO_APLICACION)
+                                    'FK_EXAMEN_ADMISION_ESCRITO' => $this->asignaExamen($PK_PERIODO, $aspirante[0]->FK_CARRERA_1, $TIPO_APLICACION),
+                                    'FK_EXAMEN_INGLES' => $this->asignaExamenIngles($PK_PERIODO)
                                 ]);
                         }
                     }
@@ -685,13 +686,6 @@ class AspiranteController extends Controller
             $turnos = array_unique($turnosTotal);
             $diasSemana = array_unique($diasSemanaTotal);
             $espacios = array_unique($espaciosTotal);
-
-            //Insertar por orden de espacio
-            /*         foreach ($espacios as $espacio) {
-            if (!$bool) {
-                foreach ($diasSemana as $dia) {
-                    if (!$bool) {
-                        foreach ($turnos as $turno) { */
 
             //Insertar por orden dias
             foreach ($diasSemana as $dia) {
@@ -774,9 +768,9 @@ class AspiranteController extends Controller
                     ['PK_CARRERA_CAMPUS', $FK_CARRERA_1]
                 ])
                 ->get();
-            $modelTurno = DB::table('CAT_TURNO')
+            $modelTurno = DB::table('CAT_TURNO_ESCRITO')
                 ->select(
-                    'PK_TURNO',
+                    'PK_TURNO_ESCRITO',
                     'DIA',
                     'HORA'
                 )
@@ -814,9 +808,9 @@ class AspiranteController extends Controller
 
                                     $capacidad = $espacioAplicacion[0]->CAPACIDAD;
 
-                                    $modelTurnoDia = DB::table('CAT_TURNO')
+                                    $modelTurnoDia = DB::table('CAT_TURNO_ESCRITO')
                                         ->select(
-                                            'PK_TURNO'
+                                            'PK_TURNO_ESCRITO'
                                         )
                                         ->where([
                                             ['DIA', '=', $dia],
@@ -835,7 +829,7 @@ class AspiranteController extends Controller
                                             ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=',  'CAT_CARRERA.PK_CARRERA')
                                             ->where([
                                                 ['FK_EDIFICIO', '=', $espacioAplicacion[0]->PK_EDIFICIO],
-                                                ['FK_TURNO', '=', $modelTurnoDia[0]->PK_TURNO],
+                                                ['FK_TURNO_ESCRITO', '=', $modelTurnoDia[0]->PK_TURNO_ESCRITO],
                                                 ['FK_PERIODO', $PK_PERIODO],
                                                 ['PK_CARRERA_CAMPUS', $FK_CARRERA_1]
                                             ])
@@ -849,7 +843,7 @@ class AspiranteController extends Controller
                                                     ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=',  'CAT_CARRERA.PK_CARRERA')
                                                     ->where([
                                                         ['FK_EDIFICIO', '=', $espacioAplicacion[0]->PK_EDIFICIO],
-                                                        ['FK_TURNO', '=', $modelTurnoDia[0]->PK_TURNO],
+                                                        ['FK_TURNO_ESCRITO', '=', $modelTurnoDia[0]->PK_TURNO_ESCRITO],
                                                         ['FK_PERIODO', $PK_PERIODO],
                                                         ['PK_CARRERA_CAMPUS', $FK_CARRERA_1]
                                                     ])
@@ -862,6 +856,121 @@ class AspiranteController extends Controller
                                                 return $examen[0]->PK_EXAMEN_ADMISION_ESCRITO;
                                                 break;
                                             }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private function asignaExamenIngles($PK_PERIODO)
+    {
+        $bool = false;
+
+        $diasSemanaTotal = [];
+        $turnosTotal = [];
+        $espaciosTotal = [];
+
+        $modelExamen = DB::table('CATR_EXAMEN_ADMISION_INGLES')
+            ->select('FK_ESPACIO_INGLES')
+            ->where('FK_PERIODO', $PK_PERIODO)
+            ->get();
+
+        $modelTurno = DB::table('CAT_TURNO_INGLES')
+            ->select(
+                'PK_TURNO_INGLES',
+                'DIA',
+                'HORA'
+            )
+            ->where('FK_PERIODO', $PK_PERIODO)
+            ->get();
+
+        foreach ($modelExamen as $exam) {
+            array_push($espaciosTotal, $exam->FK_ESPACIO_INGLES);
+        }
+
+        foreach ($modelTurno as $model) {
+            array_push($diasSemanaTotal, $model->DIA);
+            array_push($turnosTotal, $model->HORA);
+        }
+
+        $turnos = array_unique($turnosTotal);
+        $diasSemana = array_unique($diasSemanaTotal);
+        $espacios = array_unique($espaciosTotal);
+
+        //Insertar por orden de espacio
+        /*         foreach ($espacios as $espacio) {
+            if (!$bool) {
+                foreach ($diasSemana as $dia) {
+                    if (!$bool) {
+                        foreach ($turnos as $turno) { */
+
+        //Insertar por orden dias
+        foreach ($diasSemana as $dia) {
+            if (!$bool) {
+                foreach ($turnos as $turno) {
+                    if (!$bool) {
+                        foreach ($espacios as $espacio) {
+                            if (!$bool) {
+                                //$espacioAplicacion = AEspacio::model()->findByAttributes(array('pk_espacio' => $espacio));
+                                $espacioAplicacion = DB::table('CATR_ESPACIO_INGLES')
+                                    ->select(
+                                        'PK_ESPACIO_INGLES',
+                                        'CAPACIDAD'
+                                    )
+                                    ->where([
+                                        ['PK_ESPACIO_INGLES', $espacio],
+                                        ['FK_PERIODO', $PK_PERIODO]
+                                    ])
+                                    ->get();
+
+                                $capacidad = $espacioAplicacion[0]->CAPACIDAD;
+
+                                $modelTurnoDia = DB::table('CAT_TURNO_INGLES')
+                                    ->select(
+                                        'PK_TURNO_INGLES'
+                                    )
+                                    ->where([
+                                        ['DIA', '=', $dia],
+                                        ['HORA', '=', $turno],
+                                        ['FK_PERIODO', $PK_PERIODO]
+                                    ])
+                                    ->get();
+
+                                if (isset($modelTurnoDia[0])) {
+                                    $examen = DB::table('CATR_EXAMEN_ADMISION_INGLES')
+                                        ->select(
+                                            'PK_EXAMEN_ADMISION_INGLES',
+                                            'LUGARES_OCUPADOS'
+                                        )
+                                        ->where([
+                                            ['FK_ESPACIO_INGLES', '=', $espacioAplicacion[0]->PK_ESPACIO_INGLES],
+                                            ['FK_TURNO_INGLES', '=', $modelTurnoDia[0]->PK_TURNO_INGLES],
+                                            ['FK_PERIODO', $PK_PERIODO]
+                                        ])
+                                        ->get();
+                                    if (isset($examen[0])) {
+                                        $ocupados = $examen[0]->LUGARES_OCUPADOS;
+                                        if ($capacidad > $ocupados) {
+                                            //return $espacioAplicacion[0]->PK_ESPACIO_INGLES." ".$modelTurnoDia[0]->PK_TURNO_INGLES;
+                                            DB::table('CATR_EXAMEN_ADMISION_INGLES')
+                                                ->where([
+                                                    ['FK_ESPACIO_INGLES', '=', $espacioAplicacion[0]->PK_ESPACIO_INGLES],
+                                                    ['FK_TURNO_INGLES', '=', $modelTurnoDia[0]->PK_TURNO_INGLES],
+                                                    ['FK_PERIODO', $PK_PERIODO]
+                                                ])
+                                                ->update(
+                                                    ['LUGARES_OCUPADOS' => $examen[0]->LUGARES_OCUPADOS + 1]
+                                                );
+                                            //$examen[0]->LUGARES_OCUPADOS = $examen[0]->LUGARES_OCUPADOS+1;
+                                            //$examen[0]->saveAttributes(array('lugares_ocupados'));
+                                            $bool = true;
+                                            return $examen[0]->PK_EXAMEN_ADMISION_INGLES;
+                                            break;
                                         }
                                     }
                                 }

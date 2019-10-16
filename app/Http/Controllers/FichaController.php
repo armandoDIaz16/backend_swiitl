@@ -143,29 +143,50 @@ class FichaController extends Controller
                 'CAT_TURNO.DIA',
                 'CAT_TURNO.DIA as NOMBRE_DIA',
                 'CAT_TURNO.HORA',
-                'CAT_TURNO2.DIA as DIA2',
-                'CAT_TURNO2.DIA as NOMBRE_DIA2',
-                'CAT_TURNO2.HORA as HORA2',
+                'CAT_TURNO_ESCRITO.DIA as DIA2',
+                'CAT_TURNO_ESCRITO.DIA as NOMBRE_DIA2',
+                'CAT_TURNO_ESCRITO.HORA as HORA2',
+                'CAT_TURNO_INGLES.DIA as DIA_INGLES',
+                'CAT_TURNO_INGLES.DIA as NOMBRE_DIA_INGLES',
+                'CAT_TURNO_INGLES.HORA as HORA_INGLES',
                 'CATR_EDIFICIO.NOMBRE as NOMBRE_EDIFICIO',
                 'CATR_EDIFICIO.PREFIJO',
-                'CATR_EDIFICIO2.NOMBRE as NOMBRE_EDIFICIO2',
-                'CATR_EDIFICIO2.PREFIJO as PREFIJO2',
+                'CATR_EDIFICIO_ESCRITO.NOMBRE as NOMBRE_EDIFICIO2',
+                'CATR_EDIFICIO_ESCRITO.PREFIJO as PREFIJO2',
+                'CATR_EDIFICIO_INGLES.NOMBRE as NOMBRE_EDIFICIO_INGLES',
+                'CATR_EDIFICIO_INGLES.PREFIJO as PREFIJO_INGLES',
                 'CAT_CAMPUS.NOMBRE as NOMBRE_CAMPUS',
+                'CAT_CAMPUS_LINEA.NOMBRE as NOMBRE_CAMPUS_LINEA',
+                'CAT_CAMPUS_ESCRITO.NOMBRE as NOMBRE_CAMPUS_ESCRITO',
+                'CAT_CAMPUS_INGLES.NOMBRE as NOMBRE_CAMPUS_INGLES',
                 'CATR_ESPACIO.NOMBRE as NOMBRE_ESPACIO',
+                'CATR_ESPACIO_INGLES.NOMBRE as NOMBRE_ESPACIO_INGLES',
+                'CATR_ESPACIO_INGLES.IDENTIFICADOR as IDENTIFICADOR_INGLES',
                 'CAT_ASPIRANTE.FECHA_MODIFICACION',
                 'CAT_PERIODO_PREFICHAS.TIPO_APLICACION',
-                DB::raw("'HOLA' as MENSAJE")
+                DB::raw("'' as MENSAJE")
             )
             ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
+
             ->leftJoin('CATR_EXAMEN_ADMISION', 'CATR_EXAMEN_ADMISION.PK_EXAMEN_ADMISION', '=', 'CAT_ASPIRANTE.FK_EXAMEN_ADMISION')
-            ->leftJoin('CATR_EXAMEN_ADMISION_ESCRITO', 'CATR_EXAMEN_ADMISION_ESCRITO.PK_EXAMEN_ADMISION_ESCRITO', '=', 'CAT_ASPIRANTE.FK_EXAMEN_ADMISION_ESCRITO')
             ->leftJoin('CAT_TURNO', 'CAT_TURNO.PK_TURNO', '=', 'CATR_EXAMEN_ADMISION.FK_TURNO')
-            ->leftJoin('CAT_TURNO as CAT_TURNO2', 'CAT_TURNO2.PK_TURNO', '=', 'CATR_EXAMEN_ADMISION_ESCRITO.FK_TURNO')
             ->leftJoin('CATR_ESPACIO', 'CATR_ESPACIO.PK_ESPACIO', '=', 'CATR_EXAMEN_ADMISION.FK_ESPACIO')
             ->leftJoin('CATR_EDIFICIO', 'CATR_EDIFICIO.PK_EDIFICIO', '=', 'CATR_ESPACIO.FK_EDIFICIO')
-            ->leftJoin('CATR_EDIFICIO as CATR_EDIFICIO2', 'CATR_EDIFICIO2.PK_EDIFICIO', '=', 'CATR_EXAMEN_ADMISION_ESCRITO.FK_EDIFICIO')
+
+            ->leftJoin('CATR_EXAMEN_ADMISION_ESCRITO', 'CATR_EXAMEN_ADMISION_ESCRITO.PK_EXAMEN_ADMISION_ESCRITO', '=', 'CAT_ASPIRANTE.FK_EXAMEN_ADMISION_ESCRITO')
+            ->leftJoin('CAT_TURNO_ESCRITO as CAT_TURNO_ESCRITO', 'CAT_TURNO_ESCRITO.PK_TURNO_ESCRITO', '=', 'CATR_EXAMEN_ADMISION_ESCRITO.FK_TURNO_ESCRITO')
+            ->leftJoin('CATR_EDIFICIO as CATR_EDIFICIO_ESCRITO', 'CATR_EDIFICIO_ESCRITO.PK_EDIFICIO', '=', 'CATR_EXAMEN_ADMISION_ESCRITO.FK_EDIFICIO')
+
+            ->leftJoin('CATR_EXAMEN_ADMISION_INGLES', 'CATR_EXAMEN_ADMISION_INGLES.PK_EXAMEN_ADMISION_INGLES', '=', 'CAT_ASPIRANTE.FK_EXAMEN_INGLES')
+            ->leftJoin('CAT_TURNO_INGLES as CAT_TURNO_INGLES', 'CAT_TURNO_INGLES.PK_TURNO_INGLES', '=', 'CATR_EXAMEN_ADMISION_INGLES.FK_TURNO_INGLES')
+            ->leftJoin('CATR_ESPACIO_INGLES as CATR_ESPACIO_INGLES', 'CATR_ESPACIO_INGLES.PK_ESPACIO_INGLES', '=', 'CATR_EXAMEN_ADMISION_INGLES.FK_ESPACIO_INGLES')
+            ->leftJoin('CATR_EDIFICIO as CATR_EDIFICIO_INGLES', 'CATR_EDIFICIO_INGLES.PK_EDIFICIO', '=', 'CATR_ESPACIO_INGLES.FK_EDIFICIO')
+
             ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=', 'CAT_ASPIRANTE.FK_CARRERA_1')
             ->join('CAT_CAMPUS', 'CAT_CAMPUS.PK_CAMPUS', '=', 'TR_CARRERA_CAMPUS.FK_CAMPUS')
+            ->join('CAT_CAMPUS AS CAT_CAMPUS_LINEA', 'CAT_CAMPUS_LINEA.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
+            ->join('CAT_CAMPUS AS CAT_CAMPUS_ESCRITO', 'CAT_CAMPUS_ESCRITO.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
+            ->join('CAT_CAMPUS AS CAT_CAMPUS_INGLES', 'CAT_CAMPUS_INGLES.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
             ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'TR_CARRERA_CAMPUS.FK_CARRERA')
             ->join('CAT_PERIODO_PREFICHAS', 'CAT_PERIODO_PREFICHAS.PK_PERIODO_PREFICHAS', '=', 'CAT_ASPIRANTE.FK_PERIODO')
             ->where([
@@ -173,7 +194,6 @@ class FichaController extends Controller
                 ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante]
             ])
             ->get();
-
 
         if ($aspirante[0]->TIPO_APLICACION == 1) {
             $fecha = $aspirante[0]->FECHA_MODIFICACION;
@@ -213,10 +233,9 @@ class FichaController extends Controller
             $mes = strftime("%B", $fecha->getTimestamp()); // marzo
             $aspirante[0]->DIA = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
             $aspirante[0]->HORA = date("g:i a", strtotime($aspirante[0]->HORA));
-
             $aspirante[0]->MENSAJE = "
             Debes presentarte en el " . $aspirante[0]->NOMBRE_EDIFICIO . "(Edificio " . $aspirante[0]->PREFIJO . ")
-            del Instituto Tecnológico de León Campus " . $aspirante[0]->NOMBRE_CAMPUS . ",
+            del Instituto Tecnológico de León Campus " . $aspirante[0]->NOMBRE_CAMPUS_LINEA . ",
             en el espacio " . '"' . $aspirante[0]->NOMBRE_ESPACIO . '"' . ",
             el día " . $aspirante[0]->NOMBRE_DIA . " " . $aspirante[0]->DIA . " a las " . $aspirante[0]->HORA;
         } else {
@@ -249,20 +268,54 @@ class FichaController extends Controller
                     break;
             }
 
-            $aspirante[0]->NOMBRE_DIA = $dayofweek;
-            $aspirante[0]->NOMBRE_EDIFICIO = $aspirante[0]->NOMBRE_EDIFICIO2;
-            $aspirante[0]->PREFIJO = $aspirante[0]->PREFIJO2;
+            $aspirante[0]->NOMBRE_DIA2 = $dayofweek;
+            $aspirante[0]->NOMBRE_EDIFICIO2 = $aspirante[0]->NOMBRE_EDIFICIO2;
+            $aspirante[0]->PREFIJO2 = $aspirante[0]->PREFIJO2;
             $dia = $aspirante[0]->DIA2;
             setlocale(LC_TIME, 'es_ES.UTF-8');
             $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
             $mes = strftime("%B", $fecha->getTimestamp()); // marzo
-            $aspirante[0]->DIA = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
-            $aspirante[0]->HORA = date("g:i a", strtotime($aspirante[0]->HORA2));
+            $aspirante[0]->DIA2 = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
+            $aspirante[0]->HORA2 = date("g:i a", strtotime($aspirante[0]->HORA2));
             $aspirante[0]->MENSAJE = "
-            Debes presentarte en el " . $aspirante[0]->NOMBRE_EDIFICIO . "(Edificio " . $aspirante[0]->PREFIJO . ")
-            del Instituto Tecnológico de León Campus " . $aspirante[0]->NOMBRE_CAMPUS . ",
-            el día " . $aspirante[0]->NOMBRE_DIA . " " . $aspirante[0]->DIA . " a las " . $aspirante[0]->HORA;
+            Debes presentarte en el " . $aspirante[0]->NOMBRE_EDIFICIO2 . "(Edificio " . $aspirante[0]->PREFIJO2 . ")
+            del Instituto Tecnológico de León Campus " . $aspirante[0]->NOMBRE_CAMPUS_ESCRITO . ",
+            el día " . $aspirante[0]->NOMBRE_DIA2 . " " . $aspirante[0]->DIA2 . " a las " . $aspirante[0]->HORA2;
         }
+
+        $dayofweek = date('w', strtotime($aspirante[0]->NOMBRE_DIA_INGLES));
+            switch ($dayofweek) {
+                case 0:
+                    $dayofweek = "Domingo";
+                    break;
+                case 1:
+                    $dayofweek = "Lunes";
+                    break;
+                case 2:
+                    $dayofweek = "Martes";
+                    break;
+                case 3:
+                    $dayofweek = "Miercoles";
+                    break;
+                case 4:
+                    $dayofweek = "Jueves";
+                    break;
+                case 5:
+                    $dayofweek = "Viernes";
+                    break;
+                case 6:
+                    $dayofweek = "Sabado";
+                    break;
+            }
+
+            $aspirante[0]->NOMBRE_DIA_INGLES = $dayofweek;
+
+            $dia = $aspirante[0]->DIA_INGLES;
+            setlocale(LC_TIME, 'es_ES.UTF-8');
+            $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
+            $mes = strftime("%B", $fecha->getTimestamp()); // marzo
+            $aspirante[0]->DIA_INGLES = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
+            $aspirante[0]->HORA_INGLES = date("g:i a", strtotime($aspirante[0]->HORA_INGLES));
         return $this->generarPDF($aspirante, 'aspirante.ficha');
     }
 
