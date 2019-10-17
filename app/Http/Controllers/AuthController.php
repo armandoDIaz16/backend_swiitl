@@ -20,7 +20,7 @@ use App\Models\General\Sistema;
 use App\Helpers\Mailer;
 use App\Helpers\UsuariosHelper;
 use App\Helpers\Constantes;
-
+use App\Helpers\EncriptarUsuario;
 
 /**
  * Class AuthController
@@ -267,11 +267,22 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        User::where([
-            ['PRIMER_LOGIN', 0],
-            ['PK_USUARIO', auth()->user()->PK_USUARIO]]
-        )->update(['PRIMER_LOGIN' => 1]);
+        if (auth()->user()->PRIMER_LOGIN == 0) {
+            User::where(
+                [
+                    ['PRIMER_LOGIN', 0],
+                    ['PK_USUARIO', auth()->user()->PK_USUARIO]
+                ]
+            )->update(
+                [
+                    'PRIMER_LOGIN' => 1,
+                    'PK_ENCRIPTADA' => EncriptarUsuario::getPkEncriptada(auth()->user()->PK_USUARIO, auth()->user()->FECHA_REGISTRO)
+                ]
+            );
+            auth()->user()->PK_ENCRIPTADA = User::select('PK_ENCRIPTADA')->where('PK_USUARIO', auth()->user()->PK_USUARIO)->first()->PK_ENCRIPTADA;
 
+        }
+        
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
@@ -619,6 +630,11 @@ class AuthController extends Controller
             )) {
                 error_log("Error al enviar correo al receptor en activación de cuenta: " . $usuario->CORREO1);
                 error_log("AuthController.php");
+            } else {
+                return response()->json(
+                    ['data' => true],
+                    Response::HTTP_OK
+                );
             }
         } else { // mandar mensaje de cuenta activa y vinculada a CURP
             return response()->json(

@@ -18,14 +18,6 @@ Route::post('activar_cuenta', 'AuthController@activa_cuenta');
 // INICIO DE SESIÓN
 Route::post('login', 'AuthController@login');
 
-/* INICIO RUTAS PARA COMPLETAR PERFIL */
-// OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
-Route::get('perfil/{id_usuario}', 'PerfilController@get_perfil');
-
-// GUARDAR DATOS PARA COMPLETAR PERFIL
-Route::post('perfil', 'PerfilController@save_perfil');
-/* FIN RUTAS PARA COMPLETAR PERFIL */
-
 // TERMINAR SESIÓN
 Route::post('logout', 'AuthController@logout');
 
@@ -41,6 +33,16 @@ Route::post('resetPassword', 'ChangePasswordController@process');
 
 Route::middleware('jwt.auth')->get('users', function () {
     return auth('api')->user();
+});
+
+Route::group(['middleware' => ['jwt.verify']], function () {
+    /* INICIO RUTAS PARA COMPLETAR PERFIL */
+    // OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
+    Route::get('perfil/{id_usuario}', 'PerfilController@get_perfil');
+
+    // GUARDAR DATOS PARA COMPLETAR PERFIL
+    Route::post('perfil', 'PerfilController@save_perfil');
+    /* FIN RUTAS PARA COMPLETAR PERFIL */
 });
 
 
@@ -369,12 +371,26 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('ModificarGrupo', 'LugarExamenController@modificarGrupo');
     Route::post('ModificarGrupoEscrito', 'LugarExamenController@modificarGrupoEscrito');
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
+    Route::get('PlantillaSIIA/{id}', 'PlantillaSIIAController@getPlantillaSIIA');
+
+    Route::post('AgregarTurnoEscrito', 'LugarExamenController@agregarTurnoEscrito');
+    Route::get('TurnoEscrito/{PK_PERIODO}', 'LugarExamenController@obtenerTurnoEscrito');
+    Route::post('ModificarTurnoEscrito', 'LugarExamenController@modificarTurnoEscrito');
+    Route::post('AgregarTurnoIngles', 'LugarExamenController@agregarTurnoIngles');
+    Route::post('AgregarEspacioIngles', 'LugarExamenController@agregarEspacioIngles');
+    Route::post('AgregarGrupoIngles', 'LugarExamenController@agregarGrupoIngles');
+    Route::get('TurnoIngles/{PK_PERIODO}', 'LugarExamenController@obtenerTurnoIngles');
+    Route::get('EspacioIngles/{PK_PERIODO}', 'LugarExamenController@obtenerEspacioIngles');
+    Route::get('GrupoIngles/{PK_PERIODO}', 'LugarExamenController@obtenerGrupoIngles');
+    Route::post('ModificarTurnoIngles', 'LugarExamenController@modificarTurnoIngles');
+    Route::post('ModificarEspacioIngles', 'LugarExamenController@modificarEspacioIngles');
+    Route::post('ModificarGrupoIngles', 'LugarExamenController@modificarGrupoIngles');
 });
 
-/*
+
 Route::get('Prueba', 'UsuarioController@prueba');
 Route::get('Prueba2', 'UsuarioController@prueba2');
-*/
+
 
 /* *********************************************************** *
  * ************* RUTAS PROTEGIDAS DEL SISTEMA DE TUTORIAS *************** *
@@ -518,8 +534,10 @@ Route::get('TodosAsistencia','PAAE_Periodo@allAsistencia');
 Route::get('AsistenciaPeriodo','PAAE_Periodo@allAsistenciaPeriodo');
 Route::get('TodosReporteFinal','PAAE_Periodo@allReporteFinal');
 Route::get('ReporteFinalPeriodo','PAAE_Periodo@allReporteFinalPeriodo');
-/* Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica'); */
-/* Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo'); */
+
+//Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica');
+Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo');
+
 Route::get('TodosAsesores','PAAE_Periodo@AsesoresListal');
 Route::get('AsesoresPeriodo','PAAE_Periodo@AsesoresListalPeriodo');
 Route::get('SesionAsesor','PAAE_Periodo@sesionPorAsesor');
