@@ -80,7 +80,7 @@ class DocumentosController extends Controller
             $path = "files/" . $aspirante[0]->RUTA . "/";
 
             // Arreglo con todos los nombres de los archivos
-            $files = array_diff(scandir($path), array('.', '..'));
+            $files = array_diff(scandir('public/'.$path), array('.', '..'));
             //Luego recorres el arreglo y le haces un simple explode a cada elemento
 
             // Obtienes tu variable mediante GET
@@ -90,11 +90,11 @@ class DocumentosController extends Controller
             }
 
             foreach ($files as $file) {
-                // Divides en dos el nombre de tu archivo utilizando el . 
+                // Divides en dos el nombre de tu archivo utilizando el .
                 $data          = explode(".", $file);
                 // Nombre del archivo
                 $fileName      = $data[0];
-                // Extensión del archivo 
+                // Extensión del archivo
                 $fileExtension = $data[1];
 
                 if ($code == $fileName) {
