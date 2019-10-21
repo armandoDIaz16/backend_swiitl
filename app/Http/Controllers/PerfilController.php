@@ -17,6 +17,7 @@ class PerfilController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function get_perfil($pk_usuario) {
+        // error_log($pk_usuario);
         $perfil = DB::table('VW_PERFIL_ALUMNO')
             ->where('PK_ENCRIPTADA', $pk_usuario)
             ->first();

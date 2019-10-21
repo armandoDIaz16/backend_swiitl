@@ -35,6 +35,15 @@ Route::middleware('jwt.auth')->get('users', function () {
     return auth('api')->user();
 });
 
+/* INICIO RUTAS GENERALES */
+Route::group(['middleware' => ['jwt.verify']], function () {
+    Route::resource('situacion_residencia', 'SituacionResidenciaController');
+
+    //función para obtener estado y municipio por código postal
+    Route::post('procesa_codigo_postal', 'CodigoPostalController@procesa_codigo_postal');
+});
+/* FIN RUTAS GENERALES */
+
 Route::group(['middleware' => ['jwt.verify']], function () {
     /* INICIO RUTAS PARA COMPLETAR PERFIL */
     // OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL

@@ -268,7 +268,7 @@ class SITEncuestaController extends Controller
      */
     public function get_encuesta_resuelta_aplicacion($pk_aplicacion)
     {
-        error_log($pk_aplicacion);
+        // error_log($pk_aplicacion);
         $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $pk_aplicacion)->first();
 
         if (isset($aplicacion->FK_ENCUESTA)) {

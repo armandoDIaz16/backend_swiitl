@@ -29,7 +29,7 @@ class CalificacionAlumnoController extends Controller
         $fecha = new PeriodoResidencia();
         $diai = $fecha->FIniD($request->FK_DOCENTE,5);
         $diaf = $fecha->FFinD($request->FK_DOCENTE,5);
-        \Log::debug('dia: '.$dia.' dia inicio: '.$diai.' dia fin: '.$diaf);
+
         if($diai<=$dia && $dia<=$diaf){
             $calificacion = new CalificacionAlumno();
             $periodo = new CreditosSiia();
