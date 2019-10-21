@@ -55,7 +55,7 @@ class PlantillaSIIAController extends Controller
         $mes = date("m", $fecha);
         $anio = date("Y", $fecha);
         if ($mes > 6) {
-            $periodo = 'Enero_Junio_' . $anio;
+            $periodo = 'Enero_Julio_' . ($anio+1);
         } else {
             $periodo = 'Agosto_Diciembre_' . $anio;
         }

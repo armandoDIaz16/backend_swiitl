@@ -95,7 +95,8 @@ class AspiranteController extends Controller
             $request->FK_CARRERA_UNIVERSIDAD,
             $request->FK_DEPENDENCIA,
             $request->TRABAJAS_Y_ESTUDIAS,
-            $request->AYUDA_INCAPACIDAD
+            $request->AYUDA_INCAPACIDAD,
+            $request->LENGUA_INDIGENA
         ";
 
 
@@ -379,6 +380,10 @@ class AspiranteController extends Controller
 
     private function leerPagos($ruta, $PK_PERIODO, $nombre)
     {
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')
+            ->select('TIPO_PERSONA_SEMESTRE_UNO', 'TIPO_PERSONA_SEMESTRE_CERO', 'APLICACION_SIIA_SEMESTRE_UNO', 'APLICACION_SIIA_SEMESTRE_CERO', 'CONCEPTO_SEMESTRE_UNO', 'CONCEPTO_SEMESTRE_CERO')
+            ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO)
+            ->get();
         $File = fopen($ruta, "r");
         $datos = array();
         while (!feof($File)) {
@@ -386,6 +391,7 @@ class AspiranteController extends Controller
             //return substr($fila,0,7);
             //array_push($datos, $fila);
             if (
+                //Referencias ficha
                 is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319' ||
                 is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03201'
             ) {
@@ -396,7 +402,24 @@ class AspiranteController extends Controller
                     'MONTO' => substr($fila, 114, 4),
                     'TIPO_PAGO' => substr($fila, 164, 3),
                     'FECHA_PAGO' => substr($fila, 130, 10),
-                    'FECHA_LIMITE' => substr($fila, 140, 10)
+                    'FECHA_LIMITE' => substr($fila, 140, 10),
+                    'CONCEPTO' => ''
+                ]);
+            } else if (
+                //Referencias inscripcion y curso
+                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 2) == $periodo[0]->TIPO_PERSONA_SEMESTRE_UNO && substr($fila, 43, 3) == $periodo[0]->APLICACION_SIIA_SEMESTRE_UNO && substr($fila, 46, 3) == $periodo[0]->CONCEPTO_SEMESTRE_UNO ||
+                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 2) == $periodo[0]->TIPO_PERSONA_SEMESTRE_CERO && substr($fila, 43, 3) == $periodo[0]->APLICACION_SIIA_SEMESTRE_CERO && substr($fila, 46, 3) == $periodo[0]->CONCEPTO_SEMESTRE_CERO ||
+                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 2) == '03' && substr($fila, 43, 3) == '004' && substr($fila, 46, 3) == '063'
+            ) {
+                array_push($datos, [
+                    'CLAVE' => substr($fila, 0, 7),
+                    'REFERENCIA_BANCO' => substr($fila, 37, 20),
+                    'IDCONTROL' => substr($fila, 39, 4),
+                    'MONTO' => substr($fila, 114, 4),
+                    'TIPO_PAGO' => substr($fila, 164, 3),
+                    'FECHA_PAGO' => substr($fila, 130, 10),
+                    'FECHA_LIMITE' => substr($fila, 140, 10),
+                    'CONCEPTO' => substr($fila, 43, 3)
                 ]);
             }
             //error_log(print_r(substr($fila, 42, 4),true));
@@ -408,50 +431,103 @@ class AspiranteController extends Controller
             } */
             //return $datos;
         }
-        if ($this->guardarDatosBD($datos, $PK_PERIODO, $nombre)) {
+        if ($this->guardarDatosBD($datos, $PK_PERIODO, $nombre, $periodo)) {
             return 1;
         } else {
             return 2;
         }
     }
 
-    private function guardarDatosBD($datos, $PK_PERIODO, $real_name)
+    private function guardarDatosBD($datos, $PK_PERIODO, $real_name, $periodo)
     {
-
         if ($datos) {
             foreach ($datos as $dato) {
-
-                $PK_USUARIO = DB::table('CAT_ASPIRANTE')
-                    ->where([
-                        ['FK_PERIODO', '=', $PK_PERIODO],
-                        ['NUMERO_PREFICHA', '=', $dato['IDCONTROL']],
-                        ['FK_ESTATUS', '=', 1]
-                    ])
-                    ->max('FK_PADRE');
-
-                if ($PK_USUARIO) {
-
-                    DB::table('CATR_REFERENCIA_BANCARIA_USUARIO')->insert(
-                        [
-                            'FK_USUARIO' => $PK_USUARIO,
-                            'REFERENCIA_BANCO' => $dato['REFERENCIA_BANCO'],
-                            'MONTO' => $dato['MONTO'],
-                            'CONCEPTO' => "Ficha para examen de admisión",
-                            'CANTIDAD' => 1,
-                            'TIPO_PAGO' => $dato['TIPO_PAGO'],
-                            'FECHA_PAGO' => $dato['FECHA_PAGO'],
-                            'FECHA_LIMIE' => $dato['FECHA_LIMITE'],
-                            'ARCHIVO_REGISTRO' => $real_name
-                        ]
-                    );
-
-                    DB::table('CAT_ASPIRANTE')
+                //error_log(print_r($dato['CONCEPTO'], true));
+                if ($dato['CONCEPTO'] == '') {
+                    $PK_USUARIO = DB::table('CAT_ASPIRANTE')
                         ->where([
                             ['FK_PERIODO', '=', $PK_PERIODO],
                             ['NUMERO_PREFICHA', '=', $dato['IDCONTROL']],
                             ['FK_ESTATUS', '=', 1]
                         ])
-                        ->update(['FK_ESTATUS' => 2]);
+                        ->max('FK_PADRE');
+                    if ($PK_USUARIO) {
+                        DB::table('CATR_REFERENCIA_BANCARIA_USUARIO')->insert(
+                            [
+                                'FK_USUARIO' => $PK_USUARIO,
+                                'REFERENCIA_BANCO' => $dato['REFERENCIA_BANCO'],
+                                'MONTO' => $dato['MONTO'],
+                                'CONCEPTO' => "Ficha para examen de admisión",
+                                'CANTIDAD' => 1,
+                                'TIPO_PAGO' => $dato['TIPO_PAGO'],
+                                'FECHA_PAGO' => $dato['FECHA_PAGO'],
+                                'FECHA_LIMIE' => $dato['FECHA_LIMITE'],
+                                'ARCHIVO_REGISTRO' => $real_name
+                            ]
+                        );
+
+                        DB::table('CAT_ASPIRANTE')
+                            ->where([
+                                ['FK_PERIODO', '=', $PK_PERIODO],
+                                ['NUMERO_PREFICHA', '=', $dato['IDCONTROL']],
+                                ['FK_ESTATUS', '=', 1]
+                            ])
+                            ->update(['FK_ESTATUS' => 2]);
+                    }
+                } else {
+
+                    $PK_USUARIOSIEXISTE = DB::table('CAT_ASPIRANTE AS CA')
+                        ->select('PK_USUARIO')
+                        ->join('CAT_USUARIO AS CU', 'CA.FK_PADRE', '=', 'CU.PK_USUARIO')
+                        ->leftJoin('CATR_REFERENCIA_BANCARIA_USUARIO AS CRBU', 'CU.PK_USUARIO', '=', 'CRBU.FK_USUARIO')
+                        ->where([
+                            ['FK_PERIODO', '=', $PK_PERIODO],
+                            ['NUMERO_PREFICHA', '=', $dato['IDCONTROL']],
+                            ['REFERENCIA_BANCO', '=', $dato['REFERENCIA_BANCO']]
+                        ])
+                        ->max('PK_USUARIO');
+                    if (!$PK_USUARIOSIEXISTE) {
+                        $PK_USUARIOSIEXISTE = 0;
+                    }
+
+                    //error_log(print_r($PK_USUARIOSIEXISTE, true));
+                    $PK_USUARIO2 = DB::table('CAT_ASPIRANTE AS CA')
+                        ->select('PK_USUARIO')
+                        ->join('CAT_USUARIO AS CU', 'CA.FK_PADRE', '=', 'CU.PK_USUARIO')
+                        ->leftJoin('CATR_REFERENCIA_BANCARIA_USUARIO AS CRBU', 'CU.PK_USUARIO', '=', 'CRBU.FK_USUARIO')
+                        ->where([
+                            ['FK_PERIODO', '=', $PK_PERIODO],
+                            ['NUMERO_PREFICHA', '=', $dato['IDCONTROL']]
+                        ])
+                        ->whereNotIn(
+                            'PK_USUARIO',
+                            [$PK_USUARIOSIEXISTE]
+                        )
+                        ->max('PK_USUARIO');
+                    //error_log(print_r($PK_USUARIO2, true));
+                    if ($PK_USUARIO2) {
+                        if ($dato['CONCEPTO'] == $periodo[0]->APLICACION_SIIA_SEMESTRE_UNO) {
+                            $concepto = 'Referencia de pago para inscripción';
+                        } else if ($dato['CONCEPTO'] ==  $periodo[0]->APLICACION_SIIA_SEMESTRE_CERO) {
+                            $concepto = 'Referencia de pago para inscripción semestre cero';
+                        } else if ($dato['CONCEPTO'] == '004') {
+                            $concepto = 'Referencia de pago para curso de nivelación';
+                        }
+                        //error_log(print_r($concepto, true));
+                        DB::table('CATR_REFERENCIA_BANCARIA_USUARIO')->insert(
+                            [
+                                'FK_USUARIO' => $PK_USUARIO2,
+                                'REFERENCIA_BANCO' => $dato['REFERENCIA_BANCO'],
+                                'MONTO' => $dato['MONTO'],
+                                'CONCEPTO' => $concepto,
+                                'CANTIDAD' => 1,
+                                'TIPO_PAGO' => $dato['TIPO_PAGO'],
+                                'FECHA_PAGO' => $dato['FECHA_PAGO'],
+                                'FECHA_LIMIE' => $dato['FECHA_LIMITE'],
+                                'ARCHIVO_REGISTRO' => $real_name
+                            ]
+                        );
+                    }
                 }
             }
             return true;
@@ -492,6 +568,7 @@ class AspiranteController extends Controller
                 'CAT_USUARIO.PRIMER_APELLIDO',
                 DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
                 'CAT_USUARIO.CORREO1 as CORREO',
+                'CATR_REFERENCIA_BANCARIA_USUARIO.CONCEPTO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.REFERENCIA_BANCO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.TIPO_PAGO'
@@ -511,26 +588,6 @@ class AspiranteController extends Controller
 
     public function aspirantes3($PK_PERIODO)
     {
-        /* $aspirantes = DB::table('CAT_ASPIRANTE')
-            ->select(
-                DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
-                'CAT_USUARIO.NOMBRE as NOMBRE',
-                'CAT_USUARIO.PRIMER_APELLIDO',
-                DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
-                DB::raw('100342 as CLAVE_INSTITUCION'),
-                DB::raw('4576 as CLAVE_SEDE'),
-                'CAT_USUARIO.FECHA_NACIMIENTO',
-                'CAT_USUARIO.CORREO as CORREO',
-                'CAT_CARRERA.CLAVE_CARRERA'
-            )
-            ->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=',  'CAT_ASPIRANTE.FK_PADRE')
-            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=',  'CAT_ASPIRANTE.FK_CARRERA_1')
-            ->where([
-                ['FK_PERIODO', '=', $PK_PERIODO],
-                ['FK_ESTATUS', '=', 2]
-            ])
-            ->get(); */
-
         $aspirantes = DB::table('CAT_ASPIRANTE')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
@@ -595,7 +652,7 @@ class AspiranteController extends Controller
             $ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
             $inputFileType = PHPExcel_IOFactory::identify($ruta);
             $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-            $objPHPExcel = $objReader->load($ruta)->getSheet(1);
+            $objPHPExcel = $objReader->load($ruta)->getSheet(0);
 
             for ($row = 4; $row <= $objPHPExcel->getHighestRow(); $row++) {
                 $preficha = $objPHPExcel->getCell("F" . $row)->getValue();
@@ -1031,6 +1088,8 @@ class AspiranteController extends Controller
             for ($row = 2; $row <= $objPHPExcel->getHighestRow(); $row++) {
                 $preficha = $objPHPExcel->getCell("I" . $row)->getValue();
                 $aceptado = $objPHPExcel->getCell("FU" . $row)->getValue();
+                $ICNE = $objPHPExcel->getCell("FE" . $row)->getValue();
+                $DDD_MG_MAT = $objPHPExcel->getCell("FQ" . $row)->getValue();
                 if ($preficha && $aceptado == 1) {
                     /* Actualiza el estatus por preficha */
                     DB::table('CAT_ASPIRANTE')
@@ -1040,7 +1099,9 @@ class AspiranteController extends Controller
                             //['FK_ESTATUS', '=', 4]
                         ])
                         ->update([
-                            'ACEPTADO' => 1
+                            'ACEPTADO' => 1,
+                            'ICNE' => $ICNE,
+                            'DDD_MG_MAT' => $DDD_MG_MAT
                         ]);
                 } else if ($preficha && $aceptado == 2) {
                     /* Actualiza el estatus por preficha */
@@ -1051,7 +1112,9 @@ class AspiranteController extends Controller
                             //['FK_ESTATUS', '=', 4]
                         ])
                         ->update([
-                            'ACEPTADO' => 2
+                            'ACEPTADO' => 2,
+                            'ICNE' => $ICNE,
+                            'DDD_MG_MAT' => $DDD_MG_MAT
                         ]);
                 }
             }
@@ -1272,5 +1335,24 @@ class AspiranteController extends Controller
         );
 
         return $mailer->send();
+    }
+
+    public function getReferenciasPagadas($PK_PERIODO)
+    {
+        $aspirantes = DB::table('CAT_USUARIO AS CU')
+            ->select(
+                DB::raw("CU.NOMBRE + ' ' + CU.PRIMER_APELLIDO + ' ' + CASE WHEN CU.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CU.SEGUNDO_APELLIDO END as NOMBRE"),
+                'REFERENCIA_BANCO',
+                'PREFICHA AS IDCONTROL',
+                'CORREO1',
+                'MONTO',
+                'FECHA_PAGO',
+                'CONCEPTO'
+            )
+            ->join('CAT_ASPIRANTE AS CA', 'CU.PK_USUARIO', '=', 'CA.FK_PADRE')
+            ->join('CATR_REFERENCIA_BANCARIA_USUARIO AS CRBU', 'CU.PK_USUARIO', '=', 'CRBU.FK_USUARIO')
+            ->where('FK_PERIODO', $PK_PERIODO)
+            ->get();
+        return $aspirantes;
     }
 }

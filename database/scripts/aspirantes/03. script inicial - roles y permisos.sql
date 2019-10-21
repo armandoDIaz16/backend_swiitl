@@ -87,6 +87,8 @@ INSERT INTO PER_TR_ROL_MODULO (FK_ROL, FK_MODULO)
 VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE NOMBRE = 'Vinculación'), );
 INSERT INTO PER_TR_ROL_MODULO (FK_ROL, FK_MODULO)
 VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE NOMBRE = 'Reportes'), );
+INSERT INTO PER_TR_ROL_MODULO (FK_ROL, FK_MODULO)
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE NOMBRE = 'Referencias'), );
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------

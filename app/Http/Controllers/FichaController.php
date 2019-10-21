@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Barryvdh\DomPDF\Facade;
+use App\Helpers\Referencia;
 use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
 use DateTime;
@@ -65,67 +65,13 @@ class FichaController extends Controller
                 'mesC' => date('m', strtotime($fechaLimitePago)),
                 'diaC' => date('j', strtotime($fechaLimitePago)),
             ];
-        $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
+        $aspirante[0]->REFERENCIA = Referencia::RUTINA8250POSICIONES($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO = "Solicitud de ficha de pago para examen de admisión";
-        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
 
         return $this->generarPDF($aspirante, 'aspirante.referencia');
-    }
-
-    private function RUTINA8250POSICIONES($datos)
-    {
-        //return "fmdifj0jf0jf09j0f3900";
-        $Amonto = array(7, 3, 1); //arreglo para obtener el importe concensado
-        $ADV = array(11, 13, 17, 19, 23); //arreglo de digito verificador
-        $letra = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9);
-
-        $referencia = strtoupper($datos['tipo_persona'] . $datos['control'] . $datos['servicio']); //tipoalumno.control.servicio
-        $rev = "";
-        $ValorVariable = $datos['valorvariable'];
-        foreach (str_split($referencia) as $char) {
-            if ((ord($char) > 64 && ord($char) < 91)) {
-                $rev .= $letra[ord($char) - 65];
-            } else {
-                $rev .= $char;
-            }
-        }
-        $referencia = $rev;
-        $monto = $datos['monto'];
-        if (strpos($monto, '.') === false) {
-            $monto = number_format($monto, 2, '.', '');
-        }
-        $fecha = "" . ((($datos['yearC'] - 2014) * 372) + (($datos['mesC'] - 1) * 31) + ($datos['diaC'] - 1));
-        $monto = strrev(str_replace('.', '', $monto));
-        $i = 0;
-        $suma = 0;
-        foreach (str_split($monto) as $dig) {
-            $suma += ($Amonto[$i] * $dig);
-            $i++;
-            if ($i == count($Amonto)) {
-                $i = 0;
-            }
-        }
-        $monotoConde = "" . ($suma % 10);
-        $referenciatemp = strrev($referencia . $fecha . '' . $monotoConde . '' . $ValorVariable);
-        $i = 0;
-        $suma = 0;
-        foreach (str_split($referenciatemp) as $dig) {
-            $suma += ($ADV[$i] * $dig);
-            $i++;
-            if ($i == count($ADV)) {
-                $i = 0;
-            }
-        }
-        $digitoVerificador = "" . (($suma % 97) + 1);
-        $DV = (($suma % 97) + 1);
-        if ($DV < 10) {
-            $digitoVerificador = "0" . (($suma % 97) + 1);
-        } else {
-            $digitoVerificador = "" . (($suma % 97) + 1);
-        }
-        return $referencia . $fecha . $monotoConde . $ValorVariable . $digitoVerificador;
     }
 
     public function descargarFicha($id)
@@ -284,38 +230,38 @@ class FichaController extends Controller
         }
 
         $dayofweek = date('w', strtotime($aspirante[0]->NOMBRE_DIA_INGLES));
-            switch ($dayofweek) {
-                case 0:
-                    $dayofweek = "Domingo";
-                    break;
-                case 1:
-                    $dayofweek = "Lunes";
-                    break;
-                case 2:
-                    $dayofweek = "Martes";
-                    break;
-                case 3:
-                    $dayofweek = "Miercoles";
-                    break;
-                case 4:
-                    $dayofweek = "Jueves";
-                    break;
-                case 5:
-                    $dayofweek = "Viernes";
-                    break;
-                case 6:
-                    $dayofweek = "Sabado";
-                    break;
-            }
+        switch ($dayofweek) {
+            case 0:
+                $dayofweek = "Domingo";
+                break;
+            case 1:
+                $dayofweek = "Lunes";
+                break;
+            case 2:
+                $dayofweek = "Martes";
+                break;
+            case 3:
+                $dayofweek = "Miercoles";
+                break;
+            case 4:
+                $dayofweek = "Jueves";
+                break;
+            case 5:
+                $dayofweek = "Viernes";
+                break;
+            case 6:
+                $dayofweek = "Sabado";
+                break;
+        }
 
-            $aspirante[0]->NOMBRE_DIA_INGLES = $dayofweek;
+        $aspirante[0]->NOMBRE_DIA_INGLES = $dayofweek;
 
-            $dia = $aspirante[0]->DIA_INGLES;
-            setlocale(LC_TIME, 'es_ES.UTF-8');
-            $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
-            $mes = strftime("%B", $fecha->getTimestamp()); // marzo
-            $aspirante[0]->DIA_INGLES = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
-            $aspirante[0]->HORA_INGLES = date("g:i a", strtotime($aspirante[0]->HORA_INGLES));
+        $dia = $aspirante[0]->DIA_INGLES;
+        setlocale(LC_TIME, 'es_ES.UTF-8');
+        $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
+        $mes = strftime("%B", $fecha->getTimestamp()); // marzo
+        $aspirante[0]->DIA_INGLES = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
+        $aspirante[0]->HORA_INGLES = date("g:i a", strtotime($aspirante[0]->HORA_INGLES));
         return $this->generarPDF($aspirante, 'aspirante.ficha');
     }
 
@@ -361,6 +307,7 @@ class FichaController extends Controller
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
+                'NUMERO_PREFICHA',
                 DB::raw("CAT_USUARIO.NOMBRE + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
                 DB::raw("'' as REFERENCIA"),
                 DB::raw("'' as FECHA_LIMITE_PAGO"),
@@ -401,9 +348,10 @@ class FichaController extends Controller
 
         $datosReferencia =
             [
-                'tipo_persona' => '0',
-                'control' => $aspirante[0]->PREFICHA,
+                'tipo_persona' => '03',
+                'control'=>substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
                 'servicio' => '004',
+                'concepto' => '063',
                 'valorvariable' => '2',
                 'monto' => $periodo[0]->MONTO_CURSO,
                 'yearC' => date('Y', strtotime($fechaLimitePago)),
@@ -411,12 +359,12 @@ class FichaController extends Controller
                 'diaC' => date('j', strtotime($fechaLimitePago)),
             ];
 
-        $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
+        $aspirante[0]->REFERENCIA = Referencia::RUTINA8250POSICIONESSIIA($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO = "Referencia de pago para curso de nivelación";
-        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
-        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('ALIAS', 'ITL');
+        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
         return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 
@@ -426,6 +374,7 @@ class FichaController extends Controller
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
+                'NUMERO_PREFICHA',
                 DB::raw("CAT_USUARIO.NOMBRE + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
                 DB::raw("'' as REFERENCIA"),
                 DB::raw("'' as FECHA_LIMITE_PAGO"),
@@ -442,7 +391,7 @@ class FichaController extends Controller
 
         $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
 
-        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO_INSCRIPCION', 'FECHA_FIN_INSCRIPCION', 'MONTO_INSCRIPCION')
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO_INSCRIPCION', 'FECHA_FIN_INSCRIPCION', 'MONTO_INSCRIPCION', 'TIPO_PERSONA_SEMESTRE_UNO', 'APLICACION_SIIA_SEMESTRE_UNO', 'CONCEPTO_SEMESTRE_UNO')
             ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO_PREFICHAS)
             ->get();
 
@@ -466,9 +415,10 @@ class FichaController extends Controller
 
         $datosReferencia =
             [
-                'tipo_persona' => '0',
-                'control' => $aspirante[0]->PREFICHA,
-                'servicio' => '004',
+                'tipo_persona' => $periodo[0]->TIPO_PERSONA_SEMESTRE_UNO,
+                'control'=>substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
+                'servicio' => $periodo[0]->APLICACION_SIIA_SEMESTRE_UNO,
+                'concepto' => $periodo[0]->CONCEPTO_SEMESTRE_UNO,
                 'valorvariable' => '2',
                 'monto' => $periodo[0]->MONTO_INSCRIPCION,
                 'yearC' => date('Y', strtotime($fechaLimitePago)),
@@ -476,12 +426,12 @@ class FichaController extends Controller
                 'diaC' => date('j', strtotime($fechaLimitePago)),
             ];
 
-        $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
+        $aspirante[0]->REFERENCIA = Referencia::RUTINA8250POSICIONESSIIA($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO = "Referencia de pago para inscripción";
-        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
-        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('ALIAS', 'ITL');
+        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
         return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 
@@ -491,6 +441,7 @@ class FichaController extends Controller
         $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
+                'NUMERO_PREFICHA',
                 DB::raw("CAT_USUARIO.NOMBRE + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
                 DB::raw("'' as REFERENCIA"),
                 DB::raw("'' as FECHA_LIMITE_PAGO"),
@@ -507,7 +458,7 @@ class FichaController extends Controller
 
         $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
 
-        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO_INSCRIPCION_BIS', 'FECHA_FIN_INSCRIPCION_BIS', 'MONTO_INSCRIPCION_BIS')
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO_INSCRIPCION_BIS', 'FECHA_FIN_INSCRIPCION_BIS', 'MONTO_INSCRIPCION_BIS', 'TIPO_PERSONA_SEMESTRE_CERO', 'APLICACION_SIIA_SEMESTRE_CERO', 'CONCEPTO_SEMESTRE_CERO')
             ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO_PREFICHAS)
             ->get();
 
@@ -531,9 +482,10 @@ class FichaController extends Controller
 
         $datosReferencia =
             [
-                'tipo_persona' => '0',
-                'control' => $aspirante[0]->PREFICHA,
-                'servicio' => '004',
+                'tipo_persona' => $periodo[0]->TIPO_PERSONA_SEMESTRE_CERO,
+                'control'=>substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
+                'servicio' => $periodo[0]->APLICACION_SIIA_SEMESTRE_CERO,
+                'concepto' => $periodo[0]->CONCEPTO_SEMESTRE_CERO,
                 'valorvariable' => '2',
                 'monto' => $periodo[0]->MONTO_INSCRIPCION_BIS,
                 'yearC' => date('Y', strtotime($fechaLimitePago)),
@@ -541,12 +493,12 @@ class FichaController extends Controller
                 'diaC' => date('j', strtotime($fechaLimitePago)),
             ];
 
-        $aspirante[0]->REFERENCIA = $this->RUTINA8250POSICIONES($datosReferencia);
+        $aspirante[0]->REFERENCIA = Referencia::RUTINA8250POSICIONESSIIA($datosReferencia);
         $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
         $aspirante[0]->CONCEPTO = "Referencia de pago para inscripción semestre cero";
-        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
+        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('NOMBRE', 'ITL')->get()[0]->CLAVE_CIE;
         $aspirante[0]->MONTO = $datosReferencia['monto'];
-        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('ALIAS', 'ITL');
+        $fk_aspirante = DB::table('CAT_INSTITUCION')->where('NOMBRE', 'ITL');
         return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 }
