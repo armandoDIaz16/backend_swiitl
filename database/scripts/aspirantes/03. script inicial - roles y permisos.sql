@@ -84,10 +84,17 @@ INSERT INTO PER_CAT_MODULO(NOMBRE) VALUES ('Examen ubicación');
 
 INSERT INTO PER_TR_ROL_MODULO (FK_ROL, FK_MODULO)
 VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE NOMBRE = 'Servicios escolares'), 34);
+
 INSERT INTO PER_TR_ROL_MODULO (FK_ROL, FK_MODULO)
 VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE NOMBRE = 'Vinculación'), 35);
+
 INSERT INTO PER_TR_ROL_MODULO (FK_ROL, FK_MODULO)
 VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE NOMBRE = 'Reportes'), 10);
+
+INSERT INTO PER_CAT_MODULO(NOMBRE) VALUES ('Referencias');
+
+INSERT INTO PER_TR_ROL_MODULO (FK_ROL, FK_MODULO)
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE NOMBRE = 'Servicios escolares'), );
 
 
 -- --------------------------------------------------------------------------------------------------------------------------------

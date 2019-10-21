@@ -574,6 +574,63 @@ alter table CAT_ASPIRANTE
 		foreign key (FK_EXAMEN_ADMISION_ESCRITO) references CATR_EXAMEN_ADMISION_ESCRITO
 go
 
+
+/* Cambios 2 */
+
+alter table CAT_PERIODO_PREFICHAS
+	add TIPO_PERSONA_SEMESTRE_UNO nvarchar(2) default 30
+go
+
+alter table CAT_PERIODO_PREFICHAS
+	add TIPO_PERSONA_SEMESTRE_CERO nvarchar(2) default 30
+go
+
+alter table CAT_PERIODO_PREFICHAS
+	add APLICACION_SIIA_SEMESTRE_UNO nvarchar(3) default 015
+go
+
+alter table CAT_PERIODO_PREFICHAS
+	add APLICACION_SIIA_SEMESTRE_CERO nvarchar(3) default 014
+go
+
+alter table CAT_PERIODO_PREFICHAS
+	add CONCEPTO_SEMESTRE_UNO nvarchar(3) default 037
+go
+
+alter table CAT_PERIODO_PREFICHAS
+	add CONCEPTO_SEMESTRE_CERO nvarchar(3) default 037
+go
+
+/* CREATE TABLE CAT_ASPIRANTE_CARPETA
+(
+    PK_ASPIRANTE_CARPETA                INT IDENTITY PRIMARY KEY,
+    RUTA VARCHAR(255),
+    FK_ASPIRANTE            INT      NOT NULL CONSTRAINT CAT_ASPIRANTE_CARPETA_FK_ASPIRANTE_FOREIGN REFERENCES CAT_ASPIRANTE,
+    ESTADO                  SMALLINT NOT NULL DEFAULT 1,
+    FK_USUARIO_REGISTRO     INT,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_REGISTRO          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT NOT NULL DEFAULT 0
+); */
+
+CREATE TABLE CAT_USUARIO_CARPETA
+(
+    PK_USUARIO_CARPETA                INT IDENTITY PRIMARY KEY,
+    RUTA VARCHAR(255),
+    FK_USUARIO            INT      NOT NULL CONSTRAINT CAT_USUARIO_CARPETA_FK_USUARIO_FOREIGN REFERENCES CAT_USUARIO,
+    ESTADO                  SMALLINT NOT NULL DEFAULT 1,
+    FK_USUARIO_REGISTRO     INT,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_REGISTRO          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT NOT NULL DEFAULT 0
+);
+
+alter table CAT_ASPIRANTE
+	add LENGUA_INDIGENA varchar(50)
+go
+
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------

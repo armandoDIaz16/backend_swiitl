@@ -394,6 +394,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('ModificarTurnoIngles', 'LugarExamenController@modificarTurnoIngles');
     Route::post('ModificarEspacioIngles', 'LugarExamenController@modificarEspacioIngles');
     Route::post('ModificarGrupoIngles', 'LugarExamenController@modificarGrupoIngles');
+
+    Route::get('ReferenciasPagadas/{PK_PERIODO}', 'AspiranteController@getReferenciasPagadas');
+    Route::post('ModificarReferencias', 'PeriodoController@modificarReferencias');
+    Route::post('GuardarDocumento/{PK_PERIODO}', 'DocumentosController@guardarDocumento');
+    Route::get('ObtenerDocumento', 'DocumentosController@obtenerDocumento');
 });
 
 
