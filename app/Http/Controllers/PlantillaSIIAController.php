@@ -85,9 +85,9 @@ class PlantillaSIIAController extends Controller
         }
 
         $writer =  IOFactory::createWriter($spreadsheet, 'Xls');
-        $writer->save('files/Aspirantes/PlantillaSIIA/SIIA_Aspirantes_' . $periodo . '.xlsx');
+        $writer->save('files/Aspirantes/PlantillaSIIA/SIIA_Aspirantes_' . $periodo . '.xls');
         
-        return response()->json('files/Aspirantes/PlantillaSIIA/SIIA_Aspirantes_' . $periodo . '.xlsx');
+        return response()->json('files/Aspirantes/PlantillaSIIA/SIIA_Aspirantes_' . $periodo . '.xls');
 
         /* 
         CONSULTA
