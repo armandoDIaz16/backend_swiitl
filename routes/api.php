@@ -390,6 +390,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('ModificarReferencias', 'PeriodoController@modificarReferencias');
     Route::post('GuardarDocumento/{PK_PERIODO}', 'DocumentosController@guardarDocumento');
     Route::get('ObtenerDocumento', 'DocumentosController@obtenerDocumento');
+    Route::get('CarreraFiltro/{PK_PERIODO}', 'CarreraController@carreraFiltro');
 });
 
 
