@@ -28,7 +28,7 @@ class FechaEspanol
                 $dia = "Martes";
                 break;
             case 3:
-                $dia = "Miercoles";
+                $dia = "Miércoles";
                 break;
             case 4:
                 $dia = "Jueves";
@@ -37,7 +37,7 @@ class FechaEspanol
                 $dia = "Viernes";
                 break;
             case 6:
-                $dia = "Sabado";
+                $dia = "Sábado";
                 break;
         }
         return $dia;
