@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FechaEspanol;
 use App\Helpers\Referencia;
 use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
-use DateTime;
 
 class FichaController extends Controller
 {
@@ -144,39 +144,9 @@ class FichaController extends Controller
         if ($aspirante[0]->TIPO_APLICACION == 1) {
             $fecha = $aspirante[0]->FECHA_MODIFICACION;
             $aspirante[0]->FECHA_MODIFICACION = substr($fecha, 8, 2) . "/" . substr($fecha, 5, 2) . "/" . substr($fecha, 0, 4);
-
-
-            $dayofweek = date('w', strtotime($aspirante[0]->NOMBRE_DIA));
-            switch ($dayofweek) {
-                case 0:
-                    $dayofweek = "Domingo";
-                    break;
-                case 1:
-                    $dayofweek = "Lunes";
-                    break;
-                case 2:
-                    $dayofweek = "Martes";
-                    break;
-                case 3:
-                    $dayofweek = "Miercoles";
-                    break;
-                case 4:
-                    $dayofweek = "Jueves";
-                    break;
-                case 5:
-                    $dayofweek = "Viernes";
-                    break;
-                case 6:
-                    $dayofweek = "Sabado";
-                    break;
-            }
-
-            $aspirante[0]->NOMBRE_DIA = $dayofweek;
-
+            $mes = FechaEspanol::getMes($aspirante[0]->NOMBRE_DIA);
+            $aspirante[0]->NOMBRE_DIA = FechaEspanol::getDia($aspirante[0]->NOMBRE_DIA);
             $dia = $aspirante[0]->DIA;
-            setlocale(LC_TIME, 'es_ES.UTF-8');
-            $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
-            $mes = strftime("%B", $fecha->getTimestamp()); // marzo
             $aspirante[0]->DIA = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
             $aspirante[0]->HORA = date("g:i a", strtotime($aspirante[0]->HORA));
             $aspirante[0]->MENSAJE = "
@@ -187,40 +157,11 @@ class FichaController extends Controller
         } else {
             $fecha = $aspirante[0]->FECHA_MODIFICACION;
             $aspirante[0]->FECHA_MODIFICACION = substr($fecha, 8, 2) . "/" . substr($fecha, 5, 2) . "/" . substr($fecha, 0, 4);
-
-
-            $dayofweek = date('w', strtotime($aspirante[0]->NOMBRE_DIA2));
-            switch ($dayofweek) {
-                case 0:
-                    $dayofweek = "Domingo";
-                    break;
-                case 1:
-                    $dayofweek = "Lunes";
-                    break;
-                case 2:
-                    $dayofweek = "Martes";
-                    break;
-                case 3:
-                    $dayofweek = "Miercoles";
-                    break;
-                case 4:
-                    $dayofweek = "Jueves";
-                    break;
-                case 5:
-                    $dayofweek = "Viernes";
-                    break;
-                case 6:
-                    $dayofweek = "Sabado";
-                    break;
-            }
-
-            $aspirante[0]->NOMBRE_DIA2 = $dayofweek;
+            $mes = FechaEspanol::getMes($aspirante[0]->NOMBRE_DIA2);
+            $aspirante[0]->NOMBRE_DIA2 = FechaEspanol::getDia($aspirante[0]->NOMBRE_DIA2);
             $aspirante[0]->NOMBRE_EDIFICIO2 = $aspirante[0]->NOMBRE_EDIFICIO2;
             $aspirante[0]->PREFIJO2 = $aspirante[0]->PREFIJO2;
             $dia = $aspirante[0]->DIA2;
-            setlocale(LC_TIME, 'es_ES.UTF-8');
-            $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
-            $mes = strftime("%B", $fecha->getTimestamp()); // marzo
             $aspirante[0]->DIA2 = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
             $aspirante[0]->HORA2 = date("g:i a", strtotime($aspirante[0]->HORA2));
             $aspirante[0]->MENSAJE = "
@@ -228,38 +169,9 @@ class FichaController extends Controller
             del Instituto Tecnológico de León Campus " . $aspirante[0]->NOMBRE_CAMPUS_ESCRITO . ",
             el día " . $aspirante[0]->NOMBRE_DIA2 . " " . $aspirante[0]->DIA2 . " a las " . $aspirante[0]->HORA2;
         }
-
-        $dayofweek = date('w', strtotime($aspirante[0]->NOMBRE_DIA_INGLES));
-        switch ($dayofweek) {
-            case 0:
-                $dayofweek = "Domingo";
-                break;
-            case 1:
-                $dayofweek = "Lunes";
-                break;
-            case 2:
-                $dayofweek = "Martes";
-                break;
-            case 3:
-                $dayofweek = "Miercoles";
-                break;
-            case 4:
-                $dayofweek = "Jueves";
-                break;
-            case 5:
-                $dayofweek = "Viernes";
-                break;
-            case 6:
-                $dayofweek = "Sabado";
-                break;
-        }
-
-        $aspirante[0]->NOMBRE_DIA_INGLES = $dayofweek;
-
+        $mes = FechaEspanol::getMes($aspirante[0]->NOMBRE_DIA_INGLES);
+        $aspirante[0]->NOMBRE_DIA_INGLES = FechaEspanol::getDia($aspirante[0]->NOMBRE_DIA_INGLES);
         $dia = $aspirante[0]->DIA_INGLES;
-        setlocale(LC_TIME, 'es_ES.UTF-8');
-        $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
-        $mes = strftime("%B", $fecha->getTimestamp()); // marzo
         $aspirante[0]->DIA_INGLES = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
         $aspirante[0]->HORA_INGLES = date("g:i a", strtotime($aspirante[0]->HORA_INGLES));
         return $this->generarPDF($aspirante, 'aspirante.ficha');
@@ -349,7 +261,7 @@ class FichaController extends Controller
         $datosReferencia =
             [
                 'tipo_persona' => '03',
-                'control'=>substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
+                'control' => substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
                 'servicio' => '004',
                 'concepto' => '063',
                 'valorvariable' => '2',
@@ -416,7 +328,7 @@ class FichaController extends Controller
         $datosReferencia =
             [
                 'tipo_persona' => $periodo[0]->TIPO_PERSONA_SEMESTRE_UNO,
-                'control'=>substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
+                'control' => substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
                 'servicio' => $periodo[0]->APLICACION_SIIA_SEMESTRE_UNO,
                 'concepto' => $periodo[0]->CONCEPTO_SEMESTRE_UNO,
                 'valorvariable' => '2',
@@ -483,7 +395,7 @@ class FichaController extends Controller
         $datosReferencia =
             [
                 'tipo_persona' => $periodo[0]->TIPO_PERSONA_SEMESTRE_CERO,
-                'control'=>substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
+                'control' => substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
                 'servicio' => $periodo[0]->APLICACION_SIIA_SEMESTRE_CERO,
                 'concepto' => $periodo[0]->CONCEPTO_SEMESTRE_CERO,
                 'valorvariable' => '2',
