@@ -46,7 +46,6 @@ class FechaEspanol
     public static function getMes($fecha)
     {
         $mes = date('m', strtotime($fecha));
-        error_log(print_r($mes,true));
         switch ($mes) {
             case 1:
                 $mes = "Enero";
