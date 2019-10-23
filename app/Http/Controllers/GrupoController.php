@@ -14,7 +14,7 @@ class GrupoController extends Controller
      */
     public function listaGrupos(Request $request)
     {
-        $aspirante = DB::table('CAT_USUARIO')
+        /* $aspirante = DB::table('CAT_USUARIO')
             ->select(
                 DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
                 'CAT_CARRERA.CLAVE_CARRERA as CLAVE_CARRERA',
@@ -35,8 +35,45 @@ class GrupoController extends Controller
                 ['CAT_TURNO.HORA', '=', $request->HORA],
                 ['CAT_ASPIRANTE.FK_PERIODO', '=', $request->FK_PERIODO]
             ])
+            ->get(); */
+        if ($request->TIPO_APLICACION == 1) { 
+            $aspirante = DB::table('CAT_USUARIO AS CU')
+            ->select(
+                DB::raw('LTRIM(RTRIM(CA.PREFICHA)) as PREFICHA'),
+                'CC.CLAVE_CARRERA as CLAVE_CARRERA',
+                'CA.FOLIO_CENEVAL',
+                'CU.NOMBRE as NOMBRE',
+                'CU.PRIMER_APELLIDO',
+                DB::raw("CASE WHEN CU.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CU.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO")
+            )
+            ->join('CAT_ASPIRANTE AS CA', 'CA.FK_PADRE', '=', 'CU.PK_USUARIO')
+            ->join('TR_CARRERA_CAMPUS AS TCC', 'TCC.PK_CARRERA_CAMPUS', '=',  'CA.FK_CARRERA_1')
+            ->join('CAT_CARRERA AS CC', 'CC.PK_CARRERA', '=',  'TCC.FK_CARRERA')
+            ->where([
+                ['CA.FK_EXAMEN_ADMISION', '=', $request->FK_GRUPO],
+                ['CA.FK_PERIODO', '=', $request->FK_PERIODO]
+            ])
             ->get();
 
+        } else {
+            $aspirante = DB::table('CAT_USUARIO AS CU')
+                ->select(
+                    DB::raw('LTRIM(RTRIM(CA.PREFICHA)) as PREFICHA'),
+                    'CC.CLAVE_CARRERA as CLAVE_CARRERA',
+                    'CA.FOLIO_CENEVAL',
+                    'CU.NOMBRE as NOMBRE',
+                    'CU.PRIMER_APELLIDO',
+                    DB::raw("CASE WHEN CU.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CU.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO")
+                )
+                ->join('CAT_ASPIRANTE AS CA', 'CA.FK_PADRE', '=', 'CU.PK_USUARIO')
+                ->join('TR_CARRERA_CAMPUS AS TCC', 'TCC.PK_CARRERA_CAMPUS', '=',  'CA.FK_CARRERA_1')
+                ->join('CAT_CARRERA AS CC', 'CC.PK_CARRERA', '=',  'TCC.FK_CARRERA')
+                ->where([
+                    ['CA.FK_EXAMEN_ADMISION_ESCRITO', '=', $request->FK_GRUPO],
+                    ['CA.FK_PERIODO', '=', $request->FK_PERIODO]
+                ])
+                ->get();
+        }
         return $aspirante;
     }
 

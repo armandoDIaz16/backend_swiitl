@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FechaEspanol;
 use App\Helpers\Referencia;
 use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
-use DateTime;
 
 class FichaController extends Controller
 {
@@ -118,21 +118,21 @@ class FichaController extends Controller
             ->leftJoin('CAT_TURNO', 'CAT_TURNO.PK_TURNO', '=', 'CATR_EXAMEN_ADMISION.FK_TURNO')
             ->leftJoin('CATR_ESPACIO', 'CATR_ESPACIO.PK_ESPACIO', '=', 'CATR_EXAMEN_ADMISION.FK_ESPACIO')
             ->leftJoin('CATR_EDIFICIO', 'CATR_EDIFICIO.PK_EDIFICIO', '=', 'CATR_ESPACIO.FK_EDIFICIO')
+            ->leftJoin('CAT_CAMPUS AS CAT_CAMPUS_LINEA', 'CAT_CAMPUS_LINEA.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
 
             ->leftJoin('CATR_EXAMEN_ADMISION_ESCRITO', 'CATR_EXAMEN_ADMISION_ESCRITO.PK_EXAMEN_ADMISION_ESCRITO', '=', 'CAT_ASPIRANTE.FK_EXAMEN_ADMISION_ESCRITO')
             ->leftJoin('CAT_TURNO_ESCRITO as CAT_TURNO_ESCRITO', 'CAT_TURNO_ESCRITO.PK_TURNO_ESCRITO', '=', 'CATR_EXAMEN_ADMISION_ESCRITO.FK_TURNO_ESCRITO')
             ->leftJoin('CATR_EDIFICIO as CATR_EDIFICIO_ESCRITO', 'CATR_EDIFICIO_ESCRITO.PK_EDIFICIO', '=', 'CATR_EXAMEN_ADMISION_ESCRITO.FK_EDIFICIO')
+            ->leftJoin('CAT_CAMPUS AS CAT_CAMPUS_ESCRITO', 'CAT_CAMPUS_ESCRITO.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
 
             ->leftJoin('CATR_EXAMEN_ADMISION_INGLES', 'CATR_EXAMEN_ADMISION_INGLES.PK_EXAMEN_ADMISION_INGLES', '=', 'CAT_ASPIRANTE.FK_EXAMEN_INGLES')
             ->leftJoin('CAT_TURNO_INGLES as CAT_TURNO_INGLES', 'CAT_TURNO_INGLES.PK_TURNO_INGLES', '=', 'CATR_EXAMEN_ADMISION_INGLES.FK_TURNO_INGLES')
             ->leftJoin('CATR_ESPACIO_INGLES as CATR_ESPACIO_INGLES', 'CATR_ESPACIO_INGLES.PK_ESPACIO_INGLES', '=', 'CATR_EXAMEN_ADMISION_INGLES.FK_ESPACIO_INGLES')
             ->leftJoin('CATR_EDIFICIO as CATR_EDIFICIO_INGLES', 'CATR_EDIFICIO_INGLES.PK_EDIFICIO', '=', 'CATR_ESPACIO_INGLES.FK_EDIFICIO')
+            ->leftJoin('CAT_CAMPUS AS CAT_CAMPUS_INGLES', 'CAT_CAMPUS_INGLES.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
 
             ->join('TR_CARRERA_CAMPUS', 'TR_CARRERA_CAMPUS.FK_CARRERA', '=', 'CAT_ASPIRANTE.FK_CARRERA_1')
             ->join('CAT_CAMPUS', 'CAT_CAMPUS.PK_CAMPUS', '=', 'TR_CARRERA_CAMPUS.FK_CAMPUS')
-            ->join('CAT_CAMPUS AS CAT_CAMPUS_LINEA', 'CAT_CAMPUS_LINEA.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
-            ->join('CAT_CAMPUS AS CAT_CAMPUS_ESCRITO', 'CAT_CAMPUS_ESCRITO.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
-            ->join('CAT_CAMPUS AS CAT_CAMPUS_INGLES', 'CAT_CAMPUS_INGLES.PK_CAMPUS', '=', 'CATR_EDIFICIO.FK_CAMPUS')
             ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'TR_CARRERA_CAMPUS.FK_CARRERA')
             ->join('CAT_PERIODO_PREFICHAS', 'CAT_PERIODO_PREFICHAS.PK_PERIODO_PREFICHAS', '=', 'CAT_ASPIRANTE.FK_PERIODO')
             ->where([
@@ -144,39 +144,9 @@ class FichaController extends Controller
         if ($aspirante[0]->TIPO_APLICACION == 1) {
             $fecha = $aspirante[0]->FECHA_MODIFICACION;
             $aspirante[0]->FECHA_MODIFICACION = substr($fecha, 8, 2) . "/" . substr($fecha, 5, 2) . "/" . substr($fecha, 0, 4);
-
-
-            $dayofweek = date('w', strtotime($aspirante[0]->NOMBRE_DIA));
-            switch ($dayofweek) {
-                case 0:
-                    $dayofweek = "Domingo";
-                    break;
-                case 1:
-                    $dayofweek = "Lunes";
-                    break;
-                case 2:
-                    $dayofweek = "Martes";
-                    break;
-                case 3:
-                    $dayofweek = "Miercoles";
-                    break;
-                case 4:
-                    $dayofweek = "Jueves";
-                    break;
-                case 5:
-                    $dayofweek = "Viernes";
-                    break;
-                case 6:
-                    $dayofweek = "Sabado";
-                    break;
-            }
-
-            $aspirante[0]->NOMBRE_DIA = $dayofweek;
-
+            $mes = FechaEspanol::getMes($aspirante[0]->NOMBRE_DIA);
+            $aspirante[0]->NOMBRE_DIA = FechaEspanol::getDia($aspirante[0]->NOMBRE_DIA);
             $dia = $aspirante[0]->DIA;
-            setlocale(LC_TIME, 'es_ES.UTF-8');
-            $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
-            $mes = strftime("%B", $fecha->getTimestamp()); // marzo
             $aspirante[0]->DIA = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
             $aspirante[0]->HORA = date("g:i a", strtotime($aspirante[0]->HORA));
             $aspirante[0]->MENSAJE = "
@@ -187,40 +157,11 @@ class FichaController extends Controller
         } else {
             $fecha = $aspirante[0]->FECHA_MODIFICACION;
             $aspirante[0]->FECHA_MODIFICACION = substr($fecha, 8, 2) . "/" . substr($fecha, 5, 2) . "/" . substr($fecha, 0, 4);
-
-
-            $dayofweek = date('w', strtotime($aspirante[0]->NOMBRE_DIA2));
-            switch ($dayofweek) {
-                case 0:
-                    $dayofweek = "Domingo";
-                    break;
-                case 1:
-                    $dayofweek = "Lunes";
-                    break;
-                case 2:
-                    $dayofweek = "Martes";
-                    break;
-                case 3:
-                    $dayofweek = "Miercoles";
-                    break;
-                case 4:
-                    $dayofweek = "Jueves";
-                    break;
-                case 5:
-                    $dayofweek = "Viernes";
-                    break;
-                case 6:
-                    $dayofweek = "Sabado";
-                    break;
-            }
-
-            $aspirante[0]->NOMBRE_DIA2 = $dayofweek;
+            $mes = FechaEspanol::getMes($aspirante[0]->NOMBRE_DIA2);
+            $aspirante[0]->NOMBRE_DIA2 = FechaEspanol::getDia($aspirante[0]->NOMBRE_DIA2);
             $aspirante[0]->NOMBRE_EDIFICIO2 = $aspirante[0]->NOMBRE_EDIFICIO2;
             $aspirante[0]->PREFIJO2 = $aspirante[0]->PREFIJO2;
             $dia = $aspirante[0]->DIA2;
-            setlocale(LC_TIME, 'es_ES.UTF-8');
-            $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
-            $mes = strftime("%B", $fecha->getTimestamp()); // marzo
             $aspirante[0]->DIA2 = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
             $aspirante[0]->HORA2 = date("g:i a", strtotime($aspirante[0]->HORA2));
             $aspirante[0]->MENSAJE = "
@@ -228,38 +169,9 @@ class FichaController extends Controller
             del Instituto Tecnológico de León Campus " . $aspirante[0]->NOMBRE_CAMPUS_ESCRITO . ",
             el día " . $aspirante[0]->NOMBRE_DIA2 . " " . $aspirante[0]->DIA2 . " a las " . $aspirante[0]->HORA2;
         }
-
-        $dayofweek = date('w', strtotime($aspirante[0]->NOMBRE_DIA_INGLES));
-        switch ($dayofweek) {
-            case 0:
-                $dayofweek = "Domingo";
-                break;
-            case 1:
-                $dayofweek = "Lunes";
-                break;
-            case 2:
-                $dayofweek = "Martes";
-                break;
-            case 3:
-                $dayofweek = "Miercoles";
-                break;
-            case 4:
-                $dayofweek = "Jueves";
-                break;
-            case 5:
-                $dayofweek = "Viernes";
-                break;
-            case 6:
-                $dayofweek = "Sabado";
-                break;
-        }
-
-        $aspirante[0]->NOMBRE_DIA_INGLES = $dayofweek;
-
+        $mes = FechaEspanol::getMes($aspirante[0]->NOMBRE_DIA_INGLES);
+        $aspirante[0]->NOMBRE_DIA_INGLES = FechaEspanol::getDia($aspirante[0]->NOMBRE_DIA_INGLES);
         $dia = $aspirante[0]->DIA_INGLES;
-        setlocale(LC_TIME, 'es_ES.UTF-8');
-        $fecha = DateTime::createFromFormat('!m', substr($dia, 5, 2));
-        $mes = strftime("%B", $fecha->getTimestamp()); // marzo
         $aspirante[0]->DIA_INGLES = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
         $aspirante[0]->HORA_INGLES = date("g:i a", strtotime($aspirante[0]->HORA_INGLES));
         return $this->generarPDF($aspirante, 'aspirante.ficha');
@@ -349,7 +261,7 @@ class FichaController extends Controller
         $datosReferencia =
             [
                 'tipo_persona' => '03',
-                'control'=>substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
+                'control' => substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
                 'servicio' => '004',
                 'concepto' => '063',
                 'valorvariable' => '2',
@@ -416,7 +328,7 @@ class FichaController extends Controller
         $datosReferencia =
             [
                 'tipo_persona' => $periodo[0]->TIPO_PERSONA_SEMESTRE_UNO,
-                'control'=>substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
+                'control' => substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
                 'servicio' => $periodo[0]->APLICACION_SIIA_SEMESTRE_UNO,
                 'concepto' => $periodo[0]->CONCEPTO_SEMESTRE_UNO,
                 'valorvariable' => '2',
@@ -483,7 +395,7 @@ class FichaController extends Controller
         $datosReferencia =
             [
                 'tipo_persona' => $periodo[0]->TIPO_PERSONA_SEMESTRE_CERO,
-                'control'=>substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
+                'control' => substr($aspirante[0]->PREFICHA, 4, strlen($aspirante[0]->PREFICHA)),
                 'servicio' => $periodo[0]->APLICACION_SIIA_SEMESTRE_CERO,
                 'concepto' => $periodo[0]->CONCEPTO_SEMESTRE_CERO,
                 'valorvariable' => '2',
