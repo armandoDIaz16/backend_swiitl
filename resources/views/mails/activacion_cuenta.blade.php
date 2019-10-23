@@ -11,15 +11,21 @@
 <h4>Bienvenido a la plataforma TecVirtual del Tecnológico Nacional de México en León</h4>
 <p>
     Para vincular una nueva contraseña a tu cuenta
-    <!--
-    <a href="http://10.0.31.10/#/activa-cuenta?token=">da clic aquí</a>.
-    -->
-    <a href="http://tecvirtual.itleon.edu.mx/#/activa-cuenta?token={{$token}}">da clic aquí</a>.
+    @if(\App\Helpers\Constantes::AMBIENTE)
+        <a href="http://tecvirtual.itleon.edu.mx/#/activa-cuenta?token={{$token}}">da clic aquí</a>.
+    @elseif
+        <a href="http://localhost/#/activa-cuenta?token={{$token}}">da clic aquí</a>.
+    @endif
     <br><br>
     O copia y pega el siguiente enlace en una ventana nueva del navegador:
     <br>
-    <!-- http://10.0.31.10/#/activa-cuenta?token= -->
-    http://tecvirtual.itleon.edu.mx/#/activa-cuenta?token={{$token}}
+
+    @if(\App\Helpers\Constantes::AMBIENTE)
+        http://tecvirtual.itleon.edu.mx/#/activa-cuenta?token={{$token}}
+    @elseif
+        http://localhost/#/activa-cuenta?token={{$token}}
+    @endif
+
     <br><br><br>
     Posteriormente captura el código: <b><u>{{$clave}}</u></b> y escribe una nueva contraseña.
     <br><br><br>
