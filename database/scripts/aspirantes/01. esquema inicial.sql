@@ -463,7 +463,6 @@ go
 
 /* Cambios */
 
-
 alter table CAT_PERIODO_PREFICHAS
 	add MENSAJE_RECHAZADO varchar(255)
 go

@@ -9,7 +9,7 @@ class PlantillaSIIAController extends Controller
 {
     public function getPlantillaSIIA($id)
     {
-        $spreadsheet = IOFactory::load('files/Aspirantes/PlantillaSIIA/SIIA_Plantilla_Aspirante.xlsx');
+        $spreadsheet = IOFactory::load('public/files/Aspirantes/PlantillaSIIA/SIIA_Plantilla_Aspirante.xlsx');
 
         $worksheet = $spreadsheet->getActiveSheet();
 
@@ -85,11 +85,10 @@ class PlantillaSIIAController extends Controller
         }
 
         $writer =  IOFactory::createWriter($spreadsheet, 'Xls');
-        $writer->save('files/Aspirantes/PlantillaSIIA/SIIA_Aspirantes_' . $periodo . '.xls');
-        
+        $writer->save('public/files/Aspirantes/PlantillaSIIA/SIIA_Aspirantes_' . $periodo . '.xls');
         return response()->json('files/Aspirantes/PlantillaSIIA/SIIA_Aspirantes_' . $periodo . '.xls');
 
-        /* 
+        /*
         CONSULTA
         SELECT PREFICHA, ACEPTADO, CLAVE_TECNM, CU.NOMBRE, PRIMER_APELLIDO, SEGUNDO_APELLIDO, FECHA_NACIMIENTO, CURP, SEXO, CALLE, C.NOMBRE, CC2.NOMBRE, CEF.NOMBRE, CCP.NUMERO, TELEFONO_CASA, TELEFONO_MOVIL, CORREO1, CB.NOMBRE, ESPECIALIDAD, PROMEDIO
         FROM CAT_USUARIO AS CU

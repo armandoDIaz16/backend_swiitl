@@ -12,7 +12,7 @@
 
     <div style="margin-left: .5cm; margin-right: .5cm; padding-top: -1.5cm; font-size: 0.7em;">
         <div align="center">
-            <img src="img/banner.jpg">
+            <img src="public/img/banner.jpg">
         </div>
 
         <div align="center">
@@ -94,7 +94,7 @@
         <hr>
 
         <div align="center">
-            <img src="img/banner.jpg">
+            <img src="public/img/banner.jpg">
         </div>
 
 

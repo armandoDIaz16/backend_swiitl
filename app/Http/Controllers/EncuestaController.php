@@ -76,7 +76,7 @@ class EncuestaController extends Controller
             ->select('PK_ENCUESTA','NOMBRE','CAT_ENCUESTA.OBJETIVO','CAT_ENCUESTA.INSTRUCCIONES')
             ->first();
 
-//        \Log::debug($request->id_encuesta);
+
 
         $secciones = Seccion_Encuesta::where('FK_ENCUESTA', $encuesta_id)->get();
             foreach ($secciones as $seccion) {
