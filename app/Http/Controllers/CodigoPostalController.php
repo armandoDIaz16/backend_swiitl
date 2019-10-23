@@ -104,7 +104,7 @@ class CodigoPostalController extends Controller
                 $data['COLONIAS']                  = $this->get_colonias_codigo_postal($request->codigo_postal);
             }
 
-            return response()->json(['data' => $data], Response::HTTP_OK);
+            return response()->json($data, Response::HTTP_OK);
         } else {
             return response()->json(['error' => 'No existe el código postal'], Response::HTTP_NOT_FOUND);
         }

@@ -23,13 +23,10 @@ class PerfilController extends Controller
             ->first();
 
         if ($perfil){
-            return response()->json(
-                ['data' => $perfil],
-                Response::HTTP_OK
-            );
+            return response()->json($perfil, Response::HTTP_OK);
         } else {
             return response()->json(
-                ['data' => false],
+                ['error' => false],
                 Response::HTTP_NOT_FOUND
             );
         }
