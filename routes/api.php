@@ -50,7 +50,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('perfil/{id_usuario}', 'PerfilController@get_perfil');
 
     // GUARDAR DATOS PARA COMPLETAR PERFIL
-    Route::post('perfil', 'PerfilController@save_perfil');
+    Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
     /* FIN RUTAS PARA COMPLETAR PERFIL */
 });
 
