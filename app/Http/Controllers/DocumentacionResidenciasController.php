@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CreditosSiia;
+use App\Helpers\Base64ToFile;
 use Illuminate\Http\Request;
 use App\CargaArchivo;
 use App\DocumentacionResidencias;
@@ -99,13 +100,17 @@ class DocumentacionResidenciasController extends Controller
         $diaf = $fecha->FFinA($id,2);
         if($diai<=$dia && $dia<=$diaf) {
             $documentacion = DocumentacionResidencias::where('ALUMNO', $id)->first();
-            //   \Log::debug('Prueba ' . $id);
-            $File = $request->file('myfile'); //line 1
+
+
+            $archivo = new Base64ToFile();
+            $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
+
+            /*            $File = $request->file('myfile'); //line 1
             $sub_path = 'files'; //line 2
             $real_name = $File->getClientOriginalName(); //line 3
             $destination_path = public_path($sub_path);  //line 4
             $File->move($destination_path, $real_name);  //line 5
-            $Ruta = $sub_path . '/' . $real_name;
+            $Ruta = $sub_path . '/' . $real_name;*/
             $documentacion->SOLICITUD = $Ruta;
             try{
                 $documentacion->save();
@@ -126,12 +131,14 @@ class DocumentacionResidenciasController extends Controller
         if($diai<=$dia && $dia<=$diaf) {
             $documentacion = DocumentacionResidencias::where('ALUMNO', $id)->first();
 
-            $File = $request->file('myfile'); //line 1
+            $archivo = new Base64ToFile();
+            $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
+/*            $File = $request->file('myfile'); //line 1
             $sub_path = 'files'; //line 2
             $real_name = $File->getClientOriginalName(); //line 3
             $destination_path = public_path($sub_path);  //line 4
             $File->move($destination_path, $real_name);  //line 5
-            $Ruta = $sub_path . '/' . $real_name;
+            $Ruta = $sub_path . '/' . $real_name;*/
             $documentacion->CARTA_ACEPTACION = $Ruta;
             try{
                 $documentacion->save();

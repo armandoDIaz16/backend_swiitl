@@ -25,9 +25,9 @@
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 60px;
+            height: 35px;
             /* Set the fixed height of the footer here */
-            line-height: 60px;
+            line-height: 35px;
             /* Vertically center the text there */
             background-color: #1A5276;
         }
@@ -37,9 +37,9 @@
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 60px;
+            height: 35px;
             /* Set the fixed height of the footer here */
-            line-height: 60px;
+            line-height: 35px;
             /* Vertically center the text there */
             background-color: #154360;
         }
@@ -51,18 +51,13 @@
 </head>
 
 <body>
-
     <div style="margin-left: .5cm; margin-right: .5cm; padding-top: 0cm; font-size: 0.7em;">
         <table>
             <tr>
                 <td colspan="2" style="text-align: center">
-
-                    <img src="img/banner-tecnmleon.jpeg" width="300px">
-
+                    <img src="public/img/banner-tecnmleon.jpeg" width="300px">
                 </td>
-
             </tr>
-
             <tr>
                 <td>Preficha</td>
                 <td>
@@ -96,10 +91,17 @@
             </tr>
             <tr>
                 <td>
+                    <font size=1>Número de Referencia</font>
+                    <br>
                     <font size=6>{{$ASPIRANTE->REFERENCIA}}</font>
                 </td>
                 <td>
-                    <img src="img/bancomer.png" width="140px">
+                    <img src="public/img/bancomer.png" width="140px">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center">
+                    <font size=6>Si la vigencia de la referencia a expirado, descarga una nueva desde la plataforma <a target="blank" href="http://tecvirtual.itleon.edu.mx/"><u>http://tecvirtual.itleon.edu.mx/</u></a></font>
                 </td>
             </tr>
         </table>
@@ -109,7 +111,7 @@
         <br>
         <br>
         <footer class="footer">
-        <font size=6>Ubicación</font>
+            <font size=6>Ubicación</font>
             <br>
             <font color="white" size=5>Av Tecnológico S/N Fracc. Industrial Julián de Obregón</font>
             <br>
@@ -122,12 +124,9 @@
             <font size=6>Teléfono directo</font>
             <br>
             <font color="white" size=5>(477) 7105-203</font>
-
-
         </footer>
-
         <footer class="footer2">
-        <font color="white" size=5>Copyright &copy; TecNM - Sistema de admisión</font>
+            <font color="white" size=5>Copyright &copy; TecNM - Sistema de admisión</font>
         </footer>
     </div>
 </body>

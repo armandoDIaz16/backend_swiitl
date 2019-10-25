@@ -16,6 +16,7 @@
         "mpdf/mpdf": "^8.0",
         "phpmailer/phpmailer": "^6.0",
         "phpoffice/phpexcel": "^1.8",
+        "phpoffice/phpspreadsheet": "^1.9",
         "simplesoftwareio/simple-qrcode": "^2.0",
         "tymon/jwt-auth": "dev-develop"
     },

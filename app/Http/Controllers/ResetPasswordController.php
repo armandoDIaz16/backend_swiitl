@@ -16,82 +16,84 @@ use Illuminate\Support\Facades\DB;
  */
 class ResetPasswordController extends Controller
 {
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function sendEmail(Request $request)
     {
-        if (!$this->validateEmail($request->email)) {
-            return $this->failedResponse();
+        $aspirante = DB::table('CAT_USUARIO')
+            ->select(
+                'PK_USUARIO',
+                'CORREO1',
+                'CURP'
+            )
+            ->where(['CURP', '=', $request->CURP])
+            ->first();
+        $token = $this->get_datos_token($aspirante);
+        if (!$this->notifica_usuario(
+            $aspirante->CORREO1,
+            $token->TOKEN,
+            $token->CLAVE_ACCESO
+        )) {
+            error_log("Error al enviar correo al receptor en activación de cuenta: " . $aspirante->CORREO1);
+            error_log("AuthController.php");
         }
-        $this->send($request->email);
-        return $this->successResponse();
     }
 
-    /**
-     * @param $email
-     */
-    public function send($email)
+    private function get_datos_token($usuario)
     {
-        $token = $this->createToken($email);
-        Mail::to($email)->send(new ResetPasswordMail($token, $email));
-    }
+        // buscar token activo
+        $datos_token = ObtenerContrasenia::where('FK_USUARIO', $usuario->PK_USUARIO)
+            ->where('FECHA_GENERACION', '>=', date('Y-m-d 00:00:00'))
+            ->where('FECHA_GENERACION', '<=', date('Y-m-d 23:59:59'))
+            ->where('ESTADO', 1)
+            ->first();
 
-    /**
-     * @param $email
-     * @return mixed|string
-     */
-    public function createToken($email)
-    {
-        $oldToken = DB::table('password_resets')->where('email', $email)->first();
-        if ($oldToken) {
-            return $oldToken->token;
+        if (!isset($datos_token->FK_USUARIO)) { // sí no tiene token activo
+            // generar token y clave
+            $fecha = date('Y-m-d H:i:s');
+            $token = UsuariosHelper::get_token_contrasenia($usuario->CURP, $fecha);
+            $clave = UsuariosHelper::get_clave_verificacion();
+
+            // registro en tabla de contraseñas
+            $datos_token = new ObtenerContrasenia;
+            $datos_token->FK_USUARIO = $usuario->PK_USUARIO;
+            $datos_token->TOKEN = $token;
+            $datos_token->CLAVE_ACCESO = $clave;
+            $datos_token->FECHA_GENERACION = $fecha;
+            $datos_token->save();
         }
-        $token = str_random(60);
-        $this->saveToken($token, $email);
-        return $token;
-    }
 
-    /**
-     * @param $token
-     * @param $email
-     */
-    public function saveToken($token, $email)
-    {
-        DB::table('password_resets')->insert([
-            'email' => $email,
-            'token' => $token,
-            'created_at' => Carbon::now()
-        ]);
+        return $datos_token;
     }
-
-    /**
-     * @param $email
-     * @return bool
-     */
-    public function validateEmail($email)
+    private function notifica_usuario($correo_receptor, $token, $clave)
     {
-        return !!User::where('email', $email)->first();
-    }
+        //obtener correo del sistema
+        $datos_sistema = Sistema::where('ABREVIATURA', 'SIT')->first();
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function failedResponse()
-    {
-        return response()->json([
-            'error' => 'Email does\'t found on our database'
-        ], Response::HTTP_NOT_FOUND);
-    }
+        //enviar correo de notificación
+        $mailer = new Mailer(
+            array(
+                // correo de origen
+                'correo_origen' => $datos_sistema->CORREO1,
+                'password_origen' => $datos_sistema->INDICIO1,
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function successResponse()
-    {
-        return response()->json([
-            'data' => 'Reset Email is send successfully, please check your inbox.'
-        ], Response::HTTP_OK);
+                // datos que se mostrarán del emisor
+                // 'correo_emisor' => $datos_sistema->CORREO1,
+                'correo_emisor' => 'tecvirtual@itleon.edu.mx',
+                'nombre_emisor' => utf8_decode('Tecnológico Nacional de México en León'),
+
+                // array correos receptores
+                'correos_receptores' => array($correo_receptor),
+
+                // asunto del correo
+                'asunto' => utf8_decode('TecVirtual - Activación de cuenta'),
+
+                // cuerpo en HTML del correo
+                'cuerpo_html' => view(
+                    'mails.activacion_cuenta',
+                    ['token' => $token, 'clave' => $clave]
+                )->render()
+            )
+        );
+
+        return $mailer->send();
     }
 }
