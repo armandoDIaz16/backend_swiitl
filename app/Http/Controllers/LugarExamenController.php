@@ -87,7 +87,7 @@ class LugarExamenController extends Controller
         DB::table('CATR_EXAMEN_ADMISION')->insert([
             'FK_ESPACIO' => $request->FK_ESPACIO,
             'FK_TURNO' => $request->FK_TURNO,
-            'LUGARES_OCUPADOS' => 0
+            'LUGARES_OCUPADOS' => 0 
         ]);
     }
 }

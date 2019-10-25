@@ -10,8 +10,7 @@ class DatoConvocatoria extends Model
         'FK_CONVOCATOTIA',
         'TURNO',
         'FK_ESPACIO_CONVOCATORIA',
-        'HORARIO_INICIO',
-        'HORARIO_FIN',
+        'HORARIO_CONVOCATORIA',
         'FECHA_CONVOCATORIA',
         'PERIODO',
 
