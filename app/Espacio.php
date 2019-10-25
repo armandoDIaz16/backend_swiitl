@@ -6,8 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 class Espacio extends Model
 {
-    /* protected $fillable = [
-         'PK_ESPACIO',
+    protected $fillable = [
          'FK_EDIFICIO',
          'FK_TIPO_ESPACIO',
          'NOMBRE',
@@ -18,8 +17,11 @@ class Espacio extends Model
          'FK_USUARIO_MODIFICACION',
          'FECHA_MODIFICACION',
          'BORRADO'
-     ];   */
-     protected $table = 'TR_ESPACIO';
+     ];  
+       protected $primrikey='PK_ESPACIO';
+     public $timestamps = false;
+
+     protected $table = 'CATR_ESPACIO';
 
 
     /*

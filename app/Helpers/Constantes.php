@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 class Constantes
 {
 
+    CONST AMBIENTE = 0; // 0 LOCAL, 1 PRODUCCION
+
     CONST GRUPO_TUTORIA_INICIAL     = 1;
     CONST GRUPO_TUTORIA_SEGUIMIENTO = 2;
 
