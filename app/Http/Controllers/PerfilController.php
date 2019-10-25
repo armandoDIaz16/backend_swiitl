@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CodigoPostal;
 use App\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,10 +19,15 @@ class PerfilController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function get_perfil($pk_usuario) {
-        // error_log($pk_usuario);
         $perfil = DB::table('VW_PERFIL_ALUMNO')
             ->where('PK_ENCRIPTADA', $pk_usuario)
             ->first();
+
+        if(!$perfil) {
+            $perfil = DB::table('VW_PERFIL_ALUMNO')
+                ->where('PK_USUARIO', $pk_usuario)
+                ->first();
+        }
 
         if ($perfil){
             return response()->json($perfil, Response::HTTP_OK);
@@ -37,11 +43,13 @@ class PerfilController extends Controller
      *
      */
     public function actualiza_perfil(Request $request) {
+        $fk_codigo_postal = CodigoPostal::where('NUMERO', $request->CODIGO_POSTAL)->first()->PK_CODIGO_POSTAL;
         $usuario = Usuario::where('PK_USUARIO', $request->PK_USUARIO)->first();
 
         $usuario->FK_ESTADO_CIVIL         = $request->ESTADO_CIVIL;
         $usuario->FK_SITUACION_RESIDENCIA = $request->SITUACION_RESIDENCIA;
         $usuario->FK_COLONIA              = $request->COLONIA;
+        $usuario->FK_CODIGO_POSTAL        = $fk_codigo_postal;
 
         $usuario->FECHA_NACIMIENTO    = $request->FECHA_NACIMIENTO;
         $usuario->SEXO                = $request->SEXO;

@@ -88,13 +88,13 @@ class UsuarioController extends Controller
     }
     public function prueba()
     {
-        $usuarios = User::select('PK_USUARIO', 'FECHA_REGISTRO')->get();
+        $usuarios = User::select('PK_USUARIO', 'FECHA_REGISTRO')->whereRaw('PK_ENCRIPTADA IS NULL')->get();
         foreach ($usuarios as $usuario) {
             User::where('PK_USUARIO', $usuario->PK_USUARIO)->update(['PK_ENCRIPTADA' => EncriptarUsuario::getPkEncriptada($usuario->PK_USUARIO,$usuario->FECHA_REGISTRO)]);
         }
     }
     public function prueba2()
     {
-        return User::select('PK_USUARIO','FECHA_REGISTRO','PK_ENCRIPTADA')->get();
+        return User::select('PK_USUARIO','FECHA_REGISTRO','PK_ENCRIPTADA')->whereRaw('PK_ENCRIPTADA IS NULL')->get();
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\tutorias;
 
+use App\GrupoTutorias;
+use App\GrupoTutoriasDetalle;
 use App\Helpers\Constantes;
 use App\Helpers\SiiaHelper;
 use App\Http\Controllers\Controller;
+use App\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
@@ -75,7 +78,7 @@ class SITPdfController extends Controller
         $mpdf = new Mpdf(['orientation' => 'p']);
         $mpdf->use_kwt = true;
 
-        $data_reporte['data'] = $this->get_datos_perfil_personal($request->grupo);
+        $data_reporte['data'] = $this->get_datos_perfil_personal($request->pk_encriptada);
 
         $html_final = view('tutorias.perfil_individual_ingreso');
 
@@ -104,14 +107,20 @@ class SITPdfController extends Controller
         return $mpdf->Output();
     }
 
-    private function get_datos_perfil_personal($pk_usuario) {
+    private function get_datos_perfil_personal($pk_encriptada) {
         $data = [];
 
-        $datos_grupo = $this->get_tutor_grupo($pk_usuario);
+        $alumno = Usuario::where('PK_ENCRIPTADA', $pk_encriptada)->first();
+        error_log(print_r($alumno, true));
+
+        $grupo = GrupoTutoriasDetalle::where('FK_USUARIO', $alumno->PK_USUARIO)->first();
+        error_log(print_r($grupo, true));
+
+        $datos_grupo = $this->get_tutor_grupo($grupo->FK_GRUPO_TUTORIAS);
         $data['tutor']            = $datos_grupo->NOMBRE .' '. $datos_grupo->PRIMER_APELLIDO .' '. $datos_grupo->SEGUNDO_APELLIDO;
         $data['grupo']            = $datos_grupo->CLAVE;
-        $data['cantidad_alumnos'] = $this->get_cantidad_alumnos_grupo($pk_usuario);
-        $data['carrera'] = $this->get_carrera_grupo($pk_usuario);
+        /*$data['cantidad_alumnos'] = $this->get_cantidad_alumnos_grupo($pk_encriptada);
+        $data['carrera'] = $this->get_carrera_grupo($pk_encriptada);*/
 
         return $data;
     }
