@@ -36,25 +36,24 @@ class GrupoController extends Controller
                 ['CAT_ASPIRANTE.FK_PERIODO', '=', $request->FK_PERIODO]
             ])
             ->get(); */
-        if ($request->TIPO_APLICACION == 1) { 
+        if ($request->TIPO_APLICACION == 1) {
             $aspirante = DB::table('CAT_USUARIO AS CU')
-            ->select(
-                DB::raw('LTRIM(RTRIM(CA.PREFICHA)) as PREFICHA'),
-                'CC.CLAVE_CARRERA as CLAVE_CARRERA',
-                'CA.FOLIO_CENEVAL',
-                'CU.NOMBRE as NOMBRE',
-                'CU.PRIMER_APELLIDO',
-                DB::raw("CASE WHEN CU.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CU.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO")
-            )
-            ->join('CAT_ASPIRANTE AS CA', 'CA.FK_PADRE', '=', 'CU.PK_USUARIO')
-            ->join('TR_CARRERA_CAMPUS AS TCC', 'TCC.PK_CARRERA_CAMPUS', '=',  'CA.FK_CARRERA_1')
-            ->join('CAT_CARRERA AS CC', 'CC.PK_CARRERA', '=',  'TCC.FK_CARRERA')
-            ->where([
-                ['CA.FK_EXAMEN_ADMISION', '=', $request->FK_GRUPO],
-                ['CA.FK_PERIODO', '=', $request->FK_PERIODO]
-            ])
-            ->get();
-
+                ->select(
+                    DB::raw('LTRIM(RTRIM(CA.PREFICHA)) as PREFICHA'),
+                    'CC.CLAVE_CARRERA as CLAVE_CARRERA',
+                    'CA.FOLIO_CENEVAL',
+                    'CU.NOMBRE as NOMBRE',
+                    'CU.PRIMER_APELLIDO',
+                    DB::raw("CASE WHEN CU.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CU.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO")
+                )
+                ->join('CAT_ASPIRANTE AS CA', 'CA.FK_PADRE', '=', 'CU.PK_USUARIO')
+                ->join('TR_CARRERA_CAMPUS AS TCC', 'TCC.PK_CARRERA_CAMPUS', '=',  'CA.FK_CARRERA_1')
+                ->join('CAT_CARRERA AS CC', 'CC.PK_CARRERA', '=',  'TCC.FK_CARRERA')
+                ->where([
+                    ['CA.FK_EXAMEN_ADMISION', '=', $request->FK_GRUPO],
+                    ['CA.FK_PERIODO', '=', $request->FK_PERIODO]
+                ])
+                ->get();
         } else {
             $aspirante = DB::table('CAT_USUARIO AS CU')
                 ->select(
@@ -83,7 +82,7 @@ class GrupoController extends Controller
 
         if ($TIPO_APLICACION == 1) {
             $grupos = DB::table('CATR_EXAMEN_ADMISION as CEA')
-                ->select(DB::raw("CEA.PK_EXAMEN_ADMISION, CONCAT (CE.NOMBRE, ' ' , CT.DIA, ' ', CT.HORA) as GRUPO"))
+                ->select(DB::raw("ROW_NUMBER() OVER(ORDER BY CEA.PK_EXAMEN_ADMISION ASC) AS NUMERO_GRUPO,CEA.PK_EXAMEN_ADMISION, CONCAT (CE.NOMBRE, ' ' , CT.DIA, ' ', CT.HORA) as GRUPO"))
                 ->join('CATR_ESPACIO as CE', 'CEA.FK_ESPACIO', '=', 'CE.PK_ESPACIO')
                 ->join('CAT_TURNO as CT', 'CEA.FK_TURNO', '=', 'CT.PK_TURNO')
                 ->where('CT.FK_PERIODO', $FK_PERIODO)
@@ -93,23 +92,24 @@ class GrupoController extends Controller
             $array_grupos = [];
             foreach ($grupos as $grupo) {
                 $array_grupos[] = array(
-                    'PK_EXAMEN_ADMISION' => $grupo->PK_EXAMEN_ADMISION,
+                    'NUMERO_GRUPO' => $grupo->NUMERO_GRUPO,
                     'GRUPO'     => $grupo->GRUPO,
                     'ASPIRANTES'      => $this->get_aspirantes($grupo->PK_EXAMEN_ADMISION)
                 );
             }
         } else {
             $grupos = DB::table('CATR_EXAMEN_ADMISION_ESCRITO AS CEAE')
-                ->select(DB::raw("CEAE.PK_EXAMEN_ADMISION_ESCRITO, CONCAT (CE.NOMBRE, ' ' , CTE.DIA, ' ', CTE.HORA) as GRUPO"))
+                ->select(DB::raw("ROW_NUMBER() OVER(ORDER BY CEAE.PK_EXAMEN_ADMISION_ESCRITO ASC) AS NUMERO_GRUPO, CEAE.PK_EXAMEN_ADMISION_ESCRITO, CONCAT ('Edificio:(' ,CE.PREFIJO, ' - ',CE.NOMBRE, ')     Carrera:', CC.NOMBRE , '     Turno:',CTE.DIA, ' ', CTE.HORA) as GRUPO"))
                 ->join('CATR_EDIFICIO AS CE', 'CEAE.FK_EDIFICIO', '=', 'CE.PK_EDIFICIO')
                 ->join('CAT_TURNO_ESCRITO AS CTE', 'CEAE.FK_TURNO_ESCRITO', '=', 'CTE.PK_TURNO_ESCRITO')
+                ->join('CAT_CARRERA AS CC', 'CEAE.FK_CARRERA', '=', 'CC.PK_CARRERA')
                 ->where('CTE.FK_PERIODO', $FK_PERIODO)
                 ->orderBy('CEAE.PK_EXAMEN_ADMISION_ESCRITO')
                 ->get();
             $array_grupos = [];
             foreach ($grupos as $grupo) {
                 $array_grupos[] = array(
-                    'PK_EXAMEN_ADMISION' => $grupo->PK_EXAMEN_ADMISION_ESCRITO,
+                    'NUMERO_GRUPO' => $grupo->NUMERO_GRUPO,
                     'GRUPO'     => $grupo->GRUPO,
                     'ASPIRANTES'      => $this->get_aspirantesEscrito($grupo->PK_EXAMEN_ADMISION_ESCRITO)
                 );
