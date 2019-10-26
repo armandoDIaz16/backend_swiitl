@@ -50,7 +50,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('perfil/{id_usuario}', 'PerfilController@get_perfil');
 
     // GUARDAR DATOS PARA COMPLETAR PERFIL
-    Route::post('perfil', 'PerfilController@save_perfil');
+    Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
     /* FIN RUTAS PARA COMPLETAR PERFIL */
 });
 
@@ -583,3 +583,17 @@ Route::post('AsignaSituacion','PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE','PAAE_Periodo@enviarCorreos');
 Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
 });
+
+/* *********************************************************** *
+ * ************* RUTAS DE SISTEMA SERVICIO SOCIAL *************** *
+ * *********************************************************** */
+
+ Route::resource('convocatorias', 'ServicioSocial\ConvocatoriaController');
+ Route::post('saveConvocatoria', 'ServicioSocial\ConvocatoriaController@saveConvocatoria');
+ Route::get('getSalones/{edificio}','ServicioSocial\Convocatoriacontroller@getSalones');
+ Route::get('getEdificios/{campus}','ServicioSocial\Convocatoriacontroller@getEdificios');
+ Route::get('getCampus/{tecnm}','ServicioSocial\ConvocatoriaController@getCampus');
+ Route::get('getEspacio','ServicioSocial\ConvocatoriaController@getEspacio');
+ Route::get('busquedaConvocatoria/{dato}','ServicioSocial\ConvocatoriaController@busquedaConvocatoria');
+ Route::get('allConvocatoria/','ServicioSocial\ConvocatoriaController@allConvocatoria');
+ Route::get('convocatoriaPdf/{id}','ServicioSocial\ConvocatoriaController@convocatoriaPdf');

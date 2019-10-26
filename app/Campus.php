@@ -13,5 +13,7 @@ class Campus extends Model{
         'FECHA_MODIFICACION',
         'BORRADO'
     ];
+    public $timestamps = false;
+
     protected $table = 'CAT_CAMPUS';
 }
