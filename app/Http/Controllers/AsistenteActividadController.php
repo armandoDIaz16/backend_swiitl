@@ -83,10 +83,9 @@ class AsistenteActividadController extends Controller
     
     public function getAlumnoByNc($num_control)//obtener el nombre completo del alumno mediante el numero de control
     {
-        $usuario = DB::connection('sqlsrv2')
-                    ->table('view_alumnos')
-                    ->select('NumeroControl','ApellidoPaterno','ApellidoMaterno','Nombre')
-                    ->where('NumeroControl','=',$num_control)
+        $usuario = DB::table('users')
+                    ->select('PK_USUARIO as FK_USUARIO', 'NUMERO_CONTROL','PRIMER_APELLIDO','SEGUNDO_APELLIDO','name')
+                    ->where('NUMERO_CONTROL','=',$num_control)
                     ->get();
 
         $response = Response::json($usuario);

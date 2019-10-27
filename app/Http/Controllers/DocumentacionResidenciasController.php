@@ -100,7 +100,7 @@ class DocumentacionResidenciasController extends Controller
         $diaf = $fecha->FFinA($id,2);
         if($diai<=$dia && $dia<=$diaf) {
             $documentacion = DocumentacionResidencias::where('ALUMNO', $id)->first();
-            //   \Log::debug('Prueba ' . $id);
+
 
             $archivo = new Base64ToFile();
             $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
