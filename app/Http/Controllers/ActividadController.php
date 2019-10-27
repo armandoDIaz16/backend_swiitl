@@ -179,7 +179,7 @@ class ActividadController extends Controller
     {
         //todo Cambiar a generación de objeto de usaurio de forma explícita
 
-        $usuario = DB::table('users')
+        $usuario = DB::table('CAT_USUARIO')
         ->select('PK_USUARIO')
         ->where('CURP',$request->CURP)
         ->get()->first();

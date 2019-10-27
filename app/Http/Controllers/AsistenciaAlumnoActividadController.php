@@ -200,9 +200,9 @@ class AsistenciaAlumnoActividadController extends Controller
          ->join('LINEAMIENTOS','ACTIVIDADES.FK_LINEAMIENTO','=','LINEAMIENTOS.PK_LINEAMIENTO')
          ->join('ALUMNO_ACTIVIDAD','ACTIVIDADES.PK_ACTIVIDAD','=','ALUMNO_ACTIVIDAD.FK_ACTIVIDAD')
          ->join('ASISTENCIA_ALUMNO_ACTIVIDAD','ALUMNO_ACTIVIDAD.PK_ALUMNO_ACTIVIDAD','=','ASISTENCIA_ALUMNO_ACTIVIDAD.FK_ALUMNO_ACTIVIDAD')
-         ->join('users','ALUMNO_ACTIVIDAD.FK_ALUMNO','=','users.PK_USUARIO')
+         ->join('CAT_USUARIO','ALUMNO_ACTIVIDAD.FK_ALUMNO','=','CAT_USUARIO.PK_USUARIO')
          ->selectRAW("ACTIVIDADES.PK_ACTIVIDAD, ACTIVIDADES.NOMBRE, replace(convert(NVARCHAR, ACTIVIDADES.FECHA, 106), ' ', '/') as FECHA")
-         ->where('users.PK_USUARIO','=', $alalumno)
+         ->where('CAT_USUARIO.PK_USUARIO','=', $alalumno)
          ->where('LINEAMIENTOS.PK_LINEAMIENTO','=',$allineamiento)
          ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA','=',1)
          ->get();

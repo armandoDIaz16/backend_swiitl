@@ -10,8 +10,8 @@ use DB;
 class gestionRolesCreditosComController extends Controller
 {
     public function getUsuarioByCurp($curp) {
-        $usuario = DB::table('users')
-                ->select('PK_USUARIO','PRIMER_APELLIDO','SEGUNDO_APELLIDO','name')
+        $usuario = DB::table('CAT_USUARIO')
+                ->select('PK_USUARIO','PRIMER_APELLIDO','SEGUNDO_APELLIDO','NOMBRE')
                 ->where('CURP','=',$curp)
                 ->get();
         
