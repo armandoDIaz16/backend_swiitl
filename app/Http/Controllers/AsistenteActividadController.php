@@ -72,8 +72,8 @@ class AsistenteActividadController extends Controller
      */
     public function show($pk_actividad)//muestra la lista de alumnos designados para tomar asistencia en alguna actividad en especifico
     {
-        $asitentes = asistenteActividad::join('users','PK_USUARIO','=','FK_USUARIO')
-                        ->select('PK_ASISTENTE_ACTIVIDAD','PRIMER_APELLIDO','SEGUNDO_APELLIDO','name')
+        $asitentes = asistenteActividad::join('CAT_USUARIO','PK_USUARIO','=','FK_USUARIO')
+                        ->select('PK_ASISTENTE_ACTIVIDAD','PRIMER_APELLIDO','SEGUNDO_APELLIDO','NOMBRE')
                         ->where('FK_ACTIVIDAD','=',$pk_actividad)
                         ->get();
     
@@ -93,7 +93,7 @@ class AsistenteActividadController extends Controller
     }
 
     public function getPkuserByNc($num_control){//Obtener el id del usuario mediante el mnombre completo
-        $pk_usuario = DB::table('users')
+        $pk_usuario = DB::table('CAT_USUARIO')
                     ->select('PK_USUARIO as FK_USUARIO')
                     ->where('NUMERO_CONTROL','=',$num_control)
                     ->get();

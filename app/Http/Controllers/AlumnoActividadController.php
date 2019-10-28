@@ -61,8 +61,8 @@ class AlumnoActividadController extends Controller
                             ->get()->first();
         
         //Obtener el email del usuario que se registro
-        $correo = DB::table('users')
-                    ->select('email','name')
+        $correo = DB::table('CAT_USUARIO')
+                    ->select('email','NOMBRE')
                     ->where('PK_USUARIO','=', $request->FK_ALUMNO)
                     ->get()->first();
         
@@ -74,8 +74,8 @@ class AlumnoActividadController extends Controller
  
         QrCode::format('png')->size(500)->generate($actividad->PK_ALUMNO_ACTIVIDAD, public_path('creditos-complementarios/codigos-qr-a-c/qrcode-f-'.$actividad->PK_ALUMNO_ACTIVIDAD.'.png'));
 
-        Mail::to($correo->email, $correo->name)
-            ->send(new RegistroActividadMail($actividad->PK_ALUMNO_ACTIVIDAD,$correo->name, $datos_act->NOMBRE, $datos_act->FECHA, $datos_act->LUGAR, $datos_act->HORA));
+        Mail::to($correo->email, $correo->NOMBRE)
+            ->send(new RegistroActividadMail($actividad->PK_ALUMNO_ACTIVIDAD,$correo->NOMBRE, $datos_act->NOMBRE, $datos_act->FECHA, $datos_act->LUGAR, $datos_act->HORA));
 
         //echo "correo enviado";
   
