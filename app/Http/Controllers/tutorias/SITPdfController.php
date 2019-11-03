@@ -80,7 +80,7 @@ class SITPdfController extends Controller
 
         $data_reporte['data'] = $this->get_datos_perfil_personal($request->pk_encriptada);
 
-        $html_final = view('tutorias.perfil_individual_ingreso');
+        $html_final = view('tutorias.perfil_individual_ingreso', $data_reporte);
 
         /* Fuentes */
         $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
@@ -111,18 +111,18 @@ class SITPdfController extends Controller
         $data = [];
 
         $alumno = Usuario::where('PK_ENCRIPTADA', $pk_encriptada)->first();
-        error_log(print_r($alumno, true));
+        if ($alumno) {
+            $grupo = GrupoTutoriasDetalle::where('FK_USUARIO', $alumno->PK_USUARIO)->first();
+            if ($grupo) {
+                $datos_grupo = $this->get_tutor_grupo($grupo->FK_GRUPO);
+                $data['tutor']            = $datos_grupo->NOMBRE .' '. $datos_grupo->PRIMER_APELLIDO .' '. $datos_grupo->SEGUNDO_APELLIDO;
+                $data['grupo']            = $datos_grupo->CLAVE;
+                /*$data['cantidad_alumnos'] = $this->get_cantidad_alumnos_grupo($pk_encriptada);
+                $data['carrera'] = $this->get_carrera_grupo($pk_encriptada);*/
 
-        $grupo = GrupoTutoriasDetalle::where('FK_USUARIO', $alumno->PK_USUARIO)->first();
-        error_log(print_r($grupo, true));
-
-        $datos_grupo = $this->get_tutor_grupo($grupo->FK_GRUPO_TUTORIAS);
-        $data['tutor']            = $datos_grupo->NOMBRE .' '. $datos_grupo->PRIMER_APELLIDO .' '. $datos_grupo->SEGUNDO_APELLIDO;
-        $data['grupo']            = $datos_grupo->CLAVE;
-        /*$data['cantidad_alumnos'] = $this->get_cantidad_alumnos_grupo($pk_encriptada);
-        $data['carrera'] = $this->get_carrera_grupo($pk_encriptada);*/
-
-        return $data;
+                return $data;
+            }
+        }
     }
 
     private function get_carrera_grupo($pk_grupo) {

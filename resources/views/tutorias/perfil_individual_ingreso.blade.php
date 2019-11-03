@@ -67,7 +67,7 @@
         </tr>
         <tr>
             <td valign="middle" align="left" colspan="2">
-                <p class="bold">NOMBRE DEL TUTOR:</p>
+                <p class="bold">NOMBRE DEL TUTOR: <u>{{$data['tutor']}}</u></p>
             </td>
             <td valign="middle" align="left" colspan="2">
                 <p class="bold">
