@@ -41,7 +41,7 @@ class AsistenteActividadController extends Controller
      */
     public function store(Request $request)//registrar asistente
     {
-        $rol = DB::table('PER_CATR_ROL')
+        $rol = DB::table('PER_CAT_ROL')
         ->select('PK_ROL')
         ->where('NOMBRE','=','Registro de asistencias')
         ->get()->first();
@@ -73,7 +73,7 @@ class AsistenteActividadController extends Controller
     public function show($pk_actividad)//muestra la lista de alumnos designados para tomar asistencia en alguna actividad en especifico
     {
         $asitentes = asistenteActividad::join('CAT_USUARIO','PK_USUARIO','=','FK_USUARIO')
-                        ->select('PK_ASISTENTE_ACTIVIDAD','PRIMER_APELLIDO','SEGUNDO_APELLIDO','NOMBRE')
+                        ->select('PK_ASISTENTE_ACTIVIDAD','PRIMER_APELLIDO','SEGUNDO_APELLIDO','NOMBRE as name')
                         ->where('FK_ACTIVIDAD','=',$pk_actividad)
                         ->get();
     
@@ -83,8 +83,8 @@ class AsistenteActividadController extends Controller
     
     public function getAlumnoByNc($num_control)//obtener el nombre completo del alumno mediante el numero de control
     {
-        $usuario = DB::table('users')
-                    ->select('PK_USUARIO as FK_USUARIO', 'NUMERO_CONTROL','PRIMER_APELLIDO','SEGUNDO_APELLIDO','name')
+        $usuario = DB::table('CAT_USUARIO')
+                    ->select('PK_USUARIO as FK_USUARIO', 'NUMERO_CONTROL','PRIMER_APELLIDO','SEGUNDO_APELLIDO','NOMBRE as name')
                     ->where('NUMERO_CONTROL','=',$num_control)
                     ->get();
 
@@ -167,7 +167,7 @@ class AsistenteActividadController extends Controller
     }
 
     public function eliminarRolAsistente($pk_usuario){
-        $rol = DB::table('PER_CATR_ROL')
+        $rol = DB::table('PER_CAT_ROL')
                 ->select('PK_ROL')
                 ->where('NOMBRE','=','Registro de asistencias')
                 ->get()->first();

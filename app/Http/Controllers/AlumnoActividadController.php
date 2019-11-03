@@ -62,7 +62,7 @@ class AlumnoActividadController extends Controller
         
         //Obtener el email del usuario que se registro
         $correo = DB::table('CAT_USUARIO')
-                    ->select('email','NOMBRE')
+                    ->select('CORREO1 as email','NOMBRE')
                     ->where('PK_USUARIO','=', $request->FK_ALUMNO)
                     ->get()->first();
         

@@ -6,6 +6,8 @@ use App\alumnoCredito;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
+use DB;
+
 class AlumnoCreditoController extends Controller
 {
     /**
@@ -113,11 +115,20 @@ class AlumnoCreditoController extends Controller
         $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
                     ->join('CAT_USUARIO','FK_ALUMNO','=','PK_USUARIO')
                     ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE as name','CALIFICACION')
-                    ->where('CAT_USUARIO.CLAVE_CARRERA','=',$carrera)
+                    ->where('CAT_USUARIO.FK_CARRERA','=',$carrera)
                     ->where('CONSTANCIA_GENERADA', '=', 0)
                     ->get();
         $response = Response::json($creditos);
         return $response;
+    }
+    //obtener el id carrera del usuario 
+    public function getClaveCarrera($idUsuario){
+        $clave_carrera = DB::table('CAT_USUARIO')
+                         ->select('FK_CARRERA')
+                         ->where('PK_USUARIO','=',$idUsuario)
+                         ->get();
+        $response = Response::json($clave_carrera);
+        return $response;                         
     }
     
     

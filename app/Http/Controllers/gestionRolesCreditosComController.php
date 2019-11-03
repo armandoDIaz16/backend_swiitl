@@ -21,7 +21,7 @@ class gestionRolesCreditosComController extends Controller
     }
 
     public function setRolComite( $pk_usuario ){
-        $rol = DB::table('PER_CATR_ROL')
+        $rol = DB::table('PER_CAT_ROL')
             ->select('PK_ROL')
             ->where('NOMBRE','=','Comite academico')
             ->get()->first();
@@ -32,7 +32,7 @@ class gestionRolesCreditosComController extends Controller
     }
 
     public function setRolJefeCarr( $pk_usuario ){
-        $rol = DB::table('PER_CATR_ROL')
+        $rol = DB::table('PER_CAT_ROL')
             ->select('PK_ROL')
             ->where('NOMBRE','=','Jefe de carrera')
             ->get()->first();
@@ -43,7 +43,7 @@ class gestionRolesCreditosComController extends Controller
     }
 
     public function setRolRespAct( $pk_usuario ){
-        $rol = DB::table('PER_CATR_ROL')
+        $rol = DB::table('PER_CAT_ROL')
             ->select('PK_ROL')
             ->where('NOMBRE','=','Responsable de actividad')
             ->get()->first();
@@ -59,7 +59,7 @@ class gestionRolesCreditosComController extends Controller
             ->where('NOMBRE','=','Creditos')
             ->get()->first();
 
-        $rol = DB::table('PER_CATR_ROL')
+        $rol = DB::table('PER_CAT_ROL')
             ->select('PK_ROL')
             ->where('NOMBRE','=','Tutorias-extraescolares')
             ->where('FK_SISTEMA','=',$sistema->PK_SISTEMA)
