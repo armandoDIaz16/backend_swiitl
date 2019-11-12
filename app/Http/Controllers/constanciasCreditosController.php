@@ -13,17 +13,22 @@ class constanciasCreditosController extends Controller
 {
     public function generarConstancia(Request $request){
 
+        DB::table('DETA_CONSTANCIAS')
+        ->insert(array('fk_alumno_credito' => $request->pk_alumno_credito, 'memorandum' => $request->memorandum, 'queSuscribe' => $request->suscribe , 'nombre' => $request->nombre));
+
 
         $mpdf = new Mpdf(['orientation' => 'p']);
 
         $datos = DB::table('ALUMNO_CREDITO as ac')
-                ->join('users as u','ac.FK_ALUMNO','=','u.PK_USUARIO')
+                ->join('CAT_USUARIO as u','ac.FK_ALUMNO','=','u.PK_USUARIO')
                 ->join('LINEAMIENTOS as l','ac.FK_LINEAMIENTO','=','l.PK_LINEAMIENTO')
-                ->select('ac.PK_ALUMNO_CREDITO', 'u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.name','u.NUMERO_CONTROL','l.NOMBRE','ac.CALIFICACION', 'ac.PERIODO')
+                ->join('DETA_CONSTANCIAS as d','ac.PK_ALUMNO_CREDITO','=','d.fk_alumno_credito')
+                ->select('ac.PK_ALUMNO_CREDITO', 'u.PRIMER_APELLIDO','u.SEGUNDO_APELLIDO','u.NOMBRE as name','u.NUMERO_CONTROL','l.NOMBRE','ac.CALIFICACION', 'ac.PERIODO','d.memorandum','d.queSuscribe','d.nombre as nomb')
                 ->where('ac.PK_ALUMNO_CREDITO','=',$request->pk_alumno_credito)
                 ->get()->first();
+  
 
-        $data[] = [
+       /* $data[] = [
             'PK_ALUMNO_CREDITO' => $datos->PK_ALUMNO_CREDITO,
             'PRIMER_APELLIDO' => $datos->PRIMER_APELLIDO,
             'SEGUNDO_APELLIDO' => $datos->SEGUNDO_APELLIDO,
@@ -34,12 +39,85 @@ class constanciasCreditosController extends Controller
             'PERIODO' => $datos->PERIODO,
             'FOLIO' => $request->FOLIO,
             'DEPARTAMENTO' => $request->DEPARTAMENTO
-        ];
+        ]; */
 
-                $response = Response::json($data);
-                return $response; 
+                //$response = Response::json($datos);
+                //return $response; 
+        
+                $html_final = view('constancias.creditosComplementarios',['DATOS'=>$datos]);
+                /*Fuenres*/
+                /** @noinspection PhpLanguageLevelInspection */
+                $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+                $fontDirs = $defaultConfig['fontDir'];
+        
+                /** @noinspection PhpLanguageLevelInspection */
+                $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+                $fontData = $defaultFontConfig['fontdata'];
+        
+                $mpdf = new Mpdf([
+                    'fontDir' => array_merge($fontDirs, [
+                        __DIR__ . '/custom/font/directory',
+                    ]),
+                    'fontdata' => $fontData + [
+                            'montserrat' => [
+                                'R' => 'Montserrat-Medium.ttf',
+                                'B' => 'Montserrat-ExtraBold.ttf',
+                            ]
+                        ],
+                    'default_font' => 'montserrat'
+                ]);
+        
+                $path = public_path() . '/img/marca_agua.jpg';
+                \Log::debug($path);
+                $mpdf->SetDefaultBodyCSS('background', "url('".$path."')");
+                $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
+        
+                $mpdf->WriteHTML($html_final);
+                $mpdf->Output(public_path().'/creditos-complementarios/constancias/constancias-oficiales/ConstanciaCreditos-folio-'.$datos->PK_ALUMNO_CREDITO.'.pdf','F');
 
+
+                /*CONSTANCIA VERSION ALUMNOS */
+
+                $html_final2 = view('constancias.creditosComplementarios',['DATOS'=>$datos]);
+                /*Fuenres*/
+                /** @noinspection PhpLanguageLevelInspection */
+                $defaultConfig2 = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+                $fontDirs2 = $defaultConfig2['fontDir'];
+        
+                /** @noinspection PhpLanguageLevelInspection */
+                $defaultFontConfig2 = (new \Mpdf\Config\FontVariables())->getDefaults();
+                $fontData2 = $defaultFontConfig2['fontdata'];
+        
+                $mpdf2 = new Mpdf([
+                    'fontDir' => array_merge($fontDirs2, [
+                        __DIR__ . '/custom/font/directory',
+                    ]),
+                    'fontdata' => $fontData2 + [
+                            'montserrat' => [
+                                'R' => 'Montserrat-Medium.ttf',
+                                'B' => 'Montserrat-ExtraBold.ttf',
+                            ]
+                        ],
+                    'default_font' => 'montserrat'
+                ]);
+        
+                $path2 = public_path() . '/img/marca_agua-vista-previa.jpeg';
+                \Log::debug($path2);
+                $mpdf2->SetDefaultBodyCSS('background', "url('".$path2."')");
+                $mpdf2->SetDefaultBodyCSS('background-image-resize', 6);
+        
+                $mpdf2->WriteHTML($html_final2);
+                $mpdf2->Output(public_path().'/creditos-complementarios/constancias/constancias-vista-previa/ConstanciaCreditos-preview-folio-'.$datos->PK_ALUMNO_CREDITO.'.pdf','F');
+
+
+                
+        DB::table('ALUMNO_CREDITO')->where('PK_ALUMNO_CREDITO',$request->pk_alumno_credito)
+        ->update(array(
+            'CONSTANCIA_GENERADA'=>1));              
     }
+
+
+    
 
     public function verConstanciaOficial($pk_alumno_credito){
         

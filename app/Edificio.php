@@ -3,7 +3,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Edificio extends Model{
+class Edificio extends Model {
+
+
     protected $fillable = [
         'NOMBRE',
         'PREFIJO',

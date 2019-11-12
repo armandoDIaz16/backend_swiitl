@@ -19,7 +19,7 @@ class excelAcController extends Controller
         $data = Excel::load($path)->get();
 
          foreach($data as $d){
-            $pk_usuario = DB::table('users')
+            $pk_usuario = DB::table('CAT_USUARIO')
                 ->select('PK_USUARIO')
                 ->where('NUMERO_CONTROL',$d->num_control)
                 ->get()->first();
@@ -91,7 +91,7 @@ class excelAcController extends Controller
         
         foreach($creditosCount as $count){
             if($count->creditos >= 5){//si el alunno cunple con sus 5 creditos entonces..
-                $infoAlumno = DB::table('users')//guardar la info de los alumnos en un arreglo
+                $infoAlumno = DB::table('CAT_USUARIO')//guardar la info de los alumnos en un arreglo
                     ->select('NUMERO_CONTROL', 'SEMESTRE')
                     ->where('PK_USUARIO',$count->FK_ALUMNO)
                     ->get()->first();

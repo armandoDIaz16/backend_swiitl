@@ -6,6 +6,8 @@ use App\alumnoCredito;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
+use DB;
+
 class AlumnoCreditoController extends Controller
 {
     /**
@@ -42,8 +44,8 @@ class AlumnoCreditoController extends Controller
 
     public function getCreditosPorValidar(){
         $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
-                    ->join('users','FK_ALUMNO','=','PK_USUARIO')
-                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
+                    ->join('CAT_USUARIO','FK_ALUMNO','=','PK_USUARIO')
+                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE as name','CALIFICACION')
                     ->where('VALIDADO','=',0)
                     ->take(200)
                     ->get();
@@ -53,9 +55,9 @@ class AlumnoCreditoController extends Controller
 
     public function getCreditosPorValidarByNumC($num_control){
         $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
-                    ->join('users','FK_ALUMNO','=','PK_USUARIO')
-                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
-                    ->where('users.NUMERO_CONTROL','=',$num_control)
+                    ->join('CAT_USUARIO','FK_ALUMNO','=','PK_USUARIO')
+                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE as name','CALIFICACION')
+                    ->where('CAT_USUARIO.NUMERO_CONTROL','=',$num_control)
                     ->where('VALIDADO','=',0)
                     ->get();
         $response = Response::json($creditos);
@@ -63,8 +65,8 @@ class AlumnoCreditoController extends Controller
     }
     public function getCreditosPorValidarByLin($lineamiento){
         $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
-                    ->join('users','FK_ALUMNO','=','PK_USUARIO')
-                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
+                    ->join('CAT_USUARIO','FK_ALUMNO','=','PK_USUARIO')
+                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE as name','CALIFICACION')
                     ->where('LINEAMIENTOS.PK_LINEAMIENTO','=',$lineamiento)
                     ->where('VALIDADO','=',0)
                     ->get();
@@ -76,8 +78,8 @@ class AlumnoCreditoController extends Controller
 
     public function getCreditosValidados(){
         $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
-                    ->join('users','FK_ALUMNO','=','PK_USUARIO')
-                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
+                    ->join('CAT_USUARIO','FK_ALUMNO','=','PK_USUARIO')
+                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE as name ','CALIFICACION')
                     ->where('VALIDADO','=',1)
                     ->orderBy('PK_ALUMNO_CREDITO','desc')
                     ->take(200)
@@ -88,9 +90,9 @@ class AlumnoCreditoController extends Controller
 
     public function getCreditosValidadosByNumC($num_control){
         $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
-                    ->join('users','FK_ALUMNO','=','PK_USUARIO')
-                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
-                    ->where('users.NUMERO_CONTROL','=',$num_control)
+                    ->join('CAT_USUARIO','FK_ALUMNO','=','PK_USUARIO')
+                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE as name','CALIFICACION')
+                    ->where('CAT_USUARIO.NUMERO_CONTROL','=',$num_control)
                     ->where('VALIDADO','=',1)
                     ->get();
         $response = Response::json($creditos);
@@ -99,8 +101,8 @@ class AlumnoCreditoController extends Controller
 
     public function getCreditosValidadosByLin($lineamiento){
         $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
-                    ->join('users','FK_ALUMNO','=','PK_USUARIO')
-                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
+                    ->join('CAT_USUARIO','FK_ALUMNO','=','PK_USUARIO')
+                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE as name','CALIFICACION')
                     ->where('LINEAMIENTOS.PK_LINEAMIENTO','=',$lineamiento)
                     ->where('VALIDADO','=',1)
                     ->get();
@@ -111,12 +113,22 @@ class AlumnoCreditoController extends Controller
     /**------------------------------------------------------------------------ */
     public function getCreditosByCarrera($carrera){
         $creditos = alumnoCredito::join('LINEAMIENTOS','FK_LINEAMIENTO','=','PK_LINEAMIENTO')
-                    ->join('users','FK_ALUMNO','=','PK_USUARIO')
-                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'users.NUMERO_CONTROL','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','CALIFICACION')
-                    ->where('users.CLAVE_CARRERA','=',$carrera)
+                    ->join('CAT_USUARIO','FK_ALUMNO','=','PK_USUARIO')
+                    ->select('PK_ALUMNO_CREDITO', 'LINEAMIENTOS.NOMBRE', 'CAT_USUARIO.NUMERO_CONTROL','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE as name','CALIFICACION')
+                    ->where('CAT_USUARIO.FK_CARRERA','=',$carrera)
+                    ->where('CONSTANCIA_GENERADA', '=', 0)
                     ->get();
         $response = Response::json($creditos);
         return $response;
+    }
+    //obtener el id carrera del usuario 
+    public function getClaveCarrera($idUsuario){
+        $clave_carrera = DB::table('CAT_USUARIO')
+                         ->select('FK_CARRERA')
+                         ->where('PK_USUARIO','=',$idUsuario)
+                         ->get();
+        $response = Response::json($clave_carrera);
+        return $response;                         
     }
     
     

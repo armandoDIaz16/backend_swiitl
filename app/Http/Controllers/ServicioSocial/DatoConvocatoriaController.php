@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ServicioSocial;
 
-use App\Helpers\EncriptarUsuario;
-use App\User;
-use App\Usuario;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Controller;
 
-class UsuarioController extends Controller
+class DatoConvocatoriaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +14,7 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        $usuario = Usuario::get();
-        echo json_encode($usuario);
+        //
     }
 
     /**
@@ -85,16 +81,5 @@ class UsuarioController extends Controller
     public function destroy($id)
     {
         //
-    }
-    public function prueba()
-    {
-        $usuarios = User::select('PK_USUARIO', 'FECHA_REGISTRO')->whereRaw('PK_ENCRIPTADA IS NULL')->get();
-        foreach ($usuarios as $usuario) {
-            User::where('PK_USUARIO', $usuario->PK_USUARIO)->update(['PK_ENCRIPTADA' => EncriptarUsuario::getPkEncriptada($usuario->PK_USUARIO,$usuario->FECHA_REGISTRO)]);
-        }
-    }
-    public function prueba2()
-    {
-        return User::select('PK_USUARIO','FECHA_REGISTRO','PK_ENCRIPTADA')->whereRaw('PK_ENCRIPTADA IS NULL')->get();
     }
 }

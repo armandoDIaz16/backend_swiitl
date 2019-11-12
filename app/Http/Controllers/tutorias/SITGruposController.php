@@ -56,6 +56,7 @@ class SITGruposController extends Controller
             if (isset($usuario->PK_USUARIO)) {
                 $lista[] = [
                     'PK_USUARIO'            => $usuario->PK_USUARIO,
+                    'PK_ENCRIPTADA'         => $usuario->PK_ENCRIPTADA,
                     'NUMERO_CONTROL'        => $usuario->NUMERO_CONTROL,
                     'NOMBRE'                => $usuario->NOMBRE,
                     'PRIMER_APELLIDO'       => $usuario->PRIMER_APELLIDO,
