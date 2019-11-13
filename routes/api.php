@@ -597,3 +597,24 @@ Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
  Route::get('busquedaConvocatoria/{dato}','ServicioSocial\ConvocatoriaController@busquedaConvocatoria');
  Route::get('allConvocatoria/','ServicioSocial\ConvocatoriaController@allConvocatoria');
  Route::get('convocatoriaPdf/{id}','ServicioSocial\ConvocatoriaController@convocatoriaPdf');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /* *********************************************************** *
+ * ************* RUTAS REFERENCIAS *************** *
+ * *********************************************************** */
+Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReInscripcion');
