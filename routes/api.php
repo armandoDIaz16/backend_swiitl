@@ -255,6 +255,7 @@ Route::get('pdf1', function () {
 });
 
 /**********************************RUTAS SISTEMA CREDITOS COMPLEMENTARIOS ************************************************/
+//Route::group(['middleware' => ['jwt.verify']], function () {
 Route::resource('lineamientos', 'LineamientoController');
 Route::resource('tipos', 'TipoController');
 Route::resource('actividades', 'ActividadController');
@@ -307,6 +308,8 @@ Route::get('agregar-user-te/{PK_USUARIO}', 'gestionRolesCreditosComController@se
 Route::post('import-excel-ac', 'excelAcController@importarCreditos');
 Route::get('generar-excel-ac', 'excelAcController@generarExcel');
 Route::get('id-alumno-actividades/{PK_ACTIVIDAD}/{PK_ALUMNO}', 'AlumnoActividadController@ctlAlumnoActividad');
+Route::get('get-clave-carrera/{PK_USUARIO}','AlumnoCreditoController@getClaveCarrera');
+//});
 //Route::get('prueba-fecha','constanciasCreditosController@pruebaFormatoFecha');
 //Route::get('prueba-carrera/{PK_ALUMNO_CREDITO}','constanciasCreditosController@getCarrera');
 /*************************************************************************************************************************/
