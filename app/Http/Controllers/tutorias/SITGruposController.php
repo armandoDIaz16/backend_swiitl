@@ -63,6 +63,7 @@ class SITGruposController extends Controller
                     'SEGUNDO_APELLIDO'      => $usuario->SEGUNDO_APELLIDO,
                     'SEMESTRE'              => $alumno->Semestre,
                     'CARRERA'               => $alumno->ClaveCarrera,
+                    'PERFIL_COMPLETO'       => $usuario->PERFIL_COMPLETO,
                     'ENCUESTAS_ACTIVAS'     => $this->get_encuestas_grupo(
                         NULL,
                         NULL,

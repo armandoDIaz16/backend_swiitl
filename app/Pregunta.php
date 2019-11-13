@@ -23,5 +23,5 @@ class Pregunta extends Model
 
     protected $primaryKey = 'PK_PREGUNTA';
 
-    protected $table = 'CATR_PREGUNTA';
+    protected $table = 'CAT_PREGUNTA';
 }

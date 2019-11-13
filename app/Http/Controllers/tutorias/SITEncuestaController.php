@@ -6,14 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Encuesta;
 use App\Seccion_Encuesta;
-use App\Pregunta;
-use App\Tipo_Pregunta;
 use App\Respuesta_Posible;
 use Illuminate\Support\Facades\DB;
-use Monolog\Handler\IFTTTHandler;
 use Symfony\Component\HttpFoundation\Response;
 use App\Aplicacion_Encuesta;
-use App\RespuestaUsuarioEncuesta;
 
 /**
  * Class SITEncuestaController
