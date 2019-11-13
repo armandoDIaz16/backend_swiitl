@@ -241,21 +241,21 @@ class FichaController extends Controller
             ->get();
 
         $fecha = date('Y-m-j');
-        $fechaFin = strtotime($periodo[0]->FECHA_FIN_CURSO);
-        $nuevafecha = strtotime('+3 day', strtotime($fecha));
-        if ($nuevafecha > $fechaFin) {
-            $nuevafecha = strtotime('+2 day', strtotime($fecha));
-            if ($nuevafecha > $fechaFin) {
-                $nuevafecha = strtotime('+1 day', strtotime($fecha));
-                if ($nuevafecha > $fechaFin) {
-                    $nuevafecha = strtotime('+0 day', strtotime($fecha));
-                    if ($nuevafecha > $fechaFin) {
-                        $nuevafecha = $fechaFin;
-                    }
-                }
-            }
+        $dia = date("d", strtotime($fecha));
+        if ($dia > 15) {
+            $anio = date("Y", strtotime($fecha));
+            $mes = 1 + date("m", strtotime($fecha));
+            $dia = 2;
+        } else {
+            $anio = date("Y", strtotime($fecha));
+            $mes = date("m", strtotime($fecha));
+            $dia = 17;
         }
-
+        $nuevafecha = strtotime($anio . '-' . $mes . '-' . $dia);
+        $fechaFin = strtotime($periodo[0]->FECHA_FIN_CURSO);
+        if ($nuevafecha > $fechaFin) {
+            $nuevafecha = $fechaFin;
+        }
         $fechaLimitePago = date('Y-m-j', $nuevafecha);
 
         $datosReferencia =
@@ -308,21 +308,21 @@ class FichaController extends Controller
             ->get();
 
         $fecha = date('Y-m-j');
-        $fechaFin = strtotime($periodo[0]->FECHA_FIN_INSCRIPCION);
-        $nuevafecha = strtotime('+3 day', strtotime($fecha));
-        if ($nuevafecha > $fechaFin) {
-            $nuevafecha = strtotime('+2 day', strtotime($fecha));
-            if ($nuevafecha > $fechaFin) {
-                $nuevafecha = strtotime('+1 day', strtotime($fecha));
-                if ($nuevafecha > $fechaFin) {
-                    $nuevafecha = strtotime('+0 day', strtotime($fecha));
-                    if ($nuevafecha > $fechaFin) {
-                        $nuevafecha = $fechaFin;
-                    }
-                }
-            }
+        $dia = date("d", strtotime($fecha));
+        if ($dia > 15) {
+            $anio = date("Y", strtotime($fecha));
+            $mes = 1 + date("m", strtotime($fecha));
+            $dia = 2;
+        } else {
+            $anio = date("Y", strtotime($fecha));
+            $mes = date("m", strtotime($fecha));
+            $dia = 17;
         }
-
+        $nuevafecha = strtotime($anio . '-' . $mes . '-' . $dia);
+        $fechaFin = strtotime($periodo[0]->FECHA_FIN_INSCRIPCION);
+        if ($nuevafecha > $fechaFin) {
+            $nuevafecha = $fechaFin;
+        }
         $fechaLimitePago = date('Y-m-j', $nuevafecha);
 
         $datosReferencia =
@@ -375,21 +375,21 @@ class FichaController extends Controller
             ->get();
 
         $fecha = date('Y-m-j');
-        $fechaFin = strtotime($periodo[0]->FECHA_FIN_INSCRIPCION_BIS);
-        $nuevafecha = strtotime('+3 day', strtotime($fecha));
-        if ($nuevafecha > $fechaFin) {
-            $nuevafecha = strtotime('+2 day', strtotime($fecha));
-            if ($nuevafecha > $fechaFin) {
-                $nuevafecha = strtotime('+1 day', strtotime($fecha));
-                if ($nuevafecha > $fechaFin) {
-                    $nuevafecha = strtotime('+0 day', strtotime($fecha));
-                    if ($nuevafecha > $fechaFin) {
-                        $nuevafecha = $fechaFin;
-                    }
-                }
-            }
+        $dia = date("d", strtotime($fecha));
+        if ($dia > 15) {
+            $anio = date("Y", strtotime($fecha));
+            $mes = 1 + date("m", strtotime($fecha));
+            $dia = 2;
+        } else {
+            $anio = date("Y", strtotime($fecha));
+            $mes = date("m", strtotime($fecha));
+            $dia = 17;
         }
-
+        $nuevafecha = strtotime($anio . '-' . $mes . '-' . $dia);
+        $fechaFin = strtotime($periodo[0]->FECHA_FIN_INSCRIPCION_BIS);
+        if ($nuevafecha > $fechaFin) {
+            $nuevafecha = $fechaFin;
+        }
         $fechaLimitePago = date('Y-m-j', $nuevafecha);
 
         $datosReferencia =
