@@ -5,7 +5,6 @@ namespace App\Http\Controllers\tutorias;
 use App\Aplicacion_Encuesta;
 use App\Carrera;
 use App\Estado_Civil;
-use App\GrupoTutorias;
 use App\GrupoTutoriasDetalle;
 use App\Helpers\Constantes;
 use App\Helpers\SITHelper;

@@ -13,6 +13,19 @@ class Constantes
     /**
      *
      */
+    CONST USUARIO_ALUMNO    = 1;
+    CONST USUARIO_DOCENTE   = 2;
+    CONST USUARIO_ASPIRANTE = 3;
+
+    /**
+     *
+     */
+    CONST ESTADO_ACTIVO    = 1;
+    CONST ESTADO_INACTIVO  = 0;
+
+    /**
+     *
+     */
     CONST SEXO_MASCULINO = 1;
     CONST SEXO_FEMENINO  = 2;
 

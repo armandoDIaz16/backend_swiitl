@@ -473,6 +473,36 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'get_reporte_encuesta/{pk_aplicacion}',
         'tutorias\SITEncuestaReporteController@get_reporte_encuesta'
     );
+
+    // Buscar coordinadores departamentales
+    Route::get(
+        'coordinadores_departamentales',
+        'tutorias\SITUsuariosController@get_coordinadores_departamentales'
+    );
+
+    // Buscar areas academicas
+    Route::get(
+        'area_academica',
+        'AreaAcademicaController@get_area_academica'
+    );
+
+    // Buscar usuarios docentes - administrativos
+    Route::post(
+        'coordinador_departamental',
+        'tutorias\SITUsuariosController@coordinador_departamental'
+    );
+
+    // Buscar usuarios docentes - administrativos
+    Route::post(
+        'get_usuarios_docentes',
+        'tutorias\SITUsuariosController@get_usuarios_docentes'
+    );
+
+    // Guardar coordinador de area academica
+    Route::post(
+        'guarda_coordinador',
+        'tutorias\SITUsuariosController@guarda_coordinador'
+    );
 });
 
 /* *********************************************************** *

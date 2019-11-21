@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\tutorias;
 
+use App\Carrera;
 use App\Http\Controllers\Controller;
 use App\GrupoTutorias;
 use App\Helpers\Constantes;
@@ -88,43 +89,58 @@ class SITGruposController extends Controller
                 ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL)
                 ->get();
 
-            $data = [];
+            $carreras = [];
             foreach ($grupos_tutor as $grupo) {
-                $condiciones_siia = [
-                    'CLAVE_GRUPO'   => $grupo->CLAVE,
-                    'PERIODO'       => Constantes::get_periodo(),
-                    'CLAVE_MATERIA' => 'PDH'
-                ];
+                $carreras[] = Carrera::where('PK_CARRERA', $grupo->FK_CARRERA)->first();
+            }
+            $carreras = array_unique($carreras);
 
-                $horario_grupo = SiiaHelper::get_horario_grupo($condiciones_siia);
+            $grupos_carrera = [];
+            foreach ($carreras as $carrera) {
+                $grupos = [];
+                foreach ($grupos_tutor as $grupo) {
+                    $condiciones_siia = [
+                        'CLAVE_GRUPO'   => $grupo->CLAVE,
+                        'PERIODO'       => Constantes::get_periodo(),
+                        'CLAVE_MATERIA' => 'PDH'
+                    ];
 
-                $encuestas_respondidas =
-                    $this->get_encuestas_grupo(
-                        Constantes::ENCUESTA_RESPONDIDA,
-                        $grupo->PK_GRUPO_TUTORIA
-                    )[0]->CANTIDAD_ENCUESTAS;
+                    $horario_grupo = SiiaHelper::get_horario_grupo($condiciones_siia);
 
-                $encuestas_activas     =
-                    $this->get_encuestas_grupo(
-                        NULL,
-                        $grupo->PK_GRUPO_TUTORIA
-                    )[0]->CANTIDAD_ENCUESTAS;
+                    $encuestas_respondidas =
+                        $this->get_encuestas_grupo(
+                            Constantes::ENCUESTA_RESPONDIDA,
+                            $grupo->PK_GRUPO_TUTORIA
+                        )[0]->CANTIDAD_ENCUESTAS;
 
-                $data[] = [
-                    'PK_GRUPO_TUTORIA'      => $grupo->PK_GRUPO_TUTORIA,
-                    'FK_USUARIO'            => $grupo->FK_USUARIO,
-                    'CLAVE'                 => $grupo->CLAVE,
-                    'AULA'                  => $horario_grupo[0]->Aula,
-                    'HORARIO'               => $horario_grupo,
-                    'CANTIDAD_ALUMNOS'      => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
-                    'ENCUESTAS_ACTIVAS'     => $encuestas_activas,
-                    'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
-                    'EVALUACION_GRUPO'      => $grupo->EVALUACION
+                    $encuestas_activas     =
+                        $this->get_encuestas_grupo(
+                            NULL,
+                            $grupo->PK_GRUPO_TUTORIA
+                        )[0]->CANTIDAD_ENCUESTAS;
+
+                    $grupos[] = [
+                        'PK_GRUPO_TUTORIA'      => $grupo->PK_GRUPO_TUTORIA,
+                        'FK_USUARIO'            => $grupo->FK_USUARIO,
+                        'CLAVE'                 => $grupo->CLAVE,
+                        'AULA'                  => $horario_grupo[0]->Aula,
+                        'HORARIO'               => $horario_grupo,
+                        'CANTIDAD_ALUMNOS'      => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                        'ENCUESTAS_ACTIVAS'     => $encuestas_activas,
+                        'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
+                        'EVALUACION_GRUPO'      => $grupo->EVALUACION
+                    ];
+                }
+
+                $grupos_carrera[] = [
+                    'PK_CARRERA' => $carrera->PK_CARRERA,
+                    'CARRERA'    => $carrera->NOMBRE,
+                    'GRUPOS'     => $grupos
                 ];
             }
 
             return response()->json(
-                ['data' => ['GRUPOS' => $data]],
+                ['data' => ['CARRERAS' => $grupos_carrera]],
                 Response::HTTP_ACCEPTED
             );
 

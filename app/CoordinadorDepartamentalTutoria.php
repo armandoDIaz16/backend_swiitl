@@ -5,36 +5,38 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Respuesta_Posible
+ * Class CoordinadorDepartamentalTutoria
  * @package App
  */
-class Respuesta_Posible extends Model
+class CoordinadorDepartamentalTutoria extends Model
 {
-    //
     /**
      * @var array
      */
     protected $fillable = [
-        'RESPUESTA',
-        'FK_PREGUNTA',
+        'FK_USUARIO',
+        'FK_AREA_ACADEMICA',
+        'ESTADO',
+
         'FK_USUARIO_REGISTRO',
         'FECHA_REGISTRO',
         'FK_USUARIO_MODIFICACION',
         'FECHA_MODIFICACION',
-        'BORRADO'
     ];
+
+    /**
+     * @var string
+     */
+    protected $table = 'TR_COORDINADOR_DEPARTAMENTAL_TUTORIA';
+
+    /**
+     * @var string
+     */
+    protected $primaryKey = 'PK_COORDINADOR';
+
     /**
      * @var bool
      */
     public $timestamps = false;
 
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'PK_RESPUESTA_POSIBLE';
-
-    /**
-     * @var string
-     */
-    protected $table = 'CAT_RESPUESTA_POSIBLE';
 }

@@ -115,7 +115,7 @@ class Usuario_RolController extends Controller
     {
         //
     }
-    private function get_roles_usuario($id,$PK_SISTEMA){        
+    private function get_roles_usuario($id,$PK_SISTEMA){
         $usuario = user::where('PK_USUARIO', $id)->select('PK_USUARIO', 'NOMBRE')->get()[0];
         $roles = DB::table('PER_TR_ROL_USUARIO')
             ->join('PER_CAT_ROL', 'PER_CAT_ROL.PK_ROL', '=', 'PER_TR_ROL_USUARIO.FK_ROL')
@@ -125,7 +125,7 @@ class Usuario_RolController extends Controller
                 ['FK_SISTEMA',$PK_SISTEMA]]
                 )
             ->get();
-            
+
         $array_roles = array();
         foreach($roles as $rol){
 
@@ -133,13 +133,14 @@ class Usuario_RolController extends Controller
                 ->join('PER_CAT_MODULO', 'PER_CAT_MODULO.PK_MODULO', '=', 'PER_TR_ROL_MODULO.FK_MODULO')
                 ->select('PER_CAT_MODULO.PK_MODULO', 'PER_CAT_MODULO.NOMBRE')
                 ->where('FK_ROL', $rol->PK_ROL)
+                ->orderBy('ORDEN', 'ASC')
                 ->get();
 
                 $array_modulos = array();
                 foreach($modulos as $modulo){
                     $acciones = DB::table('PER_CAT_ACCION')
                     ->join('PER_TR_ROL_MODULO', 'PER_TR_ROL_MODULO.FK_MODULO', '=', 'PER_CAT_ACCION.FK_MODULO')
-                    ->select('PER_CAT_ACCION.PK_ACCION', 'PER_CAT_ACCION.NOMBRE')                    
+                    ->select('PER_CAT_ACCION.PK_ACCION', 'PER_CAT_ACCION.NOMBRE')
                     ->where([
                         ['FK_ROL',  $rol->PK_ROL],
                         ['PER_CAT_ACCION.FK_MODULO',  $modulo->PK_MODULO]
@@ -160,7 +161,7 @@ class Usuario_RolController extends Controller
                 }
             $array_roles[] = array(
                 'PK_ROL' => $rol->PK_ROL,
-                'NOMBRE' => $rol->NOMBRE,            
+                'NOMBRE' => $rol->NOMBRE,
                 'MODULOS'    => $array_modulos
             );
         }
