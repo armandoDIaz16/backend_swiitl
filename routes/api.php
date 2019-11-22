@@ -508,6 +508,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 /* *********************************************************** *
  * ************* RUTAS LIBRES DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
+// Buscar roles de tutorias
+Route::get(
+    'roles_tutorias/{id}',
+    'tutorias\SITUsuariosController@roles_tutorias'
+);
+
 //Generar pdf perfil individual de ingreso
 Route::get(
     'get_pdf_perfil_personal_ingreso',

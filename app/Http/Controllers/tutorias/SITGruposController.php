@@ -12,8 +12,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class SITGruposController
+ * @package App\Http\Controllers\tutorias
+ */
 class SITGruposController extends Controller
 {
+    /**
+     * @param $id_grupo
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function detalle_grupo($id_grupo) {
         if ($id_grupo) {
             $grupo = GrupoTutorias::where('PK_GRUPO_TUTORIA', $id_grupo)->first();
@@ -50,6 +58,10 @@ class SITGruposController extends Controller
         }
     }
 
+    /**
+     * @param $lista_alumnos
+     * @return array
+     */
     private function get_lista_grupo($lista_alumnos) {
         $lista = [];
         foreach ($lista_alumnos as $alumno) {
@@ -82,6 +94,10 @@ class SITGruposController extends Controller
         return $lista;
     }
 
+    /**
+     * @param $id_tutor
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function get_grupos($id_tutor) {
         if ($id_tutor) {
             $grupos_tutor = GrupoTutorias::where('FK_USUARIO', $id_tutor)
@@ -152,6 +168,12 @@ class SITGruposController extends Controller
         }
     }
 
+    /**
+     * @param null $estado_encuesta
+     * @param null $grupo
+     * @param null $alumno
+     * @return array
+     */
     private function get_encuestas_grupo($estado_encuesta = null, $grupo = NULL, $alumno = NULL) {
         $sql = "
         SELECT
