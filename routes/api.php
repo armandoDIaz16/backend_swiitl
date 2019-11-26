@@ -44,15 +44,16 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 });
 /* FIN RUTAS GENERALES */
 
+
+/* INICIO RUTAS PARA COMPLETAR PERFIL */
 Route::group(['middleware' => ['jwt.verify']], function () {
-    /* INICIO RUTAS PARA COMPLETAR PERFIL */
     // OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
-    Route::get('perfil/{id_usuario}', 'PerfilController@get_perfil');
+    Route::post('perfil', 'PerfilController@get_perfil');
 
     // GUARDAR DATOS PARA COMPLETAR PERFIL
     Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
-    /* FIN RUTAS PARA COMPLETAR PERFIL */
 });
+/* FIN RUTAS PARA COMPLETAR PERFIL */
 
 
 Route::get('leer_archivo', 'AspiranteController@leer_archivo');
@@ -81,8 +82,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+// Buscar roles para menú
 Route::resource('Usuario_Rol', 'Usuario_RolController');
+
+// Buscar roles por usuario
+Route::post(
+    'roles_usuario',
+    'Usuario_RolController@roles_usuario'
+);
+
 /* Route::get('PAAE_Periodo', 'PAAE_Periodo@index');
 Route::get('Hora', 'PAAE_Periodo@horario');
 Route::get('HoraAll', 'PAAE_Periodo@horarioAll');
@@ -439,8 +447,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     );
 
     // Buscar grupos por tutor
-    Route::get(
-        'grupos_tutoria/{id_tutor}',
+    Route::post(
+        'grupos_tutoria',
         'tutorias\SITGruposController@get_grupos'
     );
 
@@ -508,12 +516,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 /* *********************************************************** *
  * ************* RUTAS LIBRES DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
-// Buscar roles de tutorias
-Route::get(
-    'roles_tutorias/{id}',
-    'tutorias\SITUsuariosController@roles_tutorias'
-);
-
 //Generar pdf perfil individual de ingreso
 Route::get(
     'get_pdf_perfil_personal_ingreso',
