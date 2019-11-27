@@ -511,6 +511,18 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'guarda_coordinador',
         'tutorias\SITUsuariosController@guarda_coordinador'
     );
+
+    // Guardar coordinador de area academica
+    Route::post(
+        'get_datos_tutor',
+        'tutorias\SITUsuariosController@get_datos_tutor'
+    );
+
+    // Eliminar rol de coordinador de area academica
+    Route::post(
+        'elimina_rol_coordinador',
+        'tutorias\SITUsuariosController@elimina_rol_coordinador'
+    );
 });
 
 /* *********************************************************** *
@@ -527,6 +539,32 @@ Route::get(
     'get_pdf_perfil_grupal_ingreso',
     'tutorias\SITPdfController@get_pdf_perfil_grupal_ingreso'
 );
+
+/* *********************************************************** *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE ROLES Y USUARIOS *************** *
+ * *********************************************************** */
+Route::group(['middleware' => ['jwt.verify']], function () {
+    // Buscar usuarios
+    Route::post(
+        'buscar_usuarios',
+        'UsuariosController@buscar_usuarios'
+    );
+
+    // modifica correo principal de usuario por pk
+    Route::post(
+        'modifica_correo_usuario',
+        'UsuariosController@modifica_correo_usuario'
+    );
+});
+
+/* *********************************************************** *
+ * ************* RUTAS LIBRES DEL SISTEMA DE ROLES Y USUARIOS *************** *
+ * *********************************************************** */
+//Generar pdf perfil individual de ingreso
+/*Route::get(
+    'get_pdf_perfil_personal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+);*/
 
 
 
