@@ -60,6 +60,10 @@ class Constantes
         return (date('m') > 6) ? date('Y') . '2' : date('Y') . '1';
     }
 
+    public static function get_periodo_anio_mes($anio, $mes) {
+        return ($mes > 6) ? $anio.'2' : $anio.'1';
+    }
+
     /**
      * @return int
      */

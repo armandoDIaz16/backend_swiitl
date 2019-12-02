@@ -271,7 +271,6 @@ class SITEncuestaController extends Controller
             if ($aplicacion->FK_ENCUESTA == 1) {
                 // es la encuesta de ordenar
                 $cuestionario_completo = $this->get_cuestionario_resuelto($aplicacion->FK_ENCUESTA, $pk_aplicacion);
-                error_log($aplicacion->FK_ENCUESTA);
             } else {
                 $cuestionario_completo = [];
             }

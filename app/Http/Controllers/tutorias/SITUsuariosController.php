@@ -8,7 +8,6 @@ use App\Helpers\Constantes;
 use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
 use App\Rol;
-use App\User;
 use App\Usuario;
 use App\Usuario_Rol;
 use Illuminate\Http\Request;

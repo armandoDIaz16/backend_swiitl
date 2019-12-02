@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\tutorias;
 
+use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
 
 use App\Carrera;
@@ -9,12 +10,36 @@ use App\Helpers\Constantes;
 use App\Helpers\SiiaHelper;
 use App\Usuario;
 use Illuminate\Http\Request;
-use Monolog\Handler\IFTTTHandler;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class SITAlumnoController
+ * @package App\Http\Controllers\tutorias
+ */
 class SITAlumnoController extends Controller
 {
 
+    /**
+     * @param Request $request
+     */
+    public function get_seguimiento(Request $request) {
+        $alumno      = UsuariosHelper::get_usuario($request->pk_encriptada);
+        $seguimiento = NULL;
+        if ($alumno) {
+            $carrera = Carrera::where('PK_CARRERA', $alumno->FK_CARRERA)->first();
+            $seguimiento = SiiaHelper::get_seguimiento($alumno->NUMERO_CONTROL, $carrera->CLAVE_TECLEON);
+        }
+
+        return response()->json(
+            $seguimiento,
+            Response::HTTP_ACCEPTED
+        );
+    }
+
+    /**
+     * @param NULL $pk_usuario
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function get_alumno($pk_usuario = NULL) {
         if ($pk_usuario) {
             $usuario = Usuario::where('PK_USUARIO', $pk_usuario)->first();
@@ -30,6 +55,10 @@ class SITAlumnoController extends Controller
         }
     }
 
+    /**
+     * @param $id_usuario
+     * @return array|bool|\Illuminate\Http\JsonResponse
+     */
     public function get_horario($id_usuario) {
         //buscar numero de control
         $usuario = Usuario::where('PK_USUARIO', $id_usuario)->first();

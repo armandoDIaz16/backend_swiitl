@@ -523,6 +523,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'elimina_rol_coordinador',
         'tutorias\SITUsuariosController@elimina_rol_coordinador'
     );
+
+    // Buscar seguimiento por pk usuario encriptada
+    Route::post(
+        'get_seguimiento',
+        'tutorias\SITAlumnoController@get_seguimiento'
+    );
 });
 
 /* *********************************************************** *
