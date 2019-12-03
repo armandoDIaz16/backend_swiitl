@@ -5,24 +5,27 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Respuesta_Posible
+ * Class Rol
  * @package App
  */
-class Respuesta_Posible extends Model
+class Rol extends Model
 {
-    //
     /**
      * @var array
      */
     protected $fillable = [
-        'RESPUESTA',
-        'FK_PREGUNTA',
+        'FK_SISTEMA',
+        'NOMBRE',
+        'ABREVIATURA',
+        'ESTADO',
+
         'FK_USUARIO_REGISTRO',
         'FECHA_REGISTRO',
         'FK_USUARIO_MODIFICACION',
         'FECHA_MODIFICACION',
         'BORRADO'
     ];
+
     /**
      * @var bool
      */
@@ -31,10 +34,10 @@ class Respuesta_Posible extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'PK_RESPUESTA_POSIBLE';
+    protected $primaryKey = 'PK_ROL';
 
     /**
      * @var string
      */
-    protected $table = 'CAT_RESPUESTA_POSIBLE';
+    protected $table = 'PER_CAT_ROL';
 }

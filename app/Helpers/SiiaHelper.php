@@ -44,7 +44,7 @@ class SiiaHelper {
             AND IdPeriodoEscolar = " .$data['PERIODO']. "
             AND clavemateria     = '" .$data['CLAVE_MATERIA']. "' ;";
 
-        return SiiaHelper::procesa_consulta($sql, $multi_result);
+        return self::procesa_consulta($sql, $multi_result);
     }
 
     /**
@@ -76,7 +76,7 @@ class SiiaHelper {
                 and ClaveCarrera = '" .$data['CLAVE_CARRERA'] ."'
             and IdPeriodoEscolar = '" .$data['PERIODO'] ."' ;";
 
-        return SiiaHelper::procesa_consulta($sql, $multi_result);
+        return self::procesa_consulta($sql, $multi_result);
     }
 
     /**
@@ -122,7 +122,7 @@ class SiiaHelper {
         order by
             view_horarioalumno.Dia asc ; ";
 
-        return SiiaHelper::procesa_consulta($sql, $multi_result);
+        return self::procesa_consulta($sql, $multi_result);
     }
 
     /**
@@ -153,7 +153,88 @@ class SiiaHelper {
                     AND clavegrupo = " .$data['CLAVE_GRUPO']. "
             ); ";
 
-        return SiiaHelper::procesa_consulta($sql, $multi_result);
+        return self::procesa_consulta($sql, $multi_result);
+    }
+
+    public static function get_seguimiento($numero_control, $clave_carrera, $multi_result = true) {
+        $sql = "
+            SELECT
+                view_seguimiento.ClaveMateria AS CLAVE_MATERIA,
+                Nombre as NOMBRE_MATERIA,
+                CASE
+                    WHEN IdNivelCurso = 'CO'  THEN 'Curso ordinario'
+                    WHEN IdNivelCurso = 'CR'  THEN 'Curso de repetición'
+                    WHEN IdNivelCurso = 'CE'  THEN 'Curso especial'
+                    WHEN IdNivelCurso = 'CE2' THEN 'Otro'
+                    WHEN IdNivelCurso = '00'  THEN 'Otro'
+                    WHEN IdNivelCurso = 'CN'  THEN 'Otro'
+                    WHEN IdNivelCurso = 'CV'  THEN 'Otro'
+                    WHEN IdNivelCurso = 'EE1' THEN 'Otro'
+                    WHEN IdNivelCurso = 'EE2' THEN 'Otro'
+                    WHEN IdNivelCurso = 'EQ'  THEN 'Otro'
+                    WHEN IdNivelCurso = 'REP' THEN 'Otro'
+                END AS TIPO_CURSO,
+                CALIFICACION,
+                CASE
+                    WHEN FechaPrimera = '1900-01-01 00:00:00' THEN NULL
+                    WHEN FechaPrimera != '1900-01-01 00:00:00' THEN FechaPrimera
+                END AS FECHA_PRIMERA,
+                CASE
+                    WHEN FechaSegunda = '1900-01-01 00:00:00' THEN NULL
+                    WHEN FechaSegunda != '1900-01-01 00:00:00' THEN FechaSegunda
+                END AS FECHA_SEGUNDA,
+                CASE
+                    WHEN FechaTercera = '1900-01-01 00:00:00' THEN NULL
+                    WHEN FechaTercera != '1900-01-01 00:00:00' THEN FechaTercera
+                END AS FECHA_TERCERA
+            FROM
+                dbo.view_seguimiento
+                LEFT JOIN dbo.view_reticula 
+                    ON view_reticula.ClaveMateria = view_seguimiento.ClaveMateria
+            WHERE
+                view_seguimiento.NumeroControl = '".$numero_control."'
+                and ClaveCarrera = '".$clave_carrera."'
+            ORDER BY
+                view_seguimiento.FechaPrimera ASC,
+                view_seguimiento.FechaSegunda ASC,
+                view_seguimiento.FechaTercera ASC,
+                NOMBRE_MATERIA ASC
+            ;";
+
+        $seguimiento = self::procesa_consulta($sql, $multi_result);
+        if ($seguimiento) {
+            foreach ($seguimiento as $materia) {
+                if ($materia->FECHA_PRIMERA) {
+                    $materia->FECHA_PRIMERA = trim($materia->FECHA_PRIMERA);
+                    $materia->FECHA_PRIMERA = explode(' ', $materia->FECHA_PRIMERA)[0];
+
+                    $array = explode('-', $materia->FECHA_PRIMERA);
+                    $materia->PERIODO_TEXTO = Constantes::get_periodo_texto(
+                        Constantes::get_periodo_anio_mes($array[0], $array[1])
+                    );
+                }
+                if ($materia->FECHA_SEGUNDA) {
+                    $materia->FECHA_SEGUNDA = trim($materia->FECHA_SEGUNDA);
+                    $materia->FECHA_SEGUNDA = explode(' ', $materia->FECHA_SEGUNDA)[0];
+
+                    $array = explode('-', $materia->FECHA_SEGUNDA);
+                    $materia->PERIODO_TEXTO = Constantes::get_periodo_texto(
+                        Constantes::get_periodo_anio_mes($array[0], $array[1])
+                    );
+                }
+                if ($materia->FECHA_TERCERA) {
+                    $materia->FECHA_TERCERA = trim($materia->FECHA_TERCERA);
+                    $materia->FECHA_TERCERA = explode(' ', $materia->FECHA_TERCERA)[0];
+
+                    $array = explode('-', $materia->FECHA_TERCERA);
+                    $materia->PERIODO_TEXTO = Constantes::get_periodo_texto(
+                        Constantes::get_periodo_anio_mes($array[0], $array[1])
+                    );
+                }
+            }
+        }
+
+        return $seguimiento;
     }
 
     /**
@@ -163,7 +244,7 @@ class SiiaHelper {
      * @return array|bool
      */
     private static function procesa_consulta($sql, $multi_result) {
-        $result = DB::connection(SiiaHelper::$connnection)->select($sql);
+        $result = DB::connection(self::$connnection)->select($sql);
 
         if ($result) {
             if ($multi_result) {

@@ -44,15 +44,16 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 });
 /* FIN RUTAS GENERALES */
 
+
+/* INICIO RUTAS PARA COMPLETAR PERFIL */
 Route::group(['middleware' => ['jwt.verify']], function () {
-    /* INICIO RUTAS PARA COMPLETAR PERFIL */
     // OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
-    Route::get('perfil/{id_usuario}', 'PerfilController@get_perfil');
+    Route::post('perfil', 'PerfilController@get_perfil');
 
     // GUARDAR DATOS PARA COMPLETAR PERFIL
     Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
-    /* FIN RUTAS PARA COMPLETAR PERFIL */
 });
+/* FIN RUTAS PARA COMPLETAR PERFIL */
 
 
 Route::get('leer_archivo', 'AspiranteController@leer_archivo');
@@ -81,8 +82,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+// Buscar roles para menú
 Route::resource('Usuario_Rol', 'Usuario_RolController');
+
+// Buscar roles por usuario
+Route::post(
+    'roles_usuario',
+    'Usuario_RolController@roles_usuario'
+);
+
 /* Route::get('PAAE_Periodo', 'PAAE_Periodo@index');
 Route::get('Hora', 'PAAE_Periodo@horario');
 Route::get('HoraAll', 'PAAE_Periodo@horarioAll');
@@ -440,8 +448,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     );
 
     // Buscar grupos por tutor
-    Route::get(
-        'grupos_tutoria/{id_tutor}',
+    Route::post(
+        'grupos_tutoria',
         'tutorias\SITGruposController@get_grupos'
     );
 
@@ -474,6 +482,54 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'get_reporte_encuesta/{pk_aplicacion}',
         'tutorias\SITEncuestaReporteController@get_reporte_encuesta'
     );
+
+    // Buscar coordinadores departamentales
+    Route::get(
+        'coordinadores_departamentales',
+        'tutorias\SITUsuariosController@get_coordinadores_departamentales'
+    );
+
+    // Buscar areas academicas
+    Route::get(
+        'area_academica',
+        'AreaAcademicaController@get_area_academica'
+    );
+
+    // Buscar usuarios docentes - administrativos
+    Route::post(
+        'coordinador_departamental',
+        'tutorias\SITUsuariosController@coordinador_departamental'
+    );
+
+    // Buscar usuarios docentes - administrativos
+    Route::post(
+        'get_usuarios_docentes',
+        'tutorias\SITUsuariosController@get_usuarios_docentes'
+    );
+
+    // Guardar coordinador de area academica
+    Route::post(
+        'guarda_coordinador',
+        'tutorias\SITUsuariosController@guarda_coordinador'
+    );
+
+    // Guardar coordinador de area academica
+    Route::post(
+        'get_datos_tutor',
+        'tutorias\SITUsuariosController@get_datos_tutor'
+    );
+
+    // Eliminar rol de coordinador de area academica
+    Route::post(
+        'elimina_rol_coordinador',
+        'tutorias\SITUsuariosController@elimina_rol_coordinador'
+    );
+
+    // Buscar seguimiento por pk usuario encriptada
+    Route::post(
+        'get_seguimiento',
+        'tutorias\SITAlumnoController@get_seguimiento'
+    );
 });
 
 /* *********************************************************** *
@@ -490,6 +546,32 @@ Route::get(
     'get_pdf_perfil_grupal_ingreso',
     'tutorias\SITPdfController@get_pdf_perfil_grupal_ingreso'
 );
+
+/* *********************************************************** *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE ROLES Y USUARIOS *************** *
+ * *********************************************************** */
+Route::group(['middleware' => ['jwt.verify']], function () {
+    // Buscar usuarios
+    Route::post(
+        'buscar_usuarios',
+        'UsuariosController@buscar_usuarios'
+    );
+
+    // modifica correo principal de usuario por pk
+    Route::post(
+        'modifica_correo_usuario',
+        'UsuariosController@modifica_correo_usuario'
+    );
+});
+
+/* *********************************************************** *
+ * ************* RUTAS LIBRES DEL SISTEMA DE ROLES Y USUARIOS *************** *
+ * *********************************************************** */
+//Generar pdf perfil individual de ingreso
+/*Route::get(
+    'get_pdf_perfil_personal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+);*/
 
 
 

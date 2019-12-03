@@ -67,10 +67,7 @@ class EncuestaController extends Controller
         $encuesta_id = $request->id_encuesta;
 
         $array_secciones = array();
-        error_log(print_r($request->id_encuesta, true));
-
         $array_preguntas = array();
-        error_log(print_r("", true));
 
         $encuesta = Encuesta::where('PK_ENCUESTA', $encuesta_id)
             ->select('PK_ENCUESTA','NOMBRE','CAT_ENCUESTA.OBJETIVO','CAT_ENCUESTA.INSTRUCCIONES')

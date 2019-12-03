@@ -27,6 +27,12 @@
         <br><br><br>
         Posteriormente captura el código: <b><u>{{$clave}}</u></b> y escribe una nueva contraseña.
         <br><br><br>
+        Este enlace para obtención de contraseña solo es válido el día de su generación.
+        <br>
+        En caso de requerir otro, ingresa a <a href="http://tecvirtual.itleon.edu.mx/#/request-password-reset">
+            http://tecvirtual.itleon.edu.mx/#/request-password-reset
+        </a>.
+        <br><br><br>
     </p>
     <br>
 </body>

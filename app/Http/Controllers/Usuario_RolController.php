@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\CoordinadorDepartamentalTutoria;
+use App\GrupoTutorias;
+use App\Helpers\Constantes;
+use App\Rol;
 use App\User;
 use App\Usuario_Rol;
 use Illuminate\Http\Request;
@@ -115,7 +119,7 @@ class Usuario_RolController extends Controller
     {
         //
     }
-    private function get_roles_usuario($id,$PK_SISTEMA){        
+    private function get_roles_usuario($id,$PK_SISTEMA){
         $usuario = user::where('PK_USUARIO', $id)->select('PK_USUARIO', 'NOMBRE')->get()[0];
         $roles = DB::table('PER_TR_ROL_USUARIO')
             ->join('PER_CAT_ROL', 'PER_CAT_ROL.PK_ROL', '=', 'PER_TR_ROL_USUARIO.FK_ROL')
@@ -125,7 +129,7 @@ class Usuario_RolController extends Controller
                 ['FK_SISTEMA',$PK_SISTEMA]]
                 )
             ->get();
-            
+
         $array_roles = array();
         foreach($roles as $rol){
 
@@ -133,13 +137,14 @@ class Usuario_RolController extends Controller
                 ->join('PER_CAT_MODULO', 'PER_CAT_MODULO.PK_MODULO', '=', 'PER_TR_ROL_MODULO.FK_MODULO')
                 ->select('PER_CAT_MODULO.PK_MODULO', 'PER_CAT_MODULO.NOMBRE')
                 ->where('FK_ROL', $rol->PK_ROL)
+                ->orderBy('ORDEN', 'ASC')
                 ->get();
 
                 $array_modulos = array();
                 foreach($modulos as $modulo){
                     $acciones = DB::table('PER_CAT_ACCION')
                     ->join('PER_TR_ROL_MODULO', 'PER_TR_ROL_MODULO.FK_MODULO', '=', 'PER_CAT_ACCION.FK_MODULO')
-                    ->select('PER_CAT_ACCION.PK_ACCION', 'PER_CAT_ACCION.NOMBRE')                    
+                    ->select('PER_CAT_ACCION.PK_ACCION', 'PER_CAT_ACCION.NOMBRE')
                     ->where([
                         ['FK_ROL',  $rol->PK_ROL],
                         ['PER_CAT_ACCION.FK_MODULO',  $modulo->PK_MODULO]
@@ -160,10 +165,121 @@ class Usuario_RolController extends Controller
                 }
             $array_roles[] = array(
                 'PK_ROL' => $rol->PK_ROL,
-                'NOMBRE' => $rol->NOMBRE,            
+                'NOMBRE' => $rol->NOMBRE,
                 'MODULOS'    => $array_modulos
             );
         }
         return $array_roles;
+    }
+
+    public function roles_usuario(Request $request) {
+        $roles = [];
+        $usuario = User::where('PK_USUARIO', $request->pk_usuario)->first();
+        if ($usuario) {
+            $roles['pk_encriptada']  = $usuario->PK_ENCRIPTADA;
+            $roles['tipo_usuario']   = $usuario->TIPO_USUARIO;
+            $roles['nombre_usuario'] =
+                $usuario->NOMBRE
+                .' '. $usuario->PRIMER_APELLIDO
+                .' '. $usuario->SEGUNDO_APELLIDO;
+            $roles['numero_control'] = $usuario->NUMERO_CONTROL;
+
+            $roles['tutorias']       = $this->get_roles_tutorias($usuario->PK_USUARIO);
+        }
+
+        return $roles;
+    }
+
+    public function get_roles_tutorias($pk_usuario) {
+        if ($pk_usuario){
+            $roles = [
+                'administrador'       => false,
+                'coord_institucional' => false,
+
+                'coord_departamental' => false,
+                'departamentos'       => [],
+
+                'coord_investigacion' => false,
+
+                'tutor'               => false,
+                'pk_grupo'            => false
+            ];
+
+            // verificar si es administrador
+            $rol = Rol::where('ABREVIATURA', 'ADM_TUT')->first();
+            if ($rol) {
+                $rol_usuario = Usuario_Rol::where('FK_USUARIO', $pk_usuario)
+                    ->where('FK_ROL', $rol->PK_ROL)
+                    ->first();
+                if ($rol_usuario){
+                    $roles['administrador'] = true;
+                }
+            }
+
+            // verificar si es coordinador institucional
+            $rol = Rol::where('ABREVIATURA', 'COORI_TUT')->first();
+            if ($rol) {
+                $rol_usuario = Usuario_Rol::where('FK_USUARIO', $pk_usuario)
+                    ->where('FK_ROL', $rol->PK_ROL)
+                    ->first();
+                if ($rol_usuario){
+                    $roles['coord_institucional'] = true;
+                }
+            }
+
+            // verificar si es coordinador departamental
+            $rol = Rol::where('ABREVIATURA', 'COORD_TUT')->first();
+            if ($rol) {
+                $rol_usuario = Usuario_Rol::where('FK_USUARIO', $pk_usuario)
+                    ->where('FK_ROL', $rol->PK_ROL)
+                    ->first();
+                if ($rol_usuario){
+                    $departamentos_array = CoordinadorDepartamentalTutoria::where('FK_USUARIO', $pk_usuario)
+                        ->where('ESTADO', Constantes::ESTADO_ACTIVO)
+                        ->get();
+                    $departamentos_temp = [];
+
+                    foreach ($departamentos_array as $item){
+                        $departamentos_temp[] = $item->FK_AREA_ACADEMICA;
+                    }
+
+                    $roles['coord_departamental'] = true;
+                    $roles['departamentos']       = $departamentos_temp;
+                }
+            }
+
+            // verificar si es coordinador de investigación educativa
+            $rol = Rol::where('ABREVIATURA', 'COORIE_TUT')->first();
+            if ($rol) {
+                $rol_usuario = Usuario_Rol::where('FK_USUARIO', $pk_usuario)
+                    ->where('FK_ROL', $rol->PK_ROL)
+                    ->first();
+                if ($rol_usuario){
+                    $roles['coord_investigacion'] = true;
+                }
+            }
+
+            // verificar si es tutor
+            $rol = Rol::where('ABREVIATURA', 'TUT_TUT')->first();
+            if ($rol) {
+                $rol_usuario = Usuario_Rol::where('FK_USUARIO', $pk_usuario)
+                    ->where('FK_ROL', $rol->PK_ROL)
+                    ->first();
+                if ($rol_usuario){
+                    $grupo_tutoria = GrupoTutorias::where('FK_USUARIO', $pk_usuario)
+                        ->where('PERIODO', Constantes::get_periodo())
+                        ->first();
+                    if ($grupo_tutoria) {
+                        $roles['pk_grupo'] = $grupo_tutoria->PK_GRUPO_TUTORIA;
+                    }
+
+                    $roles['tutor'] = true;
+                }
+            }
+
+            return $roles;
+        } else {
+            return null;
+        }
     }
 }

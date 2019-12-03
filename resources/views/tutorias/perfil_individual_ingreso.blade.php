@@ -9,8 +9,12 @@
             background-color: rgb(178, 179, 179);
         }
 
-        p > *, p{
+        p > *, p {
             font-size: .8em;
+        }
+
+        .p1 {
+            font-size: 1em;
         }
 
         .bold {
@@ -22,18 +26,6 @@
 
 <!-- INICIO ESTILOS ENCABEZADO -->
 <htmlpageheader name="MyHeader1">
-    <div>
-        <table width="100%">
-            <tr>
-                <td width="50%" align="left">
-                    <img src="{{public_path('img/comun/sep_marca_agua.png')}}" alt="">
-                </td>
-                <td width="50%" align="right">
-                    <img src="{{public_path('img/comun/tecnm_itl_gris_marca_agua.png')}}" alt="">
-                </td>
-            </tr>
-        </table>
-    </div>
 </htmlpageheader>
 <!-- FIN ESTILOS ENCABEZADO -->
 
@@ -57,8 +49,20 @@
 <!-- FIJAR FOOTER -->
 <sethtmlpagefooter name="MyFooter1" value="on" />
 
-<div style="padding-top: 80px; page-break: auto;">
-    <p align="center"><b>PERFIL PERSONAL DE INGRESO</b></p>
+<div>
+    <table width="100%">
+        <tr>
+            <td width="50%" align="left">
+                <img src="{{public_path('img/comun/sep_marca_agua.png')}}" alt="">
+            </td>
+            <td width="50%" align="right">
+                <img src="{{public_path('img/comun/tecnm_itl_gris_marca_agua.png')}}" alt="">
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <p class="p1 bold" align="center">PERFIL PERSONAL DE INGRESO</p>
     <table width="100%" border="1" cellpadding="7px" cellspacing="0" bordercolor="#000000">
         <tr>
             <td class="gris" colspan="4" align="center">
@@ -71,7 +75,7 @@
             </td>
             <td valign="middle" align="left" colspan="2">
                 <p class="bold">
-                    PERIODO: <u>{{\App\Helpers\Constantes::get_periodo_texto()}}</u>
+                    PERIODO: <u>{{$data['periodo']}}</u>
                 </p>
                 <p class="bold">
                     FECHA DE CONSULTA: <u>{{date('j-m-Y')}}</u>
@@ -84,11 +88,14 @@
             </td>
         </tr>
         <tr>
-            <td>
-                <p class="bold">NOMBRE:</p>
+            <td colspan="2">
+                <p class="bold">NOMBRE: <u>{{$data['alumno']}}</u></p>
+                <p class="bold">NO.CONTROL: <u>{{$data['numero_control']}}</u></p>
+                <p class="bold">SEMESTRE: <u>{{$data['semestre']}}</u></p>
             </td>
-            <td colspan="3">
-                <p class="bold">SEMESTRE:__ CARRERA:__ GRUPO:__ No.CONTROL:__</p>
+            <td colspan="2">
+                <p class="bold">CARRERA: {{$data['carrera']}}</p>
+                <p class="bold">GRUPO: {{$data['grupo']}}</p>
             </td>
         </tr>
         <tr>
@@ -98,11 +105,11 @@
                 </p>
             </td>
             <td colspan="3">
-                <p>
-                    Nombre: Parentesco/Relación:
+                <p class="bold">
+                    Nombre (Parentesco/Relación): <u>{{$data['nombre_contacto']}} ({{$data['parentesco_contacto']}})</u>
                 </p>
-                <p>
-                    Tel./Cel. Correo electrónico
+                <p class="bold">
+                    Tel./Cel: <u>{{$data['telefono_contacto']}}</u>, Correo electrónico: <u>{{$data['correo_contacto']}}</u>
                 </p>
             </td>
         </tr>
@@ -117,13 +124,17 @@
             </td>
             <td colspan="3">
                 <p>
-                    Fecha de nacimiento__ Edad__ Edo. Civil_________ Colonia donde vive__
-                </p>
-                <p>
-                    Correo electrónico_____________________________
-                </p>
-                <p>
-                    Celular_____ Tel.fijo_____
+                    <b>Fecha de nacimiento:</b> <u>{{$data['fecha_nacimiento']}} ({{$data['edad']}} años)</u>
+                    <br>
+                    <b>Edo. Civil:</b> <u>{{$data['estado_civil']}}</u>
+                    <br>
+                    <b>Colonia donde vive:</b> <u>{{$data['condicion_socioeconomica']['colonia']}}</u>
+                    <br>
+                    <b>Correo electrónico:</b> <u>{{$data['correo']}}</u>
+                    <br>
+                    <b>Celular:</b> <u>{{$data['telefono_movil']}}</u>
+                    <br>
+                    <b>Tel. fijo:</b> <u>{{$data['telefono_fijo']}}</u>
                 </p>
             </td>
         </tr>
@@ -133,14 +144,19 @@
             </td>
             <td colspan="3">
                 <p>
-                    Tipo de escuela___ Modalidad_________ Área/especialidad de prepa___
-                </p>
-                <p>
-                    Promedio de preparatoria_____ Materias con dificultad____ _____ _____
-                </p>
-                <p>
-                    Tecnológico de León fue primera opción: <u>si</u> <u>no</u>
-                    La carrera fue su primera opción <u>sí</u> <u>no</u>
+                    <b>Tipo de escuela:</b> <u>{{$data['condicion_academica']['tipo_escuela']}}</u>
+                    <br>
+                    <b>Modalidad:</b> <u>{{$data['condicion_academica']['modalidad']}}</u>
+                    <br>
+                    <b>Área/especialidad de preparatoria:</b> <u>{{$data['condicion_academica']['especialidad']}}</u>
+                    <br>
+                    <b>Promedio de preparatoria:</b> <u>{{$data['condicion_academica']['promedio']}}</u>
+                    <br>
+                    <b>Materias con dificultad:</b> <u>{{$data['condicion_academica']['materias_dificultad']}}</u>
+                    <br>
+                    <b>Tecnológico de León fue primera opción:</b> <u>{{$data['condicion_academica']['itl_primera_opcion']}}</u>
+                    <br>
+                    <b>La carrera fue su primera opción:</b> <u>{{$data['condicion_academica']['carrera_primera_opcion']}}</u>
                 </p>
             </td>
         </tr>
@@ -150,13 +166,18 @@
             </td>
             <td colspan="3">
                 <p>
-                    Nivel Socioeconómico_____ explicación del nivel____________
-                </p>
-                <p>
-                    ¿Con quién vive?_____ ¿Trabaja? sí no ¿Quién aporta $ para sus estudios?_____
-                </p>
-                <p>
-                    Escolaridad del padre_________ Escolaridad de la madre_________
+                    <b>Nivel Socioeconómico:</b> <u>{{$data['condicion_socioeconomica']['nivel_socioeconomico']}}</u>
+                    <!-- explicación del nivel____________ -->
+                    <br>
+                    <b>¿Con quién vive?</b> <u>{{$data['condicion_socioeconomica']['con_quien_vive']}}</u>
+                    <br>
+                    <b>¿Trabaja?</b> <u>{{$data['condicion_socioeconomica']['trabaja']}}</u>
+                    <br>
+                    <b>¿Quién aporta $ para sus estudios?</b> <u>{{$data['condicion_socioeconomica']['aporte_dinero']}}</u>
+                    <br>
+                    <b>Escolaridad del padre:</b> <u>{{$data['condicion_socioeconomica']['escolaridad_padre']}}</u>
+                    <br>
+                    <b>Escolaridad de la madre:</b> <u>{{$data['condicion_socioeconomica']['escolaridad_madre']}}</u>
                 </p>
             </td>
         </tr>
@@ -166,39 +187,60 @@
             </td>
             <td colspan="3">
                 <p>
-                    Tipo de familia_________ No. de hermanos_________ Lugar entre hermanos_________
-                </p>
-                <p>
-                    Condición familiar en aspectos excelentes_____ _____ _____ _____
-                </p>
-                <p>
-                    Condición familiar en aspectos deficientes____ _____ _____ _____
+                    <b>Tipo de familia:</b> <u>{{$data['condicion_familiar']['tipo_familia']}}</u>
+                    <br>
+                    <b>No. de hermanos:</b> <u>{{$data['condicion_familiar']['numero_hermanos']}}</u>
+                    <br>
+                    <b>Lugar entre hermanos:</b> <u>{{$data['condicion_familiar']['lugar_entre_hermanos']}}</u>
+                    <br>
+                    <b>Condición familiar en aspectos excelentes:</b> <u>{{$data['condicion_familiar']['aspectos_excelentes']}}</u>
+                    <br>
+                    <b>Condición familiar en aspectos deficientes:</b> <u>{{$data['condicion_familiar']['aspectos_deficientes']}}</u>
                 </p>
 
                 <br>
-                <p class="bold">FACE 20 ESP</p>
 
+                <p class="bold">FACE 20 ESP</p>
                 <p>
-                    Nivel de cohesión_____ Tipo de familia por cohesión_____ y expliación_____
-                </p>
-                <p>
-                    Nivel de adaptabilidad_____ &nbsp; Tipo de familia por adaptabilidad_____ y expliación_____
-                </p>
-                <p>
-                    Nivel de funcionamiento_____ y expliación_____
+                    <br>
+                    <b>Nivel de cohesión:</b> <u>{{$data['condicion_familiar']['nivel_cohesion']}}</u>
+                    <br>
+                    <b>Tipo de familia por cohesión:</b> <u>{{$data['condicion_familiar']['familia_cohesion']}}</u>
+                    <br>
+                    <b>Expliación:</b> <u>{{$data['condicion_familiar']['explicacion_cohesion']}}</u>
+                    <br>
+                    <br>
+                    <b>Nivel de adaptabilidad:</b> <u>{{$data['condicion_familiar']['nivel_adaptabilidad']}}</u>
+                    <br>
+                    <b>Tipo de familia por adaptabilidad:</b> <u>{{$data['condicion_familiar']['familia_adaptabilidad']}}</u>
+                    <br>
+                    <b>Expliación:</b> <u>{{$data['condicion_familiar']['explicacion_adaptabilidad']}}</u>
+                    <br>
+                    <br>
+                    <b>Nivel de funcionamiento:</b> <u>{{$data['condicion_familiar']['nivel_funcionamiento']}}</u>
+                    <br>
+                    <b>Expliación:</b> <u>{{$data['condicion_familiar']['explicacion_funcionamiento']}}</u>
                 </p>
             </td>
         </tr>
         <tr>
             <td>
-                <b class="bold">Pasatiempos</b>
+                <p class="bold">Pasatiempos</p>
             </td>
             <td colspan="3">
                 <p>
-                    Mencionar las actividades que más realiza en su tiempo libre (las que número como 1,2,3)
-                </p>
-                <p>
-                    Mencionar las actividades que menos hace en su tiempo libre (las que número como 13, 14, 15)
+                    <b>Actividades que más realiza en su tiempo libre:</b>
+                    <ol>
+                        <li>{{ $data['pasatiempos']['mas_realiza_1']}}</li>
+                        <li>{{ $data['pasatiempos']['mas_realiza_2']}}</li>
+                        <li>{{ $data['pasatiempos']['mas_realiza_3']}}</li>
+                    </ol>
+                    <b>Actividades que menos hace en su tiempo libre:</b>
+                    <ol>
+                        <li>{{ $data['pasatiempos']['menos_realiza_3']}}</li>
+                        <li>{{ $data['pasatiempos']['menos_realiza_2']}}</li>
+                        <li>{{ $data['pasatiempos']['menos_realiza_1']}}</li>
+                    </ol>
                 </p>
             </td>
         </tr>
@@ -208,16 +250,22 @@
             </td>
             <td colspan="3">
                 <p>
-                    En general ¿Cómo calificas tu salud física?_____
-                </p>
-                <p>
-                    Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ
-                </p>
-                <p>
-                    Evaluación de habilidades: Mencionar 16-28 sólo si su respuesta es "Mala" Y "Excelente"
-                </p>
-                <p>
-                    La mayor parte del tiempo me siento: Triste &nbsp; Alegre &nbsp; Ansioso &nbsp; Tranquilo
+                    <b>En general ¿Cómo calificas tu salud física?</b> <u>{{ $data['salud']['estado_salud']}}</u>
+                    <br>
+                    {{--Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ
+                    <br>--}}
+                    <b>Evaluación de habilidades:</b>
+                    <ul>
+                        @foreach($data['salud']['habilidades'] as $habilidad)
+                            <li>
+                                {{$habilidad['PLANTEAMIENTO']}}
+                                <br>
+                                <u>{{$habilidad['RESPUESTA']}}</u>
+                            </li>
+                        @endforeach
+                    </ul>
+                    <br>
+                    <b>La mayor parte del tiempo me siento:</b> <u>{{ $data['salud']['estado_animo']}}</u>
                 </p>
             </td>
         </tr>
@@ -227,10 +275,19 @@
             </td>
             <td colspan="3">
                 <p>
-                    Mencionar puntos fuertes. Son aquellos aspectos con puntuación igual o mayor a 70
-                </p>
-                <p>
-                    Mencionar puntos débiles. Son aquellos aspectos con puntuación menor a 70
+                    <b>Puntos fuertes.</b>
+                    <ol>
+                        @foreach($data['habitos_estudio']['puntos_fuertes'] as $punto_fuerte)
+                            <li>{{$punto_fuerte}}</li>
+                        @endforeach
+                    </ol>
+                    <br>
+                    <b>Puntos débiles.</b>
+                    <ol>
+                        @foreach($data['habitos_estudio']['puntos_debiles'] as $punto_debil)
+                            <li>{{$punto_debil}}</li>
+                        @endforeach
+                    </ol>
                 </p>
             </td>
         </tr>
