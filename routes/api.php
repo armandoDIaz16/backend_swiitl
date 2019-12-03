@@ -367,6 +367,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
     Route::get('ListaGrupo', 'GrupoController@listaGrupos');
     Route::get('ListasGrupos/{PK_PERIODO}', 'GrupoController@datosListas');
+    Route::get('ListasGruposIngles/{PK_PERIODO}', 'GrupoController@datosListasIngles');
     Route::get('Espacio2/{PK_PERIODO}', 'LugarExamenController@obtenerEspacio');
     Route::get('Turno/{PK_PERIODO}', 'LugarExamenController@obtenerTurno');
     Route::get('Turno2/{PK_PERIODO}', 'LugarExamenController@obtenerTurno2');

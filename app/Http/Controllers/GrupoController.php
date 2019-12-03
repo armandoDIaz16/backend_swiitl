@@ -82,8 +82,9 @@ class GrupoController extends Controller
 
         if ($TIPO_APLICACION == 1) {
             $grupos = DB::table('CATR_EXAMEN_ADMISION as CEA')
-                ->select(DB::raw("ROW_NUMBER() OVER(ORDER BY CEA.PK_EXAMEN_ADMISION ASC) AS NUMERO_GRUPO,CEA.PK_EXAMEN_ADMISION, CONCAT (CE.NOMBRE, ' ' , CT.DIA, ' ', CT.HORA) as GRUPO"))
+                ->select(DB::raw("ROW_NUMBER() OVER(ORDER BY CEA.PK_EXAMEN_ADMISION ASC) AS NUMERO_GRUPO,CEA.PK_EXAMEN_ADMISION,CONCAT ('Edificio:(' ,CED.PREFIJO, ' - ',CE.NOMBRE, ')     Turno:',CT.DIA, ' ', CT.HORA) as GRUPO"))
                 ->join('CATR_ESPACIO as CE', 'CEA.FK_ESPACIO', '=', 'CE.PK_ESPACIO')
+                ->join('CATR_EDIFICIO AS CED', 'CE.FK_EDIFICIO', '=', 'CED.PK_EDIFICIO')
                 ->join('CAT_TURNO as CT', 'CEA.FK_TURNO', '=', 'CT.PK_TURNO')
                 ->where('CT.FK_PERIODO', $FK_PERIODO)
                 ->orderBy('CEA.PK_EXAMEN_ADMISION')
@@ -114,6 +115,28 @@ class GrupoController extends Controller
                     'ASPIRANTES'      => $this->get_aspirantesEscrito($grupo->PK_EXAMEN_ADMISION_ESCRITO)
                 );
             }
+        }
+        return $array_grupos;
+    }
+
+    public function datosListasIngles($FK_PERIODO)
+    {
+        $grupos = DB::table('CATR_EXAMEN_ADMISION_INGLES as CEAI')
+            ->select(DB::raw("ROW_NUMBER() OVER(ORDER BY CEAI.PK_EXAMEN_ADMISION_INGLES ASC) AS NUMERO_GRUPO,CEAI.PK_EXAMEN_ADMISION_INGLES, CONCAT ('Edificio:(' ,CED.PREFIJO, ' - ',CEI.NOMBRE, ')     Turno:',CTI.DIA, ' ', CTI.HORA) as GRUPO"))
+            ->join('CATR_ESPACIO_INGLES as CEI', 'CEAI.FK_ESPACIO_INGLES', '=', 'CEI.PK_ESPACIO_INGLES')
+            ->join('CATR_EDIFICIO AS CED', 'CEI.FK_EDIFICIO', '=', 'CED.PK_EDIFICIO')
+            ->join('CAT_TURNO_INGLES as CTI', 'CEAI.FK_TURNO_INGLES', '=', 'CTI.PK_TURNO_INGLES')
+            ->where('CTI.FK_PERIODO', $FK_PERIODO)
+            ->orderBy('CEAI.PK_EXAMEN_ADMISION_INGLES')
+            ->get();
+
+        $array_grupos = [];
+        foreach ($grupos as $grupo) {
+            $array_grupos[] = array(
+                'NUMERO_GRUPO' => $grupo->NUMERO_GRUPO,
+                'GRUPO'     => $grupo->GRUPO,
+                'ASPIRANTES'      => $this->get_aspirantes($grupo->PK_EXAMEN_ADMISION_INGLES)
+            );
         }
         return $array_grupos;
     }
