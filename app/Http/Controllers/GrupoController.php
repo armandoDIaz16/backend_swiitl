@@ -135,7 +135,7 @@ class GrupoController extends Controller
             $array_grupos[] = array(
                 'NUMERO_GRUPO' => $grupo->NUMERO_GRUPO,
                 'GRUPO'     => $grupo->GRUPO,
-                'ASPIRANTES'      => $this->get_aspirantes($grupo->PK_EXAMEN_ADMISION_INGLES)
+                'ASPIRANTES'      => $this->get_aspirantesIngles($grupo->PK_EXAMEN_ADMISION_INGLES)
             );
         }
         return $array_grupos;
@@ -157,6 +157,16 @@ class GrupoController extends Controller
             ->select(DB::raw("PREFICHA, CONCAT(NOMBRE,' ',PRIMER_APELLIDO,' ',SEGUNDO_APELLIDO) as NOMBRE, CASE WHEN FK_ESTATUS = 5 THEN 1 ELSE 0 END AS ASISTENCIA"))
             ->join('CAT_USUARIO as CU', 'CA.FK_PADRE', '=', 'CU.PK_USUARIO')
             ->where('FK_EXAMEN_ADMISION_ESCRITO', $PK_EXAMEN_ADMISION_ESCRITO)
+            ->get();
+
+        return $aspirantes;
+    }
+    private function get_aspirantesIngles($PK_EXAMEN_INGLES)
+    {
+        $aspirantes = DB::table('CAT_ASPIRANTE as CA')
+            ->select(DB::raw("PREFICHA, CONCAT(NOMBRE,' ',PRIMER_APELLIDO,' ',SEGUNDO_APELLIDO) as NOMBRE, CASE WHEN FK_ESTATUS = 5 THEN 1 ELSE 0 END AS ASISTENCIA"))
+            ->join('CAT_USUARIO as CU', 'CA.FK_PADRE', '=', 'CU.PK_USUARIO')
+            ->where('FK_EXAMEN_INGLES', $PK_EXAMEN_INGLES)
             ->get();
 
         return $aspirantes;
