@@ -117,6 +117,11 @@ class SITGruposController extends Controller
                 $grupos_carrera = [];
                 foreach ($carreras as $carrera) {
                     $grupos = [];
+                    $grupos_tutor = GrupoTutorias::where('PERIODO', Constantes::get_periodo())
+                        ->whereRaw("FK_CARRERA IN ($carrera->PK_CARRERA)")
+                        ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL)
+                        ->get();
+                    
                     foreach ($grupos_tutor as $grupo) {
                         $condiciones_siia = [
                             'CLAVE_GRUPO'   => $grupo->CLAVE,
