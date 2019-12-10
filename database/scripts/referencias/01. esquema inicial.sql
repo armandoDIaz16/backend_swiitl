@@ -83,7 +83,7 @@ ALTER TABLE TR_REFERENCIA
 DROP TABLE IF EXISTS TR_REFERENCIA_DOCUMENTO;
 CREATE TABLE TR_REFERENCIA_DOCUMENTO
 (
-    PK_DOCUMENTO     INT             NOT NULL IDENTITY (1,1),
+    PK_DOCUMENTO                INT             NOT NULL IDENTITY (1,1),
     FK_REFERENCIA               INT             NOT NULL,
 
     ESTATUS_ENTREGA_DOCUMENTO   TINYINT         NOT NULL,   --0 PAGADO, 1 GENERADO, 2 ENTREGADO
@@ -183,6 +183,94 @@ ALTER TABLE TR_CONCEPTO_NIVEL
 ALTER TABLE TR_CONCEPTO_NIVEL
     ADD CONSTRAINT FRK_NIVEL_TR_CONCEPTO_NIVEL FOREIGN KEY (FK_NIVEL) REFERENCES CAT_NIVEL (PK_NIVEL);
 /* FIN TABLA CONCEPTOS POR NIVEL */
+
+/* ********************************************** *
+ * ********** CREACIÓN DE TABLA DE VALES ******** *
+ * ********************************************** */
+
+DROP TABLE IF EXISTS CAT_VALE;
+CREATE TABLE CAT_VALE
+(
+    PK_VALE                 INT             NOT NULL IDENTITY(1,1),
+    
+    NOMBRE                  NVARCHAR(100)   NOT NULL,
+    ESTATUS                 BIT             NOT NULL,
+    MONTO                   DECIMAL         NOT NULL,
+
+    FK_USUARIO_REGISTRO     INT,
+    FECHA_REGISTRO          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT        NOT NULL DEFAULT 0
+);
+
+ALTER TABLE CAT_VALE
+    ADD CONSTRAINT PRK_VALE_CAT_VALE PRIMARY KEY (PK_VALE ASC);
+/* FIN TABLA VALES */
+
+/* ********************************************************** *
+ * ********** CREACIÓN DE TABLA DE VALES POR USUARIO ******** *
+ * ********************************************************** */
+
+DROP TABLE IF EXISTS TR_VALE_USUARIO;
+CREATE TABLE TR_VALE_USUARIO
+(
+    PK_VALE_USUARIO         INT             NOT NULL IDENTITY(1,1),
+    FK_VALE                 INT             NOT NULL,
+    FK_USUARIO              INT             NOT NULL,
+
+    CANTIDAD                SMALLINT        NOT NULL,
+
+    FK_USUARIO_REGISTRO     INT,
+    FECHA_REGISTRO          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT        NOT NULL DEFAULT 0
+);
+
+ALTER TABLE TR_VALE_USUARIO
+    ADD CONSTRAINT PRK_VALE_USUARIO_TR_VALE_USUARIO PRIMARY KEY (PK_VALE_USUARIO ASC);
+
+ALTER TABLE TR_VALE_USUARIO
+    ADD CONSTRAINT FRK_VALE_TR_VALE_USUARIO FOREIGN KEY (FK_VALE) REFERENCES CAT_VALE (PK_VALE);
+
+ALTER TABLE TR_VALE_USUARIO
+    ADD CONSTRAINT FRK_USUARIO_TR_VALE_USUARIO FOREIGN KEY (FK_USUARIO) REFERENCES CAT_USUARIO (PK_USUARIO);
+/* FIN TABLA VALES POR USUARIO */
+
+/* ************************************************************ *
+ * ********** CREACIÓN DE TABLA DE MOVIMIENTO DE VALES ******** *
+ * ************************************************************ */
+
+DROP TABLE IF EXISTS TR_MOVIMIENTO_VALE;
+CREATE TABLE TR_MOVIMIENTO_VALE
+(
+    PK_MOVIMIENTO           INT             NOT NULL IDENTITY(1,1),
+    FK_VALE_USUARIO         INT             NOT NULL,
+    FK_REFERENCIA           INT                      DEFAULT NULL,
+    
+    MONTO                   DECIMAL         NOT NULL,
+    TIPO_MOVIMIENTO         BIT             NOT NULL,                           -- 0 -> CARGO, 1 -> ABONO
+    FECHA_MOVIMIENTO        DATE            NOT NULL,
+    CANTIDAD                SMALLINT        NOT NULL,
+    OBSERVACIONES           TEXT                     DEFAULT NULL,
+
+    FK_USUARIO_REGISTRO     INT,
+    FECHA_REGISTRO          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT        NOT NULL DEFAULT 0
+);
+
+ALTER TABLE TR_MOVIMIENTO_VALE
+    ADD CONSTRAINT PRK_MOVIMIENTO_TR_MOVIMIENTO_VALE PRIMARY KEY (PK_MOVIMIENTO ASC);
+
+ALTER TABLE TR_MOVIMIENTO_VALE
+    ADD CONSTRAINT FRK_VALE_USUARIO_TR_MOVIMIENTO_VALE FOREIGN KEY (FK_VALE_USUARIO) REFERENCES TR_VALE_USUARIO (PK_VALE_USUARIO);
+
+ALTER TABLE TR_MOVIMIENTO_VALE
+    ADD CONSTRAINT FRK_REFERENCIA_TR_MOVIMIENTO_VALE FOREIGN KEY (FK_REFERENCIA) REFERENCES TR_REFERENCIA (PK_REFERENCIA);
+/* FIN TABLA MOVIMIENTO DE VALES */
 
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
