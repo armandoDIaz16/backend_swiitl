@@ -138,4 +138,21 @@ GROUP BY TCC.PK_CARRERA_CAMPUS, C.NOMBRE, CC.NOMBRE, C.PK_CARRERA, CCP.CANTIDAD 
     {
         //
     }
+    public function carreraFiltro($periodo)
+    {
+        $carreras = DB::table('TR_CARRERA_CAMPUS as TCC')
+            ->select(DB::raw("TCC.PK_CARRERA_CAMPUS as PK_CARRERA, C.NOMBRE+' CAMPUS ' +CC.NOMBRE as NOMBRE"))
+            ->join('CAT_CAMPUS as CC', 'TCC.FK_CAMPUS', '=', 'CC.PK_CAMPUS')
+            ->join('CAT_CARRERA as C',  'TCC.FK_CARRERA', '=', 'C.PK_CARRERA')
+            ->join('CATR_CARRERAS_PERIODO as CCP', 'C.PK_CARRERA', '=', 'CCP.FK_CARRERA')
+            ->leftJoin('CAT_ASPIRANTE as CA', 'TCC.PK_CARRERA_CAMPUS', '=', 'CA.FK_CARRERA_1')
+            ->where([
+                ['TCC.ESTADO', 1],
+                ['CCP.FK_PERIODO', $periodo]
+            ])
+            ->groupBy('TCC.PK_CARRERA_CAMPUS', 'C.NOMBRE', 'CC.NOMBRE', 'C.PK_CARRERA')
+            ->get();
+
+        return  $carreras;
+    }
 }

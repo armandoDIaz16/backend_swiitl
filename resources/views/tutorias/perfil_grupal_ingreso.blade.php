@@ -13,6 +13,10 @@
             font-size: .8em;
         }
 
+        .p1 {
+            font-size: 1em;
+        }
+
         .bold {
             font-weight: bold;
         }
@@ -22,18 +26,6 @@
 
 <!-- INICIO ESTILOS ENCABEZADO -->
 <htmlpageheader name="MyHeader1">
-    <div>
-        <table width="100%">
-            <tr>
-                <td width="50%" align="left">
-                    <img src="{{public_path('img/comun/sep_marca_agua.png')}}" alt="">
-                </td>
-                <td width="50%" align="right">
-                    <img src="{{public_path('img/comun/tecnm_itl_gris_marca_agua.png')}}" alt="">
-                </td>
-            </tr>
-        </table>
-    </div>
 </htmlpageheader>
 <!-- FIN ESTILOS ENCABEZADO -->
 
@@ -58,9 +50,22 @@
 <sethtmlpagefooter name="MyFooter1" value="on" />
 
 <!-- INICIO CONTENIDO -->
-<div style="padding-top: 80px; page-break: auto;">
-    <p align="center"><b>PERFIL GRUPAL DE INGRESO</b></p>
-    <table width="100%" border="1" cellpadding="7px" cellspacing="0" bordercolor="#000000" style="page-break-inside: avoid">
+<div>
+    <table width="100%">
+        <tr>
+            <td width="50%" align="left">
+                <img src="{{public_path('img/comun/sep_marca_agua.png')}}" alt="">
+            </td>
+            <td width="50%" align="right">
+                <img src="{{public_path('img/comun/tecnm_itl_gris_marca_agua.png')}}" alt="">
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    <p class="p1 bold" align="center">PERFIL GRUPAL DE INGRESO</p>
+    <table width="100%" border="1" cellpadding="7px" cellspacing="0" bordercolor="#000000">
         <tr>
             <td class="gris" colspan="4" align="center">
                 <p class="bold">DATOS GENERALES</p>
@@ -95,7 +100,7 @@
                 <p class="bold">SEMESTRE: <u>1</u></p>
             </td>
             <td width="25%">
-                <p class="bold">CARRERA:</p>
+                <p class="bold">CARRERA: <u>{{$data['carrera']}}</u></p>
             </td>
         </tr>
         <tr>
@@ -111,10 +116,33 @@
             </td>
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de:</p>
-                <p>Sexo: ___ % Hombre - ___ % Mujer &nbsp; Edad ___%</p>
-                <p>Edo.Civil:___% Soltero ___% Casado ___%Unión libre</p>
-                <p>Colonia donde vive:</p>
-                <p>Lugar de residencia: % &nbsp; %</p>
+                <p>
+                    <b>Sexo:</b>
+                    @foreach($data['personales']['sexo'] as $sexo)
+                        <u>{{$sexo->PROMEDIO}}% {{$sexo->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>Edo. Civil: </b>
+                    @foreach($data['personales']['estado_civil'] as $estado_civil)
+                        <br>
+                        <u>{{$estado_civil->PROMEDIO}}% {{$estado_civil->ETIQUETA}}</u>
+                    @endforeach
+                </p>
+                <p>
+                    <b>Colonia donde vive:</b>
+                    @foreach($data['personales']['colonias'] as $colonia)
+                        <br>
+                        <u>{{$colonia->ETIQUETA}}</u>
+                    @endforeach
+                </p>
+                <p>
+                    <b>Lugar de residencia:</b>
+                    @foreach($data['personales']['situacion_residencia'] as $situacion_residencia)
+                        <br>
+                        <u>{{$situacion_residencia->PROMEDIO}}% {{$situacion_residencia->ETIQUETA}}</u>
+                    @endforeach
+                </p>
             </td>
         </tr>
         <tr>
@@ -123,12 +151,49 @@
             </td>
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de:</p>
-                <p>Tipo de preparatoria_____%Pública. _____%Privada</p>
-                <p>Área: ___%Humanidades. ___%CBQ ___%Físico-matemáticas</p>
-                <p>Promedio de calificación de preparatoria: ___%90-100 &nbsp; ___%80-89 ___%70-79</p>
-                <p>Materias difíciles: ___% Cálculo ___% Química</p>
-                <p>ITL como primera opción: ___% sí &nbsp; ___% no</p>
-                <p>Carrera actual como primera opción &nbsp; ___% sí &nbsp; ___% no</p>
+                <p>
+                    <b>Tipo de preparatoria:</b>
+                    @foreach($data['academico']['tipo_escuela'] as $tipo_escuela)
+                        <br>
+                        <u>{{$tipo_escuela->PROMEDIO}}% {{$tipo_escuela->ETIQUETA}}</u>
+                    @endforeach
+                </p>
+
+                <p>
+                    <b>Área:</b>
+                    <br>
+                    @foreach($data['academico']['areas'] as $area)
+                        <u>{{$area->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>Promedio de calificación de preparatoria:</b>
+                    @foreach($data['academico']['promedios'] as $promedio)
+                        <br>
+                        <u>{{$promedio->PROMEDIO}}% {{$promedio->ETIQUETA}}</u>
+                    @endforeach
+                </p>
+                <p>
+                    <b>Materias difíciles:</b>
+                    @foreach($data['academico']['materias_dificiles'] as $materia_dificil)
+                        <br>
+                        <u>{{$materia_dificil->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>ITL como primera opción:</b>
+                    @foreach($data['academico']['itl_primera_opcion'] as $itl_primera)
+                        <br>
+                        <u>{{$itl_primera->PROMEDIO}}% {{$itl_primera->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>Carrera actual como primera opción:</b>
+                    @foreach($data['academico']['carrera_primera_opcion'] as $carrera_primera)
+                        <br>
+                        <u>{{$carrera_primera->PROMEDIO}}% {{$carrera_primera->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
             </td>
         </tr>
         <tr>
@@ -137,10 +202,44 @@
             </td>
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de:</p>
-                <p>Nivel Socioeconómico: A_____ C+_____ C_____ C-_____ y explicación del nivel____________</p>
-                <p>¿Con quién vive?_____ &nbsp; ¿Trabaja? &nbsp; _____% sí &nbsp; _____% no &nbsp; </p>
-                <p>¿Quién aporta $ para sus estudios? _____</p>
-                <p>Escolaridad del padre_________ &nbsp; Escolaridad de la madre_________</p>
+                <p>
+                    <b>Nivel Socioeconómico:</b> <u>{{$data['socioeconomica']['nivel_socioeconomico']}}</u>
+                </p>
+                <p>
+                    <b>¿Con quién vive?</b>
+                    @foreach($data['socioeconomica']['quien_vive'] as $quien_vive)
+                        <br>
+                        <u>{{$quien_vive->PROMEDIO}}% {{$quien_vive->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>¿Trabaja?</b>
+                    @foreach($data['socioeconomica']['trabaja'] as $trabaja)
+                        <br>
+                        <u>{{$trabaja->PROMEDIO}}% {{$trabaja->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>¿Quién aporta $ para sus estudios?</b>
+                    @foreach($data['socioeconomica']['aporta_dinero'] as $aporta_dinero)
+                        <br>
+                        <u>{{$aporta_dinero->PROMEDIO}}% {{$aporta_dinero->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>Escolaridad del padre</b>
+                    @foreach($data['socioeconomica']['escolaridad_padre'] as $escolaridad_padre)
+                        <br>
+                        <u>{{$escolaridad_padre->PROMEDIO}}% {{$escolaridad_padre->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>Escolaridad de la madre</b>
+                    @foreach($data['socioeconomica']['escolaridad_madre'] as $escolaridad_madre)
+                        <br>
+                        <u>{{$escolaridad_madre->PROMEDIO}}% {{$escolaridad_madre->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
             </td>
         </tr>
         <tr>
@@ -149,13 +248,58 @@
             </td>
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de: (dos primeros porcentajes)</p>
-                <p>Tipo de familia _____% &nbsp; _____%</p>
-                <p>Condición familiar en aspectos excelentes_____ _____ _____ _____</p>
-                <p>Condición familiar en aspectos deficientes____ _____ _____ _____</p>
-                <p>FACE 20 ESP</p>
-                <p>Nivel de cohesión_____ &nbsp; Tipo de familia por cohesión_____ y expliación_____</p>
-                <p>Nivel de adaptabilidad_____ &nbsp; Tipo de familia por adaptabilidad_____ y expliación_____</p>
-                <p>Nivel de funcionamiento_____ y expliación_____</p>
+                <p>
+                    <b>Tipo de familia</b>
+                    @foreach($data['familiar']['tipo_familia'] as $tipo_familia)
+                        <br>
+                        <u>{{$tipo_familia->PROMEDIO}}% {{$tipo_familia->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <br>
+                    <b>Condición familiar en aspectos excelentes y deficientes:</b>
+                    <br>
+                    @foreach($data['familiar']['aspectos'] as $aspectos)
+                        - {{$aspectos->PLANTEAMIENTO}}
+                        <br>
+                        @foreach($aspectos->RESPUESTAS as $aspecto)
+                            <u>{{$aspecto->RESPUESTA}} ( {{number_format((($aspecto->CANTIDAD / $data['cantidad_alumnos']) * 100), 0)}}% )</u>,
+                        @endforeach
+                    <br>
+                    @endforeach
+                </p>
+                <br>
+                <p class="bold">
+                    FACE 20 ESP
+                </p>
+                <p>
+                    <br>
+                    <b>Nivel de cohesión:</b>
+                    <u>{{$data['familiar']['cohesion']['nivel']}}</u>
+                    <br>
+                    <b>Tipo de familia por cohesión:</b>
+                    <u>{{$data['familiar']['cohesion']['tipo_familia']}}</u>
+                    <br>
+                    <b>Explicación:</b>
+                    <u>{{$data['familiar']['cohesion']['explicacion']}}</u>
+                    <br>
+                    <br>
+                    <b>Nivel de adaptabilidad:</b>
+                    <u>{{$data['familiar']['adaptabilidad']['nivel']}}</u>
+                    <br>
+                    <b>Tipo de familia por adaptabilidad:</b>
+                    <u>{{$data['familiar']['adaptabilidad']['tipo_familia']}}</u>
+                    <br>
+                    <b>Explicación:</b>
+                    <u>{{$data['familiar']['adaptabilidad']['explicacion']}}</u>
+                    <br>
+                    <br>
+                    <b>Nivel de funcionamiento:</b>
+                    <u>{{$data['familiar']['funcionamiento']['nivel']}}</u>
+                    <br>
+                    <b>Explicación:</b>
+                    <u>{{$data['familiar']['funcionamiento']['explicacion']}}</u>
+                </p>
             </td>
         </tr>
         <tr>
@@ -164,11 +308,19 @@
             </td>
             <td colspan="3">
                 <p>
-                    Mencionar las actividades que más realiza en su tiempo libre: ___%(las que número como
-                    1,2,3)
-                </p>
-                <p>
-                    Mencionar las actividades que menos hace en su tiempo libre: ___% (las que número como 13, 14,15)
+                    <b>Mencionar las actividades que más realiza en su tiempo libre:</b>
+                    <ol>
+                        <li>{{$data['pasatiempos'][0]->ETIQUETA}}</li>
+                        <li>{{$data['pasatiempos'][1]->ETIQUETA}}</li>
+                        <li>{{$data['pasatiempos'][2]->ETIQUETA}}</li>
+                    </ol>
+
+                    <b>Mencionar las actividades que menos hace en su tiempo libre:</b>
+                    <ol>
+                        <li>{{$data['pasatiempos'][12]->ETIQUETA}}</li>
+                        <li>{{$data['pasatiempos'][13]->ETIQUETA}}</li>
+                        <li>{{$data['pasatiempos'][14]->ETIQUETA}}</li>
+                    </ol>
                 </p>
             </td>
         </tr>
@@ -177,23 +329,56 @@
                 <p class="bold">Salud</p>
             </td>
             <td colspan="3">
-                <p class="bold">Retomar % como grupo y mencionar información</p>
-                <p>En general ¿Cómo calificas tu salud física?_____</p>
-                <p>Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ</p>
-                <p>Evaluación de habilidades: Mencionar 16-28 sólo si su respuesta es "Mala" Y "Excelente"</p>
-                <p>La mayor parte del tiempo me siento: Triste &nbsp; Alegre &nbsp; Ansioso &nbsp; Tranquilo</p>
+                <p class="bold">Porcentaje grupal de</p>
+                <p>
+                    <b>En general ¿Cómo calificas tu salud física?</b>
+                    @foreach($data['salud']['salud_fisica'] as $salud_fisica)
+                        <br>
+                        <u>{{$salud_fisica->PROMEDIO}}% {{$salud_fisica->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
+                {{--<p>Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ</p>--}}
+                <p>
+                    <br>
+                    <b>Evaluación de habilidades:</b>
+                    @foreach($data['salud']['habilidades'] as $pregunta)
+                        <br>
+                         - {{$pregunta->PLANTEAMIENTO}}
+                        <br>
+                        @foreach($pregunta->RESPUESTAS as $respuesta)
+                            <u>{{$respuesta->RESPUESTA}} ( {{number_format((($respuesta->CANTIDAD / $data['cantidad_alumnos']) * 100), 0)}}% )</u>,
+                        @endforeach
+                    @endforeach
+                </p>
+                <p>
+                    <br>
+                    <b>La mayor parte del tiempo me siento:</b>
+                    @foreach($data['salud']['sentimiento'] as $sentimiento)
+                        <br>
+                        <u>{{$sentimiento->PROMEDIO}}% {{$sentimiento->ETIQUETA}}</u>,
+                    @endforeach
+                </p>
             </td>
         </tr>
         <tr>
             <td>
-                <p class="bold" b>Hábitos de estudio</pb>
+                <p class="bold">Hábitos de estudio</p>
             </td>
             <td colspan="3">
                 <p>
-                    Mencionar puntos fuertes. Son aquellos aspectos con puntuación igual o mayor a 70
-                </p>
-                <p>
-                    Mencionar puntos débiles. Son aquellos aspectos con puntuación menor a 70
+                    <b>Puntos fuertes.</b>
+                <ol>
+                    @foreach($data['habitos_estudio']['puntos_fuertes'] as $punto_fuerte)
+                        <li>{{$punto_fuerte}}</li>
+                    @endforeach
+                </ol>
+                <br>
+                <b>Puntos débiles.</b>
+                <ol>
+                    @foreach($data['habitos_estudio']['puntos_debiles'] as $punto_debil)
+                        <li>{{$punto_debil}}</li>
+                    @endforeach
+                </ol>
                 </p>
             </td>
         </tr>

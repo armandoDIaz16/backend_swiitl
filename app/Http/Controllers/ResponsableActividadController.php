@@ -64,15 +64,15 @@ class ResponsableActividadController extends Controller
     }
 
     public function getListaAsistentes($pk_actividad){//obtener lista de asistencia por actividad
-        $alumnos = DB::table('users')
-            ->join('ALUMNO_ACTIVIDAD', 'ALUMNO_ACTIVIDAD.FK_ALUMNO','=','users.PK_USUARIO')
+        $alumnos = DB::table('CAT_USUARIO')
+            ->join('ALUMNO_ACTIVIDAD', 'ALUMNO_ACTIVIDAD.FK_ALUMNO','=','CAT_USUARIO.PK_USUARIO')
             ->join('ACTIVIDADES','ACTIVIDADES.PK_ACTIVIDAD','=','ALUMNO_ACTIVIDAD.FK_ACTIVIDAD')
             ->join('ASISTENCIA_ALUMNO_ACTIVIDAD','ASISTENCIA_ALUMNO_ACTIVIDAD.FK_ALUMNO_ACTIVIDAD','=','ALUMNO_ACTIVIDAD.PK_ALUMNO_ACTIVIDAD')
-            ->select('users.PK_USUARIO','users.PRIMER_APELLIDO','users.SEGUNDO_APELLIDO','users.name','ASISTENCIA_ALUMNO_ACTIVIDAD.ENTRADA','ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA')
+            ->select('CAT_USUARIO.PK_USUARIO','CAT_USUARIO.PRIMER_APELLIDO','CAT_USUARIO.SEGUNDO_APELLIDO','CAT_USUARIO.NOMBRE','ASISTENCIA_ALUMNO_ACTIVIDAD.ENTRADA','ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA')
             ->where('ACTIVIDADES.PK_ACTIVIDAD','=',$pk_actividad)
          /*    ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.ENTRADA','=',1)
             ->where('ASISTENCIA_ALUMNO_ACTIVIDAD.SALIDA','=',1) */
-            ->orderBy('users.PRIMER_APELLIDO')
+            ->orderBy('CAT_USUARIO.PRIMER_APELLIDO')
             ->get();
         $response = Response::json($alumnos);
         return $response;

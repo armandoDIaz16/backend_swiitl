@@ -81,6 +81,8 @@ class Mailer
             if($mail->send()){
                 $obtenerCorreo->aumentarContador($correoDatos->PK_ENVIO_CORREO,$correoDatos->PK_CORREO);
                 return true;
+            } else {
+                return false;
             }
         } catch (Exception $e) {
             error_log("Error en envío de correo desde clase: App/Helpers/Mailer.php");

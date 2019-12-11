@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\User;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -25,6 +26,17 @@ class UsuariosHelper {
      */
     public static function get_clave_verificacion($longitud = 6) {
         return substr( md5(microtime()), 1, $longitud);
+    }
+
+    public static function get_usuario($pk_encriptada) {
+        if ($pk_encriptada) {
+            $usuario = User::where('PK_ENCRIPTADA', $pk_encriptada)->first();
+            if ($usuario) {
+                return $usuario;
+            }
+        }
+
+        return null;
     }
 
 }

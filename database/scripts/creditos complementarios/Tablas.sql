@@ -1,0 +1,330 @@
+
+
+CREATE TABLE [dbo].[LINEAMIENTOS](
+	[PK_LINEAMIENTO] [int] IDENTITY(1,1) NOT NULL,
+	[NOMBRE] [nvarchar](255) NOT NULL,
+	[LIMITE] [tinyint] NOT NULL,
+	[FK_USUARIO_REGISTRO] [int] NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[FK_USUARIO_MODIFICACION] [int] NULL,
+	[FECHA_MODIFICACION] [datetime] NULL,
+	[BORRADO] [nchar](1) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PK_LINEAMIENTO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[LINEAMIENTOS] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+
+ALTER TABLE [dbo].[LINEAMIENTOS] ADD  DEFAULT ('0') FOR [BORRADO]
+GO
+
+
+/* ---------------------------------------------------------------------------------------------------------------------------------------- */
+
+CREATE TABLE [dbo].[TIPOS](
+	[PK_TIPO] [int] IDENTITY(1,1) NOT NULL,
+	[NOMBRE] [nvarchar](255) NOT NULL,
+	[VALOR] [tinyint] NOT NULL,
+	[FK_USUARIO_REGISTRO] [int] NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[FK_USUARIO_MODIFICACION] [int] NULL,
+	[FECHA_MODIFICACION] [datetime] NULL,
+	[BORRADO] [nchar](1) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PK_TIPO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[TIPOS] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+
+ALTER TABLE [dbo].[TIPOS] ADD  DEFAULT ('0') FOR [BORRADO]
+GO
+
+/* -------------------------------------------------------------------------------------------------------------------------------------------- */
+CREATE TABLE [dbo].[ACTIVIDADES](
+	[PK_ACTIVIDAD] [int] IDENTITY(1,1) NOT NULL,
+	[NOMBRE] [nvarchar](255) NOT NULL,
+	[DESCRIPCION] [nvarchar](1000) NULL,
+	[LUGAR] [nvarchar](255) NOT NULL,
+	[FECHA] [date] NOT NULL,
+	[HORA] [nvarchar](255) NOT NULL,
+	[CUPO] [smallint] NOT NULL,
+	[FK_LINEAMIENTO] [int] NOT NULL,
+	[FK_TIPO] [int] NOT NULL,
+	[FK_RESPONSABLE] [int] NOT NULL,
+	[FK_USUARIO_REGISTRO] [int] NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[FK_USUARIO_MODIFICACION] [int] NULL,
+	[FECHA_MODIFICACION] [datetime] NULL,
+	[BORRADO] [nchar](1) NOT NULL,
+	[IMAGEN] [nvarchar](500) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PK_ACTIVIDAD] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[ACTIVIDADES] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+
+ALTER TABLE [dbo].[ACTIVIDADES] ADD  DEFAULT ('0') FOR [BORRADO]
+GO
+
+ALTER TABLE [dbo].[ACTIVIDADES]  WITH CHECK ADD  CONSTRAINT [actividades_fk_lineamiento_foreign] FOREIGN KEY([FK_LINEAMIENTO])
+REFERENCES [dbo].[LINEAMIENTOS] ([PK_LINEAMIENTO])
+GO
+
+ALTER TABLE [dbo].[ACTIVIDADES] CHECK CONSTRAINT [actividades_fk_lineamiento_foreign]
+GO
+
+ALTER TABLE [dbo].[ACTIVIDADES]  WITH CHECK ADD  CONSTRAINT [actividades_fk_responsable_foreign] FOREIGN KEY([FK_RESPONSABLE])
+REFERENCES [dbo].[CAT_USUARIO] ([PK_USUARIO])
+GO
+
+ALTER TABLE [dbo].[ACTIVIDADES] CHECK CONSTRAINT [actividades_fk_responsable_foreign]
+GO
+
+ALTER TABLE [dbo].[ACTIVIDADES]  WITH CHECK ADD  CONSTRAINT [actividades_fk_tipo_foreign] FOREIGN KEY([FK_TIPO])
+REFERENCES [dbo].[TIPOS] ([PK_TIPO])
+GO
+
+ALTER TABLE [dbo].[ACTIVIDADES] CHECK CONSTRAINT [actividades_fk_tipo_foreign]
+GO
+
+/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+CREATE TABLE [dbo].[ALUMNO_ACTIVIDAD](
+	[PK_ALUMNO_ACTIVIDAD] [int] IDENTITY(1,1) NOT NULL,
+	[FK_ACTIVIDAD] [int] NOT NULL,
+	[FK_ALUMNO] [int] NOT NULL,
+	[FK_USUARIO_REGISTRO] [int] NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[FK_USUARIO_MODIFICACION] [int] NULL,
+	[FECHA_MODIFICACION] [datetime] NULL,
+	[BORRADO] [nchar](1) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PK_ALUMNO_ACTIVIDAD] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_ACTIVIDAD] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_ACTIVIDAD] ADD  DEFAULT ('0') FOR [BORRADO]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_ACTIVIDAD]  WITH CHECK ADD  CONSTRAINT [alumno_actividad_fk_actividad_foreign] FOREIGN KEY([FK_ACTIVIDAD])
+REFERENCES [dbo].[ACTIVIDADES] ([PK_ACTIVIDAD])
+GO
+
+ALTER TABLE [dbo].[ALUMNO_ACTIVIDAD] CHECK CONSTRAINT [alumno_actividad_fk_actividad_foreign]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_ACTIVIDAD]  WITH CHECK ADD  CONSTRAINT [alumno_actividad_fk_alumno_foreign] FOREIGN KEY([FK_ALUMNO])
+REFERENCES [dbo].[CAT_USUARIO] ([PK_USUARIO])
+GO
+
+ALTER TABLE [dbo].[ALUMNO_ACTIVIDAD] CHECK CONSTRAINT [alumno_actividad_fk_alumno_foreign]
+GO
+
+
+/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+CREATE TABLE [dbo].[ALUMNO_CREDITO](
+	[PK_ALUMNO_CREDITO] [int] IDENTITY(1,1) NOT NULL,
+	[FK_ALUMNO] [int] NOT NULL,
+	[FK_LINEAMIENTO] [int] NOT NULL,
+	[CALIFICACION] [nvarchar](255) NULL,
+	[PERIODO] [nvarchar](255) NULL,
+	[VALIDADO] [nchar](1) NOT NULL,
+	[VALIDACION_2] [nchar](1) NOT NULL,
+	[FK_USUARIO_REGISTRO] [int] NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[FK_USUARIO_MODIFICACION] [int] NULL,
+	[FECHA_MODIFICACION] [datetime] NULL,
+	[BORRADO] [nchar](1) NOT NULL,
+	[CONSTANCIA_GENERADA] [nchar](1) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PK_ALUMNO_CREDITO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_CREDITO] ADD  DEFAULT ('0') FOR [VALIDADO]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_CREDITO] ADD  DEFAULT ('0') FOR [VALIDACION_2]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_CREDITO] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_CREDITO] ADD  DEFAULT ('0') FOR [BORRADO]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_CREDITO] ADD  DEFAULT ('0') FOR [CONSTANCIA_GENERADA]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_CREDITO]  WITH CHECK ADD  CONSTRAINT [alumno_credito_fk_alumno_foreign] FOREIGN KEY([FK_ALUMNO])
+REFERENCES [dbo].[CAT_USUARIO] ([PK_USUARIO])
+GO
+
+ALTER TABLE [dbo].[ALUMNO_CREDITO] CHECK CONSTRAINT [alumno_credito_fk_alumno_foreign]
+GO
+
+ALTER TABLE [dbo].[ALUMNO_CREDITO]  WITH CHECK ADD  CONSTRAINT [alumno_credito_fk_lineamiento_foreign] FOREIGN KEY([FK_LINEAMIENTO])
+REFERENCES [dbo].[LINEAMIENTOS] ([PK_LINEAMIENTO])
+GO
+
+ALTER TABLE [dbo].[ALUMNO_CREDITO] CHECK CONSTRAINT [alumno_credito_fk_lineamiento_foreign]
+GO
+
+
+/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+CREATE TABLE [dbo].[ASISTENCIA_ALUMNO_ACTIVIDAD](
+	[PK_ASISTENCIA_ALUMNO_ACTIVIDAD] [int] IDENTITY(1,1) NOT NULL,
+	[FK_ALUMNO_ACTIVIDAD] [int] NOT NULL,
+	[ENTRADA] [nchar](1) NULL,
+	[SALIDA] [nchar](1) NULL,
+	[FK_USUARIO_REGISTRO] [int] NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[FK_USUARIO_MODIFICACION] [int] NULL,
+	[FECHA_MODIFICACION] [datetime] NULL,
+	[BORRADO] [nchar](1) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PK_ASISTENCIA_ALUMNO_ACTIVIDAD] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[FK_ALUMNO_ACTIVIDAD] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[ASISTENCIA_ALUMNO_ACTIVIDAD] ADD  DEFAULT ('0') FOR [ENTRADA]
+GO
+
+ALTER TABLE [dbo].[ASISTENCIA_ALUMNO_ACTIVIDAD] ADD  DEFAULT ('0') FOR [SALIDA]
+GO
+
+ALTER TABLE [dbo].[ASISTENCIA_ALUMNO_ACTIVIDAD] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+
+ALTER TABLE [dbo].[ASISTENCIA_ALUMNO_ACTIVIDAD] ADD  DEFAULT ('0') FOR [BORRADO]
+GO
+
+ALTER TABLE [dbo].[ASISTENCIA_ALUMNO_ACTIVIDAD]  WITH CHECK ADD  CONSTRAINT [asistencia_alumno_actividad_fk_alumno_actividad_foreign] FOREIGN KEY([FK_ALUMNO_ACTIVIDAD])
+REFERENCES [dbo].[ALUMNO_ACTIVIDAD] ([PK_ALUMNO_ACTIVIDAD])
+GO
+
+ALTER TABLE [dbo].[ASISTENCIA_ALUMNO_ACTIVIDAD] CHECK CONSTRAINT [asistencia_alumno_actividad_fk_alumno_actividad_foreign]
+GO
+
+
+
+/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+CREATE TABLE [dbo].[ASISTENTES_ACTIVIDAD](
+	[PK_ASISTENTE_ACTIVIDAD] [int] IDENTITY(1,1) NOT NULL,
+	[FK_USUARIO] [int] NOT NULL,
+	[FK_ACTIVIDAD] [int] NOT NULL,
+	[FK_USUARIO_REGISTRO] [int] NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[FK_USUARIO_MODIFICACION] [int] NULL,
+	[FECHA_MODIFICACION] [datetime] NULL,
+	[BORRADO] [nchar](1) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PK_ASISTENTE_ACTIVIDAD] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[ASISTENTES_ACTIVIDAD] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+
+ALTER TABLE [dbo].[ASISTENTES_ACTIVIDAD] ADD  DEFAULT ('0') FOR [BORRADO]
+GO
+
+ALTER TABLE [dbo].[ASISTENTES_ACTIVIDAD]  WITH CHECK ADD  CONSTRAINT [asistentes_actividad_fk_actividad_foreign] FOREIGN KEY([FK_ACTIVIDAD])
+REFERENCES [dbo].[ACTIVIDADES] ([PK_ACTIVIDAD])
+GO
+
+ALTER TABLE [dbo].[ASISTENTES_ACTIVIDAD] CHECK CONSTRAINT [asistentes_actividad_fk_actividad_foreign]
+GO
+
+ALTER TABLE [dbo].[ASISTENTES_ACTIVIDAD]  WITH CHECK ADD  CONSTRAINT [asistentes_actividad_fk_usuario_foreign] FOREIGN KEY([FK_USUARIO])
+REFERENCES [dbo].[CAT_USUARIO] ([PK_USUARIO])
+GO
+
+ALTER TABLE [dbo].[ASISTENTES_ACTIVIDAD] CHECK CONSTRAINT [asistentes_actividad_fk_usuario_foreign]
+GO
+
+
+/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+CREATE TABLE [dbo].[CREDITO_ACTIVIDAD](
+	[PK_CREDITO_ACTIVIDAD] [int] IDENTITY(1,1) NOT NULL,
+	[FK_ALUMNO_CREDITO] [int] NOT NULL,
+	[FK_ACTIVIDAD] [int] NOT NULL,
+	[FK_USUARIO_REGISTRO] [int] NULL,
+	[FECHA_REGISTRO] [datetime] NOT NULL,
+	[FK_USUARIO_MODIFICACION] [int] NULL,
+	[FECHA_MODIFICACION] [datetime] NULL,
+	[BORRADO] [nchar](1) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PK_CREDITO_ACTIVIDAD] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[CREDITO_ACTIVIDAD] ADD  DEFAULT (getdate()) FOR [FECHA_REGISTRO]
+GO
+
+ALTER TABLE [dbo].[CREDITO_ACTIVIDAD] ADD  DEFAULT ('0') FOR [BORRADO]
+GO
+
+ALTER TABLE [dbo].[CREDITO_ACTIVIDAD]  WITH CHECK ADD  CONSTRAINT [credito_actividad_fk_actividad_foreign] FOREIGN KEY([FK_ACTIVIDAD])
+REFERENCES [dbo].[ACTIVIDADES] ([PK_ACTIVIDAD])
+GO
+
+ALTER TABLE [dbo].[CREDITO_ACTIVIDAD] CHECK CONSTRAINT [credito_actividad_fk_actividad_foreign]
+GO
+
+ALTER TABLE [dbo].[CREDITO_ACTIVIDAD]  WITH CHECK ADD  CONSTRAINT [credito_actividad_fk_alumno_credito_foreign] FOREIGN KEY([FK_ALUMNO_CREDITO])
+REFERENCES [dbo].[ALUMNO_CREDITO] ([PK_ALUMNO_CREDITO])
+GO
+
+ALTER TABLE [dbo].[CREDITO_ACTIVIDAD] CHECK CONSTRAINT [credito_actividad_fk_alumno_credito_foreign]
+GO
+
+
+
+/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+CREATE TABLE [dbo].[DETA_CONSTANCIAS](
+	[pk_deta_cnstancia] [int] IDENTITY(1,1) NOT NULL,
+	[fk_alumno_credito] [int] NOT NULL,
+	[memorandum] [varchar](50) NULL,
+	[queSuscribe] [varchar](250) NULL,
+	[nombre] [varchar](250) NULL,
+ CONSTRAINT [PK_DETA_CONSTANCIAS] PRIMARY KEY CLUSTERED 
+(
+	[pk_deta_cnstancia] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO

@@ -6,14 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Encuesta;
 use App\Seccion_Encuesta;
-use App\Pregunta;
-use App\Tipo_Pregunta;
 use App\Respuesta_Posible;
 use Illuminate\Support\Facades\DB;
-use Monolog\Handler\IFTTTHandler;
 use Symfony\Component\HttpFoundation\Response;
 use App\Aplicacion_Encuesta;
-use App\RespuestaUsuarioEncuesta;
 
 /**
  * Class SITEncuestaController
@@ -268,14 +264,13 @@ class SITEncuestaController extends Controller
      */
     public function get_encuesta_resuelta_aplicacion($pk_aplicacion)
     {
-        error_log($pk_aplicacion);
+        // error_log($pk_aplicacion);
         $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $pk_aplicacion)->first();
 
         if (isset($aplicacion->FK_ENCUESTA)) {
             if ($aplicacion->FK_ENCUESTA == 1) {
                 // es la encuesta de ordenar
                 $cuestionario_completo = $this->get_cuestionario_resuelto($aplicacion->FK_ENCUESTA, $pk_aplicacion);
-                error_log($aplicacion->FK_ENCUESTA);
             } else {
                 $cuestionario_completo = [];
             }

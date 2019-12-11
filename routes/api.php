@@ -18,14 +18,6 @@ Route::post('activar_cuenta', 'AuthController@activa_cuenta');
 // INICIO DE SESIÓN
 Route::post('login', 'AuthController@login');
 
-/* INICIO RUTAS PARA COMPLETAR PERFIL */
-// OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
-Route::get('perfil/{id_usuario}', 'PerfilController@get_perfil');
-
-// GUARDAR DATOS PARA COMPLETAR PERFIL
-Route::post('perfil', 'PerfilController@save_perfil');
-/* FIN RUTAS PARA COMPLETAR PERFIL */
-
 // TERMINAR SESIÓN
 Route::post('logout', 'AuthController@logout');
 
@@ -42,6 +34,26 @@ Route::post('resetPassword', 'ChangePasswordController@process');
 Route::middleware('jwt.auth')->get('users', function () {
     return auth('api')->user();
 });
+
+/* INICIO RUTAS GENERALES */
+Route::group(['middleware' => ['jwt.verify']], function () {
+    Route::resource('situacion_residencia', 'SituacionResidenciaController');
+
+    //función para obtener estado y municipio por código postal
+    Route::post('procesa_codigo_postal', 'CodigoPostalController@procesa_codigo_postal');
+});
+/* FIN RUTAS GENERALES */
+
+
+/* INICIO RUTAS PARA COMPLETAR PERFIL */
+Route::group(['middleware' => ['jwt.verify']], function () {
+    // OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
+    Route::post('perfil', 'PerfilController@get_perfil');
+
+    // GUARDAR DATOS PARA COMPLETAR PERFIL
+    Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
+});
+/* FIN RUTAS PARA COMPLETAR PERFIL */
 
 
 Route::get('leer_archivo', 'AspiranteController@leer_archivo');
@@ -70,8 +82,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+// Buscar roles para menú
 Route::resource('Usuario_Rol', 'Usuario_RolController');
+
+// Buscar roles por usuario
+Route::post(
+    'roles_usuario',
+    'Usuario_RolController@roles_usuario'
+);
+
 /* Route::get('PAAE_Periodo', 'PAAE_Periodo@index');
 Route::get('Hora', 'PAAE_Periodo@horario');
 Route::get('HoraAll', 'PAAE_Periodo@horarioAll');
@@ -246,6 +265,7 @@ Route::get('pdf1', function () {
 });
 
 /**********************************RUTAS SISTEMA CREDITOS COMPLEMENTARIOS ************************************************/
+//Route::group(['middleware' => ['jwt.verify']], function () {
 Route::resource('lineamientos', 'LineamientoController');
 Route::resource('tipos', 'TipoController');
 Route::resource('actividades', 'ActividadController');
@@ -284,7 +304,7 @@ Route::get('eliminar-asistente-act/{PK_USUARIO}/{PK_ACTIVIDAD}', 'AsistenteActiv
 Route::get('eliminar-rol-asistente/{PK_USUARIO}', 'AsistenteActividadController@eliminarRolAsistente');
 Route::get('lista-actividades-creditos/{FK_ALUMNO_ACTIVIDAD}', 'AsistenciaAlumnoActividadController@pruebaActByLineamiento');
 Route::get('actividades-credito-cumplidos/{PK_ALUMNO_CREDITO}', 'CreditoActividadController@getActByCredito');
-// Route::post('generar-constancia', 'constanciasCreditosController@generarConstancia');
+ Route::post('generar-constancia', 'constanciasCreditosController@generarConstancia');
 // Route::get('prueba-ver-pdf', 'pruebaVerPdf@verpdf');
 // Route::get('generar-constancia/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@generarConstancia');
 Route::get('constancia-view-o_o_s_e/{PK_ALUMNO_CREDITO}', 'constanciasCreditosController@verConstanciaOficial');
@@ -298,6 +318,8 @@ Route::get('agregar-user-te/{PK_USUARIO}', 'gestionRolesCreditosComController@se
 Route::post('import-excel-ac', 'excelAcController@importarCreditos');
 Route::get('generar-excel-ac', 'excelAcController@generarExcel');
 Route::get('id-alumno-actividades/{PK_ACTIVIDAD}/{PK_ALUMNO}', 'AlumnoActividadController@ctlAlumnoActividad');
+Route::get('get-clave-carrera/{PK_USUARIO}','AlumnoCreditoController@getClaveCarrera');
+//});
 //Route::get('prueba-fecha','constanciasCreditosController@pruebaFormatoFecha');
 //Route::get('prueba-carrera/{PK_ALUMNO_CREDITO}','constanciasCreditosController@getCarrera');
 /*************************************************************************************************************************/
@@ -355,6 +377,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('Aspirante2', 'AspiranteController@modificarAspirante');
     Route::get('ListaGrupo', 'GrupoController@listaGrupos');
     Route::get('ListasGrupos/{PK_PERIODO}', 'GrupoController@datosListas');
+    Route::get('ListasGruposIngles/{PK_PERIODO}', 'GrupoController@datosListasIngles');
     Route::get('Espacio2/{PK_PERIODO}', 'LugarExamenController@obtenerEspacio');
     Route::get('Turno/{PK_PERIODO}', 'LugarExamenController@obtenerTurno');
     Route::get('Turno2/{PK_PERIODO}', 'LugarExamenController@obtenerTurno2');
@@ -371,12 +394,32 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('ModificarGrupo', 'LugarExamenController@modificarGrupo');
     Route::post('ModificarGrupoEscrito', 'LugarExamenController@modificarGrupoEscrito');
     Route::post('EnviarCorreos', 'AspiranteController@enviarCorreos');
+    Route::get('PlantillaSIIA/{id}', 'PlantillaSIIAController@getPlantillaSIIA');
+
+    Route::post('AgregarTurnoEscrito', 'LugarExamenController@agregarTurnoEscrito');
+    Route::get('TurnoEscrito/{PK_PERIODO}', 'LugarExamenController@obtenerTurnoEscrito');
+    Route::post('ModificarTurnoEscrito', 'LugarExamenController@modificarTurnoEscrito');
+    Route::post('AgregarTurnoIngles', 'LugarExamenController@agregarTurnoIngles');
+    Route::post('AgregarEspacioIngles', 'LugarExamenController@agregarEspacioIngles');
+    Route::post('AgregarGrupoIngles', 'LugarExamenController@agregarGrupoIngles');
+    Route::get('TurnoIngles/{PK_PERIODO}', 'LugarExamenController@obtenerTurnoIngles');
+    Route::get('EspacioIngles/{PK_PERIODO}', 'LugarExamenController@obtenerEspacioIngles');
+    Route::get('GrupoIngles/{PK_PERIODO}', 'LugarExamenController@obtenerGrupoIngles');
+    Route::post('ModificarTurnoIngles', 'LugarExamenController@modificarTurnoIngles');
+    Route::post('ModificarEspacioIngles', 'LugarExamenController@modificarEspacioIngles');
+    Route::post('ModificarGrupoIngles', 'LugarExamenController@modificarGrupoIngles');
+
+    Route::get('ReferenciasPagadas/{PK_PERIODO}', 'AspiranteController@getReferenciasPagadas');
+    Route::post('ModificarReferencias', 'PeriodoController@modificarReferencias');
+    Route::post('GuardarDocumento/{PK_PERIODO}', 'DocumentosController@guardarDocumento');
+    Route::get('ObtenerDocumento', 'DocumentosController@obtenerDocumento');
+    Route::get('CarreraFiltro/{PK_PERIODO}', 'CarreraController@carreraFiltro');
 });
 
-/*
+
 Route::get('Prueba', 'UsuarioController@prueba');
 Route::get('Prueba2', 'UsuarioController@prueba2');
-*/
+
 
 /* *********************************************************** *
  * ************* RUTAS PROTEGIDAS DEL SISTEMA DE TUTORIAS *************** *
@@ -407,8 +450,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     );
 
     // Buscar grupos por tutor
-    Route::get(
-        'grupos_tutoria/{id_tutor}',
+    Route::post(
+        'grupos_tutoria',
         'tutorias\SITGruposController@get_grupos'
     );
 
@@ -421,7 +464,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     // Buscar horario por pk usuario
     Route::get(
         'get_horario_alumno/{id_usuario}',
-        'tutorias\tutorias/SITAlumnoController@get_horario'
+        'tutorias\SITAlumnoController@get_horario'
     );
 
     // Buscar datos personales por pk usuario
@@ -439,7 +482,55 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     // Buscar reporte por pk_aplicacion
     Route::get(
         'get_reporte_encuesta/{pk_aplicacion}',
-        'SITEncuestaReporteController@get_reporte_encuesta'
+        'tutorias\SITEncuestaReporteController@get_reporte_encuesta'
+    );
+
+    // Buscar coordinadores departamentales
+    Route::get(
+        'coordinadores_departamentales',
+        'tutorias\SITUsuariosController@get_coordinadores_departamentales'
+    );
+
+    // Buscar areas academicas
+    Route::get(
+        'area_academica',
+        'AreaAcademicaController@get_area_academica'
+    );
+
+    // Buscar usuarios docentes - administrativos
+    Route::post(
+        'coordinador_departamental',
+        'tutorias\SITUsuariosController@coordinador_departamental'
+    );
+
+    // Buscar usuarios docentes - administrativos
+    Route::post(
+        'get_usuarios_docentes',
+        'tutorias\SITUsuariosController@get_usuarios_docentes'
+    );
+
+    // Guardar coordinador de area academica
+    Route::post(
+        'guarda_coordinador',
+        'tutorias\SITUsuariosController@guarda_coordinador'
+    );
+
+    // Guardar coordinador de area academica
+    Route::post(
+        'get_datos_tutor',
+        'tutorias\SITUsuariosController@get_datos_tutor'
+    );
+
+    // Eliminar rol de coordinador de area academica
+    Route::post(
+        'elimina_rol_coordinador',
+        'tutorias\SITUsuariosController@elimina_rol_coordinador'
+    );
+
+    // Buscar seguimiento por pk usuario encriptada
+    Route::post(
+        'get_seguimiento',
+        'tutorias\SITAlumnoController@get_seguimiento'
     );
 });
 
@@ -457,6 +548,32 @@ Route::get(
     'get_pdf_perfil_grupal_ingreso',
     'tutorias\SITPdfController@get_pdf_perfil_grupal_ingreso'
 );
+
+/* *********************************************************** *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE ROLES Y USUARIOS *************** *
+ * *********************************************************** */
+Route::group(['middleware' => ['jwt.verify']], function () {
+    // Buscar usuarios
+    Route::post(
+        'buscar_usuarios',
+        'UsuariosController@buscar_usuarios'
+    );
+
+    // modifica correo principal de usuario por pk
+    Route::post(
+        'modifica_correo_usuario',
+        'UsuariosController@modifica_correo_usuario'
+    );
+});
+
+/* *********************************************************** *
+ * ************* RUTAS LIBRES DEL SISTEMA DE ROLES Y USUARIOS *************** *
+ * *********************************************************** */
+//Generar pdf perfil individual de ingreso
+/*Route::get(
+    'get_pdf_perfil_personal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+);*/
 
 
 
@@ -520,8 +637,10 @@ Route::get('TodosAsistencia','PAAE_Periodo@allAsistencia');
 Route::get('AsistenciaPeriodo','PAAE_Periodo@allAsistenciaPeriodo');
 Route::get('TodosReporteFinal','PAAE_Periodo@allReporteFinal');
 Route::get('ReporteFinalPeriodo','PAAE_Periodo@allReporteFinalPeriodo');
-/* Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica'); */
-/* Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo'); */
+
+//Route::get('TodosAsignacion','PAAE_Periodo@allSituacionAcademica');
+Route::get('SituacionPeriodo','PAAE_Periodo@allSituacionAcademicaPeriodo');
+
 Route::get('TodosAsesores','PAAE_Periodo@AsesoresListal');
 Route::get('AsesoresPeriodo','PAAE_Periodo@AsesoresListalPeriodo');
 Route::get('SesionAsesor','PAAE_Periodo@sesionPorAsesor');
@@ -552,3 +671,38 @@ Route::post('AsignaSituacion','PAAE_Periodo@asignacionSituacion');
 Route::post('EnviarCorreoPAAE','PAAE_Periodo@enviarCorreos');
 Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
 });
+
+/* *********************************************************** *
+ * ************* RUTAS DE SISTEMA SERVICIO SOCIAL *************** *
+ * *********************************************************** */
+
+ Route::resource('convocatorias', 'ServicioSocial\ConvocatoriaController');
+ Route::post('saveConvocatoria', 'ServicioSocial\ConvocatoriaController@saveConvocatoria');
+ Route::get('getSalones/{edificio}','ServicioSocial\Convocatoriacontroller@getSalones');
+ Route::get('getEdificios/{campus}','ServicioSocial\Convocatoriacontroller@getEdificios');
+ Route::get('getCampus/{tecnm}','ServicioSocial\ConvocatoriaController@getCampus');
+ Route::get('getEspacio','ServicioSocial\ConvocatoriaController@getEspacio');
+ Route::get('busquedaConvocatoria/{dato}','ServicioSocial\ConvocatoriaController@busquedaConvocatoria');
+ Route::get('allConvocatoria/','ServicioSocial\ConvocatoriaController@allConvocatoria');
+ Route::get('convocatoriaPdf/{id}','ServicioSocial\ConvocatoriaController@convocatoriaPdf');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /* *********************************************************** *
+ * ************* RUTAS REFERENCIAS *************** *
+ * *********************************************************** */
+Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReInscripcion');

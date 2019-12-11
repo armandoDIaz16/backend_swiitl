@@ -22,7 +22,7 @@ $carrera = DB::connection('sqlsrv2')->table('view_alumnos as va')
 <?php $ind = 0; ?>
 <div style="margin-left: 1cm; margin-right: 1cm; padding-top: 3cm;">
     <p align="right" style="font-size: 0.8em;">
-        León, Guanajuato, {{$fecha}}<br>
+        León, Guanajuato, {{$DATOS->memorandum}}<br>
         <br>MEMORANDUM B7-006-2019
         <br>DEPTO. DE SISTEMAS Y COMPUTACIÓN
     </p>
@@ -35,7 +35,7 @@ $carrera = DB::connection('sqlsrv2')->table('view_alumnos as va')
     </div>
     <div style="font-size: 0.9em; font-family: montserrat;">
     <p align="justify">
-        El que suscribe ____________ , por este medio me permito hacer de su conocimiento que el (la) estudiante
+        El que suscribe {{$DATOS->queSuscribe}}, por este medio me permito hacer de su conocimiento que el (la) estudiante
         <b>{{$DATOS->PRIMER_APELLIDO}} {{$DATOS->SEGUNDO_APELLIDO}} {{$DATOS->name}}</b> con numero de control <b>{{$DATOS->NUMERO_CONTROL}}</b>
         de la carrera de <b>{{$carrera->CARRERA}}</b> ha cumplido con la actividad complementaria <b>"{{$DATOS->NOMBRE}}"</b>
         con el nivel de desempeño <b>{{$DATOS->CALIFICACION}}</b> durante el periodo escolar <b>{{$DATOS->PERIODO}}</b> con un valor curricular
