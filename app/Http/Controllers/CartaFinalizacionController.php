@@ -43,10 +43,11 @@ class CartaFinalizacionController extends Controller
             //$Ruta = $carga->saveFile($request);
             $archivo = new Base64ToFile();
             $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
-            $carta->CARTA = $Ruta;
+            list($id1, $id2) = explode('files', $Ruta);
+            $Ruta2 = 'files'.$id2;
             try{
-            $carta->save();
-            return response()->json('Carta guardada');}
+                DB::table('CAT_DOCUMENTACION')->where('ALUMNO',$request->FK_ALUMNO)->update(['SOLICITUD' => $Ruta2]);
+                return response()->json('Carta guardada');}
             catch(\Exception $exception){
                 return response()->json('Error al guardar');
             }

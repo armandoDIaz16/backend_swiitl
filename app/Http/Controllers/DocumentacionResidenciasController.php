@@ -99,21 +99,12 @@ class DocumentacionResidenciasController extends Controller
         $diai = $fecha->FIniA($id,2);
         $diaf = $fecha->FFinA($id,2);
         if($diai<=$dia && $dia<=$diaf) {
-            $documentacion = DocumentacionResidencias::where('ALUMNO', $id)->first();
-
-
             $archivo = new Base64ToFile();
             $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
-
-            /*            $File = $request->file('myfile'); //line 1
-            $sub_path = 'files'; //line 2
-            $real_name = $File->getClientOriginalName(); //line 3
-            $destination_path = public_path($sub_path);  //line 4
-            $File->move($destination_path, $real_name);  //line 5
-            $Ruta = $sub_path . '/' . $real_name;*/
-            $documentacion->SOLICITUD = $Ruta;
+            list($id1, $id2) = explode('files', $Ruta);
+            $Ruta2 = 'files'.$id2;
             try{
-                $documentacion->save();
+                DB::table('CAT_DOCUMENTACION')->where('ALUMNO',$id)->update(['SOLICITUD' => $Ruta2]);
                 return response()->json('Solicitud guardada');}
             catch(\Exception $exception){
                 return response()->json('Error al guardar');
@@ -129,19 +120,12 @@ class DocumentacionResidenciasController extends Controller
         $diai = $fecha->FIniA($id,2);
         $diaf = $fecha->FFinA($id,2);
         if($diai<=$dia && $dia<=$diaf) {
-            $documentacion = DocumentacionResidencias::where('ALUMNO', $id)->first();
-
             $archivo = new Base64ToFile();
             $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
-/*            $File = $request->file('myfile'); //line 1
-            $sub_path = 'files'; //line 2
-            $real_name = $File->getClientOriginalName(); //line 3
-            $destination_path = public_path($sub_path);  //line 4
-            $File->move($destination_path, $real_name);  //line 5
-            $Ruta = $sub_path . '/' . $real_name;*/
-            $documentacion->CARTA_ACEPTACION = $Ruta;
+            list($id1, $id2) = explode('files', $Ruta);
+            $Ruta2 = 'files'.$id2;
             try{
-                $documentacion->save();
+                DB::table('CAT_DOCUMENTACION')->where('ALUMNO',$id)->update(['CARTA_ACEPTACION' => $Ruta2]);
                 return response()->json('Carta de aceptacion guardada');}
             catch(\Exception $exception){
                 return response()->json('Error al guardar');
@@ -175,6 +159,13 @@ class DocumentacionResidenciasController extends Controller
             }
         }
 
+        return $documentos;
+    }
+
+    public function archivos($id){
+        $documentos = DB::select('SELECT CAT_DOCUMENTACION.CARTA_ACEPTACION, CAT_DOCUMENTACION.SOLICITUD
+                                        FROM CAT_DOCUMENTACION
+                                        WHERE CAT_DOCUMENTACION.ALUMNO = :alumno ', ['alumno'=>$id]);
         return $documentos;
     }
 

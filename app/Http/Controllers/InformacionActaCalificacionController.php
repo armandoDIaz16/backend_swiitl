@@ -21,8 +21,8 @@ class InformacionActaCalificacionController extends Controller
                                         FROM CATR_ALUMNO
                                         JOIN CAT_USUARIO ON CATR_ALUMNO.ID_PADRE = CAT_USUARIO.PK_USUARIO
                                         JOIN PER_TR_ROL_USUARIO ON CAT_USUARIO.PK_USUARIO = PER_TR_ROL_USUARIO.FK_USUARIO
-                                        JOIN PER_CATR_ROL ON PER_TR_ROL_USUARIO.FK_ROL = PER_CATR_ROL.PK_ROL
-                                        WHERE PER_CATR_ROL.NOMBRE = :rol',['rol'=>'Residente']);
+                                        JOIN PER_CAT_ROL ON PER_TR_ROL_USUARIO.FK_ROL = PER_CAT_ROL.PK_ROL
+                                        WHERE PER_CAT_ROL.NOMBRE = :rol',['rol'=>'Residente']);
         $residentes1 = json_decode(json_encode($residentes), true);
 
         $folio = DB::select('SELECT FOLIO FROM CAT_CONFIGURACION_ESCOLARES WHERE PERIODO = :periodo',['periodo'=>$actual]);

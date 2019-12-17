@@ -10,17 +10,18 @@ class FichaUnicaController extends Controller
 {
 
     public function FUApdf($id){
+        list($id1, $id2) = explode(',', $id);
         $pdf = new FichaUnica();
-        $proyectos = $pdf->proyectos($id);
-        $jefe = $pdf->jefe($id);
+        $proyectos = $pdf->proyectos($id1);
+        $jefe = $pdf->jefe($id1);
         $mes = $pdf->mes();
         $periodo = $pdf->periodo();
-        $departamento = $pdf->departamento($id);
+        $departamento = $pdf->departamento($id1);
         $alumno = [];
         foreach ($proyectos as $po){
             $x = json_decode(json_encode($po),true);
             $y = array_pop($x);
-            $alumnos = $pdf->alumnos($id,$y);
+            $alumnos = $pdf->alumnos($id1,$y);
             foreach ($alumnos as $al){
                 $alumno[] = array(
                     'Nombre' => $al->NOMBREALUMNO,
