@@ -530,6 +530,18 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'get_seguimiento',
         'tutorias\SITAlumnoController@get_seguimiento'
     );
+
+    // Buscar coordinadores institucionales
+    Route::get(
+        'coordinadores_institucionales',
+        'tutorias\SITUsuariosController@get_coordinadores_institucionales'
+    );
+
+    // Buscar coordinadores institucionales
+    Route::post(
+        'actualiza_foto_perfil',
+        'tutorias\SITUsuariosController@actualiza_foto_perfil'
+    );
 });
 
 /* *********************************************************** *
@@ -704,3 +716,8 @@ Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
  * ************* RUTAS REFERENCIAS *************** *
  * *********************************************************** */
 Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReInscripcion');
+
+
+// REFERENCIAS ESPECIALES
+Route::get('referencia_especial_siia', 'ReferenciasEspeciales@generar_referencia_siia');
+Route::get('referencia_especial', 'ReferenciasEspeciales@generar_referencia');
