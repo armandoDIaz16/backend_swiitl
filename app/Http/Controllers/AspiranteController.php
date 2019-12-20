@@ -64,7 +64,7 @@ class AspiranteController extends Controller
 
 
 
-        $sql = "EXEC GENERAR_PREFICHA 
+        $sql = "EXEC GENERAR_PREFICHA
             $request->PK_PERIODO,
             $request->NOMBRE,
             $request->PRIMER_APELLIDO,
@@ -1087,9 +1087,9 @@ class AspiranteController extends Controller
 
             for ($row = 2; $row <= $objPHPExcel->getHighestRow(); $row++) {
                 $preficha = $objPHPExcel->getCell("I" . $row)->getValue();
-                $aceptado = $objPHPExcel->getCell("FU" . $row)->getValue();
-                $ICNE = $objPHPExcel->getCell("FE" . $row)->getValue();
-                $DDD_MG_MAT = $objPHPExcel->getCell("FQ" . $row)->getValue();
+                $aceptado = $objPHPExcel->getCell("FY" . $row)->getValue();
+                $ICNE = $objPHPExcel->getCell("FI" . $row)->getValue();
+                $DDD_MG_MAT = $objPHPExcel->getCell("FU" . $row)->getValue();
                 if ($preficha && $aceptado == 1) {
                     /* Actualiza el estatus por preficha */
                     DB::table('CAT_ASPIRANTE')
