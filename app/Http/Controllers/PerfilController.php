@@ -24,7 +24,11 @@ class PerfilController extends Controller
     public function get_perfil(Request $request) {
         $perfil  = NULL;
         $view    = '';
-        $usuario = UsuariosHelper::get_usuario($request->pk_encriptada);
+        $usuario = UsuariosHelper::get_usuario("$request->pk_encriptada");
+
+        if (!$usuario) {
+            $usuario = Usuario::where('PK_USUARIO', $request->pk_encriptada)->first();
+        }
 
         if ($usuario) {
             if ($usuario->TIPO_USUARIO == Constantes::USUARIO_ALUMNO) {
