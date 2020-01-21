@@ -390,10 +390,27 @@ class AspiranteController extends Controller
             $fila = fgets($File);
             //return substr($fila,0,7);
             //array_push($datos, $fila);
+
+            $prefijo_ficha = '03';
+            if (date('m') > 6) {
+                $prefijo_ficha .= substr(date('Y'), 2, 3) + 1 . '1';
+            } else {
+                $prefijo_ficha .= substr(date('Y'), 2, 3) . '2';
+            }
+
+            //Referencias ficha
             if (
-                //Referencias ficha
-                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319' ||
-                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03201'
+                // cuando son 033
+                is_numeric(substr($fila, 0, 7))
+                &&  substr($fila, 0, 7) != ""
+                && substr($fila, 0, 7) == 1369296
+                && substr($fila, 37, 5) == '03319' ||
+
+                // cuando son nuevas (tecvirtual)
+                is_numeric(substr($fila, 0, 7))
+                &&  substr($fila, 0, 7) != ""
+                && substr($fila, 0, 7) == 1369296
+                && substr($fila, 37, 5) == $prefijo_ficha
             ) {
                 array_push($datos, [
                     'CLAVE' => substr($fila, 0, 7),

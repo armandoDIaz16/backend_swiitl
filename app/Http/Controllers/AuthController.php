@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\GrupoTutorias;
+use App\Helpers\SiiaHelper;
 use App\Http\Requests\SignUpRequest;
+use App\Rol;
 use App\Usuario;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -267,22 +269,9 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        if (auth()->user()->PRIMER_LOGIN == 0) {
-            User::where(
-                [
-                    ['PRIMER_LOGIN', 0],
-                    ['PK_USUARIO', auth()->user()->PK_USUARIO]
-                ]
-            )->update(
-                [
-                    'PRIMER_LOGIN' => 1,
-                    'PK_ENCRIPTADA' => EncriptarUsuario::getPkEncriptada(auth()->user()->PK_USUARIO, auth()->user()->FECHA_REGISTRO)
-                ]
-            );
-            auth()->user()->PK_ENCRIPTADA = User::select('PK_ENCRIPTADA')->where('PK_USUARIO', auth()->user()->PK_USUARIO)->first()->PK_ENCRIPTADA;
+        $this->verifica_primer_login();
+        $this->revisa_roles(auth()->user()->PK_ENCRIPTADA);
 
-        }
-        
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
@@ -295,6 +284,142 @@ class AuthController extends Controller
             'IdEncriptada' => auth()->user()->PK_ENCRIPTADA,
             'tipo_usuario' => auth()->user()->TIPO_USUARIO
         ]);
+    }
+
+    private function revisa_roles($pk_encriptada) {
+        $usuario = UsuariosHelper::get_usuario($pk_encriptada);
+        switch ($usuario->TIPO_USUARIO) {
+            case Constantes::USUARIO_ALUMNO:
+                // es alumno
+                $this->actualiza_datos_alumno($usuario);
+                break;
+            case Constantes::USUARIO_DOCENTE:
+                // es empleado
+                $this->actualiza_datos_empleado($usuario);
+                break;
+            case Constantes::USUARIO_ASPIRANTE:
+                // es aspirante
+                $this->actualiza_datos_aspirante($usuario);
+                break;
+        }
+    }
+
+    private function actualiza_datos_aspirante(Usuario $usuario) {
+        $alumno_siia = SiiaHelper::buscar_aspirante(
+            $usuario->NOMBRE,
+            $usuario->PRIMER_APELLIDO,
+            $usuario->SEGUNDO_APELLIDO
+        );
+
+        if ($alumno_siia) {
+            // ACTUALIZAR ALUMNO
+            $carrera = Carrera::where('ABREVIATURA', trim($alumno_siia->ClaveCarrera))->first();
+            $usuario->NOMBRE           = trim($alumno_siia->Nombre);
+            if ($alumno_siia->ApellidoPaterno) {
+                $usuario->PRIMER_APELLIDO  = trim($alumno_siia->ApellidoPaterno);
+            }
+            if ($alumno_siia->ApellidoMaterno) {
+                $usuario->SEGUNDO_APELLIDO = trim($alumno_siia->ApellidoMaterno);
+            }
+            $usuario->NUMERO_CONTROL   = trim($alumno_siia->NumeroControl);
+            $usuario->SEMESTRE         = trim($alumno_siia->Semestre);
+            $usuario->FK_CARRERA       = $carrera->PK_CARRERA;
+
+            // CAMBIAR EL TIPO DE USUARIO DE ASPIRANTE A ALUMNO
+            $usuario->TIPO_USUARIO = Constantes::USUARIO_ALUMNO;
+
+            // DATOS DE AUDITORIA
+            $usuario->FECHA_MODIFICACION      = date('Y-m-d H:i:s');
+            // el cero es para indicar que fue actualiación por sincronización con el siia
+            $usuario->FK_USUARIO_MODIFICACION = 0;
+
+            $usuario->save();
+
+            // QUITAR ROL DE ASPIRANTE
+            $rol = Rol::where('ABREVIATURA', 'ASP')->first();
+            $rol_aspirante = Usuario_Rol::where('FK_USUARIO', $usuario->PK_USUARIO)
+                ->where('FK_ROL', $rol->PK_ROL)
+                ->first();
+
+            if ($rol_aspirante) {
+                $rol_aspirante->delete();
+            }
+        }
+    }
+
+    private function actualiza_datos_empleado(Usuario $usuario) {
+        $empleado_siia = SiiaHelper::buscar_empleado($usuario->NUMERO_CONTROL);
+
+        error_log(print_r($empleado_siia, true));
+
+        if ($empleado_siia) {
+            $usuario->NOMBRE           = trim($empleado_siia->Nombre);
+            if ($empleado_siia->ApellidoPaterno) {
+                $usuario->PRIMER_APELLIDO  = trim($empleado_siia->ApellidoPaterno);
+            }
+            if ($empleado_siia->ApellidoMaterno) {
+                $usuario->SEGUNDO_APELLIDO = trim($empleado_siia->ApellidoMaterno);
+            }
+
+            $usuario->FECHA_MODIFICACION      = date('Y-m-d H:i:s');
+            // el cero es para indicar que fue actualiación por sincronización con el siia
+            $usuario->FK_USUARIO_MODIFICACION = 0;
+
+            $usuario->save();
+        }
+    }
+
+    private function actualiza_datos_alumno(Usuario $usuario) {
+        $alumno_siia = SiiaHelper::buscar_alumno(
+            $usuario->NUMERO_CONTROL,
+            $usuario->NOMBRE,
+            $usuario->PRIMER_APELLIDO,
+            $usuario->SEGUNDO_APELLIDO
+        );
+
+        if ($alumno_siia) {
+            $carrera = Carrera::where('ABREVIATURA', trim($alumno_siia->ClaveCarrera))->first();
+
+            $usuario->NOMBRE           = trim($alumno_siia->Nombre);
+            if ($alumno_siia->ApellidoPaterno) {
+                $usuario->PRIMER_APELLIDO  = trim($alumno_siia->ApellidoPaterno);
+            }
+            if ($alumno_siia->ApellidoMaterno) {
+                $usuario->SEGUNDO_APELLIDO = trim($alumno_siia->ApellidoMaterno);
+            }
+            $usuario->NUMERO_CONTROL   = trim($alumno_siia->NumeroControl);
+            $usuario->SEMESTRE         = trim($alumno_siia->Semestre);
+            $usuario->FK_CARRERA       = $carrera->PK_CARRERA;
+
+            $usuario->FECHA_MODIFICACION      = date('Y-m-d H:i:s');
+            // el cero es para indicar que fue actualiación por sincronización con el siia
+            $usuario->FK_USUARIO_MODIFICACION = 0;
+
+            $usuario->save();
+        }
+    }
+
+    private function verifica_primer_login() {
+        if (auth()->user()->PRIMER_LOGIN == 0) {
+            $pk_encriptada = EncriptarUsuario::getPkEncriptada(
+                auth()->user()->PK_USUARIO,
+                auth()->user()->FECHA_REGISTRO
+            );
+
+            User::where(
+                [
+                    ['PRIMER_LOGIN', 0],
+                    ['PK_USUARIO', auth()->user()->PK_USUARIO]
+                ]
+            )->update(
+                [
+                    'PRIMER_LOGIN' => 1,
+                    'PK_ENCRIPTADA' => $pk_encriptada
+                ]
+            );
+
+            auth()->user()->PK_ENCRIPTADA = $pk_encriptada;
+        }
     }
 
     /* --------------------------

@@ -52,6 +52,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     // GUARDAR DATOS PARA COMPLETAR PERFIL
     Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
+
+    // CAMBIAR IMAGEN DE PERFIL
+    Route::post('actualiza_foto_perfil', 'PerfilController@actualiza_foto_perfil');
 });
 /* FIN RUTAS PARA COMPLETAR PERFIL */
 
@@ -538,12 +541,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'coordinadores_institucionales',
         'tutorias\SITUsuariosController@get_coordinadores_institucionales'
     );
-
-    // Buscar coordinadores institucionales
-    Route::post(
-        'actualiza_foto_perfil',
-        'tutorias\SITUsuariosController@actualiza_foto_perfil'
-    );
 });
 
 /* *********************************************************** *
@@ -723,3 +720,4 @@ Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReIns
 // REFERENCIAS ESPECIALES
 Route::get('referencia_especial_siia', 'ReferenciasEspeciales@generar_referencia_siia');
 Route::get('referencia_especial', 'ReferenciasEspeciales@generar_referencia');
+Route::get('referencia_especial_hijos', 'ReferenciasEspeciales@generar_referencia_hijos');

@@ -9,10 +9,16 @@ class ReferenciasEspeciales extends Controller
 {
     public function generar_referencia_siia()
     {
-        $fechaLimitePago = '2020-01-15';
+        // De semestre 0 a 1
+        $fechaLimitePago = '2020-01-23';
         $monto = '3900';
+
+        // hijos de homologados
+        /*$fechaLimitePago = '2020-01-17';
+        $monto = '450';*/
+
         $numeros_control = [
-            '1000',
+            /*'1000',
             '1001',
             '1002',
             '1003',
@@ -127,7 +133,63 @@ class ReferenciasEspeciales extends Controller
             '1112',
             '1113',
             '1114',
-            '1115'
+            '1115',
+            '1116',
+            '1117',
+            '1118',
+            '1119',
+            '1120',*/
+
+            // HIJOS DE HOMOLOOGADOS
+            /*'1121',
+            '1122',*/
+
+            // Ultima solicitada
+            // '1123',
+
+            // Solicitadas
+            /*'1124',
+            '1125',
+            '1126',
+            '1127',
+            '1128',
+            '1129',
+            '1130',
+            '1131',
+            '1132',
+            '1133',
+            '1134',
+            '1135',
+            '1136',
+            '1137',
+            '1138',*/
+            /*'1139',
+            '1140',
+            '1141',*/
+            /*'1142',*/
+            // '1143', // 18 de enero
+            /*'1144',*/ // 19 de enero
+            /*'1145',*/ // 19 de enero
+            /*'1146'*/ // 19 de enero
+            /*'1147',
+            '1148',
+            '1149',
+            '1150',*/
+            /*'1151',*/
+            /*'1152',
+            '1153',
+            '1154',
+            '1155',
+            '1156',
+            '1157',
+            '1158',
+            '1159',*/
+            /*'1160',*/
+            /*'1161',*/
+            /*'1162',
+            '1163',
+            '1164',
+            '1165',*/
         ];
 
         // 30 19240660 015 037 22545291
@@ -158,11 +220,11 @@ class ReferenciasEspeciales extends Controller
 
     public static function generar_referencia()
     {
-        $fechaLimitePago = '2020-01-23';
+        $fechaLimitePago = '2020-01-19';
         $monto = '250';
         // NUMEROS DE CONTROL DE HORIZONTES
         $numeros_control = [
-            '19240660',
+            /*'19240660',
             '19240263',
             '19240062',
             '19240022',
@@ -220,7 +282,6 @@ class ReferenciasEspeciales extends Controller
             '19240634',
             '19240217',
             '19241045',
-            '19240452',
             '19240360',
             '19240946',
             '19240029',
@@ -232,6 +293,11 @@ class ReferenciasEspeciales extends Controller
             '19240177',
             '19240132',
             '19240920',
+            '19240720',
+            '19240846',
+            '19240109',*/
+            /*'19240452'*/
+            '19240517'
         ];
 
         $referencias = [];
@@ -246,6 +312,62 @@ class ReferenciasEspeciales extends Controller
                 'yearC' => date('Y', strtotime($fechaLimitePago)),
                 'mesC' => date('m', strtotime($fechaLimitePago)),
                 'diaC' => date('j', strtotime($fechaLimitePago)),
+            ];
+
+            $referencias[] = [
+                'numero_control' => $numero_control,
+                'referencia' => Referencia::RUTINA8250POSICIONES($datosReferencia)
+            ];
+        }
+
+        return $referencias;
+    }
+
+    public static function generar_referencia_hijos() {
+        $fechaLimitePago = '2020-01-19';
+        $monto = '450';
+        // NUMEROS DE CONTROL DE HIJOS DE HOMOLOOGADOS
+        $numeros_control = [
+            /*'16240311',
+            '16240529',
+            '16241032',
+            '18240367',
+            '19240234',
+            '15241277',
+            '19241063',
+            '17240160',
+            '18240703',
+            '15240369',
+            '16240359',
+            '18240362',
+            '15241162',
+            '16240863',
+            '18240979',
+            '16240237',
+            '17240157',
+            '15240683',
+            '17240206',
+            'C16240638',*/
+            /*'17240026',
+            '19240125',*/
+            /*'19240518',
+            '19240863'*/
+            '18240120',
+            '19240517',
+        ];
+
+        $referencias = [];
+
+        foreach ($numeros_control as $numero_control) {
+            $datosReferencia = [
+                'tipo_persona'  => '1',
+                'control'       => $numero_control,
+                'servicio'      => '037',
+                'valorvariable' => '2',
+                'monto'         => $monto,
+                'yearC'         => date('Y', strtotime($fechaLimitePago)),
+                'mesC'          => date('m', strtotime($fechaLimitePago)),
+                'diaC'          => date('j', strtotime($fechaLimitePago)),
             ];
 
             $referencias[] = [

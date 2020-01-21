@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CodigoPostal;
+use App\Helpers\Base64ToFile;
 use App\Helpers\Constantes;
 use App\Helpers\UsuariosHelper;
 use App\Usuario;
@@ -92,6 +93,25 @@ class PerfilController extends Controller
 
         if ($usuario->save()) {
             return response()->json(true, Response::HTTP_OK);
+        } else {
+            return response()->json(false, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function actualiza_foto_perfil(Request $request) {
+        $usuario = UsuariosHelper::get_usuario($request->PK_ENCRIPTADA);
+        $url = UsuariosHelper::get_url_expediente_usuario($usuario->NUMERO_CONTROL, $usuario->TIPO_USUARIO, 'perfil');
+        $nombre_archivo = md5('perfil_'.$usuario->PK_USUARIO);
+
+        $ruta = Base64ToFile::guarda_archivo($url, $nombre_archivo, $request->EXTENSION, $request->CONTENIDO);
+
+        if ($ruta) {
+            $usuario->FOTO_PERFIL = $ruta;
+            if ($usuario->save()) {
+                return response()->json($ruta, Response::HTTP_OK);
+            } else {
+                return response()->json(false, Response::HTTP_NOT_FOUND);
+            }
         } else {
             return response()->json(false, Response::HTTP_NOT_FOUND);
         }
