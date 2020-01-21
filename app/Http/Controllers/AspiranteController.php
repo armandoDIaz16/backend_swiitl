@@ -585,6 +585,7 @@ class AspiranteController extends Controller
                 'CAT_USUARIO.PRIMER_APELLIDO',
                 DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
                 'CAT_USUARIO.CORREO1 as CORREO',
+                'CATR_REFERENCIA_BANCARIA_USUARIO.MONTO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.CONCEPTO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.REFERENCIA_BANCO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO',
@@ -598,6 +599,7 @@ class AspiranteController extends Controller
                 //['FK_ESTATUS', '=', 2]
             ])
             ->whereBetween('CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO', [$request->FECHA_INICIO, $request->FECHA_FIN])
+            ->orderByRaw('CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO')
             ->get();
 
         return $aspirantes;
@@ -1369,6 +1371,7 @@ class AspiranteController extends Controller
             ->join('CAT_ASPIRANTE AS CA', 'CU.PK_USUARIO', '=', 'CA.FK_PADRE')
             ->join('CATR_REFERENCIA_BANCARIA_USUARIO AS CRBU', 'CU.PK_USUARIO', '=', 'CRBU.FK_USUARIO')
             ->where('FK_PERIODO', $PK_PERIODO)
+            ->orderByRaw('FECHA_PAGO')
             ->get();
         return $aspirantes;
     }
