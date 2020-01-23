@@ -704,3 +704,145 @@ Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
  * ************* RUTAS REFERENCIAS *************** *
  * *********************************************************** */
 Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReInscripcion');
+
+
+
+
+
+
+
+
+
+
+
+
+/* ************************************************************************* *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE REFERENCIAS *************** *
+ * ************************************************************************* */
+//Route::group(['middleware' => ['jwt.verify']], function () {
+    /**************************
+     *      MÓDULO NIVEL
+     * ***********************/
+    // Buscar todos los niveles
+    Route::get(
+        'niveles',
+        'Referencias\NivelController@getNiveles'
+    );
+
+    // Buscar un nivel especificado por su PK
+    Route::get(
+        'nivel/{id}',
+        'Referencias\NivelController@getNivel'
+    );
+
+    /**************************
+     *      MÓDULO VALE
+     * ***********************/
+    // Buscar todos los vales
+    Route::get(
+        'vales',
+        'Referencias\ValeController@getVales'
+    );
+
+    // Buscar un vale especificado por su PK
+    Route::get(
+        'vale/{id}',
+        'Referencias\ValeController@getVale'
+    );
+
+    /**************************
+     *     MÓDULO CONCEPTO
+     * ***********************/
+    // Buscar todos los conceptos
+    Route::get(
+        'conceptos',
+        'Referencias\ConceptoController@getConceptos'
+    );
+
+    // Buscar un concepto especificado por su PK
+    Route::get(
+        'concepto/{id}',
+        'Referencias\ConceptoController@getConcepto'
+    );
+
+    // Crear un concepto
+    Route::post(
+        'createConcepto',
+        'Referencias\ConceptoController@createConcepto'
+    );
+
+    // Actualizar un concepto
+    Route::patch(
+        'updateConcepto/{id}',
+        'Referencias\ConceptoController@updateConcepto'
+    );
+
+    // Dar de baja a un concepto
+    Route::delete(
+        'deleteConcepto/{id}',
+        'Referencias\ConceptoController@deleteConcepto'
+    );
+
+    /*******************************************
+     *     MÓDULO RELACIÓN CONCEPTO-NIVEL
+     * ****************************************/
+    // Buscar todas las relaciones entre concepto - nivel
+    Route::get(
+        'allConceptoNivel',
+        'Referencias\ConceptoNivelController@getAllConceptoNivel'
+    );
+
+    // Buscar una relación concepto - nivel especificado por su PK, número de nivel o nombre de nivel
+    Route::post(
+        'conceptoNivel',
+        'Referencias\ConceptoNivelController@getConceptoNivel'
+    );
+
+    // Crear una relación concepto - nivel
+    Route::post(
+        'createConceptoNivel',
+        'Referencias\ConceptoNivelController@createConceptoNivel'
+    );
+
+    // Actualizar una relación concepto - nivel
+    Route::patch(
+        'updateConceptoNivel/{id}',
+        'Referencias\ConceptoNivelController@updateConceptoNivel'
+    );
+
+    // Dar de baja a una relación concepto - nivel
+    Route::delete(
+        'deleteConceptoNivel/{id}',
+        'Referencias\ConceptoNivelController@deleteConceptoNivel'
+    );
+
+    /***************************
+     *     MÓDULO REFERENCIAS
+     * ************************/
+    // Buscar todos las referencias
+    Route::get(
+        'referencias',
+        'Referencias\ReferenciaController@getReferencias'
+    );
+
+    // Buscar una referencia por su PK.
+    Route::get(
+        'referencia/{id}',
+        'Referencias\ReferenciaController@getReferencia'
+    );
+
+    // Crear una referencia
+    Route::post(
+        'createReferencia',
+        'Referencias\ReferenciaController@createReferencia'
+    );
+//});
+
+/* ********************************************************************* *
+ * ************* RUTAS LIBRES DEL SISTEMA DE REFERENCIAS *************** *
+ * ********************************************************************* */
+//Generar pdf perfil individual de ingreso
+/*Route::get(
+    'get_pdf_perfil_personal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+);*/
