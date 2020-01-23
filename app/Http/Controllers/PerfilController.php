@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CodigoPostal;
+use App\Helpers\Base64ToFile;
 use App\Helpers\Constantes;
 use App\Helpers\UsuariosHelper;
 use App\Usuario;
@@ -24,7 +25,11 @@ class PerfilController extends Controller
     public function get_perfil(Request $request) {
         $perfil  = NULL;
         $view    = '';
-        $usuario = UsuariosHelper::get_usuario($request->pk_encriptada);
+        $usuario = UsuariosHelper::get_usuario("$request->pk_encriptada");
+
+        if (!$usuario) {
+            $usuario = Usuario::where('PK_USUARIO', $request->pk_encriptada)->first();
+        }
 
         if ($usuario) {
             if ($usuario->TIPO_USUARIO == Constantes::USUARIO_ALUMNO) {
@@ -88,6 +93,25 @@ class PerfilController extends Controller
 
         if ($usuario->save()) {
             return response()->json(true, Response::HTTP_OK);
+        } else {
+            return response()->json(false, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function actualiza_foto_perfil(Request $request) {
+        $usuario = UsuariosHelper::get_usuario($request->PK_ENCRIPTADA);
+        $url = UsuariosHelper::get_url_expediente_usuario($usuario->NUMERO_CONTROL, $usuario->TIPO_USUARIO, 'perfil');
+        $nombre_archivo = md5('perfil_'.$usuario->PK_USUARIO);
+
+        $ruta = Base64ToFile::guarda_archivo($url, $nombre_archivo, $request->EXTENSION, $request->CONTENIDO);
+
+        if ($ruta) {
+            $usuario->FOTO_PERFIL = $ruta;
+            if ($usuario->save()) {
+                return response()->json($ruta, Response::HTTP_OK);
+            } else {
+                return response()->json(false, Response::HTTP_NOT_FOUND);
+            }
         } else {
             return response()->json(false, Response::HTTP_NOT_FOUND);
         }

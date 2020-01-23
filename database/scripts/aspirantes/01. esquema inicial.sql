@@ -634,3 +634,13 @@ go
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
+
+alter table CAT_PERIODO_PREFICHAS alter column MENSAJE_SEMESTRE TEXT null
+go
+
+alter table CAT_PERIODO_PREFICHAS alter column MENSAJE_SEMESTRE_BIS TEXT null
+go
+
+alter table CAT_PERIODO_PREFICHAS alter column MENSAJE_RECHAZADO TEXT null
+go
+

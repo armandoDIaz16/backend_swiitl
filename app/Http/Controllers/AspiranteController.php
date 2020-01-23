@@ -64,7 +64,7 @@ class AspiranteController extends Controller
 
 
 
-        $sql = "EXEC GENERAR_PREFICHA 
+        $sql = "EXEC GENERAR_PREFICHA
             $request->PK_PERIODO,
             $request->NOMBRE,
             $request->PRIMER_APELLIDO,
@@ -390,10 +390,27 @@ class AspiranteController extends Controller
             $fila = fgets($File);
             //return substr($fila,0,7);
             //array_push($datos, $fila);
+
+            $prefijo_ficha = '03';
+            if (date('m') > 6) {
+                $prefijo_ficha .= substr(date('Y'), 2, 3) + 1 . '1';
+            } else {
+                $prefijo_ficha .= substr(date('Y'), 2, 3) . '2';
+            }
+
+            //Referencias ficha
             if (
-                //Referencias ficha
-                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319' ||
-                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03201'
+                // cuando son 033
+                is_numeric(substr($fila, 0, 7))
+                &&  substr($fila, 0, 7) != ""
+                && substr($fila, 0, 7) == 1369296
+                && substr($fila, 37, 5) == '03319' ||
+
+                // cuando son nuevas (tecvirtual)
+                is_numeric(substr($fila, 0, 7))
+                &&  substr($fila, 0, 7) != ""
+                && substr($fila, 0, 7) == 1369296
+                && substr($fila, 37, 5) == $prefijo_ficha
             ) {
                 array_push($datos, [
                     'CLAVE' => substr($fila, 0, 7),
@@ -568,6 +585,7 @@ class AspiranteController extends Controller
                 'CAT_USUARIO.PRIMER_APELLIDO',
                 DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
                 'CAT_USUARIO.CORREO1 as CORREO',
+                'CATR_REFERENCIA_BANCARIA_USUARIO.MONTO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.CONCEPTO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.REFERENCIA_BANCO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO',
@@ -581,6 +599,7 @@ class AspiranteController extends Controller
                 //['FK_ESTATUS', '=', 2]
             ])
             ->whereBetween('CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO', [$request->FECHA_INICIO, $request->FECHA_FIN])
+            ->orderByRaw('CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO')
             ->get();
 
         return $aspirantes;
@@ -1087,9 +1106,9 @@ class AspiranteController extends Controller
 
             for ($row = 2; $row <= $objPHPExcel->getHighestRow(); $row++) {
                 $preficha = $objPHPExcel->getCell("I" . $row)->getValue();
-                $aceptado = $objPHPExcel->getCell("FU" . $row)->getValue();
-                $ICNE = $objPHPExcel->getCell("FE" . $row)->getValue();
-                $DDD_MG_MAT = $objPHPExcel->getCell("FQ" . $row)->getValue();
+                $aceptado = $objPHPExcel->getCell("FY" . $row)->getValue();
+                $ICNE = $objPHPExcel->getCell("FI" . $row)->getValue();
+                $DDD_MG_MAT = $objPHPExcel->getCell("FU" . $row)->getValue();
                 if ($preficha && $aceptado == 1) {
                     /* Actualiza el estatus por preficha */
                     DB::table('CAT_ASPIRANTE')
@@ -1352,6 +1371,7 @@ class AspiranteController extends Controller
             ->join('CAT_ASPIRANTE AS CA', 'CU.PK_USUARIO', '=', 'CA.FK_PADRE')
             ->join('CATR_REFERENCIA_BANCARIA_USUARIO AS CRBU', 'CU.PK_USUARIO', '=', 'CRBU.FK_USUARIO')
             ->where('FK_PERIODO', $PK_PERIODO)
+            ->orderByRaw('FECHA_PAGO')
             ->get();
         return $aspirantes;
     }

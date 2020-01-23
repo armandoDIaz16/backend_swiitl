@@ -32,6 +32,8 @@ class ProyectoController extends Controller
             }else {
                 $proyecto = new Proyecto();
                 $proyecto->FK_ANTEPROYECTO = $request->id;
+                $periodo = new CreditosSiia();
+                $proyecto->PERIODO = $periodo->periodo();
                 $proyecto->save();
                 return response()->json('Aprobado con exito');
             }

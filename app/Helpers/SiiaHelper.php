@@ -91,28 +91,28 @@ class SiiaHelper {
             view_horarioalumno.NumeroControl,
             ClaveCarrera,
             CASE
-                WHEN Dia = 1 THEN 
+                WHEN Dia = 1 THEN
                     CONCAT('Lunes ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Lunes,
                CASE
-                WHEN Dia = 2 THEN 
+                WHEN Dia = 2 THEN
                     CONCAT('Martes ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Martes,
             CASE
-                WHEN Dia = 3 THEN 
+                WHEN Dia = 3 THEN
                     CONCAT('Miércoles ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Miercoles,
             CASE
-                WHEN Dia = 4 THEN 
+                WHEN Dia = 4 THEN
                     CONCAT('Jueves ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Jueves,
             CASE
-                WHEN Dia = 5 THEN 
+                WHEN Dia = 5 THEN
                     CONCAT('Viernes ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Viernes
         FROM
             dbo.view_horarioalumno
-            LEFT JOIN dbo.view_reticula 
+            LEFT JOIN dbo.view_reticula
                 ON view_reticula.ClaveMateria = view_horarioalumno.ClaveMateria
         WHERE
             view_horarioalumno.NumeroControl = '" .$data['NUMERO_CONTROL']. "'
@@ -189,7 +189,7 @@ class SiiaHelper {
                 END AS FECHA_TERCERA
             FROM
                 dbo.view_seguimiento
-                LEFT JOIN dbo.view_reticula 
+                LEFT JOIN dbo.view_reticula
                     ON view_reticula.ClaveMateria = view_seguimiento.ClaveMateria
             WHERE
                 view_seguimiento.NumeroControl = '".$numero_control."'
@@ -235,6 +235,67 @@ class SiiaHelper {
         }
 
         return $seguimiento;
+    }
+
+    public static function buscar_alumno($numero_control, $nombre, $primer_apellido, $segundo_apellido) {
+        // BUSCAR POR NÚMERO DE CONTROL
+        $sql = "
+            SELECT
+                *
+            FROM
+                dbo.view_alumnos
+            WHERE
+                NumeroControl = '".trim($numero_control)."'
+            ;";
+
+        $usuario = self::procesa_consulta($sql, false);
+        if (!$usuario) {
+            // BUSCAR POR NOMBRE
+            $sql = "
+            SELECT
+                *
+            FROM
+                dbo.view_alumnos
+            WHERE
+                Nombre          = '".$nombre."'
+                AND ApellidoPaterno = '".$primer_apellido."'
+                AND ApellidoMaterno = '".$segundo_apellido."'
+            ;";
+
+            $usuario = self::procesa_consulta($sql, false);
+        }
+
+        return $usuario;
+    }
+
+    public static function buscar_aspirante($nombre, $primer_apellido, $segundo_apellido) {
+        // BUSCAR POR NOMBRE
+        $sql = "
+            SELECT
+                *
+            FROM
+                dbo.view_alumnos
+            WHERE
+                Nombre          = '".$nombre."'
+                AND ApellidoPaterno = '".$primer_apellido."'
+                AND ApellidoMaterno = '".$segundo_apellido."'
+            ;";
+
+        return self::procesa_consulta($sql, false);
+    }
+
+    public static function buscar_empleado($numero_control) {
+        // BUSCAR POR NÚMERO DE SIIA
+        $sql = "
+            SELECT
+                *
+            FROM
+                dbo.view_docentes
+            WHERE
+                Idusuario = '".trim($numero_control)."'
+            ;";
+
+        return self::procesa_consulta($sql, false);
     }
 
     /**

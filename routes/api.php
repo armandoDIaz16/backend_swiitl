@@ -52,6 +52,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     // GUARDAR DATOS PARA COMPLETAR PERFIL
     Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
+
+    // CAMBIAR IMAGEN DE PERFIL
+    Route::post('actualiza_foto_perfil', 'PerfilController@actualiza_foto_perfil');
 });
 /* FIN RUTAS PARA COMPLETAR PERFIL */
 
@@ -197,6 +200,8 @@ route::get('Proyecto/{id}', 'AnteproyectoResidenciasController@alumno');
 Route::get('Pdf/{id}', 'FichaUnicaController@FUApdf');
 Route::get('Proyecto1/{id}', 'AnteproyectoResidenciasController@ind1');
 Route::get('Proyecto2/{id}', 'AnteproyectoResidenciasController@ind2');
+Route::get('Proyecto3/{id}', 'AnteproyectoResidenciasController@ind3');
+Route::get('docresalu/{id}', 'DocumentacionResidenciasController@archivos');
 Route::get('Totalp', 'EstadisticasController@totalproyectos');
 Route::get('GraficaMaestro/{id}', 'ProyectoController@maestros');
 Route::get('Verdoc/{id}', 'DocumentacionResidenciasController@verdoc');
@@ -530,6 +535,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'get_seguimiento',
         'tutorias\SITAlumnoController@get_seguimiento'
     );
+
+    // Buscar coordinadores institucionales
+    Route::get(
+        'coordinadores_institucionales',
+        'tutorias\SITUsuariosController@get_coordinadores_institucionales'
+    );
 });
 
 /* *********************************************************** *
@@ -715,7 +726,6 @@ Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReIns
 
 
 
-
 /* ************************************************************************* *
  * ************* RUTAS PROTEGIDAS DEL SISTEMA DE REFERENCIAS *************** *
  * ************************************************************************* */
@@ -846,3 +856,8 @@ Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReIns
     'get_pdf_perfil_personal_ingreso',
     'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
 );*/
+
+// REFERENCIAS ESPECIALES
+Route::get('referencia_especial_siia', 'ReferenciasEspeciales@generar_referencia_siia');
+Route::get('referencia_especial', 'ReferenciasEspeciales@generar_referencia');
+Route::get('referencia_especial_hijos', 'ReferenciasEspeciales@generar_referencia_hijos');

@@ -22,7 +22,6 @@ use App\CoordinadorDepartamentalTutoria;
  */
 class SITUsuariosController extends Controller
 {
-
     public function elimina_rol_coordinador(Request $request) {
         if ($request->pk_area_academica) {
             $this->quita_rol_coordinador($request->pk_area_academica);
@@ -63,7 +62,43 @@ class SITUsuariosController extends Controller
      */
     public function get_coordinadores_departamentales()
     {
-        $sql = "
+        $sql = '
+            SELECT
+                CAT_USUARIO.PK_USUARIO,
+                CAT_USUARIO.PK_ENCRIPTADA,
+                CAT_USUARIO.FOTO_PERFIL,
+                CAT_USUARIO.NUMERO_CONTROL,
+                CAT_USUARIO.NOMBRE,
+                CAT_USUARIO.PRIMER_APELLIDO,
+                CAT_USUARIO.SEGUNDO_APELLIDO,
+                CAT_USUARIO.CURP,
+                CAT_USUARIO.CORREO1,
+                CAT_USUARIO.CORREO_INSTITUCIONAL,
+                CAT_USUARIO.TELEFONO_CASA,
+                CAT_USUARIO.TELEFONO_MOVIL,
+                CAT_AREA_ACADEMICA.PK_AREA_ACADEMICA,
+                CAT_AREA_ACADEMICA.NOMBRE AS AREA_ACADEMICA,
+                CAT_USUARIO.NOMBRE_CONTACTO,
+                CAT_USUARIO.TELEFONO_CONTACTO
+            FROM TR_COORDINADOR_DEPARTAMENTAL_TUTORIA
+                LEFT JOIN CAT_USUARIO
+                    ON TR_COORDINADOR_DEPARTAMENTAL_TUTORIA.FK_USUARIO = CAT_USUARIO.PK_USUARIO
+                LEFT JOIN CAT_AREA_ACADEMICA
+                    ON TR_COORDINADOR_DEPARTAMENTAL_TUTORIA.FK_AREA_ACADEMICA = CAT_AREA_ACADEMICA.PK_AREA_ACADEMICA
+            WHERE
+                TR_COORDINADOR_DEPARTAMENTAL_TUTORIA.ESTADO = '. Constantes::ESTADO_ACTIVO . '
+            ;';
+
+        $coordinadores = Constantes::procesa_consulta_general($sql);
+
+        return response()->json(
+            ['data' => $coordinadores],
+            Response::HTTP_ACCEPTED
+        );
+    }
+
+    public function get_get_coordinadores_institucionales() {
+        $sql = '
             SELECT
                 CAT_USUARIO.PK_USUARIO,
                 CAT_USUARIO.PK_ENCRIPTADA,
@@ -81,16 +116,12 @@ class SITUsuariosController extends Controller
                 LEFT JOIN CAT_AREA_ACADEMICA
                     ON TR_COORDINADOR_DEPARTAMENTAL_TUTORIA.FK_AREA_ACADEMICA = CAT_AREA_ACADEMICA.PK_AREA_ACADEMICA
             WHERE
-                TR_COORDINADOR_DEPARTAMENTAL_TUTORIA.ESTADO = ". Constantes::ESTADO_ACTIVO . "
-            ;
-        ";
+                TR_COORDINADOR_DEPARTAMENTAL_TUTORIA.ESTADO = '. Constantes::ESTADO_ACTIVO . '
+            ;';
 
         $coordinadores = Constantes::procesa_consulta_general($sql);
 
-        return response()->json(
-            ['data' => $coordinadores],
-            Response::HTTP_ACCEPTED
-        );
+        return response()->json($coordinadores, Response::HTTP_ACCEPTED);
     }
 
     /**
