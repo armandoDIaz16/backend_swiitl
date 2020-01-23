@@ -206,6 +206,7 @@ Route::get('Totalp', 'EstadisticasController@totalproyectos');
 Route::get('GraficaMaestro/{id}', 'ProyectoController@maestros');
 Route::get('Verdoc/{id}', 'DocumentacionResidenciasController@verdoc');
 Route::resource('CreditosSiia', 'CreditosSiiaController');
+Route::get('docresalu/{id}', 'DocumentacionResidenciasController@archivos');
 //});
 /*************************************************************************************
  * **********************************************************************************/

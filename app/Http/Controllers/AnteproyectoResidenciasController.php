@@ -178,19 +178,19 @@ class AnteproyectoResidenciasController extends Controller
         $area2 = array_pop($area1);
         $area3 = array_pop($area2);
         $vistaante = DB::select('SELECT ID_ANTEPROYECTO, CAT_ANTEPROYECTO_RESIDENCIA.NOMBRE, PDF, CAT_USUARIO.NOMBRE AS ALUMNO, ESTATUS, EMPRESA, COMENTARIO 
-                                        FROM CAT_ANTEPROYECTO_RESIDENCIA 
-                                        JOIN CAT_USUARIO ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = CAT_USUARIO.PK_USUARIO
-                                        WHERE AREA_ACADEMICA = :area AND ALUMNO IS NOT NULL',['area'=>$area3]);
+        FROM CAT_ANTEPROYECTO_RESIDENCIA 
+        JOIN CAT_USUARIO ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = CAT_USUARIO.PK_USUARIO
+        WHERE AREA_ACADEMICA = :area AND ALUMNO IS NOT NULL',['area'=>$area3]);
 
         foreach ($vistaante as $index => $value){
-            $var = $value->ESTATUS;
-            if($var == 1) $var2 = "sin revisar";
-            if($var == 2) $var2 = "aceptado";
-            if($var == 3) $var2 = "rechazado";
-            $value->ESTATUS_LETRAS = $var2;
-        }
+        $var = $value->ESTATUS;
+        if($var == 1) $var2 = "sin revisar";
+        if($var == 2) $var2 = "aceptado";
+        if($var == 3) $var2 = "rechazado";
+        $value->ESTATUS_LETRAS = $var2;
+    }
 
-        return $vistaante;
+return $vistaante;
     }
 
     public function ind3($id){
@@ -213,6 +213,27 @@ class AnteproyectoResidenciasController extends Controller
 
         return $vistaante;
     }
+
+    // public function ind3($id){
+    //     $area = DB::select('SELECT ID_AREA_ACADEMICA FROM CATR_DOCENTE WHERE CATR_DOCENTE.ID_PADRE = :id',['id'=>$id]);
+    //     $area1 = json_decode(json_encode($area),true);
+    //     $area2 = array_pop($area1);
+    //     $area3 = array_pop($area2);
+    //     $vistaante = DB::select('SELECT ID_ANTEPROYECTO, CAT_ANTEPROYECTO_RESIDENCIA.NOMBRE, PDF, 
+    //                                     CAT_USUARIO.NOMBRE AS ALUMNO, ESTATUS, EMPRESA, COMENTARIO 
+    //                                     FROM CAT_ANTEPROYECTO_RESIDENCIA 
+    //                                     JOIN CAT_USUARIO ON CAT_ANTEPROYECTO_RESIDENCIA.ALUMNO = CAT_USUARIO.PK_USUARIO
+    //                                     WHERE AREA_ACADEMICA = :area AND ESTATUS <> 2',['area'=>$area3]);
+
+    //     foreach ($vistaante as $index => $value){
+    //         $var = $value->ESTATUS;
+    //         if($var == 1) $var2 = "sin revisar";
+    //         if($var == 3) $var2 = "rechazado";
+    //         $value->ESTATUS_LETRAS = $var2;
+    //     }
+
+    //     return $vistaante;
+    // }
 
     public function alumno($id)
     {

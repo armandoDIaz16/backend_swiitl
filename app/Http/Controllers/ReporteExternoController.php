@@ -8,6 +8,7 @@ use App\CreditosSiia;
 use App\PeriodoResidencia;
 use App\ReporteExterno;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReporteExternoController extends Controller
 {

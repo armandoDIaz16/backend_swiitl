@@ -9,6 +9,7 @@ use App\CreditosSiia;
 use App\DocumentacionResidencias;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\PeriodoResidencia;
 
 class CartaFinalizacionController extends Controller
 {
@@ -27,8 +28,9 @@ class CartaFinalizacionController extends Controller
 
     public function store(Request $request)
     {
+       
         $periodo = new CreditosSiia();
-        $carta = DocumentacionResidencias::where([['ALUMNO',$request->FK_ALUMNO],['PERIODO',$periodo->periodo()]])->get();
+        //$carta = DocumentacionResidencias::where([['ALUMNO',$request->FK_ALUMNO],['PERIODO',$periodo->periodo()]])->get();
         //$carga = new CargaArchivo();
         $fecha = new PeriodoResidencia();
         try{
@@ -40,7 +42,9 @@ class CartaFinalizacionController extends Controller
         }
         $dia = date('Y-m-d');
         if ($diai<=$dia && $dia<=$diaf) {
+            
             //$Ruta = $carga->saveFile($request);
+            $carta =  new CartaFinalizacion();
             $archivo = new Base64ToFile();
             $Ruta = $archivo->guardarArchivo($request->Sistema, $request->Nombre, $request->Extencion, $request->Archivo);
             list($id1, $id2) = explode('files', $Ruta);
