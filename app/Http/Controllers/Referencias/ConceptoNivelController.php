@@ -180,7 +180,7 @@ class ConceptoNivelController extends Controller
             $relacion->save();
 
             return response()->json(
-                $relacion,
+                'La relación entre el concepto y el nivel fue eliminado.',
                 Response::HTTP_ACCEPTED
             );
         }

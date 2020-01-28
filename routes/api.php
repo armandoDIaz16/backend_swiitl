@@ -735,13 +735,13 @@ Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReIns
      * ***********************/
     // Buscar todos los niveles
     Route::get(
-        'niveles',
+        'a79eec2bd07a224f137dbe825aae22f2', // niveles
         'Referencias\NivelController@getNiveles'
     );
 
     // Buscar un nivel especificado por su PK
     Route::get(
-        'nivel/{id}',
+        'a79eec2bd07a224f137dbe825aae22f2/{id}', // niveles/id
         'Referencias\NivelController@getNivel'
     );
 
@@ -750,13 +750,13 @@ Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReIns
      * ***********************/
     // Buscar todos los vales
     Route::get(
-        'vales',
+        'ca24ce920d61b09e5043e174c7bc16f4', // vales
         'Referencias\ValeController@getVales'
     );
 
     // Buscar un vale especificado por su PK
     Route::get(
-        'vale/{id}',
+        'ca24ce920d61b09e5043e174c7bc16f4/{id}', // vales/id
         'Referencias\ValeController@getVale'
     );
 
@@ -765,31 +765,31 @@ Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReIns
      * ***********************/
     // Buscar todos los conceptos
     Route::get(
-        'conceptos',
+        'e4ea811fdfd3f43bd4b0948734067104', // conceptos
         'Referencias\ConceptoController@getConceptos'
     );
 
     // Buscar un concepto especificado por su PK
     Route::get(
-        'concepto/{id}',
+        'e4ea811fdfd3f43bd4b0948734067104/{id}', // conceptos/id
         'Referencias\ConceptoController@getConcepto'
     );
 
     // Crear un concepto
     Route::post(
-        'createConcepto',
+        '80508ce673a395b9f30466b3693b126d',    // createConcepto
         'Referencias\ConceptoController@createConcepto'
     );
 
     // Actualizar un concepto
     Route::patch(
-        'updateConcepto/{id}',
+        'a4d60fe7d61c16bf5f0d74303ddd3e7d/{id}',    // updateConcepto/id
         'Referencias\ConceptoController@updateConcepto'
     );
 
     // Dar de baja a un concepto
     Route::delete(
-        'deleteConcepto/{id}',
+        '6c5288dee70a3754c8632d17c82d374b/{id}',    // deleteConcepto/id
         'Referencias\ConceptoController@deleteConcepto'
     );
 
@@ -798,31 +798,31 @@ Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReIns
      * ****************************************/
     // Buscar todas las relaciones entre concepto - nivel
     Route::get(
-        'allConceptoNivel',
+        'bf6467e75eda50b466746bf5795e20f5', // conceptoNivel
         'Referencias\ConceptoNivelController@getAllConceptoNivel'
     );
 
     // Buscar una relación concepto - nivel especificado por su PK, número de nivel o nombre de nivel
     Route::post(
-        'conceptoNivel',
+        'bf6467e75eda50b466746bf5795e20f5',    // conceptoNivel
         'Referencias\ConceptoNivelController@getConceptoNivel'
     );
 
     // Crear una relación concepto - nivel
     Route::post(
-        'createConceptoNivel',
+        '907c3b7e14835e1b9230e737a1f02fc5',  // createConceptoNivel
         'Referencias\ConceptoNivelController@createConceptoNivel'
     );
 
     // Actualizar una relación concepto - nivel
     Route::patch(
-        'updateConceptoNivel/{id}',
+        '907f89dbb42acb073b322d38dbdd6c1f/{id}', // updateConceptoNivel/id
         'Referencias\ConceptoNivelController@updateConceptoNivel'
     );
 
     // Dar de baja a una relación concepto - nivel
     Route::delete(
-        'deleteConceptoNivel/{id}',
+        '92f7d5cb6226d5e17bc4f7462c81a0d6/{id}', // deleteConceptoNivel/id
         'Referencias\ConceptoNivelController@deleteConceptoNivel'
     );
 
@@ -831,19 +831,19 @@ Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReIns
      * ************************/
     // Buscar todos las referencias
     Route::get(
-        'referencias',
+        'f44481864c5480bba492078f6e748da7',  // referencias
         'Referencias\ReferenciaController@getReferencias'
     );
 
     // Buscar una referencia por su PK.
     Route::get(
-        'referencia/{id}',
+        'f44481864c5480bba492078f6e748da7/{id}',        // referencias/id
         'Referencias\ReferenciaController@getReferencia'
     );
 
     // Crear una referencia
     Route::post(
-        'createReferencia',
+        '8b434114ba6920f69e3634341051e279',     // createReferencia
         'Referencias\ReferenciaController@createReferencia'
     );
 //});

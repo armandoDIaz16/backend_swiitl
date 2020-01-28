@@ -131,22 +131,21 @@ class ConceptoController extends Controller
             ->where('PK_CONCEPTO', '=', $id)
             ->where('BORRADO', '=', '0')
             ->select('CAT_CONCEPTO.*');
-        $conceptoFirst= $concepto->first();
 
         $logConcepto = new LogConcepto;
 
-        if (empty($conceptoFirst)) {
+        if (empty($concepto->first())) {
             return response()->json(
                 'El concepto con el ID enviado no existe.',
                 Response::HTTP_BAD_REQUEST
             );
         } else {
-            $logConcepto->FK_CONCEPTO = $conceptoFirst->PK_CONCEPTO;
-            $logConcepto->MONTO_ANTERIOR = $conceptoFirst->MONTO;
+            $logConcepto->FK_CONCEPTO = $concepto->first()->PK_CONCEPTO;
+            $logConcepto->MONTO_ANTERIOR = $concepto->first()->MONTO;
 
             $concepto->update($request->all());
 
-            $logConcepto->MONTO_NUEVO = $conceptoFirst->MONTO;
+            $logConcepto->MONTO_NUEVO = $concepto->first()->MONTO;
 
             //Si el monto del concepto cambio, guardar en bitacora
             if ($logConcepto->MONTO_ANTERIOR != $logConcepto->MONTO_NUEVO) {
@@ -189,7 +188,7 @@ class ConceptoController extends Controller
             ]);
 
             return response()->json(
-                $concepto->first(),
+                'El concepto fue borrado.',
                 Response::HTTP_ACCEPTED
             );
         }
