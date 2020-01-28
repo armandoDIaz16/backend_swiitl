@@ -300,7 +300,26 @@ class AuthController extends Controller
             case Constantes::USUARIO_ASPIRANTE:
                 // es aspirante
                 $this->actualiza_datos_aspirante($usuario);
+                $this->asigna_rol_tutorias_estudiante($usuario);
                 break;
+        }
+    }
+
+    private function asigna_rol_tutorias_estudiante(Usuario $usuario) {
+        // ASIGNAR ROL DE TUTORIAS
+        $rol = Rol::where('ABREVIATURA', 'EST_TUT')->first();
+        if ($rol) {
+            $rol_tutorias = Usuario_Rol::where('FK_USUARIO', $usuario->PK_USUARIO)
+                ->where('FK_ROL', $rol->PK_ROL)
+                ->first();
+
+            if (!$rol_tutorias) {
+                $rol_tutorias = new Usuario_Rol;
+                $rol_tutorias->FK_USUARIO = $usuario->PK_USUARIO;
+                $rol_tutorias->FK_ROL     = $rol->PK_ROL;
+
+                $rol_tutorias->save();
+            }
         }
     }
 

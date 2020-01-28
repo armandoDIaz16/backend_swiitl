@@ -10,11 +10,11 @@ class ReferenciasEspeciales extends Controller
     public function generar_referencia_siia()
     {
         // De semestre 0 a 1
-        $fechaLimitePago = '2020-01-23';
+        $fechaLimitePago = '2020-01-29';
         $monto = '3900';
 
         // hijos de homologados
-        /*$fechaLimitePago = '2020-01-17';
+        /*$fechaLimitePago = '2020-01-29';
         $monto = '450';*/
 
         $numeros_control = [
@@ -190,6 +190,11 @@ class ReferenciasEspeciales extends Controller
             '1163',
             '1164',
             '1165',*/
+            /*'1171',*/
+            /*'1172',*/
+            /*'1173',*/
+            /*'1174',*/
+            '1175',
         ];
 
         // 30 19240660 015 037 22545291
@@ -220,8 +225,9 @@ class ReferenciasEspeciales extends Controller
 
     public static function generar_referencia()
     {
-        $fechaLimitePago = '2020-01-19';
-        $monto = '250';
+        $fechaLimitePago = '2020-02-02';
+        $monto = '3000';
+        /*$monto = '250';*/
         // NUMEROS DE CONTROL DE HORIZONTES
         $numeros_control = [
             /*'19240660',
@@ -297,7 +303,11 @@ class ReferenciasEspeciales extends Controller
             '19240846',
             '19240109',*/
             /*'19240452'*/
-            '19240517'
+            /*'19240517',*/
+            /*'19420065',*/
+            /*'C17240036',*/
+            /*'C17240885',*/
+            'C18240692',
         ];
 
         $referencias = [];

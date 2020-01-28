@@ -126,7 +126,6 @@ class SITGruposController extends Controller
                     }
 
                     $grupos_tutor = $grupos_tutor->get();
-
                     foreach ($grupos_tutor as $grupo) {
                         $condiciones_siia = [
                             'CLAVE_GRUPO'   => $grupo->CLAVE,
@@ -144,7 +143,7 @@ class SITGruposController extends Controller
 
                         $encuestas_activas     =
                             $this->get_encuestas_grupo(
-                                NULL,
+                                Constantes::ENCUESTA_PENDIENTE,
                                 $grupo->PK_GRUPO_TUTORIA
                             )[0]->CANTIDAD_ENCUESTAS;
 
@@ -249,8 +248,8 @@ class SITGruposController extends Controller
                 ON TR_GRUPO_TUTORIA_DETALLE.FK_USUARIO = TR_APLICACION_ENCUESTA.FK_USUARIO
             LEFT JOIN TR_GRUPO_TUTORIA
                 ON TR_GRUPO_TUTORIA.PK_GRUPO_TUTORIA = TR_GRUPO_TUTORIA_DETALLE.FK_GRUPO
-        WHERE 
-            TR_APLICACION_ENCUESTA.PERIODO = '" . Constantes::get_periodo() ."' ";
+        WHERE
+            TR_APLICACION_ENCUESTA.PERIODO = '" . Constantes::get_periodo() ."'";
 
         if ($estado_encuesta) {
             $sql .= " AND TR_APLICACION_ENCUESTA.ESTADO = $estado_encuesta ";

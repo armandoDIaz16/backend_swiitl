@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\tutorias;
 
+use App\Helpers\Constantes;
+use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Encuesta;
@@ -126,10 +128,12 @@ class SITEncuestaController extends Controller
      * @param $id_usuario
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get_cuestionarios_usuarios($id_usuario)
+    public function get_cuestionarios_usuarios($pk_encriptada)
     {
+        $usuario = UsuariosHelper::get_usuario($pk_encriptada);
+
         $encuestas = DB::table('VIEW_LISTA_ENCUESTAS')
-            ->where('FK_USUARIO', $id_usuario)
+            ->where('FK_USUARIO', $usuario->PK_USUARIO)
             ->get();
 
         if (count($encuestas) > 0) {
@@ -172,17 +176,24 @@ class SITEncuestaController extends Controller
      */
     public function get_encuesta_aplicacion($pk_aplicacion_encuesta)
     {
-        $encuesta = DB::table('VIEW_LISTA_ENCUESTAS')
+        $aplicacion_encuesta = DB::table('VIEW_LISTA_ENCUESTAS')
             ->where('PK_APLICACION_ENCUESTA', $pk_aplicacion_encuesta)
             ->first();
 
-        $encuesta = $this->get_encuesta_por_pk($encuesta->PK_ENCUESTA);
+        if ($aplicacion_encuesta->ESTADO_APLICACION == Constantes::ENCUESTA_PENDIENTE) {
+            $encuesta = $this->get_encuesta_por_pk($aplicacion_encuesta->PK_ENCUESTA);
 
-        if ($encuesta > 0) {
-            return response()->json(
-                ['data' => $encuesta],
-                Response::HTTP_OK
-            );
+            if ($encuesta > 0) {
+                return response()->json(
+                    ['data' => $encuesta],
+                    Response::HTTP_OK
+                );
+            } else {
+                return response()->json(
+                    ['data' => false],
+                    Response::HTTP_NOT_FOUND
+                );
+            }
         } else {
             return response()->json(
                 ['data' => false],

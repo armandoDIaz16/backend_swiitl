@@ -56,6 +56,91 @@ ALTER TABLE CAT_USUARIO
 
 -- agregar campo a vista VW_PERFIL_ASPIRANTE
 -- CAT_USUARIO.FOTO_PERFIL,
+-- CAT_USUARIO.FK_AREA_ACADEMICA,
 
 -- AGREGAR ABREVIATURA EN ROL ASPIRANTE
 -- UPDATE PER_CAT_ROL SET ABREVIATURA = 'ASP' WHERE PK_ROL = 3
+
+SET IDENTITY_INSERT CAT_AREA_ACADEMICA ON;
+INSERT INTO CAT_AREA_ACADEMICA(PK_AREA_ACADEMICA, FK_INSTITUCION, NOMBRE, ABREVIATURA) VALUES
+(5, 1, 'Ciencias Básicas', 'CB'),
+(6, 1, 'Desarrollo Académico', 'DA'),
+(7, 1, 'División de Estudios de Posgrado e Investigación', 'DEPI'),
+(8, 1, 'División de Estudios Profesionales', 'DEP'),
+(9, 1, 'Actividades Extraescolares', 'AE'),
+(10, 1, 'Gestión Tecnológica y Vinculación', 'GTyV'),
+(11, 1, 'Centro de Información', 'CI'),
+(12, 1, 'Planeación Programación y Presupuestación', 'PPyP'),
+(13, 1, 'Comunicación y Difusión', 'CyD'),
+(14, 1, 'Servicios Escolares', 'SE'),
+(15, 1, 'Recursos Financieros', 'RF'),
+(16, 1, 'Recursos Humanos', 'RH'),
+(17, 1, 'Centro de Cómputo', 'CC'),
+(18, 1, 'Recursos Materiales y de Servicios', 'RMyS'),
+(19, 1, 'Dirección', 'DIR'),
+(20, 1, 'Subdirección Académica', 'SA'),
+(21, 1, 'Subdirección de Planeación y Vinculación', 'SPyV'),
+(22, 1, 'Subdirección de Servicios Administrativos', 'SSA')
+;
+SET IDENTITY_INSERT CAT_AREA_ACADEMICA OFF;
+
+-- CAMPO PARA AGREGAR RUTA DESENCRIPTADA
+ALTER TABLE PER_CAT_MODULO ADD RUTA NVARCHAR(50) NULL;
+
+-- CAMPO PARA AGREGAR RUTA ENCRIPTADA
+ALTER TABLE PER_CAT_MODULO ADD RUTA_MD5 NVARCHAR(50) NULL;
+
+-- AGREGANDO RUTAS ENCRIPTADAS
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '6da5b4309f3cc102b3a2b7ac7e52a62c' WHERE nombre = 'Encuestas';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '01762815bd52fa2163dd6240b7980745' WHERE nombre = 'Grupos';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'dc7161be3dbf2250c8954e560cc35060' WHERE nombre = 'Dashboard';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '99d1b6a6e7257f98d75d8f4846df8671' WHERE nombre = 'Datos';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '009063c5b618c9de8ea7c01836d9ae52' WHERE nombre = 'Prefichas';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '5b51dd05ab3955ecda2130d5631d30e0' WHERE nombre = 'Prefichas pagadas';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '4a1a72c788d1afaeaf46cfa21c4b0439' WHERE nombre = 'Lista grupos';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'db86484759b9a1821c4f64ef3c354b87' WHERE nombre = 'Crear grupos';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '33b8b0195fa5a3d546181cf4ba36d5aa' WHERE nombre = 'Archivos';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'ea56b27b8858cc33c59875c2f6303439' WHERE nombre = 'Gráficas';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'b98917264cbb9144fcf9ce9861bbcd37' WHERE nombre = 'Periodo';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '49e5c368585ec9557db038d7904121a8' WHERE nombre = 'Archivos de pagos';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '81f01f264dfb07a9ef2e1ed108a15114' WHERE nombre = 'Referencias pagadas';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '2873ce9d61fb6a049621820184375958' WHERE nombre = 'Apertura';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'dfdca9641e416f4156e3d584cc2f437e' WHERE nombre = 'Solicitudes';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '8606b80c44b0ebb62d4bdbdb3dc62ae9' WHERE nombre = 'Asignación';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '7260be0e3082e1b921913eb9ad0837df' WHERE nombre = 'Formatos';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '1747db730b311d6934e628227bc5822c' WHERE nombre = 'Materias';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '08e4efa85b9242a11994d9e7a9943cfd' WHERE nombre = 'Notificaciones';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '0b382923b48a141421a9c559fa981ff5' WHERE nombre = 'Reportes';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '4abc9fdf01d0176ad44990e73e76fd36' WHERE nombre = 'Constancias';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '625d69d053916d80fff62985adc219cb' WHERE nombre = 'Cronograma';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'e034eb433ed198a789e3c2f7a2066b1f' WHERE nombre = 'Reportes coordinador';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '3a67539fc9aaa0b0a5a14a15622ac68a' WHERE nombre = 'Generalidades';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '7461692f60535a469f8527625a0e4aff' WHERE nombre = 'Perfil de asesor';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'f098877037f139b5cacecb5da50ec240' WHERE nombre = 'Solicitud asesor';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'bb88b163f9f5662e3427178c7081a835' WHERE nombre = 'Notificación asesores';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '2717584bb9f796a3ec7a233792daa129' WHERE nombre = 'Asignación asesores';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '37c9114fff6e88edb562e92b8358cb8b' WHERE nombre = 'Formatos asesores';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'ed325e99553efb6c20af9e32234a65d8' WHERE nombre = 'Solicitud alumno';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'f0e8b0879997801fd0e04c8e0f6390c4' WHERE nombre = 'Notificación alumno';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '4184a6435b97c7e0d7ff3484d0c86bf9' WHERE nombre = 'Formatos alumno';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '8a84177421a6f0b1be31d83567790e39' WHERE nombre = 'Encuesta alumno';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '6ae1c213cad7fca191a5355d21ed5b17' WHERE nombre = 'Plantilla SIIA';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '4857c37b05b992816eaca21ead04c723' WHERE nombre = 'Examen ubicación';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'f44481864c5480bba492078f6e748da7' WHERE nombre = 'Referencias';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '9c969972f31be24de51532534aada5c1' WHERE nombre = 'Documentos';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '04d7c71890c0ce2aa848a97808dc2210' WHERE nombre = 'Coordinadores institucionales';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '7c3bbdec167c62a1e132960c3ddf4330' WHERE nombre = 'Coordinadores departamentales';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '93f61aa8ec5dd9a7c456f3fcab126e81' WHERE nombre = 'Datos tutor';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '03f996214fba4a1d05a68b18fece8e71' WHERE nombre = 'Usuarios';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = '019598bbc4a553858bb03f4d26d4e772' WHERE nombre = 'Horario';
+UPDATE PER_CAT_MODULO SET RUTA_MD5 = 'ace6a2029397fd5f164842ac293223e5' WHERE nombre = 'Seguimiento académico';
+
+-- CAMPO PARA DESCRIPCIÓN DEL MÓDULO
+ALTER TABLE PER_CAT_MODULO ADD DESCRIPCION NVARCHAR(100) NULL;
+
+-- Modulo de grupos del tutor
+INSERT INTO PER_CAT_MODULO (NOMBRE, ESTADO, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Grupos', 1, 1, 'a20e50d69f0242136be5a392524da972', 'Lista de grupos del tutor', 'grupos_tutor');
+
+-- actualización de modulo de grupos a tutor
+UPDATE PER_TR_ROL_MODULO SET FK_MODULO = 47 WHERE PK_ROL_MODULO = 2;
