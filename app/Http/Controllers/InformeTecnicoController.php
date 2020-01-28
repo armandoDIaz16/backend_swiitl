@@ -26,9 +26,9 @@ class InformeTecnicoController extends Controller
     public function store(Request $request)
     {
         $fecha = new PeriodoResidencia();
-        $dia = ('Y-m-d');
+        $dia = date('Y-m-d');
         $diai = $fecha->FIniA($request->FK_ALUMNO,5);
-        $diaf = $fecha->FFinD($request->FK_ALUMNO,5);
+        $diaf = $fecha->FFinA($request->FK_ALUMNO,5);
         if ($diai<=$dia && $dia<=$diaf){
             $informe = new InformeTecnico();
             //$carga = new CargaArchivo();
@@ -41,7 +41,7 @@ class InformeTecnicoController extends Controller
             $informe->PERIODO = $periodo->periodo();
             try{
                 $informe->save();
-                return response()->json('Guardado ocn exito');}
+                return response()->json('Guardado con exito');}
             catch(\Exception $exception){
                 return response()->json('Error al guardar');
             }
