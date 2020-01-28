@@ -49,14 +49,14 @@ CREATE TABLE TR_REFERENCIA
     FK_USUARIO              INT             NOT NULL,
     FK_CONCEPTO             INT             NOT NULL,
 
-    FECHA_GENERADA          DATETIME                 DEFAULT NULL,
-    FECHA_EXPIRACION        DATETIME                 DEFAULT NULL,
+    FECHA_GENERADA          DATETIME        DEFAULT NULL,
+    FECHA_EXPIRACION        DATETIME        DEFAULT NULL,
     ESTATUS_REFERENCIA      TINYINT         NOT NULL,                   --0 -> NO PAGADA GENERADA, 1 -> PAGADA GENERADA, 2 -> PAGADA GENERADA EXTERNA
-    MONTO                   DECIMAL         NOT NULL,
-    CANTIDAD_SISTEMA        TINYINT         NOT NULL,
+    MONTO                   DECIMAL         NOT NULL,                   --MONTO TOTAL A PAGAR
+    CANTIDAD_SISTEMA        TINYINT         NOT NULL,                   --ESTA COLUMNA FUE BORRADA
     NUMERO_REF_BANCO        NVARCHAR(25)    NOT NULL,
-    FECHA_PAGO              DATETIME                 DEFAULT NULL,
-    TIPO_PAGO               NVARCHAR(10)             DEFAULT NULL,      --TARJETA, EFECTIVO
+    FECHA_PAGO              DATETIME        DEFAULT NULL,
+    TIPO_PAGO               NVARCHAR(10)    DEFAULT NULL,               --TARJETA, EFECTIVO
     CANTIDAD_SOLICITADA     SMALLINT        NOT NULL,
 
     FK_USUARIO_REGISTRO     INT,
@@ -88,7 +88,7 @@ CREATE TABLE TR_REFERENCIA_DOCUMENTO
 
     ESTATUS_ENTREGA_DOCUMENTO   TINYINT         NOT NULL,   --0 PAGADO, 1 GENERADO, 2 ENTREGADO
     FECHA_ENTREGA               DATE            NOT NULL,
-    OBSERVACIONES               TEXT                     DEFAULT NULL,    
+    OBSERVACIONES               TEXT            DEFAULT NULL,
 
     FK_USUARIO_REGISTRO         INT,
     FECHA_REGISTRO              DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -139,7 +139,7 @@ DROP TABLE IF EXISTS  CAT_NIVEL;
 CREATE TABLE CAT_NIVEL
 (
     PK_NIVEL                INT           NOT NULL IDENTITY(1,1),
-    
+
     NIVEL                   TINYINT       NOT NULL,                 --DEL 0 AL 4
     NOMBRE                  NVARCHAR(15)  NOT NULL,                 --0 -> EXTERNO, 1 -> LICENCIATURA, 2 -> MAESTRIA, 3 -> DOCTORADO, 4 -> EGRESADO
 
@@ -165,7 +165,7 @@ CREATE TABLE TR_CONCEPTO_NIVEL
     FK_CONCEPTO             INT             NOT NULL,
     FK_NIVEL                INT             NOT NULL,
 
-    SEMESTRE                TINYINT                  DEFAULT NULL,
+    SEMESTRE                TINYINT         DEFAULT NULL,                       --CUANDO ES NULL, PARA TODOS LOS SEMESTRES
 
     FK_USUARIO_REGISTRO     INT,
     FECHA_REGISTRO          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -192,7 +192,7 @@ DROP TABLE IF EXISTS CAT_VALE;
 CREATE TABLE CAT_VALE
 (
     PK_VALE                 INT             NOT NULL IDENTITY(1,1),
-    
+
     NOMBRE                  NVARCHAR(100)   NOT NULL,
     ESTATUS                 BIT             NOT NULL,
     MONTO                   DECIMAL         NOT NULL,
@@ -248,12 +248,12 @@ CREATE TABLE TR_MOVIMIENTO_VALE
     PK_MOVIMIENTO           INT             NOT NULL IDENTITY(1,1),
     FK_VALE_USUARIO         INT             NOT NULL,
     FK_REFERENCIA           INT                      DEFAULT NULL,
-    
+
     MONTO                   DECIMAL         NOT NULL,
     TIPO_MOVIMIENTO         BIT             NOT NULL,                           -- 0 -> CARGO, 1 -> ABONO
     FECHA_MOVIMIENTO        DATE            NOT NULL,
     CANTIDAD                SMALLINT        NOT NULL,
-    OBSERVACIONES           TEXT                     DEFAULT NULL,
+    OBSERVACIONES           TEXT            DEFAULT NULL,
 
     FK_USUARIO_REGISTRO     INT,
     FECHA_REGISTRO          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,

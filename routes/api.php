@@ -206,6 +206,7 @@ Route::get('Totalp', 'EstadisticasController@totalproyectos');
 Route::get('GraficaMaestro/{id}', 'ProyectoController@maestros');
 Route::get('Verdoc/{id}', 'DocumentacionResidenciasController@verdoc');
 Route::resource('CreditosSiia', 'CreditosSiiaController');
+Route::get('docresalu/{id}', 'DocumentacionResidenciasController@archivos');
 //});
 /*************************************************************************************
  * **********************************************************************************/
@@ -716,6 +717,146 @@ Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
  * *********************************************************** */
 Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReInscripcion');
 
+
+
+
+
+
+
+
+
+
+
+/* ************************************************************************* *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE REFERENCIAS *************** *
+ * ************************************************************************* */
+//Route::group(['middleware' => ['jwt.verify']], function () {
+    /**************************
+     *      MÓDULO NIVEL
+     * ***********************/
+    // Buscar todos los niveles
+    Route::get(
+        'a79eec2bd07a224f137dbe825aae22f2', // niveles
+        'Referencias\NivelController@getNiveles'
+    );
+
+    // Buscar un nivel especificado por su PK
+    Route::get(
+        'a79eec2bd07a224f137dbe825aae22f2/{id}', // niveles/id
+        'Referencias\NivelController@getNivel'
+    );
+
+    /**************************
+     *      MÓDULO VALE
+     * ***********************/
+    // Buscar todos los vales
+    Route::get(
+        'ca24ce920d61b09e5043e174c7bc16f4', // vales
+        'Referencias\ValeController@getVales'
+    );
+
+    // Buscar un vale especificado por su PK
+    Route::get(
+        'ca24ce920d61b09e5043e174c7bc16f4/{id}', // vales/id
+        'Referencias\ValeController@getVale'
+    );
+
+    /**************************
+     *     MÓDULO CONCEPTO
+     * ***********************/
+    // Buscar todos los conceptos
+    Route::get(
+        'e4ea811fdfd3f43bd4b0948734067104', // conceptos
+        'Referencias\ConceptoController@getConceptos'
+    );
+
+    // Buscar un concepto especificado por su PK
+    Route::get(
+        'e4ea811fdfd3f43bd4b0948734067104/{id}', // conceptos/id
+        'Referencias\ConceptoController@getConcepto'
+    );
+
+    // Crear un concepto
+    Route::post(
+        '80508ce673a395b9f30466b3693b126d',    // createConcepto
+        'Referencias\ConceptoController@createConcepto'
+    );
+
+    // Actualizar un concepto
+    Route::patch(
+        'a4d60fe7d61c16bf5f0d74303ddd3e7d/{id}',    // updateConcepto/id
+        'Referencias\ConceptoController@updateConcepto'
+    );
+
+    // Dar de baja a un concepto
+    Route::delete(
+        '6c5288dee70a3754c8632d17c82d374b/{id}',    // deleteConcepto/id
+        'Referencias\ConceptoController@deleteConcepto'
+    );
+
+    /*******************************************
+     *     MÓDULO RELACIÓN CONCEPTO-NIVEL
+     * ****************************************/
+    // Buscar todas las relaciones entre concepto - nivel
+    Route::get(
+        'bf6467e75eda50b466746bf5795e20f5', // conceptoNivel
+        'Referencias\ConceptoNivelController@getAllConceptoNivel'
+    );
+
+    // Buscar una relación concepto - nivel especificado por su PK, número de nivel o nombre de nivel
+    Route::post(
+        'bf6467e75eda50b466746bf5795e20f5',    // conceptoNivel
+        'Referencias\ConceptoNivelController@getConceptoNivel'
+    );
+
+    // Crear una relación concepto - nivel
+    Route::post(
+        '907c3b7e14835e1b9230e737a1f02fc5',  // createConceptoNivel
+        'Referencias\ConceptoNivelController@createConceptoNivel'
+    );
+
+    // Actualizar una relación concepto - nivel
+    Route::patch(
+        '907f89dbb42acb073b322d38dbdd6c1f/{id}', // updateConceptoNivel/id
+        'Referencias\ConceptoNivelController@updateConceptoNivel'
+    );
+
+    // Dar de baja a una relación concepto - nivel
+    Route::delete(
+        '92f7d5cb6226d5e17bc4f7462c81a0d6/{id}', // deleteConceptoNivel/id
+        'Referencias\ConceptoNivelController@deleteConceptoNivel'
+    );
+
+    /***************************
+     *     MÓDULO REFERENCIAS
+     * ************************/
+    // Buscar todos las referencias
+    Route::get(
+        'f44481864c5480bba492078f6e748da7',  // referencias
+        'Referencias\ReferenciaController@getReferencias'
+    );
+
+    // Buscar una referencia por su PK.
+    Route::get(
+        'f44481864c5480bba492078f6e748da7/{id}',        // referencias/id
+        'Referencias\ReferenciaController@getReferencia'
+    );
+
+    // Crear una referencia
+    Route::post(
+        '8b434114ba6920f69e3634341051e279',     // createReferencia
+        'Referencias\ReferenciaController@createReferencia'
+    );
+//});
+
+/* ********************************************************************* *
+ * ************* RUTAS LIBRES DEL SISTEMA DE REFERENCIAS *************** *
+ * ********************************************************************* */
+//Generar pdf perfil individual de ingreso
+/*Route::get(
+    'get_pdf_perfil_personal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+);*/
 
 // REFERENCIAS ESPECIALES
 Route::get('referencia_especial_siia', 'ReferenciasEspeciales@generar_referencia_siia');

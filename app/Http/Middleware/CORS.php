@@ -46,6 +46,7 @@ class CORS
                 header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PATCH, PUT, DELETE');
             }
         }
+
         return $next($request);
     }
 }
