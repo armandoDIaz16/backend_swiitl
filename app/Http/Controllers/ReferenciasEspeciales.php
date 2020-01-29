@@ -195,7 +195,7 @@ class ReferenciasEspeciales extends Controller
             /*'1173',*/
             /*'1174',*/
             /*'1175',*/
-            '1176',
+            /*'1176',*/
         ];
 
         // 30 19240660 015 037 22545291
