@@ -10,7 +10,7 @@ class ReferenciasEspeciales extends Controller
     public function generar_referencia_siia()
     {
         // De semestre 0 a 1
-        $fechaLimitePago = '2020-01-29';
+        $fechaLimitePago = '2020-01-31';
         $monto = '3900';
 
         // hijos de homologados
@@ -194,7 +194,8 @@ class ReferenciasEspeciales extends Controller
             /*'1172',*/
             /*'1173',*/
             /*'1174',*/
-            '1175',
+            /*'1175',*/
+            '1176',
         ];
 
         // 30 19240660 015 037 22545291
