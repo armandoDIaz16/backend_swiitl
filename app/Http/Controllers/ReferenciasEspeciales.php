@@ -391,4 +391,44 @@ class ReferenciasEspeciales extends Controller
         return $referencias;
     }
 
+    public static function referencia_propedeutico() {
+        $fechaLimitePago = '2020-02-11';
+        $monto = '2500';
+        // NUMEROS DE CONTROL DE HIJOS DE HOMOLOOGADOS
+        $numeros_control = [
+            // 30-01-2020
+            '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010',
+            '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020',
+            '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030',
+            '2031', '2032', '2033', '2034', '2035', '2036', '2037', '2038', '2039', '2040',
+            '2041', '2042', '2043', '2044', '2045', '2046', '2047', '2048', '2049', '2050',
+            '2051', '2052', '2053', '2054', '2055', '2056', '2057', '2058', '2059', '2060',
+            '2061', '2062', '2063', '2064', '2065',
+            // fecha nueva
+        ];
+
+        $referencias = [];
+
+        foreach ($numeros_control as $numero_control) {
+            $datosReferencia = [
+                'tipo_persona' => '30', // 30
+                'control'  => $numero_control,
+                'servicio' => '015', // 015
+                'concepto' => '037', // 037
+                'valorvariable' => '2',
+                'monto' => $monto,
+                'yearC' => date('Y', strtotime($fechaLimitePago)),
+                'mesC' => date('m', strtotime($fechaLimitePago)),
+                'diaC' => date('j', strtotime($fechaLimitePago)),
+            ];
+
+            $referencias[] = [
+                'numero_control' => $numero_control,
+                'referencia' => Referencia::RUTINA8250POSICIONESSIIA($datosReferencia)
+            ];
+        }
+
+        return $referencias;
+    }
+
 }
