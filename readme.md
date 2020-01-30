@@ -1,69 +1,183 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+## Sistema Integral Tecvirtual Backend
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+El sistema integral del Tecnológico Nacional de México en León, mejor conocido como "[*Tec Virtual*](http://tecvirtual.itleon.edu.mx/#/)", 
+incluye la mayoría de los procesos que se llevan a cabo en dicha institución. 
+El desarrollo del sistema es la suma de los esfuerzos de estudiantes e ingenieros que trabajan en equipo para hacer posible dicho proyecto.
 
-## About Laravel
+## Índice
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+* [Instalación](#instalación)
+    * [Para Clonar el Proyecto](#para-clonar-el-proyecto)
+    * [Crear el Archivo .env](#crear-el-archivo-env)
+    * [Crear la Base de Datos](#crear-la-base-de-datos)
+* [Uso](#uso)
+* [¿Qué Incluye?](#qué-incluye)
+* [Versiones](#versiones)
+* [Documentación](#documentación)
+* [Licencia y Derechos de Autor](#licencia-y-derechos-de-autor)
+* [Soporte](#soporte)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Instalación
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+Se necesitan descargar e instalar los programas en el siguiente orden:
+* [XAMPP](https://www.apachefriends.org/es/download.html) 7.2.26
+* [Composer](https://getcomposer.org/) 1.9.2 
 
-## Learning Laravel
+### Para clonar el proyecto
+``` bash
+$ git clone http://10.0.6.86/mangel_mx/backend_swiitl.git
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+# trasladarse a la carpeta de la aplicación
+$ cd backend_swiitl
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+# instalar las dependencias de la aplicación
+$ composer install
+```
 
-## Laravel Sponsors
+### Crear el archivo .env
+En la ruta *backend_swiitl/* se crea o modifica el archivo **.env** copiando los siguientes campos:  
+``` typescript
+    APP_NAME=Laravel
+    APP_ENV=local
+    APP_KEY=base64:qWo08rKXLPh61jQ+V65pTnm2EvVqc7NaEcLnbb7Lu/0=
+    APP_DEBUG=true
+    APP_URL=http://localhost
+    
+    LOG_CHANNEL=stack
+    
+    DB_CONNECTION=sqlsrv
+    DB_HOST=
+    DB_PORT=1433
+    DB_DATABASE=
+    DB_USERNAME=
+    DB_PASSWORD=
+    
+    DB_CONNECTION_SECOND=sqlsrv
+    DB_HOST_SECOND=10.0.6.84
+    DB_PORT_SECOND=1433
+    DB_DATABASE_SECOND=ITL_SICH
+    DB_USERNAME_SECOND=desarrollocc
+    DB_PASSWORD_SECOND=DCCitl1824*-?
+    
+    BROADCAST_DRIVER=log
+    CACHE_DRIVER=file
+    QUEUE_CONNECTION=sync
+    SESSION_DRIVER=file
+    SESSION_LIFETIME=120
+    
+    REDIS_HOST=127.0.0.1
+    REDIS_PASSWORD=null
+    REDIS_PORT=6379
+    
+    MAIL_DRIVER=smtp
+    MAIL_HOST=smtp.gmail.com
+    MAIL_PORT=587
+    MAIL_USERNAME=eddychavezba@gmail.com
+    MAIL_PASSWORD=cfgtjyhdbppopugw
+    MAIL_ENCRYPTION=tls
+    
+    PUSHER_APP_ID=
+    PUSHER_APP_KEY=
+    PUSHER_APP_SECRET=
+    PUSHER_APP_CLUSTER=mt1
+    
+    MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+    MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+    
+    JWT_SECRET=CDwyZWR5RvWkj97oFPv7mmJbzMS58UTe4AvxWPYu3GhTIP0a7S8tCG6sEyuVbaFT
+```
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+Dependiendo del ambiente en el que se quiera probar el sistema, se cambian los siguientes campos:
+<br>
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
+Si es en ambiente local, primero se debe crear la base de datos (ver 
+[Crear la base de datos](#crear-la-base-de-datos)). Una vez creada, se utiliza el nombre de 
+la base de datos dado y un usuario y contraseña creados por el desarrollador.
+``` typescript
+    DB_CONNECTION=sqlsrv
+    DB_HOST=localhost
+    DB_PORT=1433
+    DB_DATABASE=
+    DB_USERNAME=
+    DB_PASSWORD=
+```
+ 
+Si es en ambiente de pruebas, se ponen los siguientes datos:
+``` typescript
+    DB_CONNECTION=sqlsrv
+    DB_HOST=10.0.6.232
+    DB_PORT=1433
+    DB_DATABASE=TECVIRTUAL
+    DB_USERNAME=SA
+    DB_PASSWORD=123qweZXC
+```
 
-## Contributing
+Finalmente, para subir a producción, se hace un pull request a los administradores del proyecto.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Crear la base de datos
 
-## Security Vulnerabilities
+En un IDE para bases de datos, como DataGrip o SQL Server Management Studio, se corren todos los scripts 
+localizados en la ruta *../database/scripts/usuarios* con el siguiente orden:
+1. 01\. esquema inicial.sql
+2. 01\. esquema cambios.sql
+3. 02\. script inicial - sistema.sql
+4. 03\. script inicial - _ciudades.sql
+5. 03\. script inicial - _codigos postales.sql
+6. 03\. script inicial - _colonias.sql
+7. 03\. script inicial - codigos postales por colonia.xlsx **<sup>1</sup>**
+8. 03\. script inicial - roles y permisos.sql
+9. 04\. vistas.sql
+10. 05\. procedimientos almacenados.sql
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**<sup>1</sup>** Dentro del archivo de excel están los registros que se deben correr.
 
-## License
+## Uso
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Para visualizar el proyecto en el localhost:8000 del navegador, se pone el siguiente comando en la terminal:
+``` bash
+$ php artisan serve
+```
+
+## ¿Qué Incluye?
+
+Con la descarga del proyecto se obtienen las siguientes carpetas y archivos.
+
+```
+backend_swiitl/
+├── .../
+├── app/
+├── .../
+├── database
+|   ├── ...
+|   ├── scripts
+|   |   ├── ...
+|   |   ├── usuarios
+|   ├── ...
+├── ...
+├── routes
+|   ├── api.php
+|   ├── ...
+├── ...
+├── .env.example
+├── ...
+├── README.md
+├── ...
+```
+
+## Versiones
+
+El proyecto se encuentra en la versión 0.4 de desarrollo (Enero 2020).
+
+## Documentación
+
+Se utiliza el framework de PHP, [Laravel](https://laravel.com/docs/6.x) que a su vez utiliza [Composer](https://getcomposer.org/doc/).
+
+## Licencia y Derechos de Autor
+
+Copyright 2020 Tecnológico Nacional de México en León.
+
+## Soporte
+
+Célula de Desarrollo Institucional.  
+* Ing. Miguel Angel Peña López :mailbox: mangel.plopez@itleon.edu.mx
+* Ing. José María Cruz Parada :mailbox: chema@itleon.edu.mx
