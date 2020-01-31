@@ -76,9 +76,6 @@ En la ruta *backend_swiitl/* se crea o modifica el archivo **.env** copiando los
     MAIL_PASSWORD=cfgtjyhdbppopugw
     MAIL_ENCRYPTION=tls
     
-
-
-    
     PUSHER_APP_ID=
     PUSHER_APP_KEY=
     PUSHER_APP_SECRET=
