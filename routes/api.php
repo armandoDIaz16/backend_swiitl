@@ -862,3 +862,4 @@ Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReIns
 Route::get('referencia_especial_siia', 'ReferenciasEspeciales@generar_referencia_siia');
 Route::get('referencia_especial', 'ReferenciasEspeciales@generar_referencia');
 Route::get('referencia_especial_hijos', 'ReferenciasEspeciales@generar_referencia_hijos');
+Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeutico');
