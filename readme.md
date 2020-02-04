@@ -116,18 +116,26 @@ Finalmente, para subir a producción, se hace un pull request a los administrado
 
 ### Crear la base de datos
 
-En un IDE para bases de datos, como DataGrip o SQL Server Management Studio, se corren todos los scripts 
-localizados en la ruta *../database/scripts/usuarios* con el siguiente orden:
+Se crea la base de datos con el nombre deseado, después se corren los scripts 
+localizados en la ruta *../database/scripts/usuarios* de la siguiente manera:
+
 1. 01\. esquema inicial.sql
-2. 01\. esquema cambios.sql
-3. 02\. script inicial - sistema.sql
-4. 03\. script inicial - _ciudades.sql
-5. 03\. script inicial - _codigos postales.sql
+2. 02\. script inicial - sistema.sql
+3. 03\. script inicial - _ciudades.sql
+4. 03\. script inicial - _codigos postales.sql
+5. Después, se deben correr las siguientes líneas:
+
+    ```sql
+    ALTER TABLE CAT_COLONIA
+   ALTER COLUMN FK_TIPO_ASENTAMIENTO INT NULL;
+    ```
 6. 03\. script inicial - _colonias.sql
 7. 03\. script inicial - codigos postales por colonia.xlsx **<sup>1</sup>**
 8. 03\. script inicial - roles y permisos.sql
-9. 04\. vistas.sql
-10. 05\. procedimientos almacenados.sql
+9. En el archivo 01. esquema cambios.sql se corre cada cambio uno por uno, cambiando los
+nombres de los constraints necesarios. Los cambios de las rutas
+10. 04\. vistas.sql
+11. 05\. procedimientos almacenados.sql
 
 **<sup>1</sup>** Dentro del archivo de excel están los registros que se deben correr.
 
