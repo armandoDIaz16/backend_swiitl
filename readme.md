@@ -125,7 +125,7 @@ Finalmente, para subir a producción, se hace un pull request a los administrado
 ### Crear la Base de Datos
 
 Se crea la base de datos con el nombre deseado, después se corren los scripts 
-localizados en la ruta *../database/scripts/usuarios* de la siguiente manera:
+localizados en la ruta *../database/scripts/usuarios/* de la siguiente manera:
 
 1. 01\. esquema inicial.sql
 2. 02\. script inicial - sistema.sql
@@ -187,7 +187,7 @@ $ php artisan serve
 
 ### Verificación de Instalación Correcta
 
-Con el servicio de APACHE iniciado en XAMPP, se crea un archivo en la carpeta C:/xampp/htdocs con 
+Con el servicio de APACHE iniciado en XAMPP, se crea un archivo en la carpeta C:/xampp/htdocs/ con 
 extensión .php que contenga lo siguiente:
 ``` php
 <?php
@@ -275,7 +275,7 @@ backend_swiitl/
 
 ## Preguntas Frecuentes
 
-**1. ¿Porqué aparece el mensaje de "Microsoft SQL Server 2017 (RTM)..." cuando se hace la verificación de la 
+**1. ¿Porqué no aparece el mensaje de "Microsoft SQL Server 2017 (RTM)..." cuando se hace la verificación de la 
 instalación?**  
 * Si el error comienza cuando se inicia Apache en XAMPP y aparece una ventana con un mensaje como el siguiente:
 
