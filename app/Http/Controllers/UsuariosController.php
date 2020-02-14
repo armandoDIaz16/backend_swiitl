@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\UsuariosHelper;
+use Illuminate\Support\Facades\DB;
 use App\Usuario;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,9 +26,12 @@ class UsuariosController extends Controller
     }
 
     public function buscar_usuarios(Request $request) {
-        $usuarios_query = Usuario::where('ESTADO', 2)
-        ->where('BORRADO', 0)
-        ->whereRaw('TIPO_USUARIO != 3');
+        $usuarios_query = DB::table('CAT_USUARIO AS CU')
+            ->select('CU.*', 'CA.NOMBRE AS AREA_ACADEMICA')
+            ->leftJoin('CAT_AREA_ACADEMICA AS CA', 'CU.FK_AREA_ACADEMICA', '=', 'CA.PK_AREA_ACADEMICA')
+            ->where('CU.ESTADO', 2)
+            ->where('CU.BORRADO', 0)
+            ->whereRaw('CU.TIPO_USUARIO != 3');
         if ($request->tipo_usuario != 0) {
             $usuarios_query->where('TIPO_USUARIO', $request->tipo_usuario);
         }
