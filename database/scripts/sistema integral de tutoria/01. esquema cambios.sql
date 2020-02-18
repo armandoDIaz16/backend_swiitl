@@ -132,6 +132,13 @@ VALUES (5, (SELECT PK_USUARIO FROM CAT_USUARIO WHERE NUMERO_CONTROL = '1501'));
 
 UPDATE PER_CAT_SISTEMA SET NOMBRE = 'Tutorías' WHERE NOMBRE = 'tutorias';
 
+UPDATE PER_CAT_MODULO SET NOMBRE = 'Grupos actuales' WHERE NOMBRE = 'Grupos';
+
+-- MÓDULO DE HISTÓRICO DE GRUPOS DE UN TUTOR
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA, RUTA_MD5, DESCRIPCION)
+    VALUES ('Histórico grupos', 2, 'historico_grupos_tutor', 'e150022cbe6813b2d7efe161c9641e93',
+            'Histórico de grupos de un tutor');
+
  -- -----------------------------------------
 -- CAMBIOS PARA MÓDULO DE JORNDAS --
 -- -----------------------------------------

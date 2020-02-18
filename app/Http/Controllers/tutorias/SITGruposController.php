@@ -27,27 +27,28 @@ class SITGruposController extends Controller
      * @param $id_grupo
      * @return \Illuminate\Http\JsonResponse
      */
-    public function detalle_grupo($id_grupo) {
+    public function detalle_grupo($id_grupo)
+    {
         if ($id_grupo) {
             $grupo = GrupoTutorias::where('PK_GRUPO_TUTORIA', $id_grupo)->first();
 
             $condiciones_siia = [
-                'CLAVE_GRUPO'   => $grupo->CLAVE,
-                'PERIODO'       => Constantes::get_periodo(),
+                'CLAVE_GRUPO' => $grupo->CLAVE,
+                'PERIODO' => Constantes::get_periodo(),
                 'CLAVE_MATERIA' => 'PDH'
             ];
 
             $horario_grupo = SiiaHelper::get_horario_grupo($condiciones_siia);
 
             $data[] = [
-                'PK_GRUPO_TUTORIA'      => $grupo->PK_GRUPO_TUTORIA,
-                'FK_USUARIO'            => $grupo->FK_USUARIO,
-                'CLAVE'                 => $grupo->CLAVE,
-                'AULA'                  => $horario_grupo[0]->Aula,
-                'HORARIO'               => $horario_grupo,
-                'CANTIDAD_ALUMNOS'      => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
-                'EVALUACION_GRUPO'      => $grupo->EVALUACION,
-                'LISTA_ALUMNOS'         => $this->get_lista_grupo(SiiaHelper::get_lista_grupo($condiciones_siia))
+                'PK_GRUPO_TUTORIA' => $grupo->PK_GRUPO_TUTORIA,
+                'FK_USUARIO' => $grupo->FK_USUARIO,
+                'CLAVE' => $grupo->CLAVE,
+                'AULA' => $horario_grupo[0]->Aula,
+                'HORARIO' => $horario_grupo,
+                'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                'EVALUACION_GRUPO' => $grupo->EVALUACION,
+                'LISTA_ALUMNOS' => $this->get_lista_grupo(SiiaHelper::get_lista_grupo($condiciones_siia))
             ];
 
             return response()->json(
@@ -67,22 +68,23 @@ class SITGruposController extends Controller
      * @param $lista_alumnos
      * @return array
      */
-    private function get_lista_grupo($lista_alumnos) {
+    private function get_lista_grupo($lista_alumnos)
+    {
         $lista = [];
         foreach ($lista_alumnos as $alumno) {
             $usuario = Usuario::where('NUMERO_CONTROL', trim($alumno->NumeroControl))->first();
             if (isset($usuario->PK_USUARIO)) {
                 $lista[] = [
-                    'PK_USUARIO'            => $usuario->PK_USUARIO,
-                    'PK_ENCRIPTADA'         => $usuario->PK_ENCRIPTADA,
-                    'NUMERO_CONTROL'        => $usuario->NUMERO_CONTROL,
-                    'NOMBRE'                => $usuario->NOMBRE,
-                    'PRIMER_APELLIDO'       => $usuario->PRIMER_APELLIDO,
-                    'SEGUNDO_APELLIDO'      => $usuario->SEGUNDO_APELLIDO,
-                    'SEMESTRE'              => $alumno->Semestre,
-                    'CARRERA'               => $alumno->ClaveCarrera,
-                    'PERFIL_COMPLETO'       => $usuario->PERFIL_COMPLETO,
-                    'ENCUESTAS_ACTIVAS'     => $this->get_encuestas_grupo(
+                    'PK_USUARIO' => $usuario->PK_USUARIO,
+                    'PK_ENCRIPTADA' => $usuario->PK_ENCRIPTADA,
+                    'NUMERO_CONTROL' => $usuario->NUMERO_CONTROL,
+                    'NOMBRE' => $usuario->NOMBRE,
+                    'PRIMER_APELLIDO' => $usuario->PRIMER_APELLIDO,
+                    'SEGUNDO_APELLIDO' => $usuario->SEGUNDO_APELLIDO,
+                    'SEMESTRE' => $alumno->Semestre,
+                    'CARRERA' => $alumno->ClaveCarrera,
+                    'PERFIL_COMPLETO' => $usuario->PERFIL_COMPLETO,
+                    'ENCUESTAS_ACTIVAS' => $this->get_encuestas_grupo(
                         NULL,
                         NULL,
                         $usuario->PK_USUARIO
@@ -103,7 +105,8 @@ class SITGruposController extends Controller
      * @param $id_tutor
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get_grupos(Request $request) {
+    public function get_grupos(Request $request)
+    {
         $permisos = PermisosUsuario::get_permisos_sistema($request->permisos, 'tutorias');
         if ($permisos) {
             $usuario = UsuariosHelper::get_usuario($request->permisos['pk_encriptada']);
@@ -128,8 +131,8 @@ class SITGruposController extends Controller
                     $grupos_tutor = $grupos_tutor->get();
                     foreach ($grupos_tutor as $grupo) {
                         $condiciones_siia = [
-                            'CLAVE_GRUPO'   => $grupo->CLAVE,
-                            'PERIODO'       => Constantes::get_periodo(),
+                            'CLAVE_GRUPO' => $grupo->CLAVE,
+                            'PERIODO' => Constantes::get_periodo(),
                             'CLAVE_MATERIA' => 'PDH'
                         ];
 
@@ -141,29 +144,29 @@ class SITGruposController extends Controller
                                 $grupo->PK_GRUPO_TUTORIAor
                             )[0]->CANTIDAD_ENCUESTAS;
 
-                        $encuestas_activas     =
+                        $encuestas_activas =
                             $this->get_encuestas_grupo(
                                 Constantes::ENCUESTA_PENDIENTE,
                                 $grupo->PK_GRUPO_TUTORIA
                             )[0]->CANTIDAD_ENCUESTAS;
 
                         $grupos[] = [
-                            'PK_GRUPO_TUTORIA'      => $grupo->PK_GRUPO_TUTORIA,
-                            'FK_USUARIO'            => $grupo->FK_USUARIO,
-                            'CLAVE'                 => $grupo->CLAVE,
-                            'AULA'                  => $horario_grupo[0]->Aula,
-                            'HORARIO'               => $horario_grupo,
-                            'CANTIDAD_ALUMNOS'      => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
-                            'ENCUESTAS_ACTIVAS'     => $encuestas_activas,
+                            'PK_GRUPO_TUTORIA' => $grupo->PK_GRUPO_TUTORIA,
+                            'FK_USUARIO' => $grupo->FK_USUARIO,
+                            'CLAVE' => $grupo->CLAVE,
+                            'AULA' => $horario_grupo[0]->Aula,
+                            'HORARIO' => $horario_grupo,
+                            'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                            'ENCUESTAS_ACTIVAS' => $encuestas_activas,
                             'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
-                            'EVALUACION_GRUPO'      => $grupo->EVALUACION
+                            'EVALUACION_GRUPO' => $grupo->EVALUACION
                         ];
                     }
 
                     $grupos_carrera[] = [
                         'PK_CARRERA' => $carrera->PK_CARRERA,
-                        'CARRERA'    => $carrera->NOMBRE,
-                        'GRUPOS'     => $grupos
+                        'CARRERA' => $carrera->NOMBRE,
+                        'GRUPOS' => $grupos
                     ];
                 }
 
@@ -185,6 +188,63 @@ class SITGruposController extends Controller
         }
     }
 
+    public function get_historico_grupos_tutor(Request $request)
+    {
+        error_log($request->pk_encriptada);
+        $usuario = UsuariosHelper::get_usuario($request->pk_encriptada);
+
+        if ($usuario) {
+            $grupos_tutor = GrupoTutorias::where('FK_USUARIO', $usuario->PK_USUARIO)
+                ->orderBy('PERIODO', 'DESC')
+                ->get();
+            $grupos = [];
+            foreach ($grupos_tutor as $grupo) {
+                $carrera = Carrera::where('PK_CARRERA', $grupo->FK_CARRERA)->first();
+                $condiciones_siia = [
+                    'CLAVE_GRUPO' => $grupo->CLAVE,
+                    'PERIODO' => $grupo->PERIODO,
+                    'CLAVE_MATERIA' => 'PDH'
+                ];
+
+                $encuestas_respondidas =
+                    $this->get_encuestas_grupo(
+                        Constantes::ENCUESTA_RESPONDIDA,
+                        $grupo->PK_GRUPO_TUTORIA
+                    )[0]->CANTIDAD_ENCUESTAS;
+
+                $encuestas_activas =
+                    $this->get_encuestas_grupo(
+                        Constantes::ENCUESTA_PENDIENTE,
+                        $grupo->PK_GRUPO_TUTORIA
+                    )[0]->CANTIDAD_ENCUESTAS;
+
+                $grupos[] = [
+                    'PK_GRUPO_TUTORIA' => $grupo->PK_GRUPO_TUTORIA,
+                    'FK_USUARIO' => $grupo->FK_USUARIO,
+                    'CLAVE' => $grupo->CLAVE,
+                    'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                    'ENCUESTAS_ACTIVAS' => $encuestas_activas,
+                    'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
+                    'EVALUACION_GRUPO' => $grupo->EVALUACION,
+                    'CARRERA' => $carrera->NOMBRE,
+                    'TIPO_GRUPO' => ($grupo->TIPO_GRUPO == 1) ? 'Tutoría inicial' : 'Tutoría seguimiento',
+                    'PERIODO' => $grupo->PERIODO,
+                    'TEXTO_PERIODO' => Constantes::get_periodo_texto($grupo->PERIODO),
+                ];
+            }
+
+            return response()->json(
+                ['data' => $grupos],
+                Response::HTTP_ACCEPTED
+            );
+        } else {
+            return response()->json(
+                ['error' => "No se han encontrado grupos"],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
     /*
      * {
       "administrador":false,
@@ -199,7 +259,8 @@ class SITGruposController extends Controller
     }
      * */
 
-    private function filtra_grupos($permisos) {
+    private function filtra_grupos($permisos)
+    {
         if ($permisos['administrador'] || $permisos['coord_institucional']) {
             return GrupoTutorias::where('PERIODO', Constantes::get_periodo())
                 ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL)
@@ -238,7 +299,8 @@ class SITGruposController extends Controller
      * @param null $alumno
      * @return array
      */
-    private function get_encuestas_grupo($estado_encuesta = null, $grupo = NULL, $alumno = NULL) {
+    private function get_encuestas_grupo($estado_encuesta = null, $grupo = NULL, $alumno = NULL)
+    {
         $sql = "
         SELECT
             COUNT(*) AS CANTIDAD_ENCUESTAS
@@ -249,7 +311,7 @@ class SITGruposController extends Controller
             LEFT JOIN TR_GRUPO_TUTORIA
                 ON TR_GRUPO_TUTORIA.PK_GRUPO_TUTORIA = TR_GRUPO_TUTORIA_DETALLE.FK_GRUPO
         WHERE
-            TR_APLICACION_ENCUESTA.PERIODO = '" . Constantes::get_periodo() ."'";
+            TR_APLICACION_ENCUESTA.PERIODO = '" . Constantes::get_periodo() . "'";
 
         if ($estado_encuesta) {
             $sql .= " AND TR_APLICACION_ENCUESTA.ESTADO = $estado_encuesta ";
