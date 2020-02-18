@@ -549,8 +549,21 @@ class AuthController extends Controller
 
                 $this->verifica_grupo_tutorias($es_tutor[0]->clavegrupo, $usuario->PK_USUARIO, Constantes::get_periodo(), $usuario->NUMERO_CONTROL);
             }
-        } else { // lógica para usuarios que no son docentes ni alumnos
+            // logica para asignar roles del Sistema de capacitación Docente
+            // EL ROL A ASIGNAR ES EL ROL DE PARTICIPANTE EL CUAL DEBE TENERLO SIEMPRE UN DOCENTE DEL ITL PARA QUE PUEDA PROPONER CURSOS  O TOMARLOS
+            $docente_rol = new Usuario_Rol;
+            $docente_rol->FK_ROL     = 2;  // TODO CAMBIAR ESTE VALOR ES VARIABLE SEGUN EL ROL OBTENIDO EN LA EJECUCIÓN DEL SCRIPT DE BD
+            $docente_rol->FK_USUARIO = $usuario->PK_USUARIO;
+            $docente_rol->save();
 
+        } else { // lógica para usuarios que no son docentes ni alumnos
+            // logica para asignar roles del Sistema de capacitación Docente
+            // EL ROL A ASIGNAR ES EL ROL DE PARTICIPANTE EL CUAL DEBE TENERLO UN PERSONAL ADMON DEL ITL PARA QUE PUEDA PROPONER CURSOS  O TOMARLOS
+            // O UN DOCENTE EXTERNO
+            $docente_rol = new Usuario_Rol;
+            $docente_rol->FK_ROL     = 2;  // TODO CAMBIAR ESTE VALOR ES VARIABLE SEGUN EL ROL OBTENIDO EN LA EJECUCIÓN DEL SCRIPT DE BD
+            $docente_rol->FK_USUARIO = $usuario->PK_USUARIO; // TODO PROBAR UN INSERT DE ESTE TIPO
+            $docente_rol->save();
         }
     }
 

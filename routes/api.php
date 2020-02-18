@@ -863,3 +863,73 @@ Route::get('referencia_especial_siia', 'ReferenciasEspeciales@generar_referencia
 Route::get('referencia_especial', 'ReferenciasEspeciales@generar_referencia');
 Route::get('referencia_especial_hijos', 'ReferenciasEspeciales@generar_referencia_hijos');
 Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeutico');
+
+
+/* *********************************************************** *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE  CAPACITACION DOCENTE *************** *
+ * *********************************************************** */
+Route::group(['middleware' => ['jwt.verify']], function () {
+    // Registro de periodo
+    Route::post(
+        'registro_periodo',
+        'capacitacion_docente\PeridoController@registro_periodo'
+    );
+
+    // Consulta de periodos
+    Route::get(
+        'consulta_periodos',
+        'capacitacion_docente\PeridoController@consulta_periodos'
+    );
+
+    // // Buscar un periodo por pk 
+    Route::get(
+        'consulta_un_periodo/{id}',
+        'capacitacion_docente\PeridoController@consulta_un_periodo'
+    );
+
+    // Modifciacion de un periodo
+    Route::post(
+        'modificar_periodo',
+        'capacitacion_docente\PeridoController@modificar_periodo'
+    );
+
+    // Modifciacion de un periodo
+    Route::post(
+        'eliminar_periodo',
+        'capacitacion_docente\PeridoController@eliminar_periodo'
+    );
+
+
+    // Buscar encuesta por pk de encuesta
+    // Route::get(
+    //     'cuestionario/{id}',
+    //     'tutorias\SITEncuestaController@get_encuesta'
+    // );
+});
+
+/* *********************************************************** *
+ * ************* RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
+ * *********************************************************** */
+
+ // Consulta de periodos
+ Route::get(
+    'consulta_periodos',
+    'capacitacion_docente\PeridoController@consulta_periodos'
+);
+
+ 
+//     // Buscar un periodo por pk 
+//     Route::get(
+//         'consulta_un_periodo/{id}',
+//         'capacitacion_docente\PeridoController@consulta_un_periodo'
+//     );
+
+/* *********************************************************** *
+ * ************* FIN RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
+ * *********************************************************** */
+
+//Generar pdf perfil individual de ingreso
+// Route::get(
+//     'get_pdf_perfil_personal_ingreso',
+//     'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+// );
