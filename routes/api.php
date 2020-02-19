@@ -459,6 +459,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITGruposController@get_grupos'
     );
 
+    // Buscar historico de grupos por tutor
+    Route::post(
+        'get_historico_grupos_tutor',
+        'tutorias\SITGruposController@get_historico_grupos_tutor'
+    );
+
     // Buscar detalle de grupo por id
     Route::get(
         'detalle_grupo/{id_grupo}',
@@ -541,6 +547,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get(
         'coordinadores_institucionales',
         'tutorias\SITUsuariosController@get_coordinadores_institucionales'
+    );
+
+    // Buscar jornadas/conferencias
+    Route::get(
+        'get_conferencias',
+        'tutorias\ConferenciaController@get_conferencias'
     );
 });
 
