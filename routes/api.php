@@ -893,7 +893,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'capacitacion_docente\PeridoController@consulta_periodos'
     );
 
-    // // Buscar un periodo por pk 
+    // // Buscar un periodo por pk
     Route::get(
         'consulta_un_periodo/{id}',
         'capacitacion_docente\PeridoController@consulta_un_periodo'
@@ -910,13 +910,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'eliminar_periodo',
         'capacitacion_docente\PeridoController@eliminar_periodo'
     );
-
-
-    // Buscar encuesta por pk de encuesta
-    // Route::get(
-    //     'cuestionario/{id}',
-    //     'tutorias\SITEncuestaController@get_encuesta'
-    // );
 });
 
 /* *********************************************************** *
@@ -929,8 +922,29 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     'capacitacion_docente\PeridoController@consulta_periodos'
 );
 
- 
-//     // Buscar un periodo por pk 
+// Consulta de eificios
+Route::get(
+    'consulta_edificios',
+    'capacitacion_docente\CursoController@consulta_edificios'
+);
+// Consulta de areas
+Route::get(
+    'consulta_area_academica',
+    'capacitacion_docente\CursoController@consulta_area_academica'
+);
+// filtro docente
+Route::get(
+    'filtro_docente/{value?}',
+    'capacitacion_docente\CursoController@filtro_docente'
+);
+// registro curso
+Route::post(
+    'registro_curso',
+    'capacitacion_docente\CursoController@registro_curso'
+);
+
+
+//     // Buscar un periodo por pk
 //     Route::get(
 //         'consulta_un_periodo/{id}',
 //         'capacitacion_docente\PeridoController@consulta_un_periodo'

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PeriodoCADO extends Model
+class ParticipanteCADO extends Model
 {
 
 
@@ -16,10 +16,10 @@ class PeriodoCADO extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'PK_PERIODO_CADO';
+    protected $primaryKey = 'PK_PARTICIPANTE_CADO';
 
     /**
      * @var string
      */
-    protected $table = 'CAT_PERIODO_CADO';
+    protected $table = 'CAT_PARTICIPANTE_CADO';
 }
