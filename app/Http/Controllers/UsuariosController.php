@@ -27,8 +27,12 @@ class UsuariosController extends Controller
 
     public function buscar_usuarios(Request $request) {
         $usuarios_query = DB::table('CAT_USUARIO AS CU')
-            ->select('CU.*', 'CA.NOMBRE AS AREA_ACADEMICA')
-            ->leftJoin('CAT_AREA_ACADEMICA AS CA', 'CU.FK_AREA_ACADEMICA', '=', 'CA.PK_AREA_ACADEMICA')
+            ->select('CU.*', 'CA.NOMBRE AS AREA_ACADEMICA', 'CR.NOMBRE AS CARRERA',
+                DB::raw('(SELECT CONCAT(CU.NOMBRE, \' \', CU.PRIMER_APELLIDO, \' \', CU.SEGUNDO_APELLIDO) FROM CAT_USUARIO AS CU WHERE CU.PK_USUARIO = GRT.FK_USUARIO) AS NOMBRE_TUTOR'))
+            ->leftJoin('CAT_AREA_ACADEMICA AS CA', 'CU.FK_AREA_ACADEMICA', '=', 'CA.PK_AREA_ACADEMICA') // Para obtener AREA_ACADEMICA desde la FK
+            ->leftJoin('CAT_CARRERA AS CR', 'CU.FK_CARRERA', '=', 'CR.PK_CARRERA')                      // Para obtener NOMBRE de la carrera desde la FK
+            ->leftJoin('TR_GRUPO_TUTORIA_DETALLE AS GRTD', 'CU.PK_USUARIO', '=', 'GRTD.FK_USUARIO')     // Obtener el grupo del estudiante
+            ->leftJoin('TR_GRUPO_TUTORIA AS GRT', 'GRTD.FK_GRUPO', '=', 'GRT.PK_GRUPO_TUTORIA')         // Obtener la FK del tutor
             ->where('CU.ESTADO', 2)
             ->where('CU.BORRADO', 0)
             ->whereRaw('CU.TIPO_USUARIO != 3');
