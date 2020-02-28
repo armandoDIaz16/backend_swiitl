@@ -15,15 +15,16 @@ class PeridoController extends Controller
     {
         // echo PeriodoCADO::all();
         // return DB::table('CAT_PERIODO_CADO')->where('BORRADO',0)->get();
-    
+
         return response()->json(
-            DB::table('CAT_PERIODO_CADO')->where('BORRADO',0)->get(),
+            DB::table('CAT_PERIODO_CADO')->where('BORRADO',0)
+                ->orderBy('FECHA_FIN', 'desc')->get(),
             Response::HTTP_OK // 200
         );
     }
 
     public function registro_periodo(Request $request)
-    {   
+    {
         $periodo = new PeriodoCADO;
 
         $periodo->NOMBRE_PERIODO = $request->nombre_periodo;
@@ -66,7 +67,7 @@ class PeridoController extends Controller
         //         Response::HTTP_NOT_FOUND// 404
         //     );
         // }
-        
+
     }
 
     public function modificar_periodo(Request $request){
@@ -74,7 +75,7 @@ class PeridoController extends Controller
 
         $periodo = PeriodoCADO::find($PK_PERIODO_CADO);
 
-        $periodo->NOMBRE_PERIODO = $request->nombre_periodo;       
+        $periodo->NOMBRE_PERIODO = $request->nombre_periodo;
         $periodo->FECHA_INICIO   = $request->fecha_inicio;
         $periodo->FECHA_FIN      = $request->fecha_fin;
 
@@ -82,9 +83,9 @@ class PeridoController extends Controller
 
 // $periodo->save();
 
-        
+
         // $PK_PERIODO_CADO = $request->pk_periodo_cado;
-        // $periodo->NOMBRE_PERIODO = $request->nombre_periodo;       
+        // $periodo->NOMBRE_PERIODO = $request->nombre_periodo;
         // $periodo->FECHA_INICIO   = $request->fecha_inicio;
         // $periodo->FECHA_FIN      = $request->fecha_fin;
 
@@ -117,7 +118,7 @@ class PeridoController extends Controller
                 Response::HTTP_NOT_FOUND// 404
             );
         }
- 
+
 
     }
 }

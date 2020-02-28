@@ -5,8 +5,34 @@
  * PRODUCCIÓN: OK
 */
 
+/* VISTA PARA EL LISTADO DE CURSOS POR PERIODO */
+DROP VIEW IF EXISTS VIEW_CURSOS_POR_PERIODO;
 
-
+CREATE VIEW VIEW_CURSOS_POR_PERIODO AS
+SELECT
+    CC.PK_CAT_CURSO_CADO,
+    CC.NOMBRE_CURSO,
+    CONCAT(U.NOMBRE,' ',U.PRIMER_APELLIDO,' ',U.SEGUNDO_APELLIDO) AS NOMBRE_INSTRUCTOR,
+    PIC.FK_PARTICIPANTE_CADO AS PK_PARTICIPANTE_IMPARTE,
+    AA.NOMBRE AS NOMBRE_AREA,
+    CC.FECHA_INICIO,
+    CC.FECHA_FIN,
+    CC.HORA_INICIO,
+    CC.HORA_FIN,
+    CC.TIPO_CURSO,
+    CC.FK_PERIODO_CADO
+FROM CAT_CURSO_CADO CC
+--PARTICIPANTE IMPARTE
+    INNER JOIN CATTR_PARTICIPANTE_IMPARTE_CURSO PIC ON  PIC.FK_CAT_CURSO_CADO = CC.PK_CAT_CURSO_CADO
+--PARTICIPANTE
+    INNER JOIN CAT_PARTICIPANTE_CADO PC ON  PIC.FK_PARTICIPANTE_CADO = PC.PK_PARTICIPANTE_CADO
+--USUARIO
+    INNER JOIN CAT_USUARIO U ON PC.FK_USUARIO =U.PK_USUARIO
+-- AREA ACADEMICA
+    LEFT JOIN CAT_AREA_ACADEMICA AA ON AA.PK_AREA_ACADEMICA=CC.FK_AREA_ACADEMICA
+--WHERE
+    WHERE
+        CC.BORRADO=0;
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------

@@ -942,6 +942,31 @@ Route::post(
     'registro_curso',
     'capacitacion_docente\CursoController@registro_curso'
 );
+// Consulta de participante
+Route::get(
+    'consulta_participante/{noControl}',
+    'capacitacion_docente\CursoController@consulta_participante'
+);
+// Consulta de cursos por instructor
+Route::get(
+    'consulta_cursos_participante/{pk_participante}/{tipo_participante}',
+    'capacitacion_docente\CursoController@consulta_cursos_participante'
+);
+// Consulta de cursos por coordinador
+Route::get(
+    'consulta_cursos_coordinador',
+    'capacitacion_docente\CursoController@consulta_cursos_coordinador'
+);
+// Consulta de cursos por instrcutor
+Route::get(
+    'consulta_cursos_instructor/{pk_participante}',
+    'capacitacion_docente\CursoController@consulta_cursos_instructor'
+);
+// Consulta de instructor
+Route::get(
+    'busca_instructor/{pk_participante?}',
+    'capacitacion_docente\CursoController@busca_instructor'
+);
 
 
 //     // Buscar un periodo por pk
