@@ -910,12 +910,65 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'eliminar_periodo',
         'capacitacion_docente\PeridoController@eliminar_periodo'
     );
+    // Consulta de periodos
+    Route::get(
+        'consulta_periodos',
+        'capacitacion_docente\PeridoController@consulta_periodos'
+    );
+
+// Consulta de eificios
+    Route::get(
+        'consulta_edificios',
+        'capacitacion_docente\CursoController@consulta_edificios'
+    );
+// Consulta de areas
+    Route::get(
+        'consulta_area_academica',
+        'capacitacion_docente\CursoController@consulta_area_academica'
+    );
+// filtro docente
+    Route::get(
+        'filtro_docente/{value?}',
+        'capacitacion_docente\CursoController@filtro_docente'
+    );
+// registro curso
+    Route::post(
+        'registro_curso',
+        'capacitacion_docente\CursoController@registro_curso'
+    );
+// Consulta de participante
+    Route::get(
+        'consulta_participante/{noControl}',
+        'capacitacion_docente\CursoController@consulta_participante'
+    );
+// Consulta de cursos por instructor
+    Route::get(
+        'consulta_cursos_participante/{pk_participante}/{tipo_participante}',
+        'capacitacion_docente\CursoController@consulta_cursos_participante'
+    );
+// Consulta de cursos por coordinador
+    Route::get(
+        'consulta_cursos_coordinador',
+        'capacitacion_docente\CursoController@consulta_cursos_coordinador'
+    );
+// Consulta de cursos por instrcutor
+    Route::get(
+        'consulta_cursos_instructor/{pk_participante}',
+        'capacitacion_docente\CursoController@consulta_cursos_instructor'
+    );
+// Consulta de instructor
+    Route::get(
+        'busca_instructor/{pk_participante?}',
+        'capacitacion_docente\CursoController@busca_instructor'
+    );
+
+
 });
 
 /* *********************************************************** *
  * ************* RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
  * *********************************************************** */
-
+/*
  // Consulta de periodos
  Route::get(
     'consulta_periodos',
@@ -967,7 +1020,7 @@ Route::get(
     'busca_instructor/{pk_participante?}',
     'capacitacion_docente\CursoController@busca_instructor'
 );
-
+*/
 
 //     // Buscar un periodo por pk
 //     Route::get(
