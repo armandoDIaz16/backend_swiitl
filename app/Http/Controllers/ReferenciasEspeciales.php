@@ -88,11 +88,10 @@ class ReferenciasEspeciales extends Controller
 
     public static function referencia_propedeutico()
     {
-        $fechaLimitePago = '2020-02-22';
+        $fechaLimitePago = '2020-02-29'; // FECHA LIMITE DE PAGO
         $monto = '2500';
 
-        $numero_control = '2246';
-
+        $numero_control = '2279';
 
         $datosReferencia = [
             'tipo_persona' => '30', // 30

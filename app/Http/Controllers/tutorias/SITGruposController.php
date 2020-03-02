@@ -5,6 +5,7 @@ namespace App\Http\Controllers\tutorias;
 use App\AreaAcademica;
 use App\AreaAcademicaCarrera;
 use App\Carrera;
+use App\CoordinadorDepartamentalTutoria;
 use App\Helpers\PermisosUsuario;
 use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
@@ -190,7 +191,6 @@ class SITGruposController extends Controller
 
     public function get_historico_grupos_tutor(Request $request)
     {
-        error_log($request->pk_encriptada);
         $usuario = UsuariosHelper::get_usuario($request->pk_encriptada);
 
         if ($usuario) {
@@ -245,19 +245,181 @@ class SITGruposController extends Controller
         }
     }
 
-    /*
-     * {
-      "administrador":false,
-      "coord_institucional":false,
-      "coord_departamental":true,
-      "departamentos":[
-         "1"
-      ],
-      "coord_investigacion":false,
-      "tutor":false,
-      "pk_grupo":false
+    public function get_grupos_coordinador_departamental(Request $request) {
+        // buscar usuario
+        $usuario = UsuariosHelper::get_usuario($request->pk_encriptada);
+        if ($usuario) {
+            // si el usuario existe
+            // buscar áreas que coordina
+            $areas_coordinador = CoordinadorDepartamentalTutoria::where('FK_USUARIO', $usuario->PK_USUARIO)
+                ->where('ESTADO', Constantes::ESTADO_ACTIVO)
+                ->get();
+            $grupos = [];
+            $grupos_carrera = [];
+            if ($areas_coordinador) {
+                foreach ($areas_coordinador as $area) {
+                    $carreras_area = AreaAcademicaCarrera::where('FK_AREA_ACADEMICA', $area->FK_AREA_ACADEMICA)->get();
+                    foreach ($carreras_area as $carrera_area) {
+                        $carrera = Carrera::where('PK_CARRERA', $carrera_area->FK_CARRERA)->first();
+                        // buscar grupos de cada carrera
+                        $grupos_carrera = GrupoTutorias::where('PERIODO', Constantes::get_periodo())
+                            ->where("FK_CARRERA",  $carrera->PK_CARRERA)
+                            ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL)
+                            ->get();
+
+                        foreach ($grupos_carrera as $grupo) {
+                            $condiciones_siia = [
+                                'CLAVE_GRUPO' => $grupo->CLAVE,
+                                'PERIODO' => $grupo->PERIODO,
+                                'CLAVE_MATERIA' => 'PDH'
+                            ];
+
+                            $encuestas_respondidas =
+                                $this->get_encuestas_grupo(
+                                    Constantes::ENCUESTA_RESPONDIDA,
+                                    $grupo->PK_GRUPO_TUTORIA
+                                )[0]->CANTIDAD_ENCUESTAS;
+
+                            $encuestas_activas =
+                                $this->get_encuestas_grupo(
+                                    Constantes::ENCUESTA_PENDIENTE,
+                                    $grupo->PK_GRUPO_TUTORIA
+                                )[0]->CANTIDAD_ENCUESTAS;
+
+                            $horario_grupo = SiiaHelper::get_horario_grupo($condiciones_siia);
+
+                            $grupos[] = [
+                                'PK_GRUPO_TUTORIA' => $grupo->PK_GRUPO_TUTORIA,
+                                'FK_USUARIO' => $grupo->FK_USUARIO,
+                                'CLAVE' => $grupo->CLAVE,
+                                'AULA' => $horario_grupo[0]->Aula,
+                                'HORARIO' => $horario_grupo,
+                                'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                                'ENCUESTAS_ACTIVAS' => $encuestas_activas,
+                                'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
+                                'EVALUACION_GRUPO' => $grupo->EVALUACION,
+                                'CARRERA' => $carrera->NOMBRE,
+                                'TIPO_GRUPO' => ($grupo->TIPO_GRUPO == 1) ? 'Tutoría inicial' : 'Tutoría seguimiento',
+                                'PERIODO' => $grupo->PERIODO,
+                                'TEXTO_PERIODO' => Constantes::get_periodo_texto($grupo->PERIODO),
+                            ];
+                        }
+                    }
+                    $grupos_carrera[] = [
+                        'PK_CARRERA' => $carrera->PK_CARRERA,
+                        'CARRERA' => $carrera->NOMBRE,
+                        'GRUPOS' => $grupos
+                    ];
+                }
+
+                return response()->json(
+                    ['CARRERAS' => $grupos_carrera],
+                    Response::HTTP_ACCEPTED
+                );
+            } else {
+                return response()->json(
+                    ['error' => "No se han encontrado grupos"],
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+        } else {
+            return response()->json(
+                ['error' => "No se han encontrado grupos"],
+                Response::HTTP_NOT_FOUND
+            );
+        }
     }
-     * */
+
+    /**
+     * @param $id_tutor
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get_grupos_admin(Request $request)
+    {
+        // buscar usuario
+        $usuario = UsuariosHelper::get_usuario($request->pk_encriptada);
+        if ($usuario) {
+            // si el usuario existe
+            $areas_academicas = AreaAcademica::all();
+            $grupos_carrera = [];
+            if ($areas_academicas) {
+                foreach ($areas_academicas as $area) {
+                    $carreras_area = AreaAcademicaCarrera::where('FK_AREA_ACADEMICA', $area->PK_AREA_ACADEMICA)->get();
+                    $grupos = [];
+                    foreach ($carreras_area as $carrera_area) {
+                        $carrera = Carrera::where('PK_CARRERA', $carrera_area->FK_CARRERA)->first();
+                        // buscar grupos de cada carrera
+                        $grupos_por_carrera = GrupoTutorias::where('PERIODO', Constantes::get_periodo())
+                            ->where("FK_CARRERA",  $carrera->PK_CARRERA)
+                            ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL)
+                            ->get();
+
+                        if ($grupos_por_carrera) {
+                            foreach ($grupos_por_carrera as $grupo) {
+                                $condiciones_siia = [
+                                    'CLAVE_GRUPO' => $grupo->CLAVE,
+                                    'PERIODO' => $grupo->PERIODO,
+                                    'CLAVE_MATERIA' => 'PDH'
+                                ];
+
+                                $encuestas_respondidas =
+                                    $this->get_encuestas_grupo(
+                                        Constantes::ENCUESTA_RESPONDIDA,
+                                        $grupo->PK_GRUPO_TUTORIA
+                                    )[0]->CANTIDAD_ENCUESTAS;
+
+                                $encuestas_activas =
+                                    $this->get_encuestas_grupo(
+                                        Constantes::ENCUESTA_PENDIENTE,
+                                        $grupo->PK_GRUPO_TUTORIA
+                                    )[0]->CANTIDAD_ENCUESTAS;
+
+                                $horario_grupo = SiiaHelper::get_horario_grupo($condiciones_siia);
+
+                                $grupos[] = [
+                                    'PK_GRUPO_TUTORIA' => $grupo->PK_GRUPO_TUTORIA,
+                                    'FK_USUARIO' => $grupo->FK_USUARIO,
+                                    'CLAVE' => $grupo->CLAVE,
+                                    'AULA' => $horario_grupo[0]->Aula,
+                                    'HORARIO' => $horario_grupo,
+                                    'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                                    'ENCUESTAS_ACTIVAS' => $encuestas_activas,
+                                    'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
+                                    'EVALUACION_GRUPO' => $grupo->EVALUACION,
+                                    'CARRERA' => $carrera->NOMBRE,
+                                    'TIPO_GRUPO' => ($grupo->TIPO_GRUPO == 1) ? 'Tutoría inicial' : 'Tutoría seguimiento',
+                                    'PERIODO' => $grupo->PERIODO,
+                                    'TEXTO_PERIODO' => Constantes::get_periodo_texto($grupo->PERIODO),
+                                ];
+                            }
+                        }
+                    }
+                    if ($grupos) {
+                        $grupos_carrera[] = [
+                            'PK_CARRERA' => $carrera->PK_CARRERA,
+                            'CARRERA' => $carrera->NOMBRE,
+                            'GRUPOS' => $grupos
+                        ];
+                    }
+                }
+
+                return response()->json(
+                    ['CARRERAS' => $grupos_carrera],
+                    Response::HTTP_ACCEPTED
+                );
+            } else {
+                return response()->json(
+                    ['error' => "No se han encontrado grupos"],
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+        } else {
+            return response()->json(
+                ['error' => "No se han encontrado grupos"],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
 
     private function filtra_grupos($permisos)
     {
