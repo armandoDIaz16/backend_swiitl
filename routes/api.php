@@ -554,6 +554,24 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'get_conferencias',
         'tutorias\ConferenciaController@get_conferencias'
     );
+
+    /* ********************************************* *
+     * **** RUTAS DEL COORDINADOR DEPARTAMENTAL **** *
+     * ********************************************* */
+    // Buscar jornadas/conferencias
+    Route::post(
+        'get_grupos_coordinador_departamental',
+        'tutorias\SITGruposController@get_grupos_coordinador_departamental'
+    );
+
+    /* ********************************************* *
+     * *********** RUTAS DEL ADMINISTRADOR ********* *
+     * ********************************************* */
+    // Buscar jornadas/conferencias
+    Route::post(
+        'get_grupos_admin',
+        'tutorias\SITGruposController@get_grupos_admin'
+    );
 });
 
 /* *********************************************************** *

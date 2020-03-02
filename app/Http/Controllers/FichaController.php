@@ -150,10 +150,9 @@ class FichaController extends Controller
             $aspirante[0]->DIA = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
             $aspirante[0]->HORA = date("g:i a", strtotime($aspirante[0]->HORA));
             $aspirante[0]->MENSAJE = "
-            Debes presentarte en el " . $aspirante[0]->NOMBRE_EDIFICIO . "(Edificio " . $aspirante[0]->PREFIJO . ")
-            del Instituto Tecnológico de León Campus " . $aspirante[0]->NOMBRE_CAMPUS_LINEA . ",
-            en el espacio " . '"' . $aspirante[0]->NOMBRE_ESPACIO . '"' . ",
-            el día " . $aspirante[0]->NOMBRE_DIA . " " . $aspirante[0]->DIA . " a las " . $aspirante[0]->HORA;
+                Debes presentate afuera del Centro de cómputo (Edificio C)
+                del Instituto Tecnológico de León Campus I, el día 05 de Junio a las 08:00 de la mañana.
+            ";
         } else {
             $fecha = $aspirante[0]->FECHA_MODIFICACION;
             $aspirante[0]->FECHA_MODIFICACION = substr($fecha, 8, 2) . "/" . substr($fecha, 5, 2) . "/" . substr($fecha, 0, 4);
@@ -165,9 +164,9 @@ class FichaController extends Controller
             $aspirante[0]->DIA2 = substr($dia, 8, 2) . " de " . $mes . " del " . substr($dia, 0, 4);
             $aspirante[0]->HORA2 = date("g:i a", strtotime($aspirante[0]->HORA2));
             $aspirante[0]->MENSAJE = "
-            Debes presentarte en el " . $aspirante[0]->NOMBRE_EDIFICIO2 . "(Edificio " . $aspirante[0]->PREFIJO2 . ")
-            del Instituto Tecnológico de León Campus " . $aspirante[0]->NOMBRE_CAMPUS_ESCRITO . ",
-            el día " . $aspirante[0]->NOMBRE_DIA2 . " " . $aspirante[0]->DIA2 . " a las " . $aspirante[0]->HORA2;
+                Debes presentate afuera del Centro de cómputo (Edificio C)
+                del Instituto Tecnológico de León Campus I, el día 05 de Junio a las 08:00 de la mañana.
+            ";
         }
         $mes = FechaEspanol::getMes($aspirante[0]->NOMBRE_DIA_INGLES);
         $aspirante[0]->NOMBRE_DIA_INGLES = FechaEspanol::getDia($aspirante[0]->NOMBRE_DIA_INGLES);
@@ -210,6 +209,7 @@ class FichaController extends Controller
         $mpdf->SetDefaultBodyCSS('background-image-resize', 6); */
 
         $mpdf->WriteHTML($html_final);
+        // $mpdf->WriteHTML("html");
         return $mpdf->Output();
     }
 

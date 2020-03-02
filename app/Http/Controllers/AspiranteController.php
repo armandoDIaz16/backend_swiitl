@@ -1226,8 +1226,6 @@ class AspiranteController extends Controller
 
     public function modificarAspirante(Request $request)
     {
-
-
         $fk_padre = DB::table('CAT_USUARIO')
             ->where('CURP', $request->CURP)
             ->max('PK_USUARIO');
@@ -1249,6 +1247,9 @@ class AspiranteController extends Controller
         DB::table('CAT_USUARIO')
             ->where('PK_USUARIO', $request->PK_USUARIO)
             ->update([
+                'NOMBRE' => $request->NOMBRE,
+                'PRIMER_APELLIDO' => $request->PRIMER_APELLIDO,
+                'SEGUNDO_APELLIDO' => $request->SEGUNDO_APELLIDO,
                 'CURP' => $request->CURP,
                 'TELEFONO_CASA' => $request->TELEFONO_CASA,
                 'TELEFONO_MOVIL' => $request->TELEFONO_MOVIL,
