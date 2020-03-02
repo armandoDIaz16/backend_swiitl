@@ -893,3 +893,165 @@ Route::get('referencia_especial_siia', 'ReferenciasEspeciales@generar_referencia
 Route::get('referencia_especial', 'ReferenciasEspeciales@generar_referencia');
 Route::get('referencia_especial_hijos', 'ReferenciasEspeciales@generar_referencia_hijos');
 Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeutico');
+
+
+/* *********************************************************** *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE  CAPACITACION DOCENTE *************** *
+ * *********************************************************** */
+Route::group(['middleware' => ['jwt.verify']], function () {
+    // Registro de periodo
+    Route::post(
+        'registro_periodo',
+        'capacitacion_docente\PeridoController@registro_periodo'
+    );
+
+    // Consulta de periodos
+    Route::get(
+        'consulta_periodos',
+        'capacitacion_docente\PeridoController@consulta_periodos'
+    );
+
+    // // Buscar un periodo por pk
+    Route::get(
+        'consulta_un_periodo/{id}',
+        'capacitacion_docente\PeridoController@consulta_un_periodo'
+    );
+
+    // Modifciacion de un periodo
+    Route::post(
+        'modificar_periodo',
+        'capacitacion_docente\PeridoController@modificar_periodo'
+    );
+
+    // Modifciacion de un periodo
+    Route::post(
+        'eliminar_periodo',
+        'capacitacion_docente\PeridoController@eliminar_periodo'
+    );
+    // Consulta de periodos
+    Route::get(
+        'consulta_periodos',
+        'capacitacion_docente\PeridoController@consulta_periodos'
+    );
+
+// Consulta de eificios
+    Route::get(
+        'consulta_edificios',
+        'capacitacion_docente\CursoController@consulta_edificios'
+    );
+// Consulta de areas
+    Route::get(
+        'consulta_area_academica',
+        'capacitacion_docente\CursoController@consulta_area_academica'
+    );
+// filtro docente
+    Route::get(
+        'filtro_docente/{value?}',
+        'capacitacion_docente\CursoController@filtro_docente'
+    );
+// registro curso
+    Route::post(
+        'registro_curso',
+        'capacitacion_docente\CursoController@registro_curso'
+    );
+// Consulta de participante
+    Route::get(
+        'consulta_participante/{noControl}',
+        'capacitacion_docente\CursoController@consulta_participante'
+    );
+// Consulta de cursos por instructor
+    Route::get(
+        'consulta_cursos_participante/{pk_participante}/{tipo_participante}',
+        'capacitacion_docente\CursoController@consulta_cursos_participante'
+    );
+// Consulta de cursos por coordinador
+    Route::get(
+        'consulta_cursos_coordinador',
+        'capacitacion_docente\CursoController@consulta_cursos_coordinador'
+    );
+// Consulta de cursos por instrcutor
+    Route::get(
+        'consulta_cursos_instructor/{pk_participante}',
+        'capacitacion_docente\CursoController@consulta_cursos_instructor'
+    );
+// Consulta de instructor
+    Route::get(
+        'busca_instructor/{pk_participante?}',
+        'capacitacion_docente\CursoController@busca_instructor'
+    );
+
+
+});
+
+/* *********************************************************** *
+ * ************* RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
+ * *********************************************************** */
+/*
+ // Consulta de periodos
+ Route::get(
+    'consulta_periodos',
+    'capacitacion_docente\PeridoController@consulta_periodos'
+);
+
+// Consulta de eificios
+Route::get(
+    'consulta_edificios',
+    'capacitacion_docente\CursoController@consulta_edificios'
+);
+// Consulta de areas
+Route::get(
+    'consulta_area_academica',
+    'capacitacion_docente\CursoController@consulta_area_academica'
+);
+// filtro docente
+Route::get(
+    'filtro_docente/{value?}',
+    'capacitacion_docente\CursoController@filtro_docente'
+);
+// registro curso
+Route::post(
+    'registro_curso',
+    'capacitacion_docente\CursoController@registro_curso'
+);
+// Consulta de participante
+Route::get(
+    'consulta_participante/{noControl}',
+    'capacitacion_docente\CursoController@consulta_participante'
+);
+// Consulta de cursos por instructor
+Route::get(
+    'consulta_cursos_participante/{pk_participante}/{tipo_participante}',
+    'capacitacion_docente\CursoController@consulta_cursos_participante'
+);
+// Consulta de cursos por coordinador
+Route::get(
+    'consulta_cursos_coordinador',
+    'capacitacion_docente\CursoController@consulta_cursos_coordinador'
+);
+// Consulta de cursos por instrcutor
+Route::get(
+    'consulta_cursos_instructor/{pk_participante}',
+    'capacitacion_docente\CursoController@consulta_cursos_instructor'
+);
+// Consulta de instructor
+Route::get(
+    'busca_instructor/{pk_participante?}',
+    'capacitacion_docente\CursoController@busca_instructor'
+);
+*/
+
+//     // Buscar un periodo por pk
+//     Route::get(
+//         'consulta_un_periodo/{id}',
+//         'capacitacion_docente\PeridoController@consulta_un_periodo'
+//     );
+
+/* *********************************************************** *
+ * ************* FIN RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
+ * *********************************************************** */
+
+//Generar pdf perfil individual de ingreso
+// Route::get(
+//     'get_pdf_perfil_personal_ingreso',
+//     'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+// );
