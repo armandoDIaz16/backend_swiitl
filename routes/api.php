@@ -331,6 +331,7 @@ Route::get('get-clave-carrera/{PK_USUARIO}','AlumnoCreditoController@getClaveCar
 
 /* ************************************** RUTAS DEL SISTEMA ASPIRANTES *************************************** */
 Route::get('Periodo', 'PeriodoController@index');
+Route::post('PeriodoAspirante', 'PeriodoController@indexAspirante');
 Route::post('Aspirante', 'AspiranteController@store');
 Route::resource('Universidad', 'UniversidadController');
 Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
