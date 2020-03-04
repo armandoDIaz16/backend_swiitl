@@ -299,8 +299,8 @@ class AuthController extends Controller
                 break;
             case Constantes::USUARIO_ASPIRANTE:
                 // es aspirante
-                $this->actualiza_datos_aspirante($usuario);
-                $this->asigna_rol_tutorias_estudiante($usuario);
+                // $this->actualiza_datos_aspirante($usuario);
+                // $this->asigna_rol_tutorias_estudiante($usuario);
                 break;
         }
     }
