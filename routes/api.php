@@ -435,6 +435,36 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITEncuestaController@get_encuesta'
     );
 
+    // Obtener todas las encuestas
+    Route::get(
+        'get_encuestas_disponibles',
+        'tutorias\SITEncuestaController@get_encuestas_disponibles'
+    );
+
+    // Obtener los tipos de aplicacion de las encuestas
+    Route::get(
+        'get_tipos_aplicacion',
+        'tutorias\SITEncuestaController@get_tipos_aplicacion'
+    );
+
+    // Obtener las carreras disponibles
+    Route::get(
+        'get_carreras',
+        'tutorias\SITEncuestaController@get_carreras'
+    );
+
+    // Obtener los tipos de aplicacion de las encuestas
+    Route::get(
+        'get_encuestas_historico',
+        'tutorias\SITEncuestaController@get_encuestas_historico'
+    );
+
+    // Aplicar una encuesta
+    Route::post(
+        'aplicar_encuesta',
+        'tutorias\SITEncuestaController@aplicar_encuesta'
+    );
+
     // Buscar las encuestas asignadas a un id de usuario
     Route::get(
         'cuestionarios_usuario/{id_usuario}',
