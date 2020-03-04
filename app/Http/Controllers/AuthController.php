@@ -368,9 +368,6 @@ class AuthController extends Controller
 
     private function actualiza_datos_empleado(Usuario $usuario) {
         $empleado_siia = SiiaHelper::buscar_empleado($usuario->NUMERO_CONTROL);
-
-        error_log(print_r($empleado_siia, true));
-
         if ($empleado_siia) {
             $usuario->NOMBRE           = trim($empleado_siia->Nombre);
             if ($empleado_siia->ApellidoPaterno) {

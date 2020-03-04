@@ -331,6 +331,7 @@ Route::get('get-clave-carrera/{PK_USUARIO}','AlumnoCreditoController@getClaveCar
 
 /* ************************************** RUTAS DEL SISTEMA ASPIRANTES *************************************** */
 Route::get('Periodo', 'PeriodoController@index');
+Route::post('PeriodoAspirante', 'PeriodoController@indexAspirante');
 Route::post('Aspirante', 'AspiranteController@store');
 Route::resource('Universidad', 'UniversidadController');
 Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
@@ -583,6 +584,24 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get(
         'get_conferencias',
         'tutorias\ConferenciaController@get_conferencias'
+    );
+
+    /* ********************************************* *
+     * **** RUTAS DEL COORDINADOR DEPARTAMENTAL **** *
+     * ********************************************* */
+    // Buscar jornadas/conferencias
+    Route::post(
+        'get_grupos_coordinador_departamental',
+        'tutorias\SITGruposController@get_grupos_coordinador_departamental'
+    );
+
+    /* ********************************************* *
+     * *********** RUTAS DEL ADMINISTRADOR ********* *
+     * ********************************************* */
+    // Buscar jornadas/conferencias
+    Route::post(
+        'get_grupos_admin',
+        'tutorias\SITGruposController@get_grupos_admin'
     );
 });
 
