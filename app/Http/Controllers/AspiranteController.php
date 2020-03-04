@@ -59,19 +59,22 @@ class AspiranteController extends Controller
 
     public function store(Request $request)
     {
-        //return redirect()->action('UserController@profile', [1]);
-        //return redirect()->action('AspirantePasswordController@sendEmail', ['CORREO1' => $request->CORREO1]);
+        $nombre = strtoupper(trim($request->NOMBRE));
+        $primer_apellido = strtoupper(trim($request->PRIMER_APELLIDO));
+        $segundo_apellido = strtoupper(trim($request->SEGUNDO_APELLIDO));
+        $curp = strtoupper(trim($request->CURP));
+        $correo1 = strtolower(trim($request->CORREO1));
 
-
-
+        // return redirect()->action('UserController@profile', [1]);
+        // return redirect()->action('AspirantePasswordController@sendEmail', ['CORREO1' => $request->CORREO1]);
         $sql = "EXEC GENERAR_PREFICHA
             $request->PK_PERIODO,
-            $request->NOMBRE,
-            $request->PRIMER_APELLIDO,
-            $request->SEGUNDO_APELLIDO,
+            $nombre,
+            $primer_apellido,
+            $segundo_apellido,
             $request->FECHA_NACIMIENTO,
             $request->SEXO,
-            $request->CURP,
+            $curp,
             $request->FK_ESTADO_CIVIL,
             $request->CALLE,
             $request->NUMERO_EXTERIOR,
@@ -80,7 +83,7 @@ class AspiranteController extends Controller
             $request->FK_COLONIA,
             $request->TELEFONO_CASA,
             $request->TELEFONO_MOVIL,
-            $request->CORREO1,
+            $correo1,
             $request->PADRE_TUTOR,
             $request->MADRE,
             $request->FK_BACHILLERATO,
