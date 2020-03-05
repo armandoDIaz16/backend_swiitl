@@ -911,11 +911,15 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'capacitacion_docente\PeridoController@consulta_periodos'
     );
 
+
+
+
     // // Buscar un periodo por pk
     Route::get(
         'consulta_un_periodo/{id}',
         'capacitacion_docente\PeridoController@consulta_un_periodo'
     );
+
 
     // Modifciacion de un periodo
     Route::post(
@@ -986,6 +990,17 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 /* *********************************************************** *
  * ************* RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
  * *********************************************************** */
+
+// // Buscar un periodo con cursos por pk
+Route::get(
+    'busca_periodo_con_cursos/{id}',
+    'capacitacion_docente\PeridoController@busca_periodo_con_cursos'
+);
+// Consulta de periodos activos
+Route::get(
+    'consulta_periodos_activos',
+    'capacitacion_docente\PeridoController@consulta_periodos_activos'
+);
 /*
  // Consulta de periodos
  Route::get(
