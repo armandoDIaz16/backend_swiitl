@@ -38,7 +38,7 @@
             <tr>
                 <td width="8%">Nombre:</td>
                 <td width="50%">{{$ASPIRANTE->NOMBRE}} {{$ASPIRANTE->PRIMER_APELLIDO}} {{$ASPIRANTE->SEGUNDO_APELLIDO}}</td>
-                <td width="6%">Fima:</td>
+                <td width="6%">Firma:</td>
                 <td width="50%">
                     <hr size="2" style="color: black">
                 </td>
@@ -123,7 +123,7 @@
             <tr>
                 <td width="8%">Nombre:</td>
                 <td width="50%">{{$ASPIRANTE->NOMBRE}} {{$ASPIRANTE->PRIMER_APELLIDO}} {{$ASPIRANTE->SEGUNDO_APELLIDO}}</td>
-                <td width="6%">Fima:</td>
+                <td width="6%">Firma:</td>
                 <td width="50%">
                     <hr size="2" style="color: black">
                 </td>
