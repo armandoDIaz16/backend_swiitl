@@ -30,6 +30,21 @@ class UsuariosHelper {
     }
 
     /**
+     * @param $numero_control
+     * @return |null
+     */
+    public static function get_usuario_numero_control($numero_control) {
+        if ($numero_control) {
+            $usuario = Usuario::where('NUMERO_CONTROL', $numero_control)->first();
+            if ($usuario) {
+                return $usuario;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param $pk_encriptada
      * @return |null
      */

@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Carrera;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -298,6 +299,106 @@ class SiiaHelper {
         return self::procesa_consulta($sql, false);
     }
 
+    public static function get_grupos($periodo, $clave_materia) {
+        // variables locales
+        $grupos = [];
+
+        // configuración inicial
+        $lista_grupos = self::grupos_por_clave($periodo, $clave_materia);
+
+        if ($lista_grupos) {
+            foreach ($lista_grupos as $grupo) {
+                // $datos_grupo = $this->get_grupo();
+                $numero_control_grupo = self::numero_control_grupo($periodo, $clave_materia, $grupo->clave_grupo);
+                if ($numero_control_grupo) {
+                    $alumno = self::buscar_alumno($numero_control_grupo->numero_control, NULL, NULL, NULL);
+                    if ($alumno) {
+                        $carrera = Carrera::where('ABREVIATURA', $alumno->ClaveCarrera)->first();
+                        if ($carrera) {
+                            $cantidad_alumnos = self::cantidad_alumnos_grupo($periodo, $clave_materia, $grupo->clave_grupo);
+                            $cantidad_alumnos = ($cantidad_alumnos) ? $cantidad_alumnos->cantidad_alumnos : 0;
+                            $grupos[] = [
+                                'CLAVE_GRUPO'      => $grupo->clave_grupo,
+                                'NOMBRE'           => $grupo->nombre,
+                                'PRIMER_APELLIDO'  => $grupo->primer_apellido,
+                                'SEGUNDO_APELLIDO' => $grupo->segundo_apellido,
+                                'AULA'             => $grupo->aula,
+                                'HORARIO'          => self::get_horario_materia([
+                                    'NUMERO_CONTROL'=> $numero_control_grupo->numero_control,
+                                    'CLAVE_CARRERA' => $alumno->ClaveCarrera,
+                                    'PERIODO'       => $periodo,
+                                    'CLAVE_MATERIA' => $clave_materia
+                                ]),
+                                'CANTIDAD_ALUMNOS'  => $cantidad_alumnos,
+                                'CARRERA'           => $carrera->NOMBRE
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $grupos;
+    }
+
+    public static function cantidad_alumnos_grupo($periodo, $clave_materia, $clave_grupo) {
+        $sql = "
+            SELECT
+            COUNT(NumeroControl) AS cantidad_alumnos
+            FROM
+                dbo.view_horarioalumno
+                LEFT JOIN dbo.view_docentes
+                    ON view_docentes.Idusuario = view_horarioalumno.IdMaestro
+            WHERE
+                IdPeriodoEscolar = '$periodo'
+                AND clavemateria = '$clave_materia'
+                AND clavegrupo   = '$clave_grupo'
+                ;";
+
+        return self::procesa_consulta($sql, false);
+    }
+
+    public static function numero_control_grupo($periodo, $clave_materia, $clave_grupo) {
+        $sql = "
+            SELECT TOP 1
+                NumeroControl AS numero_control
+            FROM
+                dbo.view_horarioalumno
+                LEFT JOIN dbo.view_docentes
+                    ON view_docentes.Idusuario = view_horarioalumno.IdMaestro
+            WHERE
+                IdPeriodoEscolar = '$periodo'
+                AND clavemateria = '$clave_materia'
+                AND clavegrupo   = '$clave_grupo'
+                ;";
+
+        return self::procesa_consulta($sql, false);
+    }
+
+    public static function grupos_por_clave($periodo, $clave_materia) {
+        $sql = "
+            SELECT DISTINCT
+                clavegrupo        AS clave_grupo,
+                Nombre            AS nombre,
+                ApellidoPaterno   AS primer_apellido,
+                ApellidoMaterno   AS segundo_apellido,
+                Aula              AS aula
+            FROM
+                dbo.view_horarioalumno
+                LEFT JOIN dbo.view_docentes
+                    ON view_docentes.Idusuario = view_horarioalumno.IdMaestro
+            WHERE
+                IdPeriodoEscolar = '$periodo'
+                AND clavemateria = '$clave_materia'
+            ;";
+
+        return self::procesa_consulta($sql, true);
+    }
+
+    /* ************************************ *
+     * ******** PRIVATE FUNCTIONS ********* *
+     * ************************************ */
+
     /**
      * @param $sql
      * @param $bindings
@@ -311,11 +412,14 @@ class SiiaHelper {
             if ($multi_result) {
                 return $result;
             } else {
-                return $result[0];
+                if (isset($result[0])) {
+                    return $result[0];
+                } else {
+                    return null;
+                }
             }
         } else {
             return false;
         }
     }
-
 }

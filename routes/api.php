@@ -442,28 +442,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITEncuestaController@get_encuestas_disponibles'
     );
 
-    // Obtener los tipos de aplicacion de las encuestas
-    Route::get(
-        'get_tipos_aplicacion',
-        'tutorias\SITEncuestaController@get_tipos_aplicacion'
-    );
-
     // Obtener las carreras disponibles
     Route::get(
         'get_carreras',
         'tutorias\SITEncuestaController@get_carreras'
-    );
-
-    // Obtener los tipos de aplicacion de las encuestas
-    Route::get(
-        'get_encuestas_historico',
-        'tutorias\SITEncuestaController@get_encuestas_historico'
-    );
-
-    // Aplicar una encuesta
-    Route::post(
-        'aplicar_encuesta',
-        'tutorias\SITEncuestaController@aplicar_encuesta'
     );
 
     // Buscar las encuestas asignadas a un id de usuario
@@ -602,6 +584,36 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post(
         'get_grupos_admin',
         'tutorias\SITGruposController@get_grupos_admin'
+    );
+
+    // Buscar grupos de tutoría del siia
+    Route::post(
+        'get_grupos_siia',
+        'tutorias\SITGruposSiiaController@get_grupos_siia'
+    );
+
+    // Buscar número de control
+    Route::post(
+        'valida_numero_control',
+        'tutorias\SITUsuariosController@valida_numero_control'
+    );
+
+    // Obtener los tipos de aplicacion de las encuestas
+    Route::get(
+        'get_tipos_aplicacion',
+        'tutorias\SITEncuestaController@get_tipos_aplicacion'
+    );
+
+    // Obtener histórico de aplicacion de las encuestas
+    Route::get(
+        'get_encuestas_historico',
+        'tutorias\SITEncuestaController@get_encuestas_historico'
+    );
+
+    // Aplicar una encuesta
+    Route::post(
+        'aplicar_encuesta',
+        'tutorias\SITEncuestaController@aplicar_encuesta'
     );
 });
 

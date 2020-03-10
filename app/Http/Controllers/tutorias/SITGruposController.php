@@ -12,7 +12,6 @@ use App\Http\Controllers\Controller;
 use App\GrupoTutorias;
 use App\Helpers\Constantes;
 use App\Helpers\SiiaHelper;
-use App\User;
 use App\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

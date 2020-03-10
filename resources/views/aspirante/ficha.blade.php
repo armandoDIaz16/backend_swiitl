@@ -12,6 +12,8 @@
 
     <div style="margin-left: .5cm; margin-right: .5cm; padding-top: -1.5cm; font-size: 0.7em;">
         <div align="center">
+            {{-- producción: public/img/banner_2020.png --}}
+            {{-- local:      img/banner_2020.png --}}
             <img src="public/img/banner_2020.png">
         </div>
 

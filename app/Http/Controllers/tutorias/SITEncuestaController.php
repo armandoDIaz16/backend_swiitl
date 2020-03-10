@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\tutorias;
 
+use App\Carrera;
 use App\Helpers\Constantes;
+use App\Helpers\RespuestaHttp;
 use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -168,9 +170,7 @@ class SITEncuestaController extends Controller
     }
 
     public function get_carreras(){
-        $carreras = DB::table('CAT_CARRERA')
-            ->select('NOMBRE')
-            ->get();
+        $carreras = Carrera::all();
 
         if (count($carreras) > 0) {
             return response()->json(
@@ -194,7 +194,8 @@ class SITEncuestaController extends Controller
             ->select('APE.*', 'EN.NOMBRE AS NOMBRE_ENCUESTA', 'TIA.NOMBRE AS TIPO_APLICACION')
             ->leftJoin('CAT_ENCUESTA AS EN', 'APE.FK_ENCUESTA', '=', 'EN.PK_ENCUESTA')
             ->leftJoin('CAT_TIPO_APLICACION AS TIA', 'APE.FK_TIPO_APLICACION', '=', 'TIA.PK_TIPO_APLICACION')
-            ->limit(10)
+            ->limit(50)
+            ->orderBy('FECHA_APLICACION', 'DESC')
             ->get();
 
         if (count($encuestas) > 0) {
@@ -216,41 +217,36 @@ class SITEncuestaController extends Controller
     public function aplicar_encuesta(Request $request)
     {
         $encuesta = new Aplicacion_Encuesta;
-
         $usuario = UsuariosHelper::get_usuario($request->PK_ENCRIPTADA);
 
         $encuesta->FK_USUARIO_REGISTRO         = $usuario->PK_USUARIO;
-        $encuesta->FK_ENCUESTA                 = $request->ENCUESTA;
-        $encuesta->FK_TIPO_APLICACION          = $request->TIPO_APLICACION;
+        $encuesta->FK_ENCUESTA                 = $request->PK_ENCUESTA;
+        $encuesta->FK_TIPO_APLICACION          = $request->PK_TIPO_APLICACION;
         $encuesta->PERIODO                     = Constantes::get_periodo();
         $encuesta->FECHA_APLICACION            = date('Y-m-d H:i:s');
         $encuesta->FECHA_REGISTRO              = date('Y-m-d H:i:s');
 
         switch ($request->TIPO_APLICACION) {
-            case 3: $encuesta->APLICACION_SEMESTRE = $request->DATO; break;
-            case 5:
-                $pk_usuario = DB::table('CAT_USUARIO')
-                    ->select('PK_USUARIO')
-                    ->where('NUMERO_CONTROL', '=', $request->DATO)
-                    ->get();
-
-//                return response()->json(
-//                    ['data' => (int)$pk_usuario->get(0)->PK_USUARIO],
-//                    Response::HTTP_OK
-//                );
-                $encuesta->FK_USUARIO = (int)$pk_usuario->get(0)->PK_USUARIO;
+            case 2:
+                $encuesta->APLICACION_FK_CARRERA = $request->FK_CARRERA;
                 break;
-            case 2: $encuesta->APLICACION_FK_CARRERA = $request->DATO; break;
+            case 3:
+                $encuesta->APLICACION_SEMESTRE = $request->SEMESTRE;
+                break;
+            case 5:
+                $usuario = UsuariosHelper::get_usuario_numero_control($request->NUMERO_CONTROL);
+                $encuesta->FK_USUARIO = $usuario->PK_USUARIO;
+                break;
         }
 
         if ($encuesta->save()) {
             return response()->json(
-                ['data' => $encuesta],
+                RespuestaHttp::make_reponse_ok($encuesta),
                 Response::HTTP_OK
             );
         } else {
             return response()->json(
-                ['data' => false],
+                RespuestaHttp::make_reponse_error(),
                 Response::HTTP_BAD_REQUEST
             );
         }
