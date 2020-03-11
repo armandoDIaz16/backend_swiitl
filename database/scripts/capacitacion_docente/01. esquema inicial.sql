@@ -221,9 +221,9 @@ VALUES (22, 1353);
 
 -- CREACION DE TIPOS PARTICIPANTES
 INSERT INTO CAT_TIPO_PARTICIPANTE_CADO( NOMBRE_TIPO, DESCRIPCION)
-VALUES('Docente', 'Personal del ITL que puede inscribirse a los cursos de Capacitación Docente');
-INSERT INTO CAT_TIPO_PARTICIPANTE_CADO( NOMBRE_TIPO, DESCRIPCION)
 VALUES('Instructor', 'Personal del ITL que puede impartir uno o más cursos de Capacitación Docente');
+INSERT INTO CAT_TIPO_PARTICIPANTE_CADO( NOMBRE_TIPO, DESCRIPCION)
+VALUES('Participante', 'Personal del ITL que puede inscribirse a los cursos de Capacitación Docente');
 INSERT INTO CAT_TIPO_PARTICIPANTE_CADO( NOMBRE_TIPO, DESCRIPCION)
 VALUES('Instructor externo', 'Personal externo del ITL que puede impartir uno o más cursos de Capacitación Docente');
 INSERT INTO CAT_TIPO_PARTICIPANTE_CADO( NOMBRE_TIPO, DESCRIPCION)

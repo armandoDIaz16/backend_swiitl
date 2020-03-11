@@ -1001,6 +1001,16 @@ Route::get(
     'consulta_periodos_activos',
     'capacitacion_docente\PeridoController@consulta_periodos_activos'
 );
+// Consulta de cursos misma fecha
+/*Route::get(
+    'busca_curso_misma_hora/{fecha_inicio?}/{hora_inicio?}',
+    'capacitacion_docente\CursoController@busca_curso_misma_hora'
+);*/
+
+Route::get(
+    'consulta_cursos_instructor/{pk_participante}',
+    'capacitacion_docente\CursoController@consulta_cursos_instructor'
+);
 /*
  // Consulta de periodos
  Route::get(

@@ -16,6 +16,21 @@ class CursoController extends Controller
 // variables globales
 protected $value_docente  = '';
 
+    public function busca_curso_misma_hora ( $fecha_inicio = '' , $hora_inicio = '' ){
+/*
+        //    DB::enableQueryLog();
+        return response()->json(
+            DB::table('VIEW_CURSOS_FORMAT')
+                ->where('FECHA_INICIO',$fecha_inicio)
+                ->where('HORA_INICIO',$hora_inicio)
+                ->where('BORRADO',0)
+                ->get()
+            ,
+//      return  $query = DB::getQueryLog();
+            Response::HTTP_OK);*/
+    }
+
+
     public function busca_instructor($pk_participante = 0 ){
 
     //    DB::enableQueryLog();
@@ -90,6 +105,11 @@ protected $value_docente  = '';
                 Response::HTTP_OK // 200
             );
 
+        }else{
+            return response()->json(
+                $resultadoCursosArray,
+                Response::HTTP_OK // 200
+            );
         }
 
     }// fin consulta instructpr
@@ -206,12 +226,12 @@ protected $value_docente  = '';
     public function consulta_cursos_participante($pk_participante,$tipo_participante)
     {
 
-        $periodos = PeriodoCADO::where('BORRADO',0)
+        /*$periodos = PeriodoCADO::where('BORRADO',0)
             ->get();
         return response()->json(
             DB::table('CAT_PERIODO_CADO')->where('BORRADO',0)->get(),
             Response::HTTP_OK // 200
-        );
+        );*/
     }
 
     public function consulta_edificios()
@@ -331,6 +351,10 @@ protected $value_docente  = '';
                         ] );
                     }
                 } else {
+                    array_push($data, [
+                        'estado'=>'error',
+                        'mensaje'=>'El usuario no tiene registro de participante'
+                    ] );
 //            //no tiene registro de participante por lo tanto se lo creamos
                     // ESTE SERIA EL CASO DE ALGUN DOCENTE QUE ENTRO A CREAR SU CURSO POR PRIMERA VEZ
 

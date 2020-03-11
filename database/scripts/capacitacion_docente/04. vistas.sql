@@ -89,6 +89,37 @@ FROM CAT_CURSO_CADO CC
     WHERE
         CC.BORRADO=0;
 /*FIN VISTA*/
+
+  /* VISTA PARA EL LISTADO DE CURSOS CON FORMATO DE HORA */
+DROP VIEW IF EXISTS VIEW_CURSOS_FORMAT;
+go
+CREATE VIEW VIEW_CURSOS_FORMAT AS
+SELECT  
+        PK_CAT_CURSO_CADO,
+        NOMBRE_CURSO,
+        TIPO_CURSO,
+        CUPO_ACTUAL,
+        CUPO_MAXIMO,
+        TOTAL_HORAS,
+        FK_AREA_ACADEMICA,
+        FECHA_INICIO,
+        FECHA_FIN,
+        --HORA_INCIO,
+        HORA_FIN,
+        FK_EDIFICIO,
+        NOMBRE_ESPACIO,
+        ESTADO,
+        FK_FICHA_TECNICA_CADO,
+        FK_PERIODO_CADO,
+        FK_PARTICIPANTE_REGISTRO,
+        FECHA_REGISTRO,
+        BORRADO,
+        FORMAT(CAST(HORA_INICIO AS datetime2), N'HH') AS HORA_INICIO
+FROM CAT_CURSO_CADO 
+--WHERE
+    WHERE
+       BORRADO=0;
+/*FIN VISTA*/
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------
