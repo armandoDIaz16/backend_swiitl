@@ -315,8 +315,6 @@ class SiiaHelper {
                     if ($alumno) {
                         $carrera = Carrera::where('ABREVIATURA', $alumno->ClaveCarrera)->first();
                         if ($carrera) {
-                            $cantidad_alumnos = self::cantidad_alumnos_grupo($periodo, $clave_materia, $grupo->clave_grupo);
-                            $cantidad_alumnos = ($cantidad_alumnos) ? $cantidad_alumnos->cantidad_alumnos : 0;
                             $grupos[] = [
                                 'CLAVE_GRUPO'      => $grupo->clave_grupo,
                                 'NOMBRE'           => $grupo->nombre,
@@ -329,7 +327,7 @@ class SiiaHelper {
                                     'PERIODO'       => $periodo,
                                     'CLAVE_MATERIA' => $clave_materia
                                 ]),
-                                'CANTIDAD_ALUMNOS'  => $cantidad_alumnos,
+                                'CANTIDAD_ALUMNOS'  => self::cantidad_alumnos_grupo($periodo, $clave_materia, $grupo->clave_grupo),
                                 'CARRERA'           => $carrera->NOMBRE
                             ];
                         }
@@ -343,8 +341,8 @@ class SiiaHelper {
 
     public static function cantidad_alumnos_grupo($periodo, $clave_materia, $clave_grupo) {
         $sql = "
-            SELECT
-            COUNT(NumeroControl) AS cantidad_alumnos
+            SELECT DISTINCT
+                NumeroControl
             FROM
                 dbo.view_horarioalumno
                 LEFT JOIN dbo.view_docentes
@@ -355,7 +353,9 @@ class SiiaHelper {
                 AND clavegrupo   = '$clave_grupo'
                 ;";
 
-        return self::procesa_consulta($sql, false);
+        $result =  self::procesa_consulta($sql, true);
+
+        return ($result) ? count($result) : 0;
     }
 
     public static function numero_control_grupo($periodo, $clave_materia, $clave_grupo) {
