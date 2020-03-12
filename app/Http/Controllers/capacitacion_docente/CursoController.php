@@ -5,6 +5,7 @@ namespace App\Http\Controllers\capacitacion_docente;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 use App\PeriodoCADO;
 use App\CursoCADO;
@@ -15,6 +16,67 @@ class CursoController extends Controller
 {
 // variables globales
 protected $value_docente  = '';
+
+    public function busca_curso_por_pk( $pk_curso ){
+
+
+        if( isset($pk_curso) ){
+            //    DB::enableQueryLog();
+            $curso = DB::table('CAT_CURSO_CADO')
+                //                ->select('PK_USUARIO','NOMBRE','PRIMER_APELLIDO','SEGUNDO_APELLIDO')
+                //                ->join('CAT_PARTICIPANTE_CADO','CAT_PARTICIPANTE_CADO.FK_USUARIO','=','CAT_USUARIO.PK_USUARIO')
+                ->where('BORRADO',0)
+                ->where('PK_CAT_CURSO_CADO',$pk_curso)
+                ->get();
+            //      return  $query = DB::getQueryLog();
+            $curso = $this->prepararArrayCurso($curso);
+
+            return response()->json(
+                $curso,Response::HTTP_OK);
+        }
+
+    }
+
+
+    public function  eliminar_curso(Request $request){
+        $mytime = Carbon::now();
+//        $mytime->toDateTimeString();
+        // array de respuesta
+        $data = array();
+
+        $PK_CURSO_CADO = $request->pk_periodo_curso;
+        $PK_PARTICIPANTE_ELIMINA = $request->participante;
+        $FECHA_MODIFICACION = $mytime->toDateTimeString();
+
+        $curso = CursoCADO::find($PK_CURSO_CADO);
+        $curso->BORRADO  = 1;
+        $curso->FK_PARTICIPANTE_MODIFICACION  = $PK_PARTICIPANTE_ELIMINA;
+        $curso->FECHA_MODIFICACION  = $FECHA_MODIFICACION;
+
+        if($curso->save()) {
+            array_push($data, [
+                'estado'=>'exito',
+                'mensaje'=>'Se elimino  el curso exitosamente!'
+            ]);
+                return response()->json(
+                    $data,
+                    Response::HTTP_OK // 200
+                );
+        } else {
+            array_push($data, [
+                'estado'=>'error',
+                'mensaje'=>'No se pudo eliminar el curso, intentelo más tarde'
+            ]);
+
+                return response()->json(
+                    $data,
+                    Response::HTTP_OK// 200
+                );
+        }
+
+
+    }
+
 
     public function busca_curso_misma_hora ( $fecha_inicio = '' , $hora_inicio = '' ){
 /*
@@ -173,6 +235,69 @@ protected $value_docente  = '';
 
     }// fin consulta coordinador
 
+    //esta funcion se utiliza para compactar en un array los instructores de un solo curso
+    public function prepararArrayCurso($arrayCursos){
+        //variables
+        $resultadoCursosArray = array();
+
+        if (isset($arrayCursos[0]) ){
+            foreach ($arrayCursos as $arrayCurso){
+                // tomaremos cada clave del curso
+                $pkcurso = $arrayCurso->PK_CAT_CURSO_CADO;
+                $nombrecurso = $arrayCurso->NOMBRE_CURSO;
+                $cupomcurso = $arrayCurso->CUPO_MAXIMO;
+                $fkpcurso = $arrayCurso->FK_PERIODO_CADO;
+                $tccurso = $arrayCurso->TIPO_CURSO;
+                $fkareacurso = $arrayCurso->FK_AREA_ACADEMICA;
+                $estadocurso = $arrayCurso->ESTADO;
+                $ficurso = $arrayCurso->FECHA_INICIO;
+                $ffcurso = $arrayCurso->FECHA_FIN;
+                $hicurso = $arrayCurso->HORA_INICIO;
+                $hfcurso = $arrayCurso->HORA_FIN;
+                $thorascurso = $arrayCurso->TOTAL_HORAS;
+                $edificiocurso = $arrayCurso->FK_EDIFICIO;
+                $espaciocurso = $arrayCurso->NOMBRE_ESPACIO;
+
+                //instructor
+                $instructores = DB::table('VIEW_INSTRUCTORES_CURSO')
+                    ->where('FK_CAT_CURSO_CADO',$pkcurso)
+//                    ->where('TIPO_CURSO',2)
+                    ->get();
+
+
+                // METEMOS A CADA PERIODO SUS CURSOS
+                $itemArray = array();
+                array_push($itemArray, [
+                    'PK_CAT_CURSO_CADO'=>$pkcurso,
+                    'NOMBRE_CURSO'=>$nombrecurso,
+                    'CUPO_MAXIMO'=>$cupomcurso,
+                    'FK_PERIODO_CADO'=>$fkpcurso,
+                    'TIPO_CURSO'=>$tccurso,
+                    'FK_AREA_ACADEMICA'=>$fkareacurso,
+                    'ESTADO_CURSO'=>$estadocurso,
+                    'FECHA_INICIO'=>$ficurso,
+                    'FECHA_FIN'=>$ffcurso,
+                    'HORA_INICIO'=>$hicurso,
+                    'HORA_FIN'=>$hfcurso,
+                    'TOTAL_HORAS'=>$thorascurso,
+                    'FK_EDIFICIO'=>$edificiocurso,
+                    'NOMBRE_ESPACIO'=>$espaciocurso,
+                    'INSTRUCTORES'=>$instructores,
+
+                ]);
+                array_push($resultadoCursosArray,$itemArray);
+            }//FIN FOR
+            return $resultadoCursosArray;
+
+        }else{
+            return $arrayCursos;
+        }
+
+
+
+    }
+
+    //esta funcion se utiliza para compactar en un array los instructores de cada curso
     public function prepararArrayCursos($arrayCursos){
         //variables
         $resultadoCursosArray = array();
@@ -189,6 +314,7 @@ protected $value_docente  = '';
                 $hfcurso = $arrayCurso->HORA_FIN;
                 $tccurso = $arrayCurso->TIPO_CURSO;
                 $fkpcurso = $arrayCurso->FK_PERIODO_CADO;
+                $estadocurso = $arrayCurso->ESTADO;
 
                 //instructor
                 $instructores = DB::table('VIEW_INSTRUCTORES_CURSO')
@@ -209,6 +335,7 @@ protected $value_docente  = '';
                     'HORA_FIN'=>$hfcurso,
                     'TIPO_CURSO'=>$tccurso,
                     'FK_PERIODO_CADO'=>$fkpcurso,
+                    'ESTADO_CURSO'=>$estadocurso,
                     'INSTRUCTORES'=>$instructores,
 
                 ]);

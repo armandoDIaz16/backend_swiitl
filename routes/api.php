@@ -899,6 +899,7 @@ Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeu
  * ************* RUTAS PROTEGIDAS DEL SISTEMA DE  CAPACITACION DOCENTE *************** *
  * *********************************************************** */
 Route::group(['middleware' => ['jwt.verify']], function () {
+    //* ************* INICIO PERIODOS *************** *
     // Registro de periodo
     Route::post(
         'registro_periodo',
@@ -927,7 +928,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'capacitacion_docente\PeridoController@modificar_periodo'
     );
 
-    // Modifciacion de un periodo
+    // ELIMINA  de un periodo
     Route::post(
         'eliminar_periodo',
         'capacitacion_docente\PeridoController@eliminar_periodo'
@@ -937,8 +938,28 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'consulta_periodos',
         'capacitacion_docente\PeridoController@consulta_periodos'
     );
+    // Buscar un periodo con cursos por pk
+    Route::get(
+        'busca_periodo_con_cursos/{id}',
+        'capacitacion_docente\PeridoController@busca_periodo_con_cursos'
+    );
+    // Consulta de periodos activos
+    Route::get(
+        'consulta_periodos_activos',
+        'capacitacion_docente\PeridoController@consulta_periodos_activos'
+    );
+    //* ************* FIN  PERIODOS *************** *
+    //* ************* INICIO  CURSOS *************** *
 
-// Consulta de eificios
+
+
+    // ELIMINA  de un curso
+    Route::post(
+        'eliminar_curso',
+        'capacitacion_docente\CursoController@eliminar_curso'
+    );
+
+    // Consulta de eificios
     Route::get(
         'consulta_edificios',
         'capacitacion_docente\CursoController@consulta_edificios'
@@ -984,33 +1005,24 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'capacitacion_docente\CursoController@busca_instructor'
     );
 
-
+//* ************* FIN  CURSOS *************** *
 });
 
 /* *********************************************************** *
  * ************* RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
  * *********************************************************** */
+// busca  de un curso por pk
+Route::get(
+    'busca_curso_por_pk/{pk_curso}',
+    'capacitacion_docente\CursoController@busca_curso_por_pk'
+);
 
-// // Buscar un periodo con cursos por pk
-Route::get(
-    'busca_periodo_con_cursos/{id}',
-    'capacitacion_docente\PeridoController@busca_periodo_con_cursos'
-);
-// Consulta de periodos activos
-Route::get(
-    'consulta_periodos_activos',
-    'capacitacion_docente\PeridoController@consulta_periodos_activos'
-);
+
 // Consulta de cursos misma fecha
 /*Route::get(
     'busca_curso_misma_hora/{fecha_inicio?}/{hora_inicio?}',
     'capacitacion_docente\CursoController@busca_curso_misma_hora'
 );*/
-
-Route::get(
-    'consulta_cursos_instructor/{pk_participante}',
-    'capacitacion_docente\CursoController@consulta_cursos_instructor'
-);
 /*
  // Consulta de periodos
  Route::get(
