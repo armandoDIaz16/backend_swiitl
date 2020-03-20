@@ -227,7 +227,7 @@ VALUES('Participante', 'Personal del ITL que puede inscribirse a los cursos de C
 INSERT INTO CAT_TIPO_PARTICIPANTE_CADO( NOMBRE_TIPO, DESCRIPCION)
 VALUES('Instructor externo', 'Personal externo del ITL que puede impartir uno o más cursos de Capacitación Docente');
 INSERT INTO CAT_TIPO_PARTICIPANTE_CADO( NOMBRE_TIPO, DESCRIPCION)
-VALUES('Coordinador', 'Personal del ITL que puede inscribirse a los cursos de Capacitación Docente');
+VALUES('Coordinador', 'Personal del ITL que se encarga de gestionar los cursos de Capacitación Docente');
 INSERT INTO CAT_TIPO_PARTICIPANTE_CADO( NOMBRE_TIPO, DESCRIPCION)
 VALUES('Jefe Desarrollo Académico', 'Jefe del Departamento de Desarollo Académico');
 -- select * from CAT_TIPO_PARTICIPANTE_CADO

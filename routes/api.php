@@ -979,6 +979,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'registro_curso',
         'capacitacion_docente\CursoController@registro_curso'
     );
+
+
 // Consulta de participante
     Route::get(
         'consulta_participante/{noControl}',
@@ -1015,6 +1017,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 Route::get(
     'busca_curso_por_pk/{pk_curso}',
     'capacitacion_docente\CursoController@busca_curso_por_pk'
+);
+// modifica curso
+Route::post(
+    'modifica_curso',
+    'capacitacion_docente\CursoController@modifica_curso'
 );
 
 
