@@ -515,7 +515,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITUsuariosController@guarda_coordinador'
     );
 
-    // Guardar coordinador de area academica
+    // Obtener datos del tutor
     Route::post(
         'get_datos_tutor',
         'tutorias\SITUsuariosController@get_datos_tutor'
@@ -543,6 +543,18 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post(
         'actualiza_foto_perfil',
         'tutorias\SITUsuariosController@actualiza_foto_perfil'
+    );
+
+    // Guardar coordinador institucional
+    Route::post(
+        'guarda_coordinador_institucional',
+        'tutorias\SITUsuariosController@guarda_coordinador_institucional'
+    );
+
+    // Eliminar rol de coordinador institucional
+    Route::post(
+        'elimina_rol_coordinador_institucional',
+        'tutorias\SITUsuariosController@elimina_rol_coordinador_institucional'
     );
 });
 
