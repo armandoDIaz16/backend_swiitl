@@ -38,4 +38,29 @@ class Base64ToFile
 
         return $ruta;
     }
+
+    /**
+     * @param $ruta
+     * @param $nombre
+     * @param $extension
+     * @param $contenido
+     * @param $reemplazar
+     * @return string
+     */
+    public static function guarda_archivo($ruta, $nombre, $extension, $contenido, $reemplazar = false)
+    {
+        $location = '';
+        if (!$reemplazar) {
+            do {
+                $location = $ruta . $nombre .'.'. $extension;
+                $nombre .='1';
+            } while (file_exists($location));
+        }
+
+         if (file_put_contents($location, base64_decode(explode(',', $contenido)[1]))) {
+             return $location;
+         } else {
+             return null;
+         }
+    }
 }

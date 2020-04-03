@@ -59,19 +59,22 @@ class AspiranteController extends Controller
 
     public function store(Request $request)
     {
-        //return redirect()->action('UserController@profile', [1]);
-        //return redirect()->action('AspirantePasswordController@sendEmail', ['CORREO1' => $request->CORREO1]);
+        $nombre = strtoupper(trim($request->NOMBRE));
+        $primer_apellido = strtoupper(trim($request->PRIMER_APELLIDO));
+        $segundo_apellido = strtoupper(trim($request->SEGUNDO_APELLIDO));
+        $curp = strtoupper(trim($request->CURP));
+        $correo1 = strtolower(trim($request->CORREO1));
 
-
-
+        // return redirect()->action('UserController@profile', [1]);
+        // return redirect()->action('AspirantePasswordController@sendEmail', ['CORREO1' => $request->CORREO1]);
         $sql = "EXEC GENERAR_PREFICHA
             $request->PK_PERIODO,
-            $request->NOMBRE,
-            $request->PRIMER_APELLIDO,
-            $request->SEGUNDO_APELLIDO,
+            $nombre,
+            $primer_apellido,
+            $segundo_apellido,
             $request->FECHA_NACIMIENTO,
             $request->SEXO,
-            $request->CURP,
+            $curp,
             $request->FK_ESTADO_CIVIL,
             $request->CALLE,
             $request->NUMERO_EXTERIOR,
@@ -80,7 +83,7 @@ class AspiranteController extends Controller
             $request->FK_COLONIA,
             $request->TELEFONO_CASA,
             $request->TELEFONO_MOVIL,
-            $request->CORREO1,
+            $correo1,
             $request->PADRE_TUTOR,
             $request->MADRE,
             $request->FK_BACHILLERATO,
@@ -390,10 +393,27 @@ class AspiranteController extends Controller
             $fila = fgets($File);
             //return substr($fila,0,7);
             //array_push($datos, $fila);
+
+            $prefijo_ficha = '03';
+            if (date('m') > 6) {
+                $prefijo_ficha .= substr(date('Y'), 2, 3) + 1 . '1';
+            } else {
+                $prefijo_ficha .= substr(date('Y'), 2, 3) . '2';
+            }
+
+            //Referencias ficha
             if (
-                //Referencias ficha
-                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03319' ||
-                is_numeric(substr($fila, 0, 7)) &&  substr($fila, 0, 7) != "" && substr($fila, 0, 7) == 1369296 && substr($fila, 37, 5) == '03201'
+                // cuando son 033
+                is_numeric(substr($fila, 0, 7))
+                &&  substr($fila, 0, 7) != ""
+                && substr($fila, 0, 7) == 1369296
+                && substr($fila, 37, 5) == '03319' ||
+
+                // cuando son nuevas (tecvirtual)
+                is_numeric(substr($fila, 0, 7))
+                &&  substr($fila, 0, 7) != ""
+                && substr($fila, 0, 7) == 1369296
+                && substr($fila, 37, 5) == $prefijo_ficha
             ) {
                 array_push($datos, [
                     'CLAVE' => substr($fila, 0, 7),
@@ -568,6 +588,7 @@ class AspiranteController extends Controller
                 'CAT_USUARIO.PRIMER_APELLIDO',
                 DB::raw("CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as SEGUNDO_APELLIDO"),
                 'CAT_USUARIO.CORREO1 as CORREO',
+                'CATR_REFERENCIA_BANCARIA_USUARIO.MONTO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.CONCEPTO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.REFERENCIA_BANCO',
                 'CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO',
@@ -581,6 +602,7 @@ class AspiranteController extends Controller
                 //['FK_ESTATUS', '=', 2]
             ])
             ->whereBetween('CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO', [$request->FECHA_INICIO, $request->FECHA_FIN])
+            ->orderByRaw('CATR_REFERENCIA_BANCARIA_USUARIO.FECHA_PAGO')
             ->get();
 
         return $aspirantes;
@@ -1207,8 +1229,6 @@ class AspiranteController extends Controller
 
     public function modificarAspirante(Request $request)
     {
-
-
         $fk_padre = DB::table('CAT_USUARIO')
             ->where('CURP', $request->CURP)
             ->max('PK_USUARIO');
@@ -1230,6 +1250,9 @@ class AspiranteController extends Controller
         DB::table('CAT_USUARIO')
             ->where('PK_USUARIO', $request->PK_USUARIO)
             ->update([
+                'NOMBRE' => $request->NOMBRE,
+                'PRIMER_APELLIDO' => $request->PRIMER_APELLIDO,
+                'SEGUNDO_APELLIDO' => $request->SEGUNDO_APELLIDO,
                 'CURP' => $request->CURP,
                 'TELEFONO_CASA' => $request->TELEFONO_CASA,
                 'TELEFONO_MOVIL' => $request->TELEFONO_MOVIL,
@@ -1352,6 +1375,7 @@ class AspiranteController extends Controller
             ->join('CAT_ASPIRANTE AS CA', 'CU.PK_USUARIO', '=', 'CA.FK_PADRE')
             ->join('CATR_REFERENCIA_BANCARIA_USUARIO AS CRBU', 'CU.PK_USUARIO', '=', 'CRBU.FK_USUARIO')
             ->where('FK_PERIODO', $PK_PERIODO)
+            ->orderByRaw('FECHA_PAGO')
             ->get();
         return $aspirantes;
     }

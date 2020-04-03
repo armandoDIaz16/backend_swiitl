@@ -9,6 +9,10 @@ class Aplicacion_Encuesta extends Model
     protected $fillable = [
         'FK_USUARIO',
         'FK_ENCUESTA',
+        'FK_TIPO_APLICACION',
+        'APLICACION_SEMESTRE',
+        'APLICACION_FK_CARRERA',
+        'PERIODO',
         'FECHA_APLICACION',
         'FECHA_RESPUESTA',
         'ESTADO',

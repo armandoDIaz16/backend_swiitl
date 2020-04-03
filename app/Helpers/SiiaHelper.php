@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Carrera;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -91,28 +92,28 @@ class SiiaHelper {
             view_horarioalumno.NumeroControl,
             ClaveCarrera,
             CASE
-                WHEN Dia = 1 THEN 
+                WHEN Dia = 1 THEN
                     CONCAT('Lunes ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Lunes,
                CASE
-                WHEN Dia = 2 THEN 
+                WHEN Dia = 2 THEN
                     CONCAT('Martes ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Martes,
             CASE
-                WHEN Dia = 3 THEN 
+                WHEN Dia = 3 THEN
                     CONCAT('Miércoles ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Miercoles,
             CASE
-                WHEN Dia = 4 THEN 
+                WHEN Dia = 4 THEN
                     CONCAT('Jueves ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Jueves,
             CASE
-                WHEN Dia = 5 THEN 
+                WHEN Dia = 5 THEN
                     CONCAT('Viernes ' , HoraInicial, ':', MinutoInicial, ' - ', HoraFinal, ':', MinutoFinal)
             END AS Viernes
         FROM
             dbo.view_horarioalumno
-            LEFT JOIN dbo.view_reticula 
+            LEFT JOIN dbo.view_reticula
                 ON view_reticula.ClaveMateria = view_horarioalumno.ClaveMateria
         WHERE
             view_horarioalumno.NumeroControl = '" .$data['NUMERO_CONTROL']. "'
@@ -189,7 +190,7 @@ class SiiaHelper {
                 END AS FECHA_TERCERA
             FROM
                 dbo.view_seguimiento
-                LEFT JOIN dbo.view_reticula 
+                LEFT JOIN dbo.view_reticula
                     ON view_reticula.ClaveMateria = view_seguimiento.ClaveMateria
             WHERE
                 view_seguimiento.NumeroControl = '".$numero_control."'
@@ -237,6 +238,167 @@ class SiiaHelper {
         return $seguimiento;
     }
 
+    public static function buscar_alumno($numero_control, $nombre, $primer_apellido, $segundo_apellido) {
+        // BUSCAR POR NÚMERO DE CONTROL
+        $sql = "
+            SELECT
+                *
+            FROM
+                dbo.view_alumnos
+            WHERE
+                NumeroControl = '".trim($numero_control)."'
+            ;";
+
+        $usuario = self::procesa_consulta($sql, false);
+        if (!$usuario) {
+            // BUSCAR POR NOMBRE
+            $sql = "
+            SELECT
+                *
+            FROM
+                dbo.view_alumnos
+            WHERE
+                Nombre          = '".$nombre."'
+                AND ApellidoPaterno = '".$primer_apellido."'
+                AND ApellidoMaterno = '".$segundo_apellido."'
+            ;";
+
+            $usuario = self::procesa_consulta($sql, false);
+        }
+
+        return $usuario;
+    }
+
+    public static function buscar_aspirante($nombre, $primer_apellido, $segundo_apellido) {
+        // BUSCAR POR NOMBRE
+        $sql = "
+            SELECT
+                *
+            FROM
+                dbo.view_alumnos
+            WHERE
+                Nombre          = '".$nombre."'
+                AND ApellidoPaterno = '".$primer_apellido."'
+                AND ApellidoMaterno = '".$segundo_apellido."'
+            ;";
+
+        return self::procesa_consulta($sql, false);
+    }
+
+    public static function buscar_empleado($numero_control) {
+        // BUSCAR POR NÚMERO DE SIIA
+        $sql = "
+            SELECT
+                *
+            FROM
+                dbo.view_docentes
+            WHERE
+                Idusuario = '".trim($numero_control)."'
+            ;";
+
+        return self::procesa_consulta($sql, false);
+    }
+
+    public static function get_grupos($periodo, $clave_materia) {
+        // variables locales
+        $grupos = [];
+
+        // configuración inicial
+        $lista_grupos = self::grupos_por_clave($periodo, $clave_materia);
+
+        if ($lista_grupos) {
+            foreach ($lista_grupos as $grupo) {
+                // $datos_grupo = $this->get_grupo();
+                $numero_control_grupo = self::numero_control_grupo($periodo, $clave_materia, $grupo->clave_grupo);
+                if ($numero_control_grupo) {
+                    $alumno = self::buscar_alumno($numero_control_grupo->numero_control, NULL, NULL, NULL);
+                    if ($alumno) {
+                        $carrera = Carrera::where('ABREVIATURA', $alumno->ClaveCarrera)->first();
+                        if ($carrera) {
+                            $grupos[] = [
+                                'CLAVE_GRUPO'      => $grupo->clave_grupo,
+                                'NOMBRE'           => $grupo->nombre,
+                                'PRIMER_APELLIDO'  => $grupo->primer_apellido,
+                                'SEGUNDO_APELLIDO' => $grupo->segundo_apellido,
+                                'AULA'             => $grupo->aula,
+                                'HORARIO'          => self::get_horario_materia([
+                                    'NUMERO_CONTROL'=> $numero_control_grupo->numero_control,
+                                    'CLAVE_CARRERA' => $alumno->ClaveCarrera,
+                                    'PERIODO'       => $periodo,
+                                    'CLAVE_MATERIA' => $clave_materia
+                                ]),
+                                'CANTIDAD_ALUMNOS'  => self::cantidad_alumnos_grupo($periodo, $clave_materia, $grupo->clave_grupo),
+                                'CARRERA'           => $carrera->NOMBRE
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $grupos;
+    }
+
+    public static function cantidad_alumnos_grupo($periodo, $clave_materia, $clave_grupo) {
+        $sql = "
+            SELECT DISTINCT
+                NumeroControl
+            FROM
+                dbo.view_horarioalumno
+                LEFT JOIN dbo.view_docentes
+                    ON view_docentes.Idusuario = view_horarioalumno.IdMaestro
+            WHERE
+                IdPeriodoEscolar = '$periodo'
+                AND clavemateria = '$clave_materia'
+                AND clavegrupo   = '$clave_grupo'
+                ;";
+
+        $result =  self::procesa_consulta($sql, true);
+
+        return ($result) ? count($result) : 0;
+    }
+
+    public static function numero_control_grupo($periodo, $clave_materia, $clave_grupo) {
+        $sql = "
+            SELECT TOP 1
+                NumeroControl AS numero_control
+            FROM
+                dbo.view_horarioalumno
+                LEFT JOIN dbo.view_docentes
+                    ON view_docentes.Idusuario = view_horarioalumno.IdMaestro
+            WHERE
+                IdPeriodoEscolar = '$periodo'
+                AND clavemateria = '$clave_materia'
+                AND clavegrupo   = '$clave_grupo'
+                ;";
+
+        return self::procesa_consulta($sql, false);
+    }
+
+    public static function grupos_por_clave($periodo, $clave_materia) {
+        $sql = "
+            SELECT DISTINCT
+                clavegrupo        AS clave_grupo,
+                Nombre            AS nombre,
+                ApellidoPaterno   AS primer_apellido,
+                ApellidoMaterno   AS segundo_apellido,
+                Aula              AS aula
+            FROM
+                dbo.view_horarioalumno
+                LEFT JOIN dbo.view_docentes
+                    ON view_docentes.Idusuario = view_horarioalumno.IdMaestro
+            WHERE
+                IdPeriodoEscolar = '$periodo'
+                AND clavemateria = '$clave_materia'
+            ;";
+
+        return self::procesa_consulta($sql, true);
+    }
+
+    /* ************************************ *
+     * ******** PRIVATE FUNCTIONS ********* *
+     * ************************************ */
+
     /**
      * @param $sql
      * @param $bindings
@@ -250,11 +412,14 @@ class SiiaHelper {
             if ($multi_result) {
                 return $result;
             } else {
-                return $result[0];
+                if (isset($result[0])) {
+                    return $result[0];
+                } else {
+                    return null;
+                }
             }
         } else {
             return false;
         }
     }
-
 }

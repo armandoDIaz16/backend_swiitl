@@ -126,16 +126,16 @@ class Usuario_RolController extends Controller
             ->select('PER_CAT_ROL.PK_ROL', 'PER_CAT_ROL.NOMBRE')
             ->where([
                 ['FK_USUARIO',$usuario['PK_USUARIO']],
-                ['FK_SISTEMA',$PK_SISTEMA]]
-                )
-            ->get();
+                ['FK_SISTEMA',$PK_SISTEMA],
+                ['PER_TR_ROL_USUARIO.BORRADO', 0]
+            ])->get();
 
         $array_roles = array();
         foreach($roles as $rol){
 
             $modulos = DB::table('PER_TR_ROL_MODULO')
                 ->join('PER_CAT_MODULO', 'PER_CAT_MODULO.PK_MODULO', '=', 'PER_TR_ROL_MODULO.FK_MODULO')
-                ->select('PER_CAT_MODULO.PK_MODULO', 'PER_CAT_MODULO.NOMBRE')
+                ->select('PER_CAT_MODULO.PK_MODULO', 'PER_CAT_MODULO.NOMBRE', 'PER_CAT_MODULO.RUTA_MD5')
                 ->where('FK_ROL', $rol->PK_ROL)
                 ->orderBy('ORDEN', 'ASC')
                 ->get();
@@ -160,6 +160,7 @@ class Usuario_RolController extends Controller
                     $array_modulos[] = array(
                         'PK_MODULO' => $modulo->PK_MODULO,
                         'NOMBRE' => $modulo->NOMBRE,
+                        'RUTA_MD5' => $modulo->RUTA_MD5,
                         'ACCIONES'      => $array_acciones
                     );
                 }

@@ -82,7 +82,7 @@ class ProyectoController extends Controller
             $prueba2 = array_pop($prueba1);
             $prueba3 = array_pop($prueba2);
             if ($prueba3 == 0) {
-                DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '10', 'FK_USUARIO' => $maestro]);
+                DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '1032', 'FK_USUARIO' => $maestro]);
                 $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
                 $proyecto->FK_DOCENTE = $maestro;
                 if($request->Externo){
@@ -95,7 +95,7 @@ class ProyectoController extends Controller
                     $prueb2 = array_pop($prueb1);
                     $prueb3 = array_pop($prueb2);
                     if ($prueb3 == 0){
-                        DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '11', 'FK_USUARIO' => $externo]);
+                        DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '1033', 'FK_USUARIO' => $externo]);
                     }
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
@@ -119,7 +119,7 @@ class ProyectoController extends Controller
                     $prueb2 = array_pop($prueb1);
                     $prueb3 = array_pop($prueb2);
                     if ($prueb3 == 0){
-                        DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '11', 'FK_USUARIO' => $externo]);
+                        DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '1033', 'FK_USUARIO' => $externo]);
                     }
                     $proyecto->FK_ASESOR_EXT = $request->Externo;
                 }
@@ -141,7 +141,7 @@ class ProyectoController extends Controller
             $prueb2 = array_pop($prueb1);
             $prueb3 = array_pop($prueb2);
             if ($prueb3 == 0){
-                DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '11', 'FK_USUARIO' => $externo]);
+                DB::table('PER_TR_ROL_USUARIO')->insert(['FK_ROL' => '1033', 'FK_USUARIO' => $externo]);
             }
             $proyecto = Proyecto::where('FK_ANTEPROYECTO', $id)->first();
             $proyecto->FK_ASESOR_EXT = $request->Externo;

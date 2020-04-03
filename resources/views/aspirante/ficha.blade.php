@@ -12,14 +12,16 @@
 
     <div style="margin-left: .5cm; margin-right: .5cm; padding-top: -1.5cm; font-size: 0.7em;">
         <div align="center">
-            <img src="public/img/banner.jpg">
+            {{-- producción: public/img/banner_2020.png --}}
+            {{-- local:      img/banner_2020.png --}}
+            <img src="public/img/banner_2020.png">
         </div>
 
         <div align="center">
             <b>
                 FORMALIZACIÓN DE FICHA
                 <br>
-                NUMERO DE "MATRICULA": {{$ASPIRANTE->PREFICHA}}
+                NÚMERO DE "MATRICULA": {{$ASPIRANTE->PREFICHA}}
             </b>
         </div>
 
@@ -38,7 +40,7 @@
             <tr>
                 <td width="8%">Nombre:</td>
                 <td width="50%">{{$ASPIRANTE->NOMBRE}} {{$ASPIRANTE->PRIMER_APELLIDO}} {{$ASPIRANTE->SEGUNDO_APELLIDO}}</td>
-                <td width="6%">Fima:</td>
+                <td width="6%">Firma:</td>
                 <td width="50%">
                     <hr size="2" style="color: black">
                 </td>
@@ -80,13 +82,13 @@
                     pase de ingreso al examen
                     y una identificación con fotografía (INE, Pasaporte, Credencial de la escuela).
                 </li>
-                <li>
+                {{--<li>
                     Examen de ingles.
                     Deberas presentarte en el {{$ASPIRANTE->NOMBRE_EDIFICIO_INGLES}} (Edificio {{$ASPIRANTE->PREFIJO_INGLES}})
                     del Instituto Tecnológico de León Campus {{$ASPIRANTE->NOMBRE_CAMPUS_INGLES}},
                     en el espacio "{{$ASPIRANTE->NOMBRE_ESPACIO_INGLES}}-{{$ASPIRANTE->IDENTIFICADOR_INGLES}}",
                     el día {{$ASPIRANTE->NOMBRE_DIA_INGLES}} {{$ASPIRANTE->DIA_INGLES}} a las {{$ASPIRANTE->HORA_INGLES}}.
-                </li>
+                </li>--}}
             </ul>
         </div>
         Fecha de formalización de ficha: {{$ASPIRANTE->FECHA_MODIFICACION}}.
@@ -94,7 +96,7 @@
         <hr>
 
         <div align="center">
-            <img src="public/img/banner.jpg">
+            <img src="public/img/banner_2020.png">
         </div>
 
 
@@ -103,7 +105,7 @@
 
                 FORMALIZACIÓN DE FICHA
                 <br>
-                NUMERO DE "MATRICULA": {{$ASPIRANTE->PREFICHA}}
+                NÚMERO DE "MATRICULA": {{$ASPIRANTE->PREFICHA}}
             </b>
         </div>
 
@@ -123,7 +125,7 @@
             <tr>
                 <td width="8%">Nombre:</td>
                 <td width="50%">{{$ASPIRANTE->NOMBRE}} {{$ASPIRANTE->PRIMER_APELLIDO}} {{$ASPIRANTE->SEGUNDO_APELLIDO}}</td>
-                <td width="6%">Fima:</td>
+                <td width="6%">Firma:</td>
                 <td width="50%">
                     <hr size="2" style="color: black">
                 </td>
@@ -166,13 +168,13 @@
                     pase de ingreso al examen
                     y una identificación con fotografía (INE, Pasaporte, Credencial de la escuela).
                 </li>
-                <li>
+                {{--<li>
                     Examen de ingles.
                     Deberas presentarte en el {{$ASPIRANTE->NOMBRE_EDIFICIO_INGLES}} (Edificio {{$ASPIRANTE->PREFIJO_INGLES}})
                     del Instituto Tecnológico de León Campus {{$ASPIRANTE->NOMBRE_CAMPUS_INGLES}},
                     en el espacio "{{$ASPIRANTE->NOMBRE_ESPACIO_INGLES}}-{{$ASPIRANTE->IDENTIFICADOR_INGLES}}",
                     el día {{$ASPIRANTE->NOMBRE_DIA_INGLES}} {{$ASPIRANTE->DIA_INGLES}} a las {{$ASPIRANTE->HORA_INGLES}}.
-                </li>
+                </li>--}}
             </ul>
         </div>
         Fecha de formalización de ficha: {{$ASPIRANTE->FECHA_MODIFICACION}}.

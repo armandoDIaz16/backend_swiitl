@@ -59,9 +59,9 @@ class SITAlumnoController extends Controller
      * @param $id_usuario
      * @return array|bool|\Illuminate\Http\JsonResponse
      */
-    public function get_horario($id_usuario) {
+    public function get_horario($pk_encriptada) {
         //buscar numero de control
-        $usuario = Usuario::where('PK_USUARIO', $id_usuario)->first();
+        $usuario = UsuariosHelper::get_usuario($pk_encriptada);
         if (isset($usuario->PK_USUARIO)) {
             $carrera = Carrera::where('PK_CARRERA', $usuario->FK_CARRERA)->first();
             $materias = [];

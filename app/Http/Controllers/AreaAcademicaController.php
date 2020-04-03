@@ -19,6 +19,7 @@ class AreaAcademicaController extends Controller
     public function get_area_academica() {
         $areas = AreaAcademica::where('ESTADO', Constantes::ESTADO_ACTIVO)
             ->where('BORRADO', 0)
+            ->orderBy('NOMBRE', 'ASC')
             ->get();
 
         return response()->json(

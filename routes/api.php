@@ -52,6 +52,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     // GUARDAR DATOS PARA COMPLETAR PERFIL
     Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
+
+    // CAMBIAR IMAGEN DE PERFIL
+    Route::post('actualiza_foto_perfil', 'PerfilController@actualiza_foto_perfil');
 });
 /* FIN RUTAS PARA COMPLETAR PERFIL */
 
@@ -203,6 +206,7 @@ Route::get('Totalp', 'EstadisticasController@totalproyectos');
 Route::get('GraficaMaestro/{id}', 'ProyectoController@maestros');
 Route::get('Verdoc/{id}', 'DocumentacionResidenciasController@verdoc');
 Route::resource('CreditosSiia', 'CreditosSiiaController');
+Route::get('docresalu/{id}', 'DocumentacionResidenciasController@archivos');
 //});
 /*************************************************************************************
  * **********************************************************************************/
@@ -327,6 +331,7 @@ Route::get('get-clave-carrera/{PK_USUARIO}','AlumnoCreditoController@getClaveCar
 
 /* ************************************** RUTAS DEL SISTEMA ASPIRANTES *************************************** */
 Route::get('Periodo', 'PeriodoController@index');
+Route::post('PeriodoAspirante', 'PeriodoController@indexAspirante');
 Route::post('Aspirante', 'AspiranteController@store');
 Route::resource('Universidad', 'UniversidadController');
 Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
@@ -431,6 +436,18 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITEncuestaController@get_encuesta'
     );
 
+    // Obtener todas las encuestas
+    Route::get(
+        'get_encuestas_disponibles',
+        'tutorias\SITEncuestaController@get_encuestas_disponibles'
+    );
+
+    // Obtener las carreras disponibles
+    Route::get(
+        'get_carreras',
+        'tutorias\SITEncuestaController@get_carreras'
+    );
+
     // Buscar las encuestas asignadas a un id de usuario
     Route::get(
         'cuestionarios_usuario/{id_usuario}',
@@ -453,6 +470,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post(
         'grupos_tutoria',
         'tutorias\SITGruposController@get_grupos'
+    );
+
+    // Buscar historico de grupos por tutor
+    Route::post(
+        'get_historico_grupos_tutor',
+        'tutorias\SITGruposController@get_historico_grupos_tutor'
     );
 
     // Buscar detalle de grupo por id
@@ -539,10 +562,58 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITUsuariosController@get_coordinadores_institucionales'
     );
 
-    // Buscar coordinadores institucionales
+    // Buscar jornadas/conferencias
+    Route::get(
+        'get_conferencias',
+        'tutorias\ConferenciaController@get_conferencias'
+    );
+
+    /* ********************************************* *
+     * **** RUTAS DEL COORDINADOR DEPARTAMENTAL **** *
+     * ********************************************* */
+    // Buscar jornadas/conferencias
     Route::post(
-        'actualiza_foto_perfil',
-        'tutorias\SITUsuariosController@actualiza_foto_perfil'
+        'get_grupos_coordinador_departamental',
+        'tutorias\SITGruposController@get_grupos_coordinador_departamental'
+    );
+
+    /* ********************************************* *
+     * *********** RUTAS DEL ADMINISTRADOR ********* *
+     * ********************************************* */
+    // Buscar jornadas/conferencias
+    Route::post(
+        'get_grupos_admin',
+        'tutorias\SITGruposController@get_grupos_admin'
+    );
+
+    // Buscar grupos de tutoría del siia
+    Route::post(
+        'get_grupos_siia',
+        'tutorias\SITGruposSiiaController@get_grupos_siia'
+    );
+
+    // Buscar número de control
+    Route::post(
+        'valida_numero_control',
+        'tutorias\SITUsuariosController@valida_numero_control'
+    );
+
+    // Obtener los tipos de aplicacion de las encuestas
+    Route::get(
+        'get_tipos_aplicacion',
+        'tutorias\SITEncuestaController@get_tipos_aplicacion'
+    );
+
+    // Obtener histórico de aplicacion de las encuestas
+    Route::get(
+        'get_encuestas_historico',
+        'tutorias\SITEncuestaController@get_encuestas_historico'
+    );
+
+    // Aplicar una encuesta
+    Route::post(
+        'aplicar_encuesta',
+        'tutorias\SITEncuestaController@aplicar_encuesta'
     );
 
     // Guardar coordinador institucional
@@ -732,6 +803,148 @@ Route::post('CreaCalificacion','PAAE_Periodo@creaCalificacion');
 Route::get('ReferenciaReInscripcion/{id}', 'ReferenciaController@referenciaReInscripcion');
 
 
+
+
+
+
+
+
+
+
+
+/* ************************************************************************* *
+ * ************* RUTAS PROTEGIDAS DEL SISTEMA DE REFERENCIAS *************** *
+ * ************************************************************************* */
+//Route::group(['middleware' => ['jwt.verify']], function () {
+    /**************************
+     *      MÓDULO NIVEL
+     * ***********************/
+    // Buscar todos los niveles
+    Route::get(
+        'a79eec2bd07a224f137dbe825aae22f2', // niveles
+        'Referencias\NivelController@getNiveles'
+    );
+
+    // Buscar un nivel especificado por su PK
+    Route::get(
+        'a79eec2bd07a224f137dbe825aae22f2/{id}', // niveles/id
+        'Referencias\NivelController@getNivel'
+    );
+
+    /**************************
+     *      MÓDULO VALE
+     * ***********************/
+    // Buscar todos los vales
+    Route::get(
+        'ca24ce920d61b09e5043e174c7bc16f4', // vales
+        'Referencias\ValeController@getVales'
+    );
+
+    // Buscar un vale especificado por su PK
+    Route::get(
+        'ca24ce920d61b09e5043e174c7bc16f4/{id}', // vales/id
+        'Referencias\ValeController@getVale'
+    );
+
+    /**************************
+     *     MÓDULO CONCEPTO
+     * ***********************/
+    // Buscar todos los conceptos
+    Route::get(
+        'e4ea811fdfd3f43bd4b0948734067104', // conceptos
+        'Referencias\ConceptoController@getConceptos'
+    );
+
+    // Buscar un concepto especificado por su PK
+    Route::get(
+        'e4ea811fdfd3f43bd4b0948734067104/{id}', // conceptos/id
+        'Referencias\ConceptoController@getConcepto'
+    );
+
+    // Crear un concepto
+    Route::post(
+        '80508ce673a395b9f30466b3693b126d',    // createConcepto
+        'Referencias\ConceptoController@createConcepto'
+    );
+
+    // Actualizar un concepto
+    Route::patch(
+        'a4d60fe7d61c16bf5f0d74303ddd3e7d/{id}',    // updateConcepto/id
+        'Referencias\ConceptoController@updateConcepto'
+    );
+
+    // Dar de baja a un concepto
+    Route::delete(
+        '6c5288dee70a3754c8632d17c82d374b/{id}',    // deleteConcepto/id
+        'Referencias\ConceptoController@deleteConcepto'
+    );
+
+    /*******************************************
+     *     MÓDULO RELACIÓN CONCEPTO-NIVEL
+     * ****************************************/
+    // Buscar todas las relaciones entre concepto - nivel
+    Route::get(
+        'bf6467e75eda50b466746bf5795e20f5', // conceptoNivel
+        'Referencias\ConceptoNivelController@getAllConceptoNivel'
+    );
+
+    // Buscar una relación concepto - nivel especificado por su PK, número de nivel o nombre de nivel
+    Route::post(
+        'bf6467e75eda50b466746bf5795e20f5',    // conceptoNivel
+        'Referencias\ConceptoNivelController@getConceptoNivel'
+    );
+
+    // Crear una relación concepto - nivel
+    Route::post(
+        '907c3b7e14835e1b9230e737a1f02fc5',  // createConceptoNivel
+        'Referencias\ConceptoNivelController@createConceptoNivel'
+    );
+
+    // Actualizar una relación concepto - nivel
+    Route::patch(
+        '907f89dbb42acb073b322d38dbdd6c1f/{id}', // updateConceptoNivel/id
+        'Referencias\ConceptoNivelController@updateConceptoNivel'
+    );
+
+    // Dar de baja a una relación concepto - nivel
+    Route::delete(
+        '92f7d5cb6226d5e17bc4f7462c81a0d6/{id}', // deleteConceptoNivel/id
+        'Referencias\ConceptoNivelController@deleteConceptoNivel'
+    );
+
+    /***************************
+     *     MÓDULO REFERENCIAS
+     * ************************/
+    // Buscar todos las referencias
+    Route::get(
+        'f44481864c5480bba492078f6e748da7',  // referencias
+        'Referencias\ReferenciaController@getReferencias'
+    );
+
+    // Buscar una referencia por su PK.
+    Route::get(
+        'f44481864c5480bba492078f6e748da7/{id}',        // referencias/id
+        'Referencias\ReferenciaController@getReferencia'
+    );
+
+    // Crear una referencia
+    Route::post(
+        '8b434114ba6920f69e3634341051e279',     // createReferencia
+        'Referencias\ReferenciaController@createReferencia'
+    );
+//});
+
+/* ********************************************************************* *
+ * ************* RUTAS LIBRES DEL SISTEMA DE REFERENCIAS *************** *
+ * ********************************************************************* */
+//Generar pdf perfil individual de ingreso
+/*Route::get(
+    'get_pdf_perfil_personal_ingreso',
+    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+);*/
+
 // REFERENCIAS ESPECIALES
 Route::get('referencia_especial_siia', 'ReferenciasEspeciales@generar_referencia_siia');
 Route::get('referencia_especial', 'ReferenciasEspeciales@generar_referencia');
+Route::get('referencia_especial_hijos', 'ReferenciasEspeciales@generar_referencia_hijos');
+Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeutico');
