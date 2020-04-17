@@ -951,12 +951,27 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     //* ************* FIN  PERIODOS *************** *
     //* ************* INICIO  CURSOS *************** *
 
-
+// busca  de un curso por pk
+    Route::get(
+        'busca_curso_por_pk/{pk_curso}',
+        'capacitacion_docente\CursoController@busca_curso_por_pk'
+    );
+// modifica curso
+    Route::post(
+        'modifica_curso',
+        'capacitacion_docente\CursoController@modifica_curso'
+    );
 
     // ELIMINA  de un curso
     Route::post(
         'eliminar_curso',
         'capacitacion_docente\CursoController@eliminar_curso'
+    );
+
+    // Consulta de consulta_institutos
+    Route::get(
+        'consulta_institutos',
+        'capacitacion_docente\CursoController@consulta_institutos'
     );
 
     // Consulta de eificios
@@ -980,7 +995,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'capacitacion_docente\CursoController@registro_curso'
     );
 
-
 // Consulta de participante
     Route::get(
         'consulta_participante/{noControl}',
@@ -1001,29 +1015,82 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'consulta_cursos_instructor/{pk_participante}',
         'capacitacion_docente\CursoController@consulta_cursos_instructor'
     );
-// Consulta de instructor
+  // Consulta de instructor
     Route::get(
         'busca_instructor/{pk_participante?}',
         'capacitacion_docente\CursoController@busca_instructor'
     );
 
 //* ************* FIN  CURSOS *************** *
+    //* ************* INICIO  FICHA TECNICA *************** *
+
+// Crear ficha tecnica del curso
+    Route::post(
+        'crear_actualizar_ficha',
+        'capacitacion_docente\FichaTecnicaController@crear_actualizar_ficha');
+
+    // CAMBIAR IMAGEN DE CURSO
+    Route::post(
+        'registra_foto_curso',
+        'capacitacion_docente\FichaTecnicaController@registra_foto_curso');
+    // AÑADE UN ELEMENTO ADJUNTO A LOS  TEMAS
+    Route::post(
+        'registra_archivo_adjunto',
+        'capacitacion_docente\FichaTecnicaController@registra_archivo_adjunto');
+
+    // REGISTRA SECCION DESCRIPCION SERVICIO
+    Route::post(
+        'guardar_descripcion_servicio',
+        'capacitacion_docente\FichaTecnicaController@guardar_descripcion_servicio'
+    );
+    // REGISTRA SECCION INFORMACION SERVICIO
+    Route::post(
+        'guardar_informacion_servicio',
+        'capacitacion_docente\FichaTecnicaController@guardar_informacion_servicio'
+    );
+    // REGISTRA SECCION ELEMENTOS DIDACTICOS
+    Route::post(
+        'guardar_elementos_didacticos',
+        'capacitacion_docente\FichaTecnicaController@guardar_elementos_didacticos'
+    );
+    // REGISTRA SECCION CRITERIOS DE EVALUACION
+    Route::post(
+        'guardar_criterios_evaluacion',
+        'capacitacion_docente\FichaTecnicaController@guardar_criterios_evaluacion'
+    );
+    // REGISTRA SECCION COMPETENCIAS
+    Route::post(
+        'guardar_competencias',
+        'capacitacion_docente\FichaTecnicaController@guardar_competencias'
+    );
+    // REGISTRA SECCION FUENTES DE INFORMACION
+    Route::post(
+        'guardar_fuentes_informacion',
+        'capacitacion_docente\FichaTecnicaController@guardar_fuentes_informacion'
+    );
+    // REGISTRA SECCION CONTENIDO TEMATICO
+    Route::post(
+        'guardar_contenidos_tematicos',
+        'capacitacion_docente\FichaTecnicaController@guardar_contenidos_tematicos'
+    );
+    // ELIMINA ARCHIVO DE TEMA
+    Route::get(
+        'elimina_archivo_por_pk/{pk_archivo}/{pk_ficha}',
+        'capacitacion_docente\FichaTecnicaController@elimina_archivo_por_pk'
+    );
+
+    //* ************* FIN  FICHA TECNICA *************** *
 });
 
 /* *********************************************************** *
  * ************* RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
  * *********************************************************** */
-// busca  de un curso por pk
-Route::get(
-    'busca_curso_por_pk/{pk_curso}',
-    'capacitacion_docente\CursoController@busca_curso_por_pk'
-);
-// modifica curso
-Route::post(
-    'modifica_curso',
-    'capacitacion_docente\CursoController@modifica_curso'
-);
 
+// ruta de prueba
+/*Route::get(
+    'pruebarelacionorm/',
+    'capacitacion_docente\FichaTecnicaController@pruebarelacionorm'
+);*/
 
 // Consulta de cursos misma fecha
 /*Route::get(

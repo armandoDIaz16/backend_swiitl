@@ -362,6 +362,7 @@ protected $value_docente  = '';
             ->where('FK_PARTICIPANTE_CADO',$pk_participante)
 //            ->where('TIPO_CURSO',1)
                 ->groupBy('PK_PERIODO_CADO','NOMBRE_PERIODO','FECHA_INICIO','FECHA_FIN','FK_PARTICIPANTE_CADO')
+                ->orderBy('FECHA_FIN', 'desc')
             ->get();
 
         // comenzamos a preparar el array de periodos con cursos
@@ -494,6 +495,8 @@ protected $value_docente  = '';
                 $tccurso = $arrayCurso->TIPO_CURSO;
                 $fkareacurso = $arrayCurso->FK_AREA_ACADEMICA;
                 $estadocurso = $arrayCurso->ESTADO;
+                $ruta_imagen = $arrayCurso->RUTA_IMAGEN_CURSO;
+                $fk_ficha_tecnica = $arrayCurso->FK_FICHA_TECNICA_CADO;
                 $ficurso = $arrayCurso->FECHA_INICIO;
                 $ffcurso = $arrayCurso->FECHA_FIN;
                 $hicurso = $arrayCurso->HORA_INICIO;
@@ -508,6 +511,11 @@ protected $value_docente  = '';
 //                    ->where('TIPO_CURSO',2)
                     ->get();
 
+                // anexamos el objeto ficha para que la cargue automaticamente
+                // y no tener que armar un array, se usa el metodo "" de ORM
+                //y asi con solo usar un find traera todas las relaciones de la ficha
+                $objeto_ficha = CursoCADO::find($pkcurso)->ficha_tecnica;
+
 
                 // METEMOS A CADA PERIODO SUS CURSOS
                 $itemArray = array();
@@ -519,6 +527,8 @@ protected $value_docente  = '';
                     'TIPO_CURSO'=>$tccurso,
                     'FK_AREA_ACADEMICA'=>$fkareacurso,
                     'ESTADO_CURSO'=>$estadocurso,
+                    'RUTA_IMAGEN_CURSO'=>$ruta_imagen,
+                    'FK_FICHA_TECNICA_CADO'=>$fk_ficha_tecnica,
                     'FECHA_INICIO'=>$ficurso,
                     'FECHA_FIN'=>$ffcurso,
                     'HORA_INICIO'=>$hicurso,
@@ -527,6 +537,8 @@ protected $value_docente  = '';
                     'FK_EDIFICIO'=>$edificiocurso,
                     'NOMBRE_ESPACIO'=>$espaciocurso,
                     'INSTRUCTORES'=>$instructores,
+                    'OBJ_FICHA_TECNICA'=>$objeto_ficha,
+
 
                 ]);
                 array_push($resultadoCursosArray,$itemArray);
@@ -559,6 +571,8 @@ protected $value_docente  = '';
                 $tccurso = $arrayCurso->TIPO_CURSO;
                 $fkpcurso = $arrayCurso->FK_PERIODO_CADO;
                 $estadocurso = $arrayCurso->ESTADO;
+                $img_curso = $arrayCurso->RUTA_IMAGEN_CURSO;
+
 
                 //instructor
                 $instructores = DB::table('VIEW_INSTRUCTORES_CURSO')
@@ -580,6 +594,7 @@ protected $value_docente  = '';
                     'TIPO_CURSO'=>$tccurso,
                     'FK_PERIODO_CADO'=>$fkpcurso,
                     'ESTADO_CURSO'=>$estadocurso,
+                    'RUTA_IMAGEN_CURSO'=>$img_curso,
                     'INSTRUCTORES'=>$instructores,
 
                 ]);
@@ -610,6 +625,15 @@ protected $value_docente  = '';
         return response()->json(
             DB::table('CATR_EDIFICIO')
                 ->select('PK_EDIFICIO','FK_CAMPUS','PREFIJO','NOMBRE')
+                ->where('BORRADO',0)->get(),
+            Response::HTTP_OK // 200
+        );
+    }
+    public function consulta_institutos()
+    {
+        return response()->json(
+            DB::table('CAT_INSTITUCION')
+                ->select('PK_INSTITUCION','ABREVIATURA','NOMBRE')
                 ->where('BORRADO',0)->get(),
             Response::HTTP_OK // 200
         );

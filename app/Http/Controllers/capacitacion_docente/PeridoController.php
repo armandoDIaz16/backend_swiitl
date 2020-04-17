@@ -36,7 +36,7 @@ class PeridoController extends Controller
          $mytime->toDateTimeString();
         return response()->json(
             DB::table('CAT_PERIODO_CADO')
-                ->where('FECHA_FIN','>',$mytime->toDateTimeString())
+//                ->where('FECHA_FIN','>',$mytime->toDateTimeString())
                 ->where('BORRADO',0)
                 ->orderBy('FECHA_FIN', 'desc')
                 ->get(),
