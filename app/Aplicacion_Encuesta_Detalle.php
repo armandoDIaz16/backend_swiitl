@@ -5,10 +5,10 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Aplicacion_Encuesta
+ * Class Aplicacion_Encuesta_Detalle
  * @package App
  */
-class Aplicacion_Encuesta extends Model
+class Aplicacion_Encuesta_Detalle extends Model
 {
     /**
      * @var array
@@ -35,10 +35,10 @@ class Aplicacion_Encuesta extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'PK_APLICACION_ENCUESTA';
+    protected $primaryKey = 'PK_APLICACION_ENCUESTA_DETALLE';
 
     /**
      * @var string
      */
-    protected $table = 'TR_APLICACION_ENCUESTA';
+    protected $table = 'TR_APLICACION_ENCUESTA_DETALLE';
 }
