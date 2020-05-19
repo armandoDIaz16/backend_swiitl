@@ -12,7 +12,9 @@
 
     <div style="margin-left: .5cm; margin-right: .5cm; padding-top: -1.5cm; font-size: 0.7em;">
         <div align="center">
-            <img src="img/banner_2020.png">
+            {{-- producción: public/img/banner_2020.png --}}
+            {{-- local:      img/banner_2020.png --}}
+            <img src="public/img/banner_2020.png">
         </div>
 
         <div align="center">
@@ -38,7 +40,7 @@
             <tr>
                 <td width="8%">Nombre:</td>
                 <td width="50%">{{$ASPIRANTE->NOMBRE}} {{$ASPIRANTE->PRIMER_APELLIDO}} {{$ASPIRANTE->SEGUNDO_APELLIDO}}</td>
-                <td width="6%">Fima:</td>
+                <td width="6%">Firma:</td>
                 <td width="50%">
                     <hr size="2" style="color: black">
                 </td>
@@ -49,7 +51,7 @@
         <div>
             <ul>
                 <li>
-                    Examen de CENEVAL {{$ASPIRANTE->DIA}} a las {{$ASPIRANTE->HORA}}.
+                    Examen CENEVAL.
                     <ul>
                         <li>
                             Descarga tu guía para el examen CENEVAL, desde esta liga:
@@ -94,7 +96,7 @@
         <hr>
 
         <div align="center">
-            <img src="img/banner_2020.png">
+            <img src="public/img/banner_2020.png">
         </div>
 
 
@@ -123,7 +125,7 @@
             <tr>
                 <td width="8%">Nombre:</td>
                 <td width="50%">{{$ASPIRANTE->NOMBRE}} {{$ASPIRANTE->PRIMER_APELLIDO}} {{$ASPIRANTE->SEGUNDO_APELLIDO}}</td>
-                <td width="6%">Fima:</td>
+                <td width="6%">Firma:</td>
                 <td width="50%">
                     <hr size="2" style="color: black">
                 </td>
@@ -135,7 +137,7 @@
         <div>
             <ul>
                 <li>
-                    Examen de CENEVAL {{$ASPIRANTE->DIA}} a las {{$ASPIRANTE->HORA}}.
+                    Examen CENEVAL.
                     <ul>
                         <li>
                             Descarga tu guía para el examen CENEVAL, desde esta liga:

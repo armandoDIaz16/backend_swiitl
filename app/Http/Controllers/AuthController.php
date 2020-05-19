@@ -291,16 +291,16 @@ class AuthController extends Controller
         switch ($usuario->TIPO_USUARIO) {
             case Constantes::USUARIO_ALUMNO:
                 // es alumno
-                $this->actualiza_datos_alumno($usuario);
+                // $this->actualiza_datos_alumno($usuario);
                 break;
             case Constantes::USUARIO_DOCENTE:
                 // es empleado
-                $this->actualiza_datos_empleado($usuario);
+                // $this->actualiza_datos_empleado($usuario);
                 break;
             case Constantes::USUARIO_ASPIRANTE:
                 // es aspirante
-                $this->actualiza_datos_aspirante($usuario);
-                $this->asigna_rol_tutorias_estudiante($usuario);
+                // $this->actualiza_datos_aspirante($usuario);
+                // $this->asigna_rol_tutorias_estudiante($usuario);
                 break;
         }
     }

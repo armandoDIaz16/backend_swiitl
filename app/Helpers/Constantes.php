@@ -26,6 +26,12 @@ class Constantes
     /**
      *
      */
+    CONST BORRADO_SI = 1;
+    CONST BORRADO_NO = 0;
+
+    /**
+     *
+     */
     CONST SEXO_MASCULINO = 1;
     CONST SEXO_FEMENINO  = 2;
 

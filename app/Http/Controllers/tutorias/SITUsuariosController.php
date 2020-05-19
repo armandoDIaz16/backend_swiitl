@@ -5,6 +5,7 @@ namespace App\Http\Controllers\tutorias;
 use App\GrupoTutorias;
 use App\GrupoTutoriasDetalle;
 use App\Helpers\Constantes;
+use App\Helpers\RespuestaHttp;
 use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
 use App\Rol;
@@ -22,6 +23,43 @@ use App\CoordinadorDepartamentalTutoria;
  */
 class SITUsuariosController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return object
+     */
+    public function valida_numero_control(Request $request) {
+        if ($request->NUMERO_CONTROL) {
+
+            $usuario = UsuariosHelper::get_usuario_numero_control($request->NUMERO_CONTROL);
+            if ($usuario) {
+                $nombre =
+                    $usuario->NOMBRE
+                    .' '. $usuario->PRIMER_APELLIDO
+                    .' '. $usuario->SEGUNDO_APELLIDO;
+
+                return response()->json(
+                    RespuestaHttp::make_reponse_ok($nombre),
+                    Response::HTTP_ACCEPTED
+                );
+
+            } else {
+                return response()->json(
+                    RespuestaHttp::make_reponse_error(),
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+        } else {
+            return response()->json(
+                RespuestaHttp::make_reponse_error(),
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function elimina_rol_coordinador(Request $request) {
         if ($request->pk_area_academica) {
             $this->quita_rol_coordinador($request->pk_area_academica);
@@ -37,6 +75,10 @@ class SITUsuariosController extends Controller
         );
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function get_datos_tutor(Request $request) {
         $perfil_tutor = [];
         if ($request->pk_encriptada) {
@@ -97,7 +139,7 @@ class SITUsuariosController extends Controller
         );
     }
 
-    public function get_get_coordinadores_institucionales() {
+    public function get_coordinadores_institucionales() {
         $sql = '
             SELECT
                 CAT_USUARIO.PK_USUARIO,
@@ -107,17 +149,12 @@ class SITUsuariosController extends Controller
                 CAT_USUARIO.SEGUNDO_APELLIDO,
                 CAT_USUARIO.CORREO1,
                 CAT_USUARIO.CORREO_INSTITUCIONAL,
-                CAT_USUARIO.NUMERO_CONTROL,
-                CAT_AREA_ACADEMICA.PK_AREA_ACADEMICA,
-                CAT_AREA_ACADEMICA.NOMBRE AS AREA_ACADEMICA
-            FROM TR_COORDINADOR_DEPARTAMENTAL_TUTORIA
+                CAT_USUARIO.NUMERO_CONTROL
+            FROM TR_COORDINADOR_INSTITUCIONAL_TUTORIA
                 LEFT JOIN CAT_USUARIO
-                    ON TR_COORDINADOR_DEPARTAMENTAL_TUTORIA.FK_USUARIO = CAT_USUARIO.PK_USUARIO
-                LEFT JOIN CAT_AREA_ACADEMICA
-                    ON TR_COORDINADOR_DEPARTAMENTAL_TUTORIA.FK_AREA_ACADEMICA = CAT_AREA_ACADEMICA.PK_AREA_ACADEMICA
+                    ON TR_COORDINADOR_INSTITUCIONAL_TUTORIA.FK_USUARIO = CAT_USUARIO.PK_USUARIO
             WHERE
-                TR_COORDINADOR_DEPARTAMENTAL_TUTORIA.ESTADO = '. Constantes::ESTADO_ACTIVO . '
-            ;';
+                TR_COORDINADOR_INSTITUCIONAL_TUTORIA.ESTADO = '. Constantes::ESTADO_ACTIVO . ';';
 
         $coordinadores = Constantes::procesa_consulta_general($sql);
 
@@ -199,7 +236,66 @@ class SITUsuariosController extends Controller
         }
     }
 
+    /**
+     * @param $pk_area_academica
+     */
     public function quita_rol_coordinador($pk_area_academica) {
+        $rol = Rol::where('ABREVIATURA', 'COORD_TUT')->first();
+
+        $coord_actual =
+            CoordinadorDepartamentalTutoria::where('FK_AREA_ACADEMICA', $pk_area_academica)
+                ->where('ESTADO', Constantes::ESTADO_ACTIVO)
+                ->first();
+
+        if($coord_actual) {
+            //dar de baja al actual
+            $coord_actual->ESTADO = Constantes::ESTADO_INACTIVO;
+            $coord_actual->save();
+
+            //quitar rol de coordinador de tutoria
+            $usuario_rol = Usuario_Rol::where('FK_USUARIO', $coord_actual->FK_USUARIO)
+                ->where('FK_ROL', $rol->PK_ROL)
+                ->first();
+
+            if ($usuario_rol) {
+                $usuario_rol->delete();
+            }
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function guarda_coordinador_institucional(Request $request) {
+        $rol = Rol::where('ABREVIATURA', 'COORI_TUT')->first();
+        $this->quita_rol_coordinador($request->pk_area_academica);
+
+        // registrar al nuevo coordinador
+        $coord_nuevo = new CoordinadorDepartamentalTutoria;
+        $coord_nuevo->FK_USUARIO        = $request->pk_nuevo_coordinador;
+        $coord_nuevo->FK_AREA_ACADEMICA = $request->pk_area_academica;
+
+        if ($coord_nuevo->save()) {
+            //asignar rol de coordinador de tutoria
+            $nuevo_rol = new Usuario_Rol;
+            $nuevo_rol->FK_USUARIO = $request->pk_nuevo_coordinador;
+            $nuevo_rol->FK_ROL     = $rol->PK_ROL;
+            $nuevo_rol->save();
+
+            return response()->json(
+                ['data' => true],
+                Response::HTTP_ACCEPTED
+            );
+        } else {
+            return response()->json(
+                ['data' => false],
+                Response::HTTP_ACCEPTED
+            );
+        }
+    }
+
+    public function quita_rol_coordinador_institucional($pk_area_academica) {
         $rol = Rol::where('ABREVIATURA', 'COORD_TUT')->first();
 
         $coord_actual =

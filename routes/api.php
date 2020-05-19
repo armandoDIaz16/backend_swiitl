@@ -41,12 +41,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     //función para obtener estado y municipio por código postal
     Route::post('procesa_codigo_postal', 'CodigoPostalController@procesa_codigo_postal');
-});
-/* FIN RUTAS GENERALES */
 
-
-/* INICIO RUTAS PARA COMPLETAR PERFIL */
-Route::group(['middleware' => ['jwt.verify']], function () {
     // OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
     Route::post('perfil', 'PerfilController@get_perfil');
 
@@ -331,6 +326,7 @@ Route::get('get-clave-carrera/{PK_USUARIO}','AlumnoCreditoController@getClaveCar
 
 /* ************************************** RUTAS DEL SISTEMA ASPIRANTES *************************************** */
 Route::get('Periodo', 'PeriodoController@index');
+Route::post('PeriodoAspirante', 'PeriodoController@indexAspirante');
 Route::post('Aspirante', 'AspiranteController@store');
 Route::resource('Universidad', 'UniversidadController');
 Route::resource('Carrera_Universidad', 'Carrera_UniversidadController');
@@ -435,6 +431,18 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITEncuestaController@get_encuesta'
     );
 
+    // Obtener todas las encuestas
+    Route::get(
+        'get_encuestas_disponibles',
+        'tutorias\SITEncuestaController@get_encuestas_disponibles'
+    );
+
+    // Obtener las carreras disponibles
+    Route::get(
+        'get_carreras',
+        'tutorias\SITEncuestaController@get_carreras'
+    );
+
     // Buscar las encuestas asignadas a un id de usuario
     Route::get(
         'cuestionarios_usuario/{id_usuario}',
@@ -525,7 +533,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITUsuariosController@guarda_coordinador'
     );
 
-    // Guardar coordinador de area academica
+    // Obtener datos del tutor
     Route::post(
         'get_datos_tutor',
         'tutorias\SITUsuariosController@get_datos_tutor'
@@ -567,10 +575,76 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* ********************************************* *
      * *********** RUTAS DEL ADMINISTRADOR ********* *
      * ********************************************* */
-    // Buscar jornadas/conferencias
+    // Buscar grupos de tutoría inicial
     Route::post(
         'get_grupos_admin',
         'tutorias\SITGruposController@get_grupos_admin'
+    );
+
+    // Buscar grupos de tutoría del siia
+    Route::post(
+        'get_grupos_siia',
+        'tutorias\SITGruposSiiaController@get_grupos_siia'
+    );
+
+    // Buscar número de control
+    Route::post(
+        'valida_numero_control',
+        'tutorias\SITUsuariosController@valida_numero_control'
+    );
+
+    // Obtener los tipos de aplicacion de las encuestas
+    Route::get(
+        'get_tipos_aplicacion',
+        'tutorias\SITEncuestaController@get_tipos_aplicacion'
+    );
+
+    // Obtener histórico de aplicacion de las encuestas
+    Route::get(
+        'get_encuestas_historico',
+        'tutorias\SITEncuestaController@get_encuestas_historico'
+    );
+
+    // Aplicar una encuesta
+    Route::post(
+        'aplicar_encuesta',
+        'tutorias\SITEncuestaController@aplicar_encuesta'
+    );
+
+    // Guardar coordinador institucional
+    Route::post(
+        'guarda_coordinador_institucional',
+        'tutorias\SITUsuariosController@guarda_coordinador_institucional'
+    );
+
+    // Eliminar rol de coordinador institucional
+    Route::post(
+        'elimina_rol_coordinador_institucional',
+        'tutorias\SITUsuariosController@elimina_rol_coordinador_institucional'
+    );
+
+    // OBTENER GRUPOS DE TUTORÍA DE SEGUIMIENTO
+    Route::post(
+        'grupos_seguimiento_admin',
+        'tutorias\SITGruposSeguimientoController@get_grupos_admin'
+    );
+
+    // BUSCAR GRUPO DE TUTORÍA DE SEGUIMIENTO
+    Route::get(
+        'get_grupo_seguimiento',
+        'tutorias\SITGruposSeguimientoController@get_grupo_seguimiento'
+    );
+
+    // BUSCAR ALUMNOS DE GRUPO DE TUTORÍA DE SEGUIMIENTO
+    Route::get(
+        'get_alumnos_grupo',
+        'tutorias\SITGruposSeguimientoController@get_alumnos_grupo'
+    );
+
+    // CRERAR GRUPO DE SEGUIMIENTO
+    Route::post(
+        'guarda_grupo_seguimiento',
+        'tutorias\SITGruposSeguimientoController@guarda_grupo_seguimiento'
     );
 });
 
@@ -593,6 +667,12 @@ Route::get(
  * ************* RUTAS PROTEGIDAS DEL SISTEMA DE ROLES Y USUARIOS *************** *
  * *********************************************************** */
 Route::group(['middleware' => ['jwt.verify']], function () {
+    // get usuarios
+    Route::get(
+        'usuario',
+        'UsuariosController@index'
+    );
+
     // Buscar usuarios
     Route::post(
         'buscar_usuarios',
