@@ -14,16 +14,10 @@ class CarreraController extends Controller
      */
     public function index()
     {
-        /* $carreras = DB::table('TR_CARRERA_CAMPUS')
-            ->select(DB::raw("TR_CARRERA_CAMPUS.PK_CARRERA_CAMPUS as PK_CARRERA, CAT_CARRERA.NOMBRE+' CAMPUS ' +CAT_CAMPUS.NOMBRE as NOMBRE"))
-            ->join('CAT_CAMPUS', 'CAT_CAMPUS.PK_CAMPUS', '=',  'TR_CARRERA_CAMPUS.FK_CAMPUS')
-            ->join('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=',  'TR_CARRERA_CAMPUS.FK_CARRERA')
-            ->where('TR_CARRERA_CAMPUS.ESTADO', 1)
-            ->get(); */
         $carreras = DB::table('CAT_CARRERA')
             ->select('PK_CARRERA','NOMBRE')
             ->get();
-        
+
         return $carreras;
     }
 

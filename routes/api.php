@@ -41,12 +41,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     //función para obtener estado y municipio por código postal
     Route::post('procesa_codigo_postal', 'CodigoPostalController@procesa_codigo_postal');
-});
-/* FIN RUTAS GENERALES */
 
-
-/* INICIO RUTAS PARA COMPLETAR PERFIL */
-Route::group(['middleware' => ['jwt.verify']], function () {
     // OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
     Route::post('perfil', 'PerfilController@get_perfil');
 
@@ -580,7 +575,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     /* ********************************************* *
      * *********** RUTAS DEL ADMINISTRADOR ********* *
      * ********************************************* */
-    // Buscar jornadas/conferencias
+    // Buscar grupos de tutoría inicial
     Route::post(
         'get_grupos_admin',
         'tutorias\SITGruposController@get_grupos_admin'
@@ -627,6 +622,30 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'elimina_rol_coordinador_institucional',
         'tutorias\SITUsuariosController@elimina_rol_coordinador_institucional'
     );
+
+    // OBTENER GRUPOS DE TUTORÍA DE SEGUIMIENTO
+    Route::post(
+        'grupos_seguimiento_admin',
+        'tutorias\SITGruposSeguimientoController@get_grupos_admin'
+    );
+
+    // BUSCAR GRUPO DE TUTORÍA DE SEGUIMIENTO
+    Route::get(
+        'get_grupo_seguimiento',
+        'tutorias\SITGruposSeguimientoController@get_grupo_seguimiento'
+    );
+
+    // BUSCAR ALUMNOS DE GRUPO DE TUTORÍA DE SEGUIMIENTO
+    Route::get(
+        'get_alumnos_grupo',
+        'tutorias\SITGruposSeguimientoController@get_alumnos_grupo'
+    );
+
+    // CRERAR GRUPO DE SEGUIMIENTO
+    Route::post(
+        'guarda_grupo_seguimiento',
+        'tutorias\SITGruposSeguimientoController@guarda_grupo_seguimiento'
+    );
 });
 
 /* *********************************************************** *
@@ -648,6 +667,12 @@ Route::get(
  * ************* RUTAS PROTEGIDAS DEL SISTEMA DE ROLES Y USUARIOS *************** *
  * *********************************************************** */
 Route::group(['middleware' => ['jwt.verify']], function () {
+    // get usuarios
+    Route::get(
+        'usuario',
+        'UsuariosController@index'
+    );
+
     // Buscar usuarios
     Route::post(
         'buscar_usuarios',
