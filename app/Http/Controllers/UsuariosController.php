@@ -21,7 +21,8 @@ use Symfony\Component\HttpFoundation\Response;
 class UsuariosController extends Controller
 {
     /**
-     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request) {
         $query = ViewUsuarios::where('BORRADO', Constantes::BORRADO_NO);
@@ -35,14 +36,37 @@ class UsuariosController extends Controller
             $query->where('NUMERO_CONTROL', $request->numero_control);
         }
 
-        if ($request->carrera) {
-            $query->where('FK_CARRERA', $request->carrera);
-        }
-
-        if ($request->carrera) {
+        if ($request->carrera && $request->tipo_usuario != 1) {
             $carrera = Carrera::find($request->carrera);
             $carrera_area = AreaAcademicaCarrera::where('FK_CARRERA', $carrera->PK_CARRERA)->first();
             $query->where('FK_AREA_ACADEMICA', $carrera_area->FK_AREA_ACADEMICA);
+        }
+        /* FIN FILTROS QUERY PARAMS */
+
+        $usuarios = $query->get();
+
+        return ResponseHTTP::response_ok($usuarios);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function alumno(Request $request) {
+        // TODO AGREGAR TUTOR ASIGNADO
+        $query = ViewUsuarios::where('BORRADO', Constantes::BORRADO_NO);
+
+        /* INICIO FILTROS QUERY PARAMS */
+        if ($request->tipo_usuario) {
+            $query->where('TIPO_USUARIO', Constantes::USUARIO_ALUMNO);
+        }
+
+        if ($request->numero_control) {
+            $query->where('NUMERO_CONTROL', $request->numero_control);
+        }
+
+        if ($request->carrera) {
+            $query->where('FK_CARRERA', $request->carrera);
         }
         /* FIN FILTROS QUERY PARAMS */
 

@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
  */
 class Constantes
 {
+    CONST ASISTENCIA_PENDIENTE   = 1;
+    CONST ASISTENCIA_ENTRADA     = 2;
+    CONST ASISTENCIA_COMPLETA    = 3;
+    CONST ASISTENCIA_JUSTIFICADA = 4;
     /**
      *
      */

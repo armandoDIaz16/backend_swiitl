@@ -51,7 +51,7 @@ class ResponseHTTP
      * @param bool $error
      * @return object
      */
-    public static function make_reponse_error($message) {
+    private static function make_reponse_error($message) {
         return (object)[
             'code' => Response::HTTP_NOT_FOUND,
             'message' => $message,
