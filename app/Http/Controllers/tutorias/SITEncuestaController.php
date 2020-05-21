@@ -169,7 +169,8 @@ class SITEncuestaController extends Controller
         }
     }
 
-    public function get_carreras(){
+    public function get_carreras()
+    {
         $carreras = Carrera::all();
 
         if (count($carreras) > 0) {
@@ -219,12 +220,12 @@ class SITEncuestaController extends Controller
         $encuesta = new Aplicacion_Encuesta;
         $usuario = UsuariosHelper::get_usuario($request->PK_ENCRIPTADA);
 
-        $encuesta->FK_USUARIO_REGISTRO         = $usuario->PK_USUARIO;
-        $encuesta->FK_ENCUESTA                 = $request->PK_ENCUESTA;
-        $encuesta->FK_TIPO_APLICACION          = $request->PK_TIPO_APLICACION;
-        $encuesta->PERIODO                     = Constantes::get_periodo();
-        $encuesta->FECHA_APLICACION            = date('Y-m-d H:i:s');
-        $encuesta->FECHA_REGISTRO              = date('Y-m-d H:i:s');
+        $encuesta->FK_USUARIO_REGISTRO = $usuario->PK_USUARIO;
+        $encuesta->FK_ENCUESTA = $request->PK_ENCUESTA;
+        $encuesta->FK_TIPO_APLICACION = $request->PK_TIPO_APLICACION;
+        $encuesta->PERIODO = Constantes::get_periodo();
+        $encuesta->FECHA_APLICACION = date('Y-m-d H:i:s');
+        $encuesta->FECHA_REGISTRO = date('Y-m-d H:i:s');
 
         switch ($request->TIPO_APLICACION) {
             case 2:
@@ -240,6 +241,8 @@ class SITEncuestaController extends Controller
         }
 
         if ($encuesta->save()) {
+            $this->registra_detalle_aplicacion_encuesta($encuesta);
+
             return response()->json(
                 RespuestaHttp::make_reponse_ok($encuesta),
                 Response::HTTP_OK
@@ -250,6 +253,36 @@ class SITEncuestaController extends Controller
                 Response::HTTP_BAD_REQUEST
             );
         }
+    }
+
+    private function registra_detalle_aplicacion_encuesta(Aplicacion_Encuesta $encuesta)
+    {
+        switch ($encuesta->TIPO_APLICACION) {
+            case 2:
+                $this->aplica_carrera($encuesta->APLICACION_FK_CARRERA);
+                break;
+            case 3:
+                $this->aplica_semestre($encuesta->APLICACION_SEMESTRE);
+                break;
+            case 5:
+                $this->aplica_usuario($encuesta->FK_USUARIO);
+                break;
+        }
+    }
+
+    private function aplica_usuario($pk_usuario)
+    {
+
+    }
+
+    private function aplica_semestre($semestre)
+    {
+
+    }
+
+    private function aplica_carrera($pk_carrera)
+    {
+
     }
 
     /**
