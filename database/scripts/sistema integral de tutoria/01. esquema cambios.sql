@@ -4,15 +4,16 @@ ALTER TABLE TR_RESPUESTA_USUARIO_ENCUESTA
     DROP CONSTRAINT DF__TR_RESPUE__RESPU__336AA144;
 
 ALTER TABLE TR_RESPUESTA_USUARIO_ENCUESTA
-    ALTER COLUMN RESPUESTA_ABIERTA NVARCHAR(500) NULL
-;
+    ALTER COLUMN RESPUESTA_ABIERTA NVARCHAR(500) NULL;
 
 -- Modulo de grupos del tutor
 INSERT INTO PER_CAT_MODULO (NOMBRE, ESTADO, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
 VALUES ('Grupos', 1, 1, 'a20e50d69f0242136be5a392524da972', 'Lista de grupos del tutor', 'grupos_tutor');
 
 -- actualización de modulo de grupos a tutor
-UPDATE PER_TR_ROL_MODULO SET FK_MODULO = 47 WHERE PK_ROL_MODULO = 2;
+UPDATE PER_TR_ROL_MODULO
+SET FK_MODULO = 47
+WHERE PK_ROL_MODULO = 2;
 
 /* INICIO TABLA PARA COORDINADORES DE TUTORIAS */
 CREATE TABLE TR_COORDINADOR_DEPARTAMENTAL_TUTORIA
@@ -53,7 +54,7 @@ VALUES (1, 'Coordinador institucional', 'COORI_TUT');
 INSERT INTO PER_CAT_ROL(FK_SISTEMA, NOMBRE, ABREVIATURA)
 VALUES (1, 'Administrador', 'ADM_TUT');
 
- -- REGISTRO DE MÓDULOS
+-- REGISTRO DE MÓDULOS
 INSERT INTO PER_CAT_MODULO(NOMBRE, ESTADO, ORDEN)
 VALUES ('Coordinadores institucionales', 1, 1);
 
@@ -77,64 +78,44 @@ VALUES ('Grupos SIIA', 1, 1);
 
 -- ASIGNACIÓN DE MÓDULOS A ROLES
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'EST_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Datos tutor')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'EST_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Datos tutor'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'EST_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Horario')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'EST_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Horario'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'EST_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Seguimiento académico')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'EST_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Seguimiento académico'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Grupos')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Grupos'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'COORI_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Grupos')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'COORI_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Grupos'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores institucionales')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores institucionales'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Usuarios')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Usuarios'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores departamentales')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores departamentales'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Grupos SIIA')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Grupos SIIA'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'COORI_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores departamentales')
-);
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'COORI_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores departamentales'));
 
 
 /* ************************ *
@@ -146,16 +127,20 @@ VALUES (
 INSERT INTO PER_TR_ROL_USUARIO(FK_ROL, FK_USUARIO)
 VALUES (5, (SELECT PK_USUARIO FROM CAT_USUARIO WHERE NUMERO_CONTROL = '1501'));
 
-UPDATE PER_CAT_SISTEMA SET NOMBRE = 'Tutorías' WHERE NOMBRE = 'tutorias';
+UPDATE PER_CAT_SISTEMA
+SET NOMBRE = 'Tutorías'
+WHERE NOMBRE = 'tutorias';
 
-UPDATE PER_CAT_MODULO SET NOMBRE = 'Grupos actuales' WHERE NOMBRE = 'Grupos';
+UPDATE PER_CAT_MODULO
+SET NOMBRE = 'Grupos actuales'
+WHERE NOMBRE = 'Grupos';
 
 -- MÓDULO DE HISTÓRICO DE GRUPOS DE UN TUTOR
 INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA, RUTA_MD5, DESCRIPCION)
-    VALUES ('Histórico grupos', 2, 'historico_grupos_tutor', 'e150022cbe6813b2d7efe161c9641e93',
-            'Histórico de grupos de un tutor');
+VALUES ('Histórico grupos', 2, 'historico_grupos_tutor', 'e150022cbe6813b2d7efe161c9641e93',
+        'Histórico de grupos de un tutor');
 
- -- -----------------------------------------
+-- -----------------------------------------
 -- CAMBIOS PARA MÓDULO DE JORNDAS --
 -- -----------------------------------------
 
@@ -185,61 +170,57 @@ ALTER TABLE CAT_JORNADA
 
 
 -- ELIMINAR RELACIÓN DE MÓDULOS DEL COORDINADOR DEPARTAMENTAL
-DELETE FROM PER_TR_ROL_MODULO WHERE FK_ROL = (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'COORD_TUT');
+DELETE
+FROM PER_TR_ROL_MODULO
+WHERE FK_ROL = (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'COORD_TUT');
 
 -- MÓDULO DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Tutoría inicial',
-                                                                                  1,
-                                                                                  'a37ecf663279036431a24c6d58f78618',
-                                                                                  'Módulo para la visualización de los grupos de tutoría inicial del coordinador departamental',
-                                                                                  'tinicial_coordinador_departamental'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Tutoría inicial',
+        1,
+        'a37ecf663279036431a24c6d58f78618',
+        'Módulo para la visualización de los grupos de tutoría inicial del coordinador departamental',
+        'tinicial_coordinador_departamental');
 
 -- MÓDULO DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Tutoría seguimiento',
-                                                                                  2,
-                                                                                  '4bf2cf43829cc6001200347fff5b9e1a',
-                                                                                  'Módulo para la visualización de los grupos de tutoría de seguimiento del coordinador departamental',
-                                                                                  'tseguimiento_coordinador_departamental'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Tutoría seguimiento',
+        2,
+        '4bf2cf43829cc6001200347fff5b9e1a',
+        'Módulo para la visualización de los grupos de tutoría de seguimiento del coordinador departamental',
+        'tseguimiento_coordinador_departamental');
 
 -- MÓDULO DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Histórico tutoría inicial',
-                                                                                  3,
-                                                                                  'cd626195c52adf7f302eac9836d4d5dc',
-                                                                                  'Módulo para la visualización del histórico de grupos de tutoría inicial del coord departamental',
-                                                                                  'historico_tinicial_coord_departamental'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Histórico tutoría inicial',
+        3,
+        'cd626195c52adf7f302eac9836d4d5dc',
+        'Módulo para la visualización del histórico de grupos de tutoría inicial del coord departamental',
+        'historico_tinicial_coord_departamental');
 
 -- MÓDULO DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Histórico tutoría seguimiento',
-                                                                                  4,
-                                                                                  '603c63398cb3fb82ce405fbb720fe7de',
-                                                                                  'Módulo para la visualización del histórico de grupos de tutoría de seguimiento del coord dep',
-                                                                                  'historico_tseguimiento_coord_departamental'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Histórico tutoría seguimiento',
+        4,
+        '603c63398cb3fb82ce405fbb720fe7de',
+        'Módulo para la visualización del histórico de grupos de tutoría de seguimiento del coord dep',
+        'historico_tseguimiento_coord_departamental');
 
 -- MÓDULO DE REPORTES DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Reportes tutoría inicial',
-                                                                                  5,
-                                                                                  '82687bd5bee7e0cd367ff7ddec297ac0',
-                                                                                  'Módulo para la visualización de reportes de tutoría inicial coord dep',
-                                                                                  'reportes_inicial_coord'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Reportes tutoría inicial',
+        5,
+        '82687bd5bee7e0cd367ff7ddec297ac0',
+        'Módulo para la visualización de reportes de tutoría inicial coord dep',
+        'reportes_inicial_coord');
 
 -- MÓDULO DE REPORTES DE TUTORÍA DESEGUIMIENTO PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Reportes tutoría seguimiento',
-                                                                                  6,
-                                                                                  '93f328174fb172ff87b73ac9c14fef4e',
-                                                                                  'Módulo para la visualización de reportes de tutoría de seguimiento coord dep',
-                                                                                  'reportes_seguimiento_coord'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Reportes tutoría seguimiento',
+        6,
+        '93f328174fb172ff87b73ac9c14fef4e',
+        'Módulo para la visualización de reportes de tutoría de seguimiento coord dep',
+        'reportes_seguimiento_coord');
 
 -- ASIGNACIÓN DE ROLES A MÓDULO
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
@@ -259,61 +240,57 @@ VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'COORD_TUT'),
 
 -- ----------------------------------------------------------------------------------------
 -- ELIMINAR RELACIÓN DE MÓDULOS DEL ADMINISTRADOR
-DELETE FROM PER_TR_ROL_MODULO WHERE FK_ROL = (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT');
+DELETE
+FROM PER_TR_ROL_MODULO
+WHERE FK_ROL = (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT');
 
 -- MÓDULO DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Tutoría inicial',
-                                                                                  1,
-                                                                                  '4781291c6bd5fdb69af66b8b5bdce033',
-                                                                                  'Módulo para la visualización de los grupos de tutoría inicial del admin',
-                                                                                  'grupos_inicial_admin'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Tutoría inicial',
+        1,
+        '4781291c6bd5fdb69af66b8b5bdce033',
+        'Módulo para la visualización de los grupos de tutoría inicial del admin',
+        'grupos_inicial_admin');
 
 -- MÓDULO DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Tutoría seguimiento',
-                                                                                  2,
-                                                                                  '45df774b0e447feee7fc7ecc8fad8e5d',
-                                                                                  'Módulo para la visualización de los grupos de tutoría de seguimiento del admin',
-                                                                                  'grupos_seguimiento_admin'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Tutoría seguimiento',
+        2,
+        '45df774b0e447feee7fc7ecc8fad8e5d',
+        'Módulo para la visualización de los grupos de tutoría de seguimiento del admin',
+        'grupos_seguimiento_admin');
 
 -- MÓDULO DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Histórico tutoría inicial',
-                                                                                  3,
-                                                                                  '3eed5738a17a74792e51c20f5e15813d',
-                                                                                  'Módulo para la visualización del histórico de grupos de tutoría inicial del admin',
-                                                                                  'historico_inicial_admin'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Histórico tutoría inicial',
+        3,
+        '3eed5738a17a74792e51c20f5e15813d',
+        'Módulo para la visualización del histórico de grupos de tutoría inicial del admin',
+        'historico_inicial_admin');
 
 -- MÓDULO DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Histórico tutoría seguimiento',
-                                                                                  4,
-                                                                                  '1543755fc7d55ceff9d0a28b32033f77',
-                                                                                  'Módulo para la visualización del histórico de grupos de tutoría de seguimiento del admin',
-                                                                                  'historico_seguimiento_admin'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Histórico tutoría seguimiento',
+        4,
+        '1543755fc7d55ceff9d0a28b32033f77',
+        'Módulo para la visualización del histórico de grupos de tutoría de seguimiento del admin',
+        'historico_seguimiento_admin');
 
 -- MÓDULO DE REPORTES DE TUTORÍA INICIAL PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Reportes tutoría inicial',
-                                                                                  5,
-                                                                                  'cbecad3686494a55dbb615d46ef33dfc',
-                                                                                  'Módulo para la visualización de reportes de tutoría inicial admin',
-                                                                                  'reportes_inicial_admin'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Reportes tutoría inicial',
+        5,
+        'cbecad3686494a55dbb615d46ef33dfc',
+        'Módulo para la visualización de reportes de tutoría inicial admin',
+        'reportes_inicial_admin');
 
 -- MÓDULO DE REPORTES DE TUTORÍA DESEGUIMIENTO PARA COORDINADOR DEPARTAMENTAL
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES (
-                                                                                  'Reportes tutoría seguimiento',
-                                                                                  6,
-                                                                                  '8544a570296451efd329440be0762caf',
-                                                                                  'Módulo para la visualización de reportes de tutoría de seguimiento admin',
-                                                                                  'reportes_seguimiento_admin'
-                                                                              );
+INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA)
+VALUES ('Reportes tutoría seguimiento',
+        6,
+        '8544a570296451efd329440be0762caf',
+        'Módulo para la visualización de reportes de tutoría de seguimiento admin',
+        'reportes_seguimiento_admin');
 
 -- ASIGNACIÓN DE ROLES A MÓDULO
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
@@ -333,106 +310,55 @@ VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
         (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE RUTA = 'reportes_seguimiento_admin'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-           (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
-           (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores institucionales')
-       );
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores institucionales'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-           (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
-           (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Usuarios')
-       );
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Usuarios'));
 
 INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO)
-VALUES (
-           (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
-           (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores departamentales')
-       );
+VALUES ((SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'ADM_TUT'),
+        (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE NOMBRE = 'Coordinadores departamentales'));
 
 /* ******************************************** *
  * ****** CAMBIOS EN APLICACIÓN DE ENCUESTAS ** *
  * ******************************************** */
-/* Se crea la tabla que define los diferentes tipos de aplicación, 'CAT_TIPO_APLICACION' */
-DROP TABLE IF EXISTS CAT_TIPO_APLICACION;
-CREATE TABLE CAT_TIPO_APLICACION(
-                                    PK_TIPO_APLICACION     INT             NOT NULL IDENTITY (1,1),
-                                    NOMBRE                 VARCHAR(50)     NOT NULL
-);
-
-ALTER TABLE CAT_TIPO_APLICACION
-    ADD CONSTRAINT PRK_TIPO_APLICACION_CAT_TIPO_APLICACION PRIMARY KEY (PK_TIPO_APLICACION ASC);
-
-INSERT INTO CAT_TIPO_APLICACION (NOMBRE)
-VALUES ('Institucional'), ('Carrera'), ('Semestre'), ('Grupo'), ('Individual');
-
-SELECT * FROM CAT_TIPO_APLICACION;
-
-/* Modificar 'TR_APLICACION_ENCUESTA' para hacer uso de 'CAT_APLICACION' */
-
-ALTER TABLE TR_APLICACION_ENCUESTA
-    ADD FK_TIPO_APLICACION INT NULL;
-
-ALTER TABLE TR_APLICACION_ENCUESTA
-    ADD CONSTRAINT FRK_TIPO_APLICACION_TR_APLICACION_ENCUESTA
-        FOREIGN KEY (FK_TIPO_APLICACION) REFERENCES CAT_TIPO_APLICACION (PK_TIPO_APLICACION);
-
-ALTER TABLE TR_APLICACION_ENCUESTA ADD APLICACION_SEMESTRE NVARCHAR(2) NULL;
-ALTER TABLE TR_APLICACION_ENCUESTA ADD APLICACION_FK_CARRERA INT NULL;
-ALTER TABLE TR_APLICACION_ENCUESTA ADD APLICACION_NUMERO_CONTROL INT NULL;
-
-SELECT * FROM TR_APLICACION_ENCUESTA;
-
-INSERT INTO TR_APLICACION_ENCUESTA(FK_USUARIO, FK_ENCUESTA, FK_TIPO_APLICACION, APLICACION_SEMESTRE, FECHA_APLICACION)
-VALUES(1,1,3,9,GETDATE());
-
-
-SELECT * FROM CAT_ENCUESTA
-
-ALTER TABLE TR_APLICACION_ENCUESTA DROP COLUMN APLICACION_NUMERO_CONTROL;
-
-UPDATE TR_APLICACION_ENCUESTA
-SET FK_TIPO_APLICACION = 5
-WHERE FK_TIPO_APLICACION IS NULL
-
-SELECT * FROM CAT_USUARIO WHERE PK_USUARIO = 60;
-
-DROP TABLE IF EXISTS RESPUESTA_ENCUESTA;
-CREATE TABLE RESPUESTA_ENCUESTA(
-    PK_RESPUESTA_ENCUESTA INT NOT NULL IDENTITY (1,1),
-    FK_APLICACION INT,
-    FK_USUARIO INT,
-    FECHA_RESPUESTA DATETIME,
-);
-
-ALTER TABLE RESPUESTA_ENCUESTA
-    ADD CONSTRAINT PRK_RESPUESTA_ENCUESTA_RESPUESTA_ENCUESTA PRIMARY KEY (PK_RESPUESTA_ENCUESTA ASC);
-
-ALTER TABLE RESPUESTA_ENCUESTA
-    ADD CONSTRAINT FRK_APLICACION_RESPUESTA_ENCUESTA
-        FOREIGN KEY (FK_APLICACION) REFERENCES TR_APLICACION_ENCUESTA(PK_APLICACION_ENCUESTA);
-
-ALTER TABLE RESPUESTA_ENCUESTA
-    ADD CONSTRAINT FRK_USUARIO_RESPUESTA_ENCUESTA
-        FOREIGN KEY (FK_USUARIO) REFERENCES CAT_USUARIO(PK_USUARIO);
-
-
-
-
-/* ********************************************** *
- * * MODIFIACIONES PARA APLICACIÓN DE ENCUESTAS * *
- * ********************************************** */
-/* TABLA PARA APLICACIÓN DE ENCUESTAS */
-CREATE TABLE TR_APLICACION_ENCUESTA
+DROP TABLE IF EXISTS CAT_TIPO_APLICACION_ENCUESTA;
+CREATE TABLE CAT_TIPO_APLICACION_ENCUESTA
 (
-    PK_APLICACION_ENCUESTA  INT        NOT NULL IDENTITY (1,1),
+    PK_TIPO_APLICACION      INT         NOT NULL IDENTITY (1,1),
+    NOMBRE                  VARCHAR(50) NOT NULL,
+
+    FK_USUARIO_REGISTRO     INT,
+    FECHA_REGISTRO          DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FK_USUARIO_MODIFICACION INT,
+    FECHA_MODIFICACION      DATETIME,
+    BORRADO                 SMALLINT    NOT NULL DEFAULT 0
+);
+
+ALTER TABLE CAT_TIPO_APLICACION_ENCUESTA
+    ADD CONSTRAINT PRK_TIPO_APLICACION_CAT_TIPO_APLICACION_ENCUESTA
+        PRIMARY KEY (PK_TIPO_APLICACION ASC);
+
+INSERT INTO CAT_TIPO_APLICACION_ENCUESTA (NOMBRE)
+VALUES ('Institucional'),
+       ('Por carrera'),
+       ('Por semestre'),
+       ('Por grupo'),
+       ('Individual');
+
+/* TABLA PARA APLICACIÓN DE ENCUESTAS */
+CREATE TABLE TR_APLICACION_ENCUESTAS
+(
+    PK_APLICACION           INT        NOT NULL IDENTITY (1,1),
 
     FK_TIPO_APLICACION      INT        NULL,
     FK_ENCUESTA             INT        NULL,
     FK_CARRERA              INT        NULL,
     FK_USUARIO              INT        NULL,
     SEMESTRE                INT        NULL,
-    FECHA_APLICACION        DATETIME   NOT NULL,
+    FECHA_APLICACION        DATE       NOT NULL,
     PERIODO                 VARCHAR(5) NOT NULL,
     ESTADO                  SMALLINT   NOT NULL DEFAULT 1,
 
@@ -443,34 +369,170 @@ CREATE TABLE TR_APLICACION_ENCUESTA
     BORRADO                 SMALLINT   NOT NULL DEFAULT 0
 );
 
-ALTER TABLE TR_APLICACION_ENCUESTA
-    ADD CONSTRAINT PRK_APLICACION_ENCUESTA_TR_APLICACION_ENCUESTA PRIMARY KEY (PK_APLICACION_ENCUESTA ASC);
+ALTER TABLE TR_APLICACION_ENCUESTAS
+    ADD CONSTRAINT PRK_APLICACION_ENCUESTA_TR_APLICACION_ENCUESTA
+        PRIMARY KEY (PK_APLICACION ASC);
 
-ALTER TABLE TR_APLICACION_ENCUESTA
+ALTER TABLE TR_APLICACION_ENCUESTAS
     ADD CONSTRAINT FRK_TIPO_APLICACION_TR_APLICACION_ENCUESTA FOREIGN KEY (FK_TIPO_APLICACION)
-        REFERENCES CAT_TIPO_APLICACION (PK_TIPO_APLICACION);
+        REFERENCES CAT_TIPO_APLICACION_ENCUESTA (PK_TIPO_APLICACION);
 
-ALTER TABLE TR_APLICACION_ENCUESTA
+ALTER TABLE TR_APLICACION_ENCUESTAS
     ADD CONSTRAINT FRK_ENCUESTA_TR_APLICACION_ENCUESTA FOREIGN KEY (FK_ENCUESTA)
         REFERENCES CAT_ENCUESTA (PK_ENCUESTA);
 
-ALTER TABLE TR_APLICACION_ENCUESTA
+ALTER TABLE TR_APLICACION_ENCUESTAS
     ADD CONSTRAINT FRK_CARRERA_TR_APLICACION_ENCUESTA FOREIGN KEY (FK_CARRERA)
         REFERENCES CAT_CARRERA (PK_CARRERA);
 
-ALTER TABLE TR_APLICACION_ENCUESTA
+ALTER TABLE TR_APLICACION_ENCUESTAS
     ADD CONSTRAINT FRK_USUARIO_TR_APLICACION_ENCUESTA FOREIGN KEY (FK_USUARIO)
         REFERENCES CAT_USUARIO (PK_USUARIO);
 /* TABLA PARA APLICACION DE ENCUESTAS */
 
-/* TABLA PARA RESPUESTAS DE ENCUESTAS */
-CREATE TABLE TR_RESPUESTA_ENCUESTA
-(
-    PK_RESPUESTA            INT      NOT NULL IDENTITY (1,1),
+/* MODIFICAR NOMBRE DE TR_APLICACION_ENCUESTA POR TR_APLICACION_ENCUESTA_DETALLE */
+EXEC sp_rename 'TR_APLICACION_ENCUESTA', TR_APLICACION_ENCUESTA_DETALLE, 'OBJECT';
 
-    FK_APLICACION_ENCUESTA  INT      NULL,
-    FK_USUARIO              INT      NULL,
-    FECHA_RESPUESTA         DATETIME NOT NULL,
+/* MODIFICAR NOMBRE DE TR_APLICACION_ENCUESTAS POR TR_APLICACION_ENCUESTA */
+EXEC sp_rename 'TR_APLICACION_ENCUESTAS', TR_APLICACION_ENCUESTA, 'OBJECT';
+
+ALTER TABLE TR_APLICACION_ENCUESTA
+    ALTER COLUMN FECHA_APLICACION DATE NOT NULL;
+
+/* CREAR INSERTS DE APLICACION DE ENCUESTA INICIALES */
+INSERT INTO TR_APLICACION_ENCUESTA(FK_TIPO_APLICACION, FK_ENCUESTA, SEMESTRE, FECHA_APLICACION, PERIODO)
+VALUES (3, 1, 1, '2019-08-14', 20192),
+       (3, 2, 1, '2019-08-14', 20192),
+       (3, 3, 1, '2019-08-14', 20192),
+       (3, 6, 1, '2019-08-14', 20192),
+       (3, 4, 1, '2019-08-15', 20192),
+       (3, 5, 1, '2019-08-15', 20192),
+       (3, 8, 1, '2019-08-15', 20192);
+
+/* MODIFICAR TABLA TR_APLICACION_ENCUESTA_DETALLE */
+EXEC sp_rename 'TR_APLICACION_ENCUESTA_DETALLE.PK_APLICACION_ENCUESTA', PK_APLICACION_ENCUESTA_DETALLE, 'COLUMN';
+
+/* AGREGAR COLUMNA DE APLICACIÓN A TR_APLICACION_ENCUESTA_DETALLE */
+ALTER TABLE TR_APLICACION_ENCUESTA_DETALLE
+    ADD FK_APLICACION_ENCUESTA INT;
+
+ALTER TABLE TR_APLICACION_ENCUESTA_DETALLE
+    ADD CONSTRAINT FRK_APLICACION_ENCUESTA_TR_APLICACION_ENCUESTA_DETALLE FOREIGN KEY (FK_APLICACION_ENCUESTA)
+        REFERENCES TR_APLICACION_ENCUESTA (PK_APLICACION);
+
+/* AGREGAR RELACIÓN DE APLICACIÓN A TR_APLICACION_ENCUESTA_DETALLE */
+UPDATE TR_APLICACION_ENCUESTA_DETALLE
+SET TR_APLICACION_ENCUESTA_DETALLE.FK_APLICACION_ENCUESTA = (
+    SELECT TR_APLICACION_ENCUESTA.PK_APLICACION
+    FROM TR_APLICACION_ENCUESTA
+    WHERE TR_APLICACION_ENCUESTA.FK_ENCUESTA = 1
+)
+WHERE TR_APLICACION_ENCUESTA_DETALLE.FK_ENCUESTA = 1;
+;
+
+UPDATE TR_APLICACION_ENCUESTA_DETALLE
+SET TR_APLICACION_ENCUESTA_DETALLE.FK_APLICACION_ENCUESTA = (
+    SELECT TR_APLICACION_ENCUESTA.PK_APLICACION
+    FROM TR_APLICACION_ENCUESTA
+    WHERE TR_APLICACION_ENCUESTA.FK_ENCUESTA = 2
+)
+WHERE TR_APLICACION_ENCUESTA_DETALLE.FK_ENCUESTA = 2;
+;
+
+UPDATE TR_APLICACION_ENCUESTA_DETALLE
+SET TR_APLICACION_ENCUESTA_DETALLE.FK_APLICACION_ENCUESTA = (
+    SELECT TR_APLICACION_ENCUESTA.PK_APLICACION
+    FROM TR_APLICACION_ENCUESTA
+    WHERE TR_APLICACION_ENCUESTA.FK_ENCUESTA = 3
+)
+WHERE TR_APLICACION_ENCUESTA_DETALLE.FK_ENCUESTA = 3;
+;
+
+UPDATE TR_APLICACION_ENCUESTA_DETALLE
+SET TR_APLICACION_ENCUESTA_DETALLE.FK_APLICACION_ENCUESTA = (
+    SELECT TR_APLICACION_ENCUESTA.PK_APLICACION
+    FROM TR_APLICACION_ENCUESTA
+    WHERE TR_APLICACION_ENCUESTA.FK_ENCUESTA = 4
+)
+WHERE TR_APLICACION_ENCUESTA_DETALLE.FK_ENCUESTA = 4;
+;
+
+UPDATE TR_APLICACION_ENCUESTA_DETALLE
+SET TR_APLICACION_ENCUESTA_DETALLE.FK_APLICACION_ENCUESTA = (
+    SELECT TR_APLICACION_ENCUESTA.PK_APLICACION
+    FROM TR_APLICACION_ENCUESTA
+    WHERE TR_APLICACION_ENCUESTA.FK_ENCUESTA = 5
+)
+WHERE TR_APLICACION_ENCUESTA_DETALLE.FK_ENCUESTA = 5;
+;
+
+UPDATE TR_APLICACION_ENCUESTA_DETALLE
+SET TR_APLICACION_ENCUESTA_DETALLE.FK_APLICACION_ENCUESTA = (
+    SELECT TR_APLICACION_ENCUESTA.PK_APLICACION
+    FROM TR_APLICACION_ENCUESTA
+    WHERE TR_APLICACION_ENCUESTA.FK_ENCUESTA = 6
+)
+WHERE TR_APLICACION_ENCUESTA_DETALLE.FK_ENCUESTA = 6;
+;
+
+UPDATE TR_APLICACION_ENCUESTA_DETALLE
+SET TR_APLICACION_ENCUESTA_DETALLE.FK_APLICACION_ENCUESTA = (
+    SELECT TR_APLICACION_ENCUESTA.PK_APLICACION
+    FROM TR_APLICACION_ENCUESTA
+    WHERE TR_APLICACION_ENCUESTA.FK_ENCUESTA = 8
+)
+WHERE TR_APLICACION_ENCUESTA_DETALLE.FK_ENCUESTA = 8;
+;
+
+/* ELIMINAR COLUMNA FK_ENCUESTA DE TR_APLICACION_ENCUESTA_DETALLE
+   BUSCAR CONSTRAINTS
+*/
+ALTER TABLE TR_APLICACION_ENCUESTA_DETALLE
+    DROP COLUMN FK_ENCUESTA;
+
+/* ELIMINAR COLUMNA FECHA_APLICACION DE TR_APLICACION_ENCUESTA_DETALLE
+   BUSCAR CONSTRAINTS
+*/
+ALTER TABLE TR_APLICACION_ENCUESTA_DETALLE
+    DROP COLUMN FECHA_APLICACION;
+
+/* ELIMINAR COLUMNA PERIODO DE TR_APLICACION_ENCUESTA_DETALLE
+*/
+ALTER TABLE TR_APLICACION_ENCUESTA_DETALLE
+    DROP COLUMN PERIODO;
+
+/* RENOMBRAR FK EN RESPUESTA */
+EXEC sp_rename 'TR_RESPUESTA_USUARIO_ENCUESTA.FK_APLICACION_ENCUESTA', FK_APLICACION_ENCUESTA_DETALLE, 'COLUMN';
+
+/* PONER COMO NULL EL TUTOR EN LA TABLA GRUPO TUTORÍA*/
+ALTER TABLE TR_GRUPO_TUTORIA
+    ALTER COLUMN FK_USUARIO INT NULL;
+
+/* AGREGAR COLUMNA DE SISTEMA A CAT_ENCUESTA */
+ALTER TABLE CAT_ENCUESTA
+    ADD FK_SISTEMA INT;
+
+ALTER TABLE CAT_ENCUESTA
+    ADD CONSTRAINT FRK_SISTEMA_CAT_ENCUESTA FOREIGN KEY (FK_SISTEMA)
+        REFERENCES PER_CAT_SISTEMA (PK_SISTEMA);
+
+/* AGREGAR FK_SISTEMA TUTORIA A LAS ENCUESTAS */
+UPDATE CAT_ENCUESTA
+SET FK_SISTEMA = 1;
+
+/*
+ * INVITACION A CONFERENCIAS
+ */
+/* TABLA PARA INVITACION DE CONFERENCIAS */
+CREATE TABLE TR_INVITACION_CONFERENCIA
+(
+    PK_INVITACION           INT      NOT NULL IDENTITY (1,1),
+    FK_JORNADA              INT      NOT NULL,
+    FK_CARRERA              INT      NULL,
+
+    TIPO_INVITACION         INT      NOT NULL,
+    SEMESTRE                INT      NULL,
+    FECHA_INVITACION        DATE     NOT NULL,
     ESTADO                  SMALLINT NOT NULL DEFAULT 1,
 
     FK_USUARIO_REGISTRO     INT,
@@ -480,30 +542,59 @@ CREATE TABLE TR_RESPUESTA_ENCUESTA
     BORRADO                 SMALLINT NOT NULL DEFAULT 0
 );
 
-ALTER TABLE TR_RESPUESTA_ENCUESTA
-    ADD CONSTRAINT PRK_RESPUESTA_TR_RESPUESTA_ENCUESTA PRIMARY KEY (PK_RESPUESTA ASC);
+ALTER TABLE TR_INVITACION_CONFERENCIA
+    ADD CONSTRAINT PRK_INVITACION_TR_INVITACION_CONFERENCIA
+        PRIMARY KEY (PK_INVITACION ASC);
 
-ALTER TABLE TR_RESPUESTA_ENCUESTA
-    ADD CONSTRAINT FRK_APLICACION_ENCUESTA_TR_RESPUESTA_ENCUESTA FOREIGN KEY (FK_APLICACION_ENCUESTA)
-        REFERENCES TR_APLICACION_ENCUESTA (PK_APLICACION_ENCUESTA);
+ALTER TABLE TR_INVITACION_CONFERENCIA
+    ADD CONSTRAINT FRK_JORNADA_TR_INVITACION_CONFERENCIA FOREIGN KEY (FK_JORNADA)
+        REFERENCES CAT_JORNADA (PK_JORNADA);
 
-ALTER TABLE TR_RESPUESTA_ENCUESTA
-    ADD CONSTRAINT FRK_USUARIO_TR_RESPUESTA_ENCUESTA FOREIGN KEY (FK_USUARIO)
+ALTER TABLE TR_INVITACION_CONFERENCIA
+    ADD CONSTRAINT FRK_CARRERA_TR_INVITACION_CONFERENCIA FOREIGN KEY (FK_CARRERA)
+        REFERENCES CAT_ENCUESTA (PK_ENCUESTA);
+/* TABLA PARA INVITACION DE CONFERENCIAS */
+
+/* TABLA PARA DETALLE DE INVITACION A CONFERENCIAS */
+CREATE TABLE TR_INVITACION_CONFERENCIA_DETALLE
+(
+    PK_DETALLE                  INT      NOT NULL IDENTITY (1,1),
+    FK_INVITACION               INT      NOT NULL,
+    FK_USUARIO                  INT      NOT NULL,
+
+    HORA_ENTRADA                TIME              DEFAULT NULL,
+    HORA_SALIDA                 TIME              DEFAULT NULL,
+    -- 1 PENDIENTE, 2 - ENTRADA, 3 - COMPLETA, 4 JUSTIFICADA
+    ASISTENCIA                  INT               DEFAULT 1,
+    OBSERVACIONES_JUSTIFICACION TEXT              DEFAULT NULL,
+    ESTADO                      SMALLINT NOT NULL DEFAULT 1,
+
+    FK_USUARIO_REGISTRO         INT,
+    FECHA_REGISTRO              DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FK_USUARIO_MODIFICACION     INT,
+    FECHA_MODIFICACION          DATETIME,
+    BORRADO                     SMALLINT NOT NULL DEFAULT 0
+);
+
+ALTER TABLE TR_INVITACION_CONFERENCIA_DETALLE
+    ADD CONSTRAINT PRK_DETALLE_TR_INVITACION_CONFERENCIA_DETALLE
+        PRIMARY KEY (PK_DETALLE ASC);
+
+ALTER TABLE TR_INVITACION_CONFERENCIA_DETALLE
+    ADD CONSTRAINT FRK_INVITACION_TR_INVITACION_CONFERENCIA_DETALLE FOREIGN KEY (FK_INVITACION)
+        REFERENCES TR_INVITACION_CONFERENCIA (PK_INVITACION);
+
+ALTER TABLE TR_INVITACION_CONFERENCIA_DETALLE
+    ADD CONSTRAINT FRK_USUARIO_TR_INVITACION_CONFERENCIA_DETALLE FOREIGN KEY (FK_USUARIO)
         REFERENCES CAT_USUARIO (PK_USUARIO);
-/* TABLA PARA RESPUESTAS DE ENCUESTAS */
+/* TABLA PARA DETALLE DE INVITACION A CONFERENCIAS */
 
-/* TABLA PARA DETALLE DE RESPUESTAS DE ENCUESTAS */
-CREATE TABLE TR_RESPUESTA_ENCUESTA_DETALLE
+/* TABLA PARA CAPTURISTAS DE CONFERENCIAS */
+CREATE TABLE TR_CAPTURISTA_CONFERENCIA
 (
-    PK_RESPUESTA_DETALLE    INT      NOT NULL IDENTITY (1,1),
-
-    FK_RESPUESTA            INT      NULL,
-    FK_RESPUESTA_POSIBLE    INT      NULL,
-
-    RESPUESTA_ABIERTA       TEXT              DEFAULT NULL,
-    ORDEN                   SMALLINT          DEFAULT NULL,
-    RANGO                   SMALLINT          DEFAULT NULL,
-    ESTADO                  SMALLINT NOT NULL DEFAULT 1,
+    PK_CAPTURISTA           INT      NOT NULL IDENTITY (1,1),
+    FK_JORNADA              INT      NOT NULL,
+    FK_USUARIO              INT      NULL,
 
     FK_USUARIO_REGISTRO     INT,
     FECHA_REGISTRO          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -512,19 +603,19 @@ CREATE TABLE TR_RESPUESTA_ENCUESTA_DETALLE
     BORRADO                 SMALLINT NOT NULL DEFAULT 0
 );
 
-ALTER TABLE TR_RESPUESTA_ENCUESTA_DETALLE
-    ADD CONSTRAINT PRK_RESPUESTA_DETALLE_TR_RESPUESTA_ENCUESTA_DETALLE PRIMARY KEY (PK_RESPUESTA_DETALLE ASC);
+ALTER TABLE TR_CAPTURISTA_CONFERENCIA
+    ADD CONSTRAINT PRK_CAPTURISTA_TR_CAPTURISTA_CONFERENCIA
+        PRIMARY KEY (PK_CAPTURISTA ASC);
 
-ALTER TABLE TR_RESPUESTA_ENCUESTA_DETALLE
-    ADD CONSTRAINT FRK_RESPUESTA_TR_RESPUESTA_ENCUESTA_DETALLE FOREIGN KEY (FK_RESPUESTA)
-        REFERENCES TR_APLICACION_ENCUESTA (PK_APLICACION_ENCUESTA);
+ALTER TABLE TR_CAPTURISTA_CONFERENCIA
+    ADD CONSTRAINT FRK_JORNADA_TR_CAPTURISTA_CONFERENCIA FOREIGN KEY (FK_JORNADA)
+        REFERENCES CAT_JORNADA (PK_JORNADA);
 
-ALTER TABLE TR_RESPUESTA_ENCUESTA_DETALLE
-    ADD CONSTRAINT FK_RESPUESTA_POSIBLE_TR_RESPUESTA_ENCUESTA_DETALLE FOREIGN KEY (FK_RESPUESTA_POSIBLE)
-        REFERENCES CAT_RESPUESTA_POSIBLE (PK_RESPUESTA_POSIBLE);
-/* TABLA PARA DETALLE DE RESPUESTAS DE ENCUESTAS */
+ALTER TABLE TR_CAPTURISTA_CONFERENCIA
+    ADD CONSTRAINT FRK_USUARIO_TR_CAPTURISTA_CONFERENCIA FOREIGN KEY (FK_USUARIO)
+        REFERENCES CAT_USUARIO (PK_USUARIO);
+/* TABLA PARA CAPTURISTAS DE CONFERENCIAS */
 
-ALTER TABLE TR_GRUPO_TUTORIA ALTER COLUMN FK_USUARIO INT NULL;
 
 -- CAMBIAR NOMBRE DE TABLA
 EXEC sp_rename 'TR_APLICACION_ENCUESTA', TR_APLICACION_ENCUESTA_DETALLE, 'OBJECT';

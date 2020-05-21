@@ -2,8 +2,10 @@
 
 namespace App\Helpers;
 
+use App\Rol;
 use App\User;
 use App\Usuario;
+use App\Usuario_Rol;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -27,6 +29,66 @@ class UsuariosHelper {
      */
     public static function get_clave_verificacion($longitud = 6) {
         return substr( md5(microtime()), 1, $longitud);
+    }
+
+
+    /**
+     * Función para agrear o quitar el rol a los usaurios
+     * @param $pk_usuario      string  primary key del usuario
+     * @param $abreviatura_rol string  abreviatura registrada en la base de datos
+     * @param $asigna_quita    boolean TRUE = asigna rol, FALSE = quita rol
+     */
+    public static function rol_usuario($pk_usuario, $abreviatura_rol, $asigna_quita) {
+        $usuario = self::get_usuario_pk($pk_usuario);
+        if ($usuario) {
+            $rol = Rol::where('ABREVIATURA', $abreviatura_rol)->first();
+            if ($rol) {
+                $rol_usuario = Usuario_Rol::where('FK_USUARIO', $usuario->PK_USUARIO)
+                    ->where('FK_ROL', $rol->PK_ROL)
+                    ->first();
+                if ($asigna_quita) {
+                    // asigna rol
+                    if ($rol_usuario) {
+                        // el rol ya existe en el usuario
+                        return true;
+                    } else {
+                        // registrar rol
+                        $rol_nuevo = new Usuario_Rol;
+                        $rol_nuevo->FK_ROL = $rol->PK_ROL;
+                        $rol_nuevo->FK_USUARIO = $usuario->PK_USUARIO;
+                        return $rol_nuevo->save();
+                    }
+                } else {
+                    // quita rol
+                    if ($rol_usuario) {
+                        // el rol existe, se elimina
+                        return $rol_usuario->delete();
+                    } else {
+                        // no tiene el rol asignado
+                        return true;
+                    }
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param $numero_control
+     * @return |null
+     */
+    public static function get_usuario_pk($pk_usuario) {
+        if ($pk_usuario) {
+            $usuario = Usuario::find($pk_usuario);
+            if ($usuario) {
+                return $usuario;
+            }
+        }
+
+        return null;
     }
 
     /**

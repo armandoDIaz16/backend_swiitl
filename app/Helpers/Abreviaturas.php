@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Helpers;
+
+class Abreviaturas
+{
+    /* ROLES DE TUTORIAS */
+    CONST ROL_ESTUDIANTE_TUTORIA = 'EST_TUT';
+    CONST ROL_TUTOR              = 'TUT_TUT';
+    CONST ROL_COORD_DEP_TUTORIA  = 'COORD_TUT';
+    CONST ROL_COORD_INS_TUTORIA  = 'COORI_TUT';
+    CONST ROL_ADMIN_TUTORIA      = 'ADM_TUT';
+
+    /* ROLES ASPIRANTES */
+    CONST ROL_ASPIRANTE = 'ASP';
+}

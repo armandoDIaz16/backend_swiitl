@@ -51,7 +51,7 @@
         <div>
             <ul>
                 <li>
-                    Examen de CENEVAL {{$ASPIRANTE->DIA}} a las {{$ASPIRANTE->HORA}}.
+                    Examen CENEVAL.
                     <ul>
                         <li>
                             Descarga tu guía para el examen CENEVAL, desde esta liga:
@@ -137,7 +137,7 @@
         <div>
             <ul>
                 <li>
-                    Examen de CENEVAL {{$ASPIRANTE->DIA}} a las {{$ASPIRANTE->HORA}}.
+                    Examen CENEVAL.
                     <ul>
                         <li>
                             Descarga tu guía para el examen CENEVAL, desde esta liga:

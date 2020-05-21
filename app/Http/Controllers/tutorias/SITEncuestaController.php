@@ -152,7 +152,7 @@ class SITEncuestaController extends Controller
      */
     public function get_tipos_aplicacion()
     {
-        $encuestas = DB::table('CAT_TIPO_APLICACION')
+        $encuestas = DB::table('CAT_TIPO_APLICACION_ENCUESTA')
             ->select('NOMBRE')
             ->get();
 
@@ -194,7 +194,7 @@ class SITEncuestaController extends Controller
         $encuestas = DB::table('TR_APLICACION_ENCUESTA AS APE')
             ->select('APE.*', 'EN.NOMBRE AS NOMBRE_ENCUESTA', 'TIA.NOMBRE AS TIPO_APLICACION')
             ->leftJoin('CAT_ENCUESTA AS EN', 'APE.FK_ENCUESTA', '=', 'EN.PK_ENCUESTA')
-            ->leftJoin('CAT_TIPO_APLICACION AS TIA', 'APE.FK_TIPO_APLICACION', '=', 'TIA.PK_TIPO_APLICACION')
+            ->leftJoin('CAT_TIPO_APLICACION_ENCUESTA AS TIA', 'APE.FK_TIPO_APLICACION', '=', 'TIA.PK_TIPO_APLICACION')
             ->limit(50)
             ->orderBy('FECHA_APLICACION', 'DESC')
             ->get();
@@ -229,12 +229,15 @@ class SITEncuestaController extends Controller
 
         switch ($request->TIPO_APLICACION) {
             case 2:
+                // por carrera
                 $encuesta->APLICACION_FK_CARRERA = $request->FK_CARRERA;
                 break;
             case 3:
+                // por semestre
                 $encuesta->APLICACION_SEMESTRE = $request->SEMESTRE;
                 break;
             case 5:
+                // por usuario
                 $usuario = UsuariosHelper::get_usuario_numero_control($request->NUMERO_CONTROL);
                 $encuesta->FK_USUARIO = $usuario->PK_USUARIO;
                 break;
