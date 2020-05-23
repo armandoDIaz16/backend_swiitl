@@ -984,6 +984,17 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'consulta_area_academica',
         'capacitacion_docente\CursoController@consulta_area_academica'
     );
+    // Consulta de estados del curso
+    Route::get(
+        'carga_estados_curso',
+        'capacitacion_docente\CursoController@carga_estados_curso'
+    );
+// actualiza curso estatus
+    Route::get(
+        'actualiza_estatus_curso/{pk_curso}/{estatus}',
+        'capacitacion_docente\CursoController@actualiza_estatus_curso'
+    );
+
 // filtro docente
     Route::get(
         'filtro_docente/{value?}',
@@ -1010,6 +1021,9 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'consulta_cursos_coordinador',
         'capacitacion_docente\CursoController@consulta_cursos_coordinador'
     );
+
+
+
 // Consulta de cursos por instrcutor
     Route::get(
         'consulta_cursos_instructor/{pk_participante}',
@@ -1023,6 +1037,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
 //* ************* FIN  CURSOS *************** *
     //* ************* INICIO  FICHA TECNICA *************** *
+
 
 // Crear ficha tecnica del curso
     Route::post(
@@ -1078,13 +1093,81 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'elimina_archivo_por_pk/{pk_archivo}/{pk_ficha}',
         'capacitacion_docente\FichaTecnicaController@elimina_archivo_por_pk'
     );
+// Consulta participante
+    Route::get(
+        'busca_participante_por_pk/{pk_participante}',
+        'capacitacion_docente\FichaTecnicaController@busca_participante_por_pk'
+    );
 
+    // REGISTRA SECCION CONTENIDO TEMATICO
+    Route::post(
+        'guarda_comentario',
+        'capacitacion_docente\FichaTecnicaController@guarda_comentario'
+    );
     //* ************* FIN  FICHA TECNICA *************** *
+
+    //* ************* INICIO CONVOCATORIA  *************** *
+// Consulta de  la convocatoria
+    Route::get(
+        'carga_convocatoria_cursos',
+        'capacitacion_docente\ConvocatoriaController@carga_convocatoria_cursos'
+    );
+ //* ************* FIN CONVOCATORIA *************** *
+ //* ************* INICIO CV  *************** *
+
+// Crear ficha tecnica del curso
+    Route::post(
+        'crear_actualizar_cv',
+        'capacitacion_docente\CurriculumController@crear_actualizar_cv');
+
+// REGISTRA SECCION DATOS PERSONALES
+    Route::post(
+        'guardar_datos_personales',
+        'capacitacion_docente\CurriculumController@guardar_datos_personales'
+    );
+    // Consulta de carga_tipos_formacion
+    Route::get(
+        'carga_tipos_formacion',
+        'capacitacion_docente\CurriculumController@carga_tipos_formacion'
+    );
+
+    // REGISTRA SECCION FORMACION ACADEMICA
+    Route::post(
+        'guardar_formacion_academica',
+        'capacitacion_docente\CurriculumController@guardar_formacion_academica'
+    );
+// REGISTRA SECCION EXPERIENCIA LABORAL
+    Route::post(
+        'guardar_experiencia_laboral',
+        'capacitacion_docente\CurriculumController@guardar_experiencia_laboral'
+    );
+    // REGISTRA SECCION PRODUCTOS ACADEMICOS
+    Route::post(
+        'guardar_productos_academicos',
+        'capacitacion_docente\CurriculumController@guardar_productos_academicos'
+    );
+    // REGISTRA SECCION PARTICIPACION INSTRUCTOR
+    Route::post(
+        'guardar_seccion_participacion_instructor',
+        'capacitacion_docente\CurriculumController@guardar_seccion_participacion_instructor'
+    );
+
+    // REGISTRA SECCION EXPERIENCIA DOCENTE
+    Route::post(
+        'guardar_seccion_experiencia_docente',
+        'capacitacion_docente\CurriculumController@guardar_seccion_experiencia_docente'
+    );
+
+
+//* ************* FIN CV  *************** *
+
 });
 
 /* *********************************************************** *
  * ************* RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
  * *********************************************************** */
+
+
 
 // ruta de prueba
 /*Route::get(

@@ -10,7 +10,7 @@ class FichaTecnicaCADO extends Model
     /**
      * @var \App\FichaTecnicaCADO
      */
-    protected $with = ['contenido_tematico','material_didactico','criterios_evaluacion','competencias','fuentes_informacion'];
+    protected $with = ['contenido_tematico','material_didactico','criterios_evaluacion','competencias','fuentes_informacion','comentarios'];
 
     /**
      * @var bool
@@ -87,4 +87,17 @@ class FichaTecnicaCADO extends Model
         return $this->hasMany('App\FuenteInformacionCADO',
             'FK_FICHA_TECNICA')->where('BORRADO', 0);
     }
+
+    /**
+     * @return \App\ComentarioCADO
+     * @description: OBTIENE LAS FUENTES DE INFORMACION RELACIONADAS CON LA FICHA
+     *               HasMany ES PARA RELACIONES 1 A muchos EN BASE DE DATOS
+     * @author : Armando Díaz
+     * @since  : 10/4/2020
+     */
+    public function comentarios(){
+        return $this->hasMany('App\ComentarioCADO',
+            'FK_FICHA_TECNICA')->where('BORRADO', 0);
+    }
+
 }

@@ -374,16 +374,17 @@ protected $value_docente  = '';
                 $fechainicionperiodo = $periodo->FECHA_INICIO;
                 $fechafinperiodo = $periodo->FECHA_FIN;
                 //formación docente
-                $cursosFD = DB::table('VIEW_CURSOS_POR_PERIODO_INSTRUCTOR')
+                $cursosCD = DB::table('VIEW_CURSOS_POR_PERIODO_INSTRUCTOR')
                     ->where('FK_PERIODO_CADO',$pkperiodo)
-                    ->where('TIPO_CURSO',1)
+//                    ->where('TIPO_CURSO',1)
                     ->where('FK_PARTICIPANTE_CADO',$pk_participante)
+                    ->orderBy('TIPO_CURSO','ASC')
                     ->get();
 
                 // este metodo tomara el cursos y lo descomponera en otro pero incluyendo sus instructores
-                $cursosFD = $this->prepararArrayCursos($cursosFD);
+                $cursosCD = $this->prepararArrayCursos($cursosCD);
 
-                //actualizacion profesional
+                /*//actualizacion profesional
                 $cursosAP = DB::table('VIEW_CURSOS_POR_PERIODO_INSTRUCTOR')
                     ->where('FK_PERIODO_CADO',$pkperiodo)
                     ->where('TIPO_CURSO',2)
@@ -391,7 +392,7 @@ protected $value_docente  = '';
                     ->get();
 
                 // este metodo tomara el cursos y lo descomponera en otro pero incluyendo sus instructores
-                $cursosAP = $this->prepararArrayCursos($cursosAP);
+                $cursosAP = $this->prepararArrayCursos($cursosAP);*/
 
 
                 // METEMOS A CADA PERIODO SUS CURSOS
@@ -401,9 +402,8 @@ protected $value_docente  = '';
                     'NOMBRE_PERIODO'=>$nombreperiodo,
                     'FECHA_INICIO'=>$fechainicionperiodo,
                     'FECHA_FIN'=>$fechafinperiodo,
-                    'CURSOSFD'=>$cursosFD,
-                    'CURSOSAP'=>$cursosAP,
-
+                    'CURSOSCD'=>$cursosCD,
+//                    'CURSOSAP'=>$cursosAP,
                 ]);
                 array_push($resultadoCursosArray,$itemArray);
             }//FIN FOR
@@ -420,8 +420,6 @@ protected $value_docente  = '';
         }
 
     }// fin consulta instructpr
-
-
 
     public function consulta_cursos_coordinador()
     {
@@ -440,22 +438,23 @@ protected $value_docente  = '';
                     $fechainicionperiodo = $periodo->FECHA_INICIO;
                     $fechafinperiodo = $periodo->FECHA_FIN;
                         //formación docente
-                    $cursosFD = DB::table('VIEW_CURSOS_POR_PERIODO')
+                    $cursosCD = DB::table('VIEW_CURSOS_POR_PERIODO')
                         ->where('FK_PERIODO_CADO',$pkperiodo)
-                        ->where('TIPO_CURSO',1)
+                        ->orderBy('TIPO_CURSO','ASC')
+//                        ->where('TIPO_CURSO',1)
                         ->get();
 
                     // este metodo tomara el cursos y lo descomponera en otro pero incluyendo sus instructores
-                    $cursosFD = $this->prepararArrayCursos($cursosFD);
+                    $cursosCD = $this->prepararArrayCursos($cursosCD);
 
-                    //actualizacion profesional
+                    /*//actualizacion profesional
                     $cursosAP = DB::table('VIEW_CURSOS_POR_PERIODO')
                         ->where('FK_PERIODO_CADO',$pkperiodo)
-                        ->where('TIPO_CURSO',2)
+//                        ->where('TIPO_CURSO',2)
                         ->get();
 
                     // este metodo tomara el cursos y lo descomponera en otro pero incluyendo sus instructores
-                    $cursosAP = $this->prepararArrayCursos($cursosAP);
+                    $cursosAP = $this->prepararArrayCursos($cursosAP);*/
 
 
         // METEMOS A CADA PERIODO SUS CURSOS
@@ -465,9 +464,8 @@ protected $value_docente  = '';
                         'NOMBRE_PERIODO'=>$nombreperiodo,
                         'FECHA_INICIO'=>$fechainicionperiodo,
                         'FECHA_FIN'=>$fechafinperiodo,
-                        'CURSOSFD'=>$cursosFD,
-                        'CURSOSAP'=>$cursosAP,
-
+                        'CURSOSCD'=>$cursosCD,
+//                        'CURSOSAP'=>$cursosAP,
                     ]);
                     array_push($resultadoCursosArray,$itemArray);
                 }//FIN FOR
@@ -491,6 +489,7 @@ protected $value_docente  = '';
                 $pkcurso = $arrayCurso->PK_CAT_CURSO_CADO;
                 $nombrecurso = $arrayCurso->NOMBRE_CURSO;
                 $cupomcurso = $arrayCurso->CUPO_MAXIMO;
+                $cupoacurso = $arrayCurso->CUPO_ACTUAL;
                 $fkpcurso = $arrayCurso->FK_PERIODO_CADO;
                 $tccurso = $arrayCurso->TIPO_CURSO;
                 $fkareacurso = $arrayCurso->FK_AREA_ACADEMICA;
@@ -523,6 +522,7 @@ protected $value_docente  = '';
                     'PK_CAT_CURSO_CADO'=>$pkcurso,
                     'NOMBRE_CURSO'=>$nombrecurso,
                     'CUPO_MAXIMO'=>$cupomcurso,
+                    'CUPO_ACTUAL'=>$cupoacurso,
                     'FK_PERIODO_CADO'=>$fkpcurso,
                     'TIPO_CURSO'=>$tccurso,
                     'FK_AREA_ACADEMICA'=>$fkareacurso,
@@ -572,6 +572,8 @@ protected $value_docente  = '';
                 $fkpcurso = $arrayCurso->FK_PERIODO_CADO;
                 $estadocurso = $arrayCurso->ESTADO;
                 $img_curso = $arrayCurso->RUTA_IMAGEN_CURSO;
+                $nombre_estado = $arrayCurso->NOMBRE_ESTADO;
+
 
 
                 //instructor
@@ -596,6 +598,8 @@ protected $value_docente  = '';
                     'ESTADO_CURSO'=>$estadocurso,
                     'RUTA_IMAGEN_CURSO'=>$img_curso,
                     'INSTRUCTORES'=>$instructores,
+                    'NOMBRE_ESTADO'=>$nombre_estado,
+
 
                 ]);
                 array_push($resultadoCursosArray,$itemArray);
@@ -793,6 +797,16 @@ protected $value_docente  = '';
             Response::HTTP_OK);
     }
 
+    public function carga_estados_curso()
+    {
+        // echo PeriodoCADO::all();
+        // return DB::table('CAT_PERIODO_CADO')->where('BORRADO',0)->get();
+
+        return response()->json(
+            DB::table('CAT_ESTADOS_CURSO')->where('BORRADO',0)->get(),
+            Response::HTTP_OK // 200
+        );
+    }
     public function consulta_area_academica()
     {
         // echo PeriodoCADO::all();
@@ -800,6 +814,41 @@ protected $value_docente  = '';
 
         return response()->json(
             DB::table('CAT_AREA_ACADEMICA')->where('BORRADO',0)->get(),
+            Response::HTTP_OK // 200
+        );
+    }
+
+    public function actualiza_estatus_curso($pk_curso,$estatus)
+    {
+        // array de respuesta
+        $data = array();
+        $mensaje = '';
+        switch ($estatus){
+            case 1:$mensaje = 'Se asignó el curso, exitosamente!';break;
+            case 2:$mensaje = 'Se autorizó la ficha técnica, exitosamente!';break;
+            case 3:$mensaje = 'Se rechazó la ficha técnica, exitosamente!';break;
+            case 4:$mensaje = 'Se evaluó el curso, exitosamente!';break;
+            case 5:$mensaje = 'Se envió la ficha técnica para su revisión, exitosamente!';break;
+//            default: $mensaje = 'Se actualizo el estatus del curso, exitosamente!';
+        }
+
+
+        // datos
+        $curso =  CursoCADO::find($pk_curso);
+        $curso->ESTADO = $estatus;
+        if($curso->save()){
+            array_push($data, [
+                'estado'=>'exito',
+                'mensaje'=>$mensaje
+            ]);
+        }else{
+            array_push($data, [
+                'estado'=>'error',
+                'mensaje'=>'No se pudo enviar la información, intentelo más tarde'
+            ]);
+        }
+        return response()->json(
+            $data,
             Response::HTTP_OK // 200
         );
     }

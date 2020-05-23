@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\capacitacion_docente;
 
 use App\ArchivoContenidoTematicoCADO;
+use App\ComentarioCADO;
 use App\CompetenciaCADO;
 use App\ContenidoTematicoCADO;
 use App\CriterioEvaluacionCADO;
 use App\FuenteInformacionCADO;
 use App\Helpers\Base64ToFile;
 use App\MaterialDidacticoCADO;
+use App\ParticipanteCADO;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\CursosCADOHelper;
+use App\Helpers\FechaComentarioHelper;
 use App\FichaTecnicaCADO;
 use App\CursoCADO;
 
@@ -61,6 +64,20 @@ class FichaTecnicaController extends Controller
         } else {
             return response()->json(false, Response::HTTP_NOT_FOUND);
         }
+    }
+
+    public function busca_participante_por_pk( $pk_participante ){
+
+
+        if( isset($pk_participante) ){
+            //    DB::enableQueryLog();
+            $obj_participante = ParticipanteCADO::find($pk_participante);
+//                                          ->where('PK_PARTICIPANTE_CADO',$pk_participante)
+//                                          ->where('BORRADO',0);
+            return response()->json(
+                $obj_participante,Response::HTTP_OK);
+        }
+
     }
 
 
@@ -453,7 +470,7 @@ class FichaTecnicaController extends Controller
         $obj_adjunto_tema->BORRADO  = 1; // es eliminado
         $obj_adjunto_tema->FECHA_MODIFICACION  = $FECHA_MODIFICACION;
         if($obj_adjunto_tema->save()) {
-            $temas = FichaTecnicaCADO::find($pk_ficha)->contenido_tematico;
+                $temas = FichaTecnicaCADO::find($pk_ficha)->contenido_tematico;
             array_push($data, [
                 'estado'=>'exito',
                 'mensaje'=>'Se elimino el material adjunto exitosamente!',
@@ -473,6 +490,45 @@ class FichaTecnicaController extends Controller
 
     }
 
+    public function  guarda_comentario(Request $request){
+        $mytime = Carbon::now();
+//        $mytime->toDateTimeString();
+        // array de respuesta
+        $data = array();
+        $comentarios = [];
+        // recueprando datos de front
+        $pk_ficha = $request->pk_ficha;
+        $cuerpo_comentario = $request->texto_comentario;
+        $pk_participante = $request->pk_participante;
+
+        $comentario = new ComentarioCADO;
+        $comentario->FK_FICHA_TECNICA =  $pk_ficha;
+        $comentario->FK_PARTICIPANTE_REGISTRO =  $pk_participante;
+        $comentario->TEXTO_COMENTARIO =  $cuerpo_comentario;
+//        $comentario->FECHA_REGISTRO =  $mytime->toDateTimeString();
+
+        if($comentario->save()) {
+            $comentarios = FichaTecnicaCADO::find($pk_ficha)->comentarios;
+            array_push($data, [
+                'estado'=>'exito',
+                'mensaje'=>'Se guardo el comentario  exitosamente!',
+                'comentarios'=>$comentarios
+            ]);
+
+        } else {
+            array_push($data, [
+                'estado'=>'error',
+                'mensaje'=>'No se pudo guardar el comentario, intentelo más tarde',
+                'comentarios'=>$comentarios
+            ]);
+        }
+
+        return response()->json(
+            $data,
+            Response::HTTP_OK// 200
+        );
+
+    }
 
     /*METODO CREADO PARA PROBAR X RESPUESTA
      * public function pruebarelacionorm()
