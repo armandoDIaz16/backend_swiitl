@@ -97,7 +97,10 @@ class FichaTecnicaCADO extends Model
      */
     public function comentarios(){
         return $this->hasMany('App\ComentarioCADO',
-            'FK_FICHA_TECNICA')->where('BORRADO', 0);
+            'FK_FICHA_TECNICA')
+            ->where('BORRADO', 0)
+            ->orderBy('FECHA_REGISTRO','DESC');
+
     }
 
 }
