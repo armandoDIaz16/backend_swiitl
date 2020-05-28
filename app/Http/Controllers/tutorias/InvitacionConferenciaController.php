@@ -4,7 +4,7 @@ namespace App\Http\Controllers\tutorias;
 
 use App\Helpers\Constantes;
 use App\Helpers\ResponseHTTP;
-use App\Models\Tutoria\InvitacionConferencia;
+use App\Models\Conferencias\InvitacionConferencia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

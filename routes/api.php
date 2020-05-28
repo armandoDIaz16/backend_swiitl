@@ -43,7 +43,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::post('procesa_codigo_postal', 'CodigoPostalController@procesa_codigo_postal');
 
     // OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
-    Route::post('perfil', 'PerfilController@get_perfil');
+    Route::get('perfil', 'PerfilController@get_perfil');
 
     // GUARDAR DATOS PARA COMPLETAR PERFIL
     Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
@@ -425,6 +425,25 @@ Route::get('Prueba2', 'UsuarioController@prueba2');
  * ************* RUTAS PROTEGIDAS DEL SISTEMA DE TUTORIAS *************** *
  * *********************************************************** */
 Route::group(['middleware' => ['jwt.verify']], function () {
+    /* GRUPOS DE TUTORIA INICIAL */
+
+    // Buscar grupos de tutoría inicial
+    Route::get(
+        'grupos_inicial',
+        'tutorias\GruposInicialController@index'
+    );
+
+    // Buscar respuestas por pk_aplicacion
+    Route::get(
+        'respuestas_encuesta',
+        'tutorias\EncuestaController@respuestas_encuesta'
+    );
+
+
+
+
+
+
     // Buscar encuesta por pk de encuesta
     Route::get(
         'cuestionario/{id}',
@@ -449,9 +468,15 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITEncuestaController@get_cuestionarios_usuarios'
     );
 
+    // Buscar periodos de las encuestas asignadas a un id de usuario
+    Route::get(
+        'cuestionarios_usuario_periodos/{id_usuario}',
+        'tutorias\SITEncuestaController@cuestionarios_usuario_periodos'
+    );
+
     // Buscar encuesta por pk de aplicacion de encuesta
     Route::get(
-        'get_encuesta_aplicacion/{pk_aplicacion_encuesta}',
+        'get_encuesta_aplicacion',
         'tutorias\SITEncuestaController@get_encuesta_aplicacion'
     );
 
@@ -475,8 +500,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     // Buscar detalle de grupo por id
     Route::get(
-        'detalle_grupo/{id_grupo}',
-        'tutorias\SITGruposController@detalle_grupo'
+        'detalle_grupo',
+        'tutorias\GruposInicialController@detalle_grupo'
     );
 
     // Buscar horario por pk usuario
@@ -489,12 +514,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get(
         'get_alumno/{pk_usuario}',
         'tutorias\SITAlumnoController@get_alumno'
-    );
-
-    // Buscar respuestas por pk_aplicacion
-    Route::get(
-        'get_encuesta_resuelta_aplicacion/{pk_aplicacion}',
-        'tutorias\SITEncuestaController@get_encuesta_resuelta_aplicacion'
     );
 
     // Buscar reporte por pk_aplicacion
@@ -560,7 +579,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     // Jornadas/conferencias
     Route::resource('conferencias', 'tutorias\ConferenciaController');
 
-    // Usuarios capturistas de jornadas
+    // Capturista de conferencias
+    Route::resource('capturistas', 'tutorias\CapturistaConferenciaController');
 
     // Invitacion a jornadas/conferencias
     Route::resource('invitacion_conferencia', 'tutorias\InvitacionConferenciaController');

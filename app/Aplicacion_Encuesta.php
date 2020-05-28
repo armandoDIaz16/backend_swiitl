@@ -35,7 +35,7 @@ class Aplicacion_Encuesta extends Model
     /**
      * @var string
      */
-    protected $primaryKey = 'PK_APLICACION_ENCUESTA';
+    protected $primaryKey = 'PK_APLICACION';
 
     /**
      * @var string

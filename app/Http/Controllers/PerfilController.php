@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CodigoPostal;
 use App\Helpers\Base64ToFile;
 use App\Helpers\Constantes;
+use App\Helpers\ResponseHTTP;
 use App\Helpers\UsuariosHelper;
 use App\Usuario;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class PerfilController extends Controller
     public function get_perfil(Request $request) {
         $perfil  = NULL;
         $view    = '';
-        $usuario = UsuariosHelper::get_usuario("$request->pk_encriptada");
+        $usuario = UsuariosHelper::get_usuario($request->pk_encriptada);
 
         if (!$usuario) {
             $usuario = Usuario::where('PK_USUARIO', $request->pk_encriptada)->first();
@@ -52,7 +53,7 @@ class PerfilController extends Controller
                 ->first();
         }
 
-        return response()->json($perfil, Response::HTTP_OK);
+        return ResponseHTTP::response_ok($perfil);
     }
 
     /**

@@ -131,7 +131,7 @@ class SiiaHelper {
      * @param bool $multi_result
      * @return array|bool
      */
-    public static function get_lista_grupo($data, $multi_result = true) {
+    public static function get_lista_grupo_siia($data, $multi_result = true) {
         $sql = "
         SELECT
             NumeroControl,

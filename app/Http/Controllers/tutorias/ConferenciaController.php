@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\tutorias;
 
-use App\Conferencia;
+use App\Models\Conferencias\Conferencia;
 use App\Helpers\Constantes;
 use App\Helpers\ResponseHTTP;
 use Illuminate\Http\Request;

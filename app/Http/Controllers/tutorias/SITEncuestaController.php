@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\tutorias;
 
+use App\Aplicacion_Encuesta_Detalle;
 use App\Carrera;
 use App\Helpers\Constantes;
+use App\Helpers\ResponseHTTP;
 use App\Helpers\RespuestaHttp;
 use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
@@ -33,17 +35,14 @@ class SITEncuestaController extends Controller
             //guardar respuestas de encuesta
             if ($this->guarda_respuestas($request)) {
                 // actualizar estatus de encuesta
-                $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $request->PK_APLICACION)->first();
+                $aplicacion = Aplicacion_Encuesta_Detalle::find($request->PK_APLICACION);
                 $aplicacion->FECHA_RESPUESTA = date('Y-m-d H:i:s');
-                $aplicacion->FECHA_MODIFICACION = date('Y-m-d H:i:s');
-                $aplicacion->FK_USUARIO_MODIFICACION = $aplicacion->FK_USUARIO;
-                $aplicacion->ESTADO = 2;
+                /*$aplicacion->FECHA_MODIFICACION = date('Y-m-d H:i:s');
+                $aplicacion->FK_USUARIO_MODIFICACION = $aplicacion->FK_USUARIO;*/
+                $aplicacion->ESTADO = Constantes::ENCUESTA_RESPONDIDA;
                 $aplicacion->save();
 
-                return response()->json(
-                    ['data' => true],
-                    Response::HTTP_OK
-                );
+                return ResponseHTTP::response_ok([]);
             }
         } catch (Exception $e) {
             error_log("Error en actualización de aplicación de encuesta: ");
@@ -97,7 +96,7 @@ class SITEncuestaController extends Controller
         foreach ($respuestas_request['PREGUNTAS'] as $respuesta) {
             $respuestas[] = [
                 'FK_RESPUESTA_POSIBLE' => $respuesta['RESPUESTAS'][0]['PK_RESPUESTA'],
-                'FK_APLICACION_ENCUESTA' => $pk_aplicacion,
+                'FK_APLICACION_ENCUESTA_DETALLE' => $pk_aplicacion,
                 'RESPUESTA_ABIERTA' => $respuesta['RESPUESTAS'][0]['ABIERTA'],
                 'ORDEN' => 0,
                 'RANGO' => $respuesta['RESPUESTAS'][0]['RANGO']
@@ -119,7 +118,7 @@ class SITEncuestaController extends Controller
         foreach ($request as $respuesta) {
             $respuestas[] = [
                 'FK_RESPUESTA_POSIBLE' => $respuesta['pk_respuesta'],
-                'FK_APLICACION_ENCUESTA' => $pk_aplicacion,
+                'FK_APLICACION_ENCUESTA_DETALLE' => $pk_aplicacion,
                 'ORDEN' => $respuesta['orden']
             ];
         }
@@ -296,21 +295,44 @@ class SITEncuestaController extends Controller
     {
         $usuario = UsuariosHelper::get_usuario($pk_encriptada);
 
-        $encuestas = DB::table('VIEW_LISTA_ENCUESTAS')
+        $encuestas = DB::table('VW_LISTA_ENCUESTAS')
             ->where('FK_USUARIO', $usuario->PK_USUARIO)
+            ->orderBy('FECHA_APLICACION', 'DESC')
             ->get();
 
-        if (count($encuestas) > 0) {
-            return response()->json(
-                ['data' => $encuestas],
-                Response::HTTP_OK
-            );
-        } else {
-            return response()->json(
-                ['data' => false],
-                Response::HTTP_NOT_FOUND
-            );
+        foreach ($encuestas as $encuesta) {
+            $encuesta->NOMBRE_PERIODO = Constantes::get_periodo_texto($encuesta->PERIODO);
         }
+
+        return ResponseHTTP::response_ok($encuestas);
+    }
+
+    /**
+     * @param $id_usuario
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cuestionarios_usuario_periodos($pk_encriptada)
+    {
+        $usuario = UsuariosHelper::get_usuario($pk_encriptada);
+
+        $periodos = DB::table('VW_LISTA_ENCUESTAS')
+            ->select('PERIODO')
+            ->distinct()
+            ->orderBy('PERIODO', 'DESC')
+            ->get();
+
+        /*$data_periodos = [];*/
+
+        foreach ($periodos as $periodo) {
+            /*$data_periodos[] = [
+                'PERIODO' => $periodos->PERIODO,
+                'NOBRE' => Constantes::get_periodo_texto($periodos->PERIODO)
+            ];*/
+            $periodo->NOMBRE = Constantes::get_periodo_texto($periodo->PERIODO);
+        }
+
+        /*return ResponseHTTP::response_ok((object)$data_periodos);*/
+        return ResponseHTTP::response_ok($periodos);
     }
 
     /**
@@ -335,13 +357,16 @@ class SITEncuestaController extends Controller
     }
 
     /**
-     * @param $pk_aplicacion_encuesta
+     * @param $pk_detalle
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get_encuesta_aplicacion($pk_aplicacion_encuesta)
+    public function get_encuesta_aplicacion(Request $request)
     {
-        $aplicacion_encuesta = DB::table('VIEW_LISTA_ENCUESTAS')
-            ->where('PK_APLICACION_ENCUESTA', $pk_aplicacion_encuesta)
+        $usuario = UsuariosHelper::get_usuario($request->usuario);
+
+        $aplicacion_encuesta = DB::table('VW_LISTA_ENCUESTAS')
+            ->where('PK_APLICACION_ENCUESTA_DETALLE', $request->pk_detalle)
+            ->where('FK_USUARIO', $usuario->PK_USUARIO)
             ->first();
 
         if ($aplicacion_encuesta->ESTADO_APLICACION == Constantes::ENCUESTA_PENDIENTE) {

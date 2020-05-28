@@ -104,6 +104,7 @@ class SITGruposSeguimientoController extends Controller
     public function detalle_grupo($id_grupo)
     {
         if ($id_grupo) {
+            // consulto el grupo
             $grupo = GrupoTutorias::where('PK_GRUPO_TUTORIA', $id_grupo)->first();
 
             $condiciones_siia = [
@@ -120,9 +121,15 @@ class SITGruposSeguimientoController extends Controller
                 'CLAVE' => $grupo->CLAVE,
                 'AULA' => $horario_grupo[0]->Aula,
                 'HORARIO' => $horario_grupo,
-                'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo_siia($condiciones_siia)),
                 'EVALUACION_GRUPO' => $grupo->EVALUACION,
-                'LISTA_ALUMNOS' => $this->get_lista_grupo(SiiaHelper::get_lista_grupo($condiciones_siia))
+                'LISTA_ALUMNOS' => $this->get_lista_grupo(SiiaHelper::get_lista_grupo_siia($condiciones_siia)),
+                'PRIMER_NIVEL' => 1, // response.PRIMER_NIVEL
+                'SEGUNDO_NIVEL' => [// response.SEGUNDO_NIVEL.PRIMER_NIVEL -> VALOR
+                    'PRIMER_NIVEL' => [
+
+                    ]
+                ]
             ];
 
             return response()->json(
@@ -177,7 +184,8 @@ class SITGruposSeguimientoController extends Controller
      * FUNCIONES IMPLEMENTADAS Y PROBADAS
      * */
 
-    public function elimina_grupo_seguimiento($id) {
+    public function elimina_grupo_seguimiento($id)
+    {
         // eliminar el grupo
         $grupo = GrupoTutorias::find($id);
         if ($grupo) {
@@ -199,7 +207,8 @@ class SITGruposSeguimientoController extends Controller
      * @param Request $request
      * @param $id
      */
-    public function actualiza_grupo(Request $request, $id) {
+    public function actualiza_grupo(Request $request, $id)
+    {
         $grupo = GrupoTutorias::find($id);
         if ($grupo) {
             $grupo->FK_CARRERA = $request->carrera;
@@ -229,10 +238,10 @@ class SITGruposSeguimientoController extends Controller
         $grupo->TIPO_GRUPO = Constantes::GRUPO_TUTORIA_SEGUIMIENTO;
 
         if ($grupo->save()) {
-            if (!UsuariosHelper::rol_usuario($request->tutor, Abreviaturas::ROL_TUTOR, TRUE)) {
+            if (!UsuariosHelper::rol_usuario($request->tutor, Abreviaturas::TUTORIA_ROL_TUTOR, TRUE)) {
                 error_log('***** ERROR AL ASIGNAR ROL A USUARIO *****');
                 error_log('PK_USUARIO: ' . $request->tutor);
-                error_log('ROL: ' . Abreviaturas::ROL_TUTOR);
+                error_log('ROL: ' . Abreviaturas::TUTORIA_ROL_TUTOR);
             }
             ResponseHTTP::response_ok($grupo);
         } else {
@@ -288,7 +297,7 @@ class SITGruposSeguimientoController extends Controller
 
             return ResponseHTTP::response_ok($grupo_array);
         } else {
-            return ResponseHTTP::make_reponse_error('Datos enviados de forma errónea');
+            return ResponseHTTP::response_error('Datos enviados de forma errónea');
         }
     }
 
@@ -390,7 +399,8 @@ class SITGruposSeguimientoController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function agrega_alumno_grupo(Request $request) {
+    public function agrega_alumno_grupo(Request $request)
+    {
         // obtener usuario
         $usuario = UsuariosHelper::get_usuario($request->token_alumno);
 
@@ -445,13 +455,13 @@ class SITGruposSeguimientoController extends Controller
                     'FOTO_PERFIL' => $usuario->FOTO_PERFIL,
                     'PK_CARRERA' => $carrera->PK_CARRERA,
                     'CARRERA' => $carrera->NOMBRE,
-                    'TUTOR' => $tutor->NOMBRE .' '. $tutor->PRIMER_APELLIDO .' '. $tutor->SEGUNDO_APELLIDO,
+                    'TUTOR' => $tutor->NOMBRE . ' ' . $tutor->PRIMER_APELLIDO . ' ' . $tutor->SEGUNDO_APELLIDO,
                 ];
             }
 
             return ResponseHTTP::response_ok($lista);
         } else {
-            return ResponseHTTP::make_reponse_error('Datos enviados de forma errónea');
+            return ResponseHTTP::response_error('Datos enviados de forma errónea');
         }
     }
 
@@ -459,7 +469,8 @@ class SITGruposSeguimientoController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function elimina_alumno_grupo($id) {
+    public function elimina_alumno_grupo($id)
+    {
         $alumno_grupo = GrupoTutoriasDetalle::find($id);
         if ($alumno_grupo) {
             // eliminar usuario en grupo

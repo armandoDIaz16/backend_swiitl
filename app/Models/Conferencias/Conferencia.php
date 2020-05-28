@@ -1,19 +1,21 @@
 <?php
 
-namespace App;
+namespace App\Models\Conferencias;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AreaAcademica extends Model
+class Conferencia extends Model
 {
     /**
      * @var array
      */
     protected $fillable = [
-        'FK_INSTITUCION',
-        'NOMBRE',
-        'ABREVIATURA',
-        'ES_ACADEMICA',
+        'TEMA',
+        'FECHA',
+        'LUGAR',
+        'DESCRIPCION',
+        'NOMBRE_EXPOSITOR',
+        'CURRICULUM_EXPOSITOR',
         'ESTADO',
 
         'FK_USUARIO_REGISTRO',
@@ -26,12 +28,12 @@ class AreaAcademica extends Model
     /**
      * @var string
      */
-    protected $table = 'CAT_AREA_ACADEMICA';
+    protected $table = 'CAT_JORNADA';
 
     /**
      * @var string
      */
-    protected $primaryKey = 'PK_AREA_ACADEMICA';
+    protected $primaryKey = 'PK_JORNADA';
 
     /**
      * @var bool
