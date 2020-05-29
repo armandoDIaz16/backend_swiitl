@@ -1,5 +1,0 @@
-/* REGISTRO DE SISTEMA TUTORÍAS */
-INSERT INTO PER_CAT_SISTEMA(NOMBRE, RUTA_ANGULAR, ABREVIATURA, CORREO1, INDICIO1)
-VALUES('Tutorías', 'tutorias', 'SIT', 'tutorias@itleon.edu.mx', 'tutorias');
-
-

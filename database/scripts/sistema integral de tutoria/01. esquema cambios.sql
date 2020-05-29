@@ -1,26 +1,3 @@
-/* DATOS PARA ROL DE TOMA DE ASISTENCIA */
-
-INSERT INTO PER_CAT_ROL(FK_SISTEMA, NOMBRE, ABREVIATURA) VALUES
-(
-    (SELECT PK_SISTEMA FROM PER_CAT_SISTEMA WHERE ABREVIATURA = 'SIT'),
-    'Capturista',
-    'CAP_TUT'
-);
-
-INSERT INTO PER_CAT_MODULO(NOMBRE, ORDEN, RUTA_MD5, DESCRIPCION, RUTA) VALUES
-(
-    'Asistencia',
-    1,
-    (SELECT SUBSTRING(master.dbo.fn_varbintohexstr(HashBytes('MD5', 'toma_asistencia_conferencias')), 3, 32 )),
-    N'Para módulo de toma de asistencia a conferencias',
-    'toma_asistencia_conferencias'
-);
-
-INSERT INTO PER_TR_ROL_MODULO(FK_ROL, FK_MODULO) VALUES(
-   (SELECT PK_ROL FROM PER_CAT_ROL WHERE ABREVIATURA = 'CAP_TUT'),
-   (SELECT PK_MODULO FROM PER_CAT_MODULO WHERE RUTA = 'toma_asistencia_conferencias')
-);
-
 /* CAMBIOS EN APLICACION DE ENCUESTAS */
 DROP VIEW IF EXISTS VIEW_LISTA_ENCUESTAS;
 DROP VIEW IF EXISTS VW_LISTA_ENCUESTAS;

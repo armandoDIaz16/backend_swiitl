@@ -259,7 +259,7 @@ class GruposInicialController extends Controller
         WHERE
             TR_APLICACION_ENCUESTA.PERIODO = '" . Constantes::get_periodo() . "'";
 
-        if ($estado_encuesta) {
+        if ($estado_encuesta == Constantes::ENCUESTA_RESPONDIDA) {
             $sql .= " AND TR_APLICACION_ENCUESTA_DETALLE.ESTADO = $estado_encuesta ";
         }
 

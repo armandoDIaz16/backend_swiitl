@@ -462,7 +462,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         'tutorias\SITEncuestaController@get_carreras'
     );
 
-    // Buscar las encuestas asignadas a un id de usuario
+    // Buscar las encuestbuscar_usuariosas asignadas a un id de usuario
     Route::get(
         'cuestionarios_usuario/{id_usuario}',
         'tutorias\SITEncuestaController@get_cuestionarios_usuarios'

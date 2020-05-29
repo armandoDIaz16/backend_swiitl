@@ -268,7 +268,7 @@ class SITUsuariosController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function guarda_coordinador_institucional(Request $request) {
-        $rol = Rol::where('ABREVIATURA', 'COORI_TUT')->first();
+        /*$rol = Rol::where('ABREVIATURA', 'COORI_TUT')->first();
         $this->quita_rol_coordinador($request->pk_area_academica);
 
         // registrar al nuevo coordinador
@@ -292,7 +292,12 @@ class SITUsuariosController extends Controller
                 ['data' => false],
                 Response::HTTP_ACCEPTED
             );
-        }
+        }*/
+        // TODO MODULO COORDINADORES INSTITUCIONALES
+        return response()->json(
+            ['data' => true],
+            Response::HTTP_ACCEPTED
+        );
     }
 
     public function quita_rol_coordinador_institucional($pk_area_academica) {
