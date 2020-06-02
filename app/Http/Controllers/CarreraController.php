@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\AreaAcademicaCarrera;
+use App\Carrera;
+use App\Helpers\Constantes;
+use App\Helpers\ResponseHTTP;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -148,5 +152,20 @@ GROUP BY TCC.PK_CARRERA_CAMPUS, C.NOMBRE, CC.NOMBRE, C.PK_CARRERA, CCP.CANTIDAD 
             ->get();
 
         return  $carreras;
+    }
+
+    public function get_carreras(Request $request) {
+        $carreras = [];
+
+        if ($request->area_academica) {
+            $areas_carrera = AreaAcademicaCarrera::where('FK_AREA_ACADEMICA', $request->area_academica)->get();
+            foreach ($areas_carrera as $area_carrera) {
+                $carreras[] = Carrera::where('BORRADO', Constantes::BORRADO_NO)
+                    ->where('PK_CARRERA', $area_carrera->FK_CARRERA)
+                    ->first();
+            }
+        }
+
+        return ResponseHTTP::response_ok($carreras);
     }
 }
