@@ -514,6 +514,9 @@ protected $value_docente  = '';
                 // y no tener que armar un array, se usa el metodo "" de ORM
                 //y asi con solo usar un find traera todas las relaciones de la ficha
                 $objeto_ficha = CursoCADO::find($pkcurso)->ficha_tecnica;
+                $objeto_periodo = CursoCADO::find($pkcurso)->periodo;
+                $objeto_edificio = CursoCADO::find($pkcurso)->edificio;
+                $objeto_area_academica = CursoCADO::find($pkcurso)->area_academica;
 
 
                 // METEMOS A CADA PERIODO SUS CURSOS
@@ -538,8 +541,9 @@ protected $value_docente  = '';
                     'NOMBRE_ESPACIO'=>$espaciocurso,
                     'INSTRUCTORES'=>$instructores,
                     'OBJ_FICHA_TECNICA'=>$objeto_ficha,
-
-
+                    'OBJ_PERIODO'=>$objeto_periodo,
+                    'OBJ_EDIFICIO'=>$objeto_edificio,
+                    'OBJ_AREA_ACADEMICA'=>$objeto_area_academica
                 ]);
                 array_push($resultadoCursosArray,$itemArray);
             }//FIN FOR

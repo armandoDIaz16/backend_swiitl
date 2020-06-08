@@ -10,7 +10,7 @@ class FichaTecnicaCADO extends Model
     /**
      * @var \App\FichaTecnicaCADO
      */
-    protected $with = ['contenido_tematico','material_didactico','criterios_evaluacion','competencias','fuentes_informacion','comentarios'];
+    protected $with = ['contenido_tematico','material_didactico','criterios_evaluacion','competencias','fuentes_informacion','comentarios','lugar'];
 
     /**
      * @var bool
@@ -101,6 +101,18 @@ class FichaTecnicaCADO extends Model
             ->where('BORRADO', 0)
             ->orderBy('FECHA_REGISTRO','DESC');
 
+    }
+    /**
+     * @return \App\Institucion
+     * @description: OBTIENE el instituto  RELACIONADo CON LA FICHA
+     *               HasMany ES PARA RELACIONES 1 A muchos EN BASE DE DATOS
+     * @author : Armando Díaz
+     * @since  : 10/4/2020
+     */
+    public function lugar(){
+        return $this->belongsTo('App\Institucion',
+            'FK_LUGAR',
+            'PK_INSTITUCION')->where('BORRADO', 0);
     }
 
 }
