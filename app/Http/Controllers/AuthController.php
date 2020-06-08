@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\GrupoTutorias;
 use App\Helpers\SiiaHelper;
 use App\Http\Requests\SignUpRequest;
+use App\ParticipanteCADO;
 use App\Rol;
 use App\Usuario;
 use Illuminate\Support\Facades\DB;
@@ -289,18 +290,19 @@ class AuthController extends Controller
     private function revisa_roles($pk_encriptada) {
         $usuario = UsuariosHelper::get_usuario($pk_encriptada);
         switch ($usuario->TIPO_USUARIO) {
-            case Constantes::USUARIO_ALUMNO:
+            //todo descomentar cuando llegue el siia
+           case Constantes::USUARIO_ALUMNO:
                 // es alumno
-                // $this->actualiza_datos_alumno($usuario);
+                 $this->actualiza_datos_alumno($usuario);
                 break;
             case Constantes::USUARIO_DOCENTE:
                 // es empleado
-                // $this->actualiza_datos_empleado($usuario);
+                 $this->actualiza_datos_empleado($usuario);
                 break;
             case Constantes::USUARIO_ASPIRANTE:
                 // es aspirante
-                // $this->actualiza_datos_aspirante($usuario);
-                // $this->asigna_rol_tutorias_estudiante($usuario);
+                $this->actualiza_datos_aspirante($usuario);
+                $this->asigna_rol_tutorias_estudiante($usuario);
                 break;
         }
     }
@@ -553,6 +555,11 @@ class AuthController extends Controller
             $docente_rol->FK_USUARIO = $usuario->PK_USUARIO;
             $docente_rol->save();
 
+            $participante = new ParticipanteCADO;
+            $participante->FK_TIPO_PARTICIPANTE =2;  // TODO CAMBIAR ESTE VALOR ES VARIABLE SEGUN EL ROL OBTENIDO EN LA EJECUCIÓN DEL SCRIPT DE BD
+            $participante->FK_USUARIO = $usuario->PK_USUARIO;
+            $participante->save();
+
         } else { // lógica para usuarios que no son docentes ni alumnos
             // logica para asignar roles del Sistema de capacitación Docente
             // EL ROL A ASIGNAR ES EL ROL DE PARTICIPANTE EL CUAL DEBE TENERLO UN PERSONAL ADMON DEL ITL PARA QUE PUEDA PROPONER CURSOS  O TOMARLOS
@@ -561,6 +568,11 @@ class AuthController extends Controller
             $docente_rol->FK_ROL     = 2;  // TODO CAMBIAR ESTE VALOR ES VARIABLE SEGUN EL ROL OBTENIDO EN LA EJECUCIÓN DEL SCRIPT DE BD
             $docente_rol->FK_USUARIO = $usuario->PK_USUARIO; // TODO PROBAR UN INSERT DE ESTE TIPO
             $docente_rol->save();
+
+            $participante = new ParticipanteCADO;
+            $participante->FK_TIPO_PARTICIPANTE =2;  // TODO CAMBIAR ESTE VALOR ES VARIABLE SEGUN EL ROL OBTENIDO EN LA EJECUCIÓN DEL SCRIPT DE BD
+            $participante->FK_USUARIO = $usuario->PK_USUARIO;
+            $participante->save();
         }
     }
 

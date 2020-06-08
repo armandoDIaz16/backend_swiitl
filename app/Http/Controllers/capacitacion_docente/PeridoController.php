@@ -7,9 +7,42 @@ use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use App\PeriodoCADO;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class PeridoController extends Controller
 {
+
+    public function busca_periodo_con_cursos($id)
+    {
+
+        return response()->json(
+            DB::table('CAT_PERIODO_CADO')
+                ->join('CAT_CURSO_CADO', 'CAT_PERIODO_CADO.PK_PERIODO_CADO', '=',  'CAT_CURSO_CADO.FK_PERIODO_CADO')
+                ->where('PK_PERIODO_CADO',$id)
+                ->where('CAT_CURSO_CADO.BORRADO',0)
+                ->get(),
+            Response::HTTP_OK // 200
+        );
+    }
+
+
+
+
+    public function consulta_periodos_activos()
+    {
+        // echo PeriodoCADO::all();
+        // return DB::table('CAT_PERIODO_CADO')->where('BORRADO',0)->get();
+        $mytime = Carbon::now();
+         $mytime->toDateTimeString();
+        return response()->json(
+            DB::table('CAT_PERIODO_CADO')
+//                ->where('FECHA_FIN','>',$mytime->toDateTimeString())
+                ->where('BORRADO',0)
+                ->orderBy('FECHA_FIN', 'desc')
+                ->get(),
+            Response::HTTP_OK // 200
+        );
+    }
 
     public function consulta_periodos()
     {
@@ -17,8 +50,11 @@ class PeridoController extends Controller
         // return DB::table('CAT_PERIODO_CADO')->where('BORRADO',0)->get();
 
         return response()->json(
-            DB::table('CAT_PERIODO_CADO')->where('BORRADO',0)
-                ->orderBy('FECHA_FIN', 'desc')->get(),
+            DB::table('CAT_PERIODO_CADO')
+
+                ->where('BORRADO',0)
+                ->orderBy('FECHA_FIN', 'desc')
+                ->get(),
             Response::HTTP_OK // 200
         );
     }
