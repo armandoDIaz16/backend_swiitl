@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\tutorias;
 
-use App\Aplicacion_Encuesta;
 use App\Carrera;
 use App\Estado_Civil;
+use App\GrupoTutorias;
 use App\GrupoTutoriasDetalle;
 use App\Helpers\Constantes;
-use App\Helpers\SITHelper;
+use App\Helpers\ReportesTutoria;
+use App\Helpers\ResponseHTTP;
+use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
-use App\Usuario;
 use Illuminate\Http\Request;
 use Mpdf\Mpdf;
 
@@ -19,625 +20,699 @@ use Mpdf\Mpdf;
  */
 class SITPdfController extends Controller
 {
+    /*public function test_reporte() {
+        return ResponseHTTP::response_ok(ReportesTutoria::test_reporte());
+    }*/
+
     /**
      * @return string
      * @throws \Mpdf\MpdfException
      */
-    public function get_pdf_perfil_grupal_ingreso(Request $request)
+    public function perfil_grupal(Request $request)
     {
         if ($request->grupo) {
-            $data_reporte['data'] = $this->get_datos_perfil_grupal($request->grupo);
+            $grupo = GrupoTutorias::find($request->grupo);
+            if ($grupo) {
 
-            $html_final = view('tutorias.perfil_grupal_ingreso', $data_reporte);
-            /* Fuentes */
-            $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-            $fontDirs = $defaultConfig['fontDir'];
+                $html_final = view('tutorias.perfil_grupal', $this->get_perfil_grupal($grupo));
+                /* Fuentes */
+                $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+                $fontDirs = $defaultConfig['fontDir'];
 
-            $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-            $fontData = $defaultFontConfig['fontdata'];
+                $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+                $fontData = $defaultFontConfig['fontdata'];
 
-            $mpdf = new Mpdf([
-                'fontDir' => array_merge($fontDirs, [
-                    __DIR__ . '/custom/font/directory',
-                ]),
-                'fontdata' => $fontData + [
-                        'montserrat' => [
-                            'R' => 'Montserrat-Medium.ttf',
-                            'B' => 'Montserrat-ExtraBold.ttf',
-                        ]
-                    ],
-                'default_font' => 'montserrat'
-            ]);
+                $mpdf = new Mpdf([
+                    'fontDir' => array_merge($fontDirs, [
+                        __DIR__ . '/custom/font/directory',
+                    ]),
+                    'fontdata' => $fontData + [
+                            'montserrat' => [
+                                'R' => 'Montserrat-Medium.ttf',
+                                'B' => 'Montserrat-ExtraBold.ttf',
+                            ]
+                        ],
+                    'default_font' => 'montserrat'
+                ]);
 
-            $mpdf->WriteHTML($html_final);
-            return $mpdf->Output();
+                $mpdf->WriteHTML($html_final);
+                return $mpdf->Output();
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
     }
 
-    private function get_datos_perfil_grupal($pk_grupo) {
+    private function get_perfil_grupal(GrupoTutorias $grupo)
+    {
         $data = [];
+        $detalle_grupo = GrupoTutoriasDetalle::where('FK_GRUPO', $grupo->PK_GRUPO_TUTORIA)->get();
 
-        $datos_grupo = $this->get_tutor_grupo($pk_grupo);
-        $data['tutor']            = $datos_grupo->NOMBRE .' '. $datos_grupo->PRIMER_APELLIDO .' '. $datos_grupo->SEGUNDO_APELLIDO;
-        $data['grupo']            = $datos_grupo->CLAVE;
-        $data['cantidad_alumnos'] = $this->get_cantidad_alumnos_grupo($pk_grupo);
-        $data['carrera'] = $this->get_carrera_grupo($pk_grupo);
+        $data['tutor'] = $this->get_tutor($grupo->FK_USUARIO);
+        $data['grupo'] = $grupo->CLAVE;
+        $data['cantidad_alumnos'] = count($detalle_grupo);
+        $data['periodo'] = Constantes::get_periodo_texto($grupo->PERIODO);
 
+        $carrera = Carrera::find($grupo->FK_CARRERA);
+        $data['carrera'] = (isset($carrera->NOMBRE)) ? $carrera->NOMBRE : 'No definido';
+
+        $filtro = ['grupo' => $grupo->PK_GRUPO_TUTORIA];
         // datos personales de grupo
-        $data['personales'] = $this->get_datos_personales_grupo($pk_grupo);
+        $data['personales'] = $this->get_datos_personales($grupo->PERIODO, $filtro);
 
         // datos condición académica
-        $data['academico'] = $this->get_condicion_academica_grupo($pk_grupo);
+        $data['academico'] = $this->get_condicion_acedemica_grupo($grupo->PERIODO, $filtro);
 
         // datos condición socioeconomica
-        $data['socioeconomica'] = $this->get_socioeconomica_grupo($pk_grupo);
+        // $data['socioeconomica'] = $this->get_socioeconomica_grupo($pk_grupo);
 
         // datos condicion familiar
-        $data['familiar'] = $this->get_familiar_grupo($pk_grupo);
+        // $data['familiar'] = $this->get_familiar_grupo($pk_grupo);
 
         // datos salud fisica
-        $data['pasatiempos'] = SITHelper::pasatiempos_grupo($pk_grupo, 1);
+        // $data['pasatiempos'] = SITHelper::pasatiempos_grupo($pk_grupo, 1);
 
         // datos salud fisica
-        $data['salud'] = $this->get_salud_grupo($pk_grupo);
+        // $data['salud'] = $this->get_salud_grupo($pk_grupo);
 
         // datos hábitos de estudio
-        $data['habitos_estudio'] = SITHelper::habitos_estudio_grupo($pk_grupo);
+        // $data['habitos_estudio'] = SITHelper::habitos_estudio_grupo($pk_grupo);
 
         return $data;
     }
 
-    private function get_familiar_grupo($pk_grupo) {
+    private function get_condicion_acedemica_grupo($periodo, $filtros)
+    {
+        $reporte = ReportesTutoria::reporte_academica($periodo, $filtros);
+        if ($reporte) {
+            $data = [];
+            $reporte = $this->agrupa_preguntas($reporte);
+            error_log(print_r($reporte, true));
+            return $reporte;
+        }
 
-        $factor_cohesion      = SITHelper::factor_cohesion_grupo($pk_grupo);
-        $factor_adaptabilidad = SITHelper::factor_adaptabilidad_grupo($pk_grupo);
-
-        return [
-            'tipo_familia' => SITHelper::promedio_pregunta_grupo($pk_grupo, 65),
-            'aspectos'     => SITHelper::habilidades_grupo(
-                $pk_grupo,
-                '66, 67, 68, 69, 70, 71, 72, 73, 74, 75',
-                'Excelente',
-                'Deficiente'
-            ),
-            'cohesion'       => SITHelper::get_datos_cohesion($factor_cohesion),
-            'adaptabilidad'  => SITHelper::get_datos_adaptabilidad($factor_adaptabilidad),
-            'funcionamiento' => SITHelper::get_datos_funcionamiento_familiar($factor_cohesion, $factor_adaptabilidad),
+        return (object)[
+            'tipo_escuela' => 'No definido',
+            'modalidad' => 'No definido',
+            'especialidad' => 'No definido',
+            'promedio' => 'No definido',
+            'materias_dificultad' => 'No definido',
+            'itl_primera_opcion' => 'No definido',
+            'carrera_primera_opcion' => 'No definido',
         ];
     }
 
-    private function get_socioeconomica_grupo($pk_grupo) {
-        return [
-            /*'salud_fisica'           => SITHelper::promedio_pregunta_grupo($pk_grupo, 16),*/
-            'quien_vive'           => SITHelper::promedio_pregunta_grupo($pk_grupo, 32),
-            'trabaja'              => SITHelper::promedio_pregunta_grupo($pk_grupo, 34),
-            'aporta_dinero'        => SITHelper::promedio_pregunta_grupo($pk_grupo, 40),
-            'escolaridad_padre'    => SITHelper::promedio_pregunta_grupo($pk_grupo, 38),
-            'escolaridad_madre'    => SITHelper::promedio_pregunta_grupo($pk_grupo, 39),
-            'nivel_socioeconomico' => SITHelper::condicion_socioeconomica_grupo($pk_grupo),
-        ];
+    private function agrupa_preguntas($reporte)
+    {
+        $preguntas = [];
+        $respuestas = [];
+        $abiertas = '';
+        $suma = $anterior = $nuevo = 0;
+        foreach ($reporte as $item) {
+            /* AGRUPAR RESPUESTAS */
+            if ($item->TIPO_PREGUNTA == 1) {
+                $respuestas[] = [
+                    'RESPUESTA' => $item->RESPUESTA,
+                    'CANTIDAD' => $item->CANTIDAD,
+                ];
+                $suma += $item->CANTIDAD;
+            }
+
+            if ($item->TIPO_PREGUNTA == 6) {
+                $abiertas .= $item->RESPUESTA_ABIERTA .', ';
+            }
+
+            $nuevo = $item->PK_PREGUNTA;
+            /* SEPARAR PREGUNTAS */
+            if ($anterior != $nuevo) {
+                $anterior = $nuevo;
+                $preguntas[] = (object)[
+                    'PK_PREGUNTA'   => $item->PK_PREGUNTA,
+                    'PLANTEAMIENTO' => $item->PLANTEAMIENTO,
+                    'SUMA_TOTAL'    => $suma,
+                    'RESPUESTAS'    => $respuestas,
+                    'ABIERTAS'      => $abiertas
+                ];
+                $respuestas = [];
+                $abiertas = '';
+                $suma = 0;
+            }
+        }
+
+        return $preguntas;
     }
 
-    private function get_salud_grupo($pk_grupo) {
-        return [
-            'salud_fisica'           => SITHelper::promedio_pregunta_grupo($pk_grupo, 16),
-            'sentimiento'            => SITHelper::promedio_pregunta_grupo($pk_grupo, 30),
-            'habilidades'            => SITHelper::habilidades_grupo(
-                $pk_grupo,
-                '17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29',
-                'Mala',
-                'Excelente'
-            ),
-        ];
+    private function get_datos_personales($periodo, $filtro)
+    {
+        $datos_personales = ReportesTutoria::reporte_datos_personales($periodo, $filtro);
+        if ($datos_personales) {
+            $data = [];
+            foreach ($datos_personales as $key => $categoria) {
+                $data[$key] = $this->calcula_promedio($categoria);
+            }
+
+            return $data;
+        }
+
+        return [];
     }
 
-    private function get_condicion_academica_grupo($pk_grupo) {
-        return [
-            'tipo_escuela'           => SITHelper::promedio_pregunta_grupo($pk_grupo, 53),
-            'areas'                  => SITHelper::respuestas_grupo($pk_grupo, 55),
-            'promedios'              => SITHelper::promedio_pregunta_grupo($pk_grupo, 58),
-            'materias_dificiles'     => SITHelper::respuestas_grupo($pk_grupo, 59),
-            'itl_primera_opcion'     => SITHelper::promedio_pregunta_grupo($pk_grupo, 60),
-            'carrera_primera_opcion' => SITHelper::promedio_pregunta_grupo($pk_grupo, 61),
-        ];
+    private function calcula_promedio($array)
+    {
+        $suma = 0;
+        foreach ($array as $item) {
+            $suma += $item->CANTIDAD;
+        }
+        foreach ($array as $item) {
+            $item->PROMEDIO = number_format(($item->CANTIDAD / $suma)  * 100, 1);
+        }
+
+        return $array;
     }
 
-    private function get_datos_personales_grupo($pk_grupo) {
-        return [
-            'sexo'                 => SITHelper::porcentaje_sexo_grupo($pk_grupo),
-            'estado_civil'         => SITHelper::porcentaje_estado_civil_grupo($pk_grupo),
-            'colonias'             => SITHelper::colonias_grupo($pk_grupo),
-            'situacion_residencia' => SITHelper::situacion_residencia_grupo($pk_grupo),
-        ];
-    }
-
+    /* ********************************************* *
+     * ******** REPORTE DE PERFIL PERSONAL ********* *
+     * ********************************************* */
     /**
      * @return string
      * @throws \Mpdf\MpdfException
      */
-    public function get_pdf_perfil_personal_ingreso(Request $request)
+    public function perfil_personal(Request $request)
     {
-        $data_reporte['data'] = $this->get_datos_perfil_personal($request->pk_encriptada);
+        if ($request->pk_encriptada) {
+            $alumno = UsuariosHelper::get_usuario($request->pk_encriptada);
+            if ($alumno) {
+                $html_final = view(
+                    'tutorias.perfil_individual_ingreso',
+                    $this->get_perfil_personal($alumno)
+                );
 
-        $html_final = view('tutorias.perfil_individual_ingreso', $data_reporte);
+                /* Fuentes */
+                $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+                $fontDirs = $defaultConfig['fontDir'];
 
-        /* Fuentes */
-        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-        $fontDirs = $defaultConfig['fontDir'];
+                $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+                $fontData = $defaultFontConfig['fontdata'];
 
-        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-        $fontData = $defaultFontConfig['fontdata'];
+                $mpdf = new Mpdf([
+                    'fontDir' => array_merge($fontDirs, [
+                        __DIR__ . '/custom/font/directory',
+                    ]),
+                    'fontdata' => $fontData + [
+                            'montserrat' => [
+                                'R' => 'Montserrat-Medium.ttf',
+                                'B' => 'Montserrat-ExtraBold.ttf',
+                            ]
+                        ],
+                    'default_font' => 'montserrat'
+                ]);
 
-        $mpdf = new Mpdf([
-            'fontDir' => array_merge($fontDirs, [
-                __DIR__ . '/custom/font/directory',
-            ]),
-            'fontdata' => $fontData + [
-                    'montserrat' => [
-                        'R' => 'Montserrat-Medium.ttf',
-                        'B' => 'Montserrat-ExtraBold.ttf',
-                    ]
-                ],
-            'default_font' => 'montserrat'
-        ]);
-
-        $mpdf->WriteHTML($html_final);
-        return $mpdf->Output();
+                $mpdf->WriteHTML($html_final);
+                return $mpdf->Output();
+            } else {
+                return ResponseHTTP::response_error('Bad request');
+            }
+        } else {
+            return ResponseHTTP::response_error('Bad request');
+        }
     }
 
-    private function get_datos_perfil_personal($pk_encriptada) {
+    private function get_perfil_personal($alumno)
+    {
         $data = [];
+        $detalle_grupo = GrupoTutoriasDetalle::where('FK_USUARIO', $alumno->PK_USUARIO)
+            ->orderBy('PK_GRUPO_TUTORIA_DETALLE', 'desc')
+            ->first();
+        if ($detalle_grupo) {
+            $grupo = GrupoTutorias::find($detalle_grupo->FK_GRUPO);
+            $data['alumno'] = $alumno;
+            $data['tutor'] = $this->get_tutor($grupo->FK_USUARIO);
+            $data['grupo'] = $grupo->CLAVE;
+            $data['periodo'] = Constantes::get_periodo_texto($grupo->PERIODO);
 
-        $alumno = Usuario::where('PK_ENCRIPTADA', $pk_encriptada)->first();
-        if ($alumno) {
-            $grupo = GrupoTutoriasDetalle::where('FK_USUARIO', $alumno->PK_USUARIO)->first();
-            $carrera = Carrera::where('PK_CARRERA', $alumno->FK_CARRERA)->first();
-            $estado_civil = Estado_Civil::where('PK_ESTADO_CIVIL', $alumno->FK_ESTADO_CIVIL)->first();
-            if ($grupo) {
-                $datos_grupo = $this->get_tutor_grupo($grupo->FK_GRUPO);
-                if ($datos_grupo) {
-                    $data['tutor']               = $datos_grupo->NOMBRE .' '. $datos_grupo->PRIMER_APELLIDO .' '. $datos_grupo->SEGUNDO_APELLIDO;
-                    $data['grupo']               = $datos_grupo->CLAVE;
-                    $data['periodo']             = Constantes::get_periodo_texto($datos_grupo->PERIODO);
+            $estado_civil = Estado_Civil::find($alumno->FK_ESTADO_CIVIL);
+            $data['alumno']->ESTADO_CIVIL = (isset($estado_civil->NOMBRE)) ? $estado_civil->NOMBRE : 'No definido';
 
-                    $data['alumno']              = $alumno->NOMBRE .' '. $alumno->PRIMER_APELLIDO .' '. $alumno->SEGUNDO_APELLIDO;
-                    $data['numero_control']      = $alumno->NUMERO_CONTROL;
-                    $data['semestre']            = $alumno->SEMESTRE;
+            $carrera = Carrera::find($alumno->FK_CARRERA);
+            $data['carrera'] = (isset($carrera->NOMBRE)) ? $carrera->NOMBRE : 'No definido';
 
-                    $data['fecha_nacimiento']    = $alumno->FECHA_NACIMIENTO;
-                    $data['edad']                = Constantes::calcula_edad($alumno->FECHA_NACIMIENTO);
-                    $data['estado_civil']        = (isset($estado_civil->NOMBRE)) ? $estado_civil->NOMBRE : '';
-                    $data['correo']              = $alumno->CORREO1;
-                    $data['telefono_movil']      = $alumno->TELEFONO_CASA;
-                    $data['telefono_fijo']       = $alumno->TELEFONO_MOVIL;
+            // filtros para reportes
+            $filtros = ['usuario' => $alumno->PK_USUARIO];
 
-                    $data['nombre_contacto']     = $alumno->NOMBRE_CONTACTO;
-                    $data['parentesco_contacto'] = $alumno->PARENTESCO_CONTACTO;
-                    $data['telefono_contacto']   = $alumno->TELEFONO_CONTACTO;
-                    $data['correo_contacto']     = $alumno->CORREO_CONTACTO;
+            // Reporte condición académica
+            $data['condicion_academica'] = $this->get_condicion_acedemica($grupo->PERIODO, $filtros);
 
-                    $data['carrera']             = $carrera->NOMBRE;
-                    $data['grupo']               = $datos_grupo->CLAVE;
+            // Reporte condición socioeconomica
+            $data['condicion_socioeconomica'] = $this->get_condicion_socioeconomica($grupo->PERIODO, $filtros);
 
-                    // Reporte condición académica
-                    $data['condicion_academica'] = $this->get_condicion_acedemica($alumno->PK_USUARIO, $datos_grupo->PERIODO);
+            // Reporte condición familiar
+            $data['condicion_familiar'] = $this->get_condicion_familiar($grupo->PERIODO, $filtros);
 
-                    // Reporte condición socioeconomica
-                    $data['condicion_socioeconomica'] = $this->get_condicion_socioeconomica($alumno->PK_USUARIO, $datos_grupo->PERIODO);
+            // Reporte pasatiempos
+            $data['pasatiempos'] = $this->get_pasatiempos($grupo->PERIODO, $filtros);
 
-                    // Reporte condición socioeconomica
-                    $data['condicion_familiar'] = $this->get_condicion_familiar($alumno->PK_USUARIO, $datos_grupo->PERIODO);
+            // Reporte salud
+            $data['salud'] = $this->get_salud($grupo->PERIODO, $filtros);
 
-                    // Reporte pasatiempos
-                    $data['pasatiempos'] = $this->get_pasatiempos($alumno->PK_USUARIO, $datos_grupo->PERIODO);
-
-                    // Reporte salud
-                    $data['salud'] = $this->get_salud($alumno->PK_USUARIO, $datos_grupo->PERIODO);
-
-                    // Reporte hábitos de estudio
-                    $data['habitos_estudio'] = $this->get_habitos_estudio($alumno->PK_USUARIO, $datos_grupo->PERIODO);
-                }
-            }
+            // Reporte hábitos de estudio
+            $data['habitos_estudio'] = $this->get_habitos_estudio($grupo->PERIODO, $filtros);
         }
 
         return $data;
     }
 
-    private function get_habitos_estudio($pk_usuario, $periodo) {
-        /* Datos habitos estudio */
-        $aplicacion = Aplicacion_Encuesta::where('FK_USUARIO', $pk_usuario)
-            ->where('PERIODO', $periodo)
-            ->where('FK_ENCUESTA', Constantes::ENCUESTA_HABITOS_DE_ESTUDIO)
-            ->first();
+    private function get_habitos_estudio($periodo, $filtros)
+    {
+        $habitos = ReportesTutoria::reporte_habitos($periodo, $filtros);
 
-        $ficha_habitos_estudio = SITHelper::reporte_habitos_estudio(
-            Constantes::ENCUESTA_HABITOS_DE_ESTUDIO,
-            $aplicacion->PK_APLICACION_ENCUESTA
-        );
-
-        $porcentajes_habitos_estudio = SITHelper::get_porcentajes_habitos_estudio($ficha_habitos_estudio);
-
-        $puntos_fuertes = [];
-        $puntos_debiles = [];
-
-        if ($porcentajes_habitos_estudio['DT'] >= 1){
-            if ($porcentajes_habitos_estudio['DT'] >= 70 ) {
-                $puntos_fuertes[] = 'DISTRIBUCIÓN DE TIEMPO';
-            } else {
-                $puntos_debiles[] = 'DISTRIBUCIÓN DE TIEMPO';
+        if ($habitos) {
+            $puntos_fuertes = [];
+            $puntos_debiles = [];
+            foreach ($habitos as $habito) {
+                if ($habito->PORCENTAJE >= 70) {
+                    $puntos_fuertes[] = $habito->DESCRIPCION . '(' . $habito->ABREVIATURA . ')';
+                } else {
+                    $puntos_debiles[] = $habito->DESCRIPCION . '(' . $habito->ABREVIATURA . ')';
+                }
             }
-        }
 
-        if ($porcentajes_habitos_estudio['ME'] >= 1) {
-            if ($porcentajes_habitos_estudio['ME'] >= 70) {
-                $puntos_fuertes[] = 'MOTIVACIÓN PARA EL ESTUDIO';
-            } else {
-                $puntos_debiles[] = 'MOTIVACIÓN PARA EL ESTUDIO';
-            }
+            return (object)[
+                'puntos_fuertes' => $puntos_fuertes,
+                'puntos_debiles' => $puntos_debiles,
+            ];
         }
-
-        if ($porcentajes_habitos_estudio['DE'] >= 1) {
-            if ($porcentajes_habitos_estudio['DE'] >= 70) {
-                $puntos_fuertes[] = 'DISTRACTORES DURANTE EL ESTUDIO';
-            } else {
-                $puntos_debiles[] = 'DISTRACTORES DURANTE EL ESTUDIO';
-            }
-        }
-
-        if ($porcentajes_habitos_estudio['NC'] >= 1) {
-            if ($porcentajes_habitos_estudio['NC'] >= 70) {
-                $puntos_fuertes[] = 'CÓMO TOMAR NOTAS EN CLASE';
-            } else {
-                $puntos_debiles[] = 'CÓMO TOMAR NOTAS EN CLASE';
-            }
-        }
-
-        if ($porcentajes_habitos_estudio['OL'] >= 1) {
-            if ($porcentajes_habitos_estudio['OL'] >= 70) {
-                $puntos_fuertes[] = 'OPTIMIZACIÓN DE LA LECTURA';
-            } else {
-                $puntos_debiles[] = 'OPTIMIZACIÓN DE LA LECTURA';
-            }
-        }
-
-        if ($porcentajes_habitos_estudio['PE'] >= 1) {
-            if ($porcentajes_habitos_estudio['PE'] >= 70) {
-                $puntos_fuertes[] = 'CÓMO PREPARAR UN EXAMEN';
-            } else {
-                $puntos_debiles[] = 'CÓMO PREPARAR UN EXAMEN';
-            }
-        }
-
-        if ($porcentajes_habitos_estudio['AC'] >= 1) {
-            if ($porcentajes_habitos_estudio['AC'] >= 70) {
-                $puntos_fuertes[] = 'ACTITUDES Y CONDUCTAS PRODUCTIVAS ANTE EL ESTUDIO';
-            } else {
-                $puntos_debiles[] = 'ACTITUDES Y CONDUCTAS PRODUCTIVAS ANTE EL ESTUDIO';
-            }
-        }
-
-        return [
-            'puntos_fuertes' => $puntos_fuertes,
-            'puntos_debiles' => $puntos_debiles,
+        return (object)[
+            'puntos_fuertes' => [],
+            'puntos_debiles' => [],
         ];
     }
 
-    private function get_salud($pk_usuario, $periodo) {
-        /* Datos pasatiempos */
-        $aplicacion = Aplicacion_Encuesta::where('FK_USUARIO', $pk_usuario)
-            ->where('PERIODO', $periodo)
-            ->where('FK_ENCUESTA', Constantes::ENCUESTA_SALUD)
-            ->first();
+    private function get_salud($periodo, $filtro)
+    {
+        $salud = ReportesTutoria::reporte_salud($periodo, $filtro);
 
-        $ficha_salud = SITHelper::get_cuestionario_resuelto(
-            Constantes::ENCUESTA_SALUD,
-            $aplicacion->PK_APLICACION_ENCUESTA
-        );
+        if ($salud) {
+            $habilidades = [];
+            $respuestas = [];
+            $respuestas_pool = [0, 1, 2, 4, 5, 6, 9, 10];
+            foreach ($salud as $index => $pregunta) {
+                if (in_array($index, $respuestas_pool)) {
+                    if ($pregunta->RESPUESTA == 'SÍ') {
+                        $respuestas[] = [
+                            'PLANTEAMIENTO' => $pregunta->PLANTEAMIENTO,
+                            'RESPUESTA' => $pregunta->RESPUESTA
+                        ];
+                    }
+                }
 
-        $habilidades = [];
-        foreach ($ficha_salud['SECCIONES'][0]['PREGUNTAS'] as $pregunta) {
-            if ($pregunta['PK_PREGUNTA'] > 16 && $pregunta['PK_PREGUNTA'] < 28) {
-                if (isset($pregunta['RESPUESTAS'][0]['RESPUESTA'])) {
-                    if ($pregunta['RESPUESTAS'][0]['RESPUESTA'] == 'Excelente'
-                        || $pregunta['RESPUESTAS'][0]['RESPUESTA'] == 'Mala') {
+                if ($index >= 14 && $index <= 26) {
+                    if ($pregunta->RESPUESTA == 'Excelente' || $pregunta->RESPUESTA == 'Mala') {
                         $habilidades[] = [
-                            'PLANTEAMIENTO' => $pregunta['PLANTEAMIENTO'],
-                            'RESPUESTA' => $pregunta['RESPUESTAS'][0]['RESPUESTA']
+                            'PLANTEAMIENTO' => $pregunta->PLANTEAMIENTO,
+                            'RESPUESTA' => $pregunta->RESPUESTA
                         ];
                     }
                 }
             }
+
+            return (object)[
+                'estado_salud' => $salud[14]->RESPUESTA,
+                'respuestas' => $respuestas,
+                'habilidades' => $habilidades,
+                'estado_animo' => $salud[28]->RESPUESTA,
+            ];
         }
 
-        return [
-            'estado_salud' =>
-                isset($ficha_salud['SECCIONES'][0]['PREGUNTAS'][14]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_salud['SECCIONES'][0]['PREGUNTAS'][14]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'habilidades' => $habilidades,
-            'estado_animo' =>
-                isset($ficha_salud['SECCIONES'][0]['PREGUNTAS'][28]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_salud['SECCIONES'][0]['PREGUNTAS'][28]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
+        return (object)[
+            'estado_salud' => 'No definido',
+            'respuestas' => [],
+            'habilidades' => [],
+            'estado_animo' => 'No definido',
         ];
     }
 
-    private function get_pasatiempos($pk_usuario, $periodo) {
-        /* Datos pasatiempos */
-        $aplicacion = Aplicacion_Encuesta::where('FK_USUARIO', $pk_usuario)
-            ->where('PERIODO', $periodo)
-            ->where('FK_ENCUESTA', Constantes::ENCUESTA_PASATIEMPOS)
-            ->first();
+    private function get_pasatiempos($periodo, $filtros)
+    {
+        $pasatiempos = ReportesTutoria::reporte_pasatiempos($periodo, $filtros);
+        if ($pasatiempos) {
+            return (object)[
+                'mas_realiza_1' => $pasatiempos[0]->RESPUESTA,
+                'mas_realiza_2' => $pasatiempos[1]->RESPUESTA,
+                'mas_realiza_3' => $pasatiempos[2]->RESPUESTA,
+                'menos_realiza_1' => $pasatiempos[12]->RESPUESTA,
+                'menos_realiza_2' => $pasatiempos[13]->RESPUESTA,
+                'menos_realiza_3' => $pasatiempos[14]->RESPUESTA,
+            ];
+        }
 
-        $ficha_pasatiempos = SITHelper::get_cuestionario_resuelto(
-            Constantes::ENCUESTA_PASATIEMPOS,
-            $aplicacion->PK_APLICACION_ENCUESTA
-        );
-
-        return [
-            'mas_realiza_1' =>
-                isset($ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'mas_realiza_2' =>
-                isset($ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][1]['RESPUESTA'])
-                ? $ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][1]['RESPUESTA']
-                : '',
-            'mas_realiza_3' =>
-                isset($ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][2]['RESPUESTA'])
-                ? $ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][2]['RESPUESTA']
-                : '',
-            'menos_realiza_1' =>
-                isset($ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][12]['RESPUESTA'])
-                ? $ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][12]['RESPUESTA']
-                : '',
-            'menos_realiza_2' =>
-                isset($ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][13]['RESPUESTA'])
-                ? $ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][13]['RESPUESTA']
-                : '',
-            'menos_realiza_3' =>
-                isset($ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][14]['RESPUESTA'])
-                ? $ficha_pasatiempos['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][14]['RESPUESTA']
-                : '',
+        return (object)[
+            'mas_realiza_1' => 'No definido',
+            'mas_realiza_2' => 'No definido',
+            'mas_realiza_3' => 'No definido',
+            'menos_realiza_1' => 'No definido',
+            'menos_realiza_2' => 'No definido',
+            'menos_realiza_3' => 'No definido',
         ];
     }
 
-    private function get_condicion_familiar($pk_usuario, $periodo) {
-        /* Datos condición familiar */
-        $aplicacion = Aplicacion_Encuesta::where('FK_USUARIO', $pk_usuario)
-            ->where('PERIODO', $periodo)
-            ->where('FK_ENCUESTA', Constantes::ENCUESTA_CONDICION_FAMILIAR)
-            ->first();
+    private function get_condicion_familiar($periodo, $filtros)
+    {
+        $ficha = ReportesTutoria::reporte_ficha_familiar($periodo, $filtros);
+        $tipo_familia = ReportesTutoria::reporte_tipo_familia($periodo, $filtros);
+        /*error_log(print_r($ficha, true));
+        error_log(print_r($tipo_familia, true));*/
+        if ($ficha && $tipo_familia) {
+            return (object)[
+                'tipo_familia' => $ficha[3]->RESPUESTA,
+                'numero_hermanos' => $ficha[1]->RESPUESTA,
+                'lugar_entre_hermanos' => $ficha[2]->RESPUESTA,
+                'aspectos_excelentes' => $this->get_aspectos($ficha, 'Excelente', 4),
+                'aspectos_deficientes' => $this->get_aspectos($ficha, 'Deficiente', 4),
+                // fase 20 esr
+                'nivel_cohesion' => $tipo_familia['cohesion'][0]->NIVEL,
+                'familia_cohesion' => $this->datos_cohesion($tipo_familia['cohesion'][0]->NIVEL)->tipo,
+                'explicacion_cohesion' => $this->datos_cohesion($tipo_familia['cohesion'][0]->NIVEL)->explicacion,
 
-        $ficha_condicion_familiar = SITHelper::get_cuestionario_resuelto(
-            Constantes::ENCUESTA_CONDICION_FAMILIAR,
-            $aplicacion->PK_APLICACION_ENCUESTA,
-            16
-        );
-        $reporte_condicion_famliar = SITHelper::reporte_condicion_familiar(
-            Constantes::ENCUESTA_CONDICION_FAMILIAR,
-            $aplicacion->PK_APLICACION_ENCUESTA
-        );
+                'nivel_adaptabilidad' => $tipo_familia['adaptabilidad'][0]->NIVEL,
+                'familia_adaptabilidad' => $this->datos_adaptabilidad($tipo_familia['adaptabilidad'][0]->NIVEL)->tipo,
+                'explicacion_adaptabilidad' =>
+                    $this->datos_adaptabilidad($tipo_familia['adaptabilidad'][0]->NIVEL)->explicacion,
 
-        $aspectos_excelentes  = '';
-        $aspectos_deficientes = '';
-        foreach ($ficha_condicion_familiar['SECCIONES'][0]['PREGUNTAS'] as $pregunta) {
-            if (isset($pregunta['RESPUESTAS'][0]['RESPUESTA'])) {
-                if ($pregunta['RESPUESTAS'][0]['RESPUESTA'] == 'Excelente'){
-                    $aspectos_excelentes .= $pregunta['PLANTEAMIENTO'] . ', ';
-                }
-                if ($pregunta['RESPUESTAS'][0]['RESPUESTA'] == 'Deficiente'){
-                    $aspectos_deficientes .= $pregunta['PLANTEAMIENTO'] . ', ';
-                }
+                'nivel_funcionamiento' => $this->datos_funcionamiento_familiar(
+                    $tipo_familia['cohesion'][0]->NIVEL,
+                    $tipo_familia['adaptabilidad'][0]->NIVEL
+                )->nivel,
+                'explicacion_funcionamiento' => $this->datos_funcionamiento_familiar(
+                    $tipo_familia['cohesion'][0]->NIVEL,
+                    $tipo_familia['adaptabilidad'][0]->NIVEL
+                )->descripcion
+            ];
+        }
+
+        return (object)[
+            'tipo_familia' => 'No definido',
+            'numero_hermanos' => 'No definido',
+            'lugar_entre_hermanos' => 'No definido',
+            'aspectos_excelentes' => 'No definido',
+            'aspectos_deficientes' => 'No definido',
+            // fase 20 esr
+            'nivel_cohesion' => 'No definido',
+            'familia_cohesion' => 'No definido',
+            'explicacion_cohesion' => 'No definido',
+            'nivel_adaptabilidad' => 'No definido',
+            'familia_adaptabilidad' => 'No definido',
+            'explicacion_adaptabilidad' => 'No definido',
+            'nivel_funcionamiento' => 'No definido',
+            'explicacion_funcionamiento' => 'No definido',
+        ];;
+    }
+
+    private function get_aspectos($ficha, $aspecto, $inicio = 0)
+    {
+        $aspectos = '';
+        for ($ind = $inicio; $ind < sizeof($ficha); $ind++) {
+            if ($ficha[$ind]->RESPUESTA == $aspecto) {
+                $aspectos .= $ficha[$ind]->PLANTEAMIENTO . ', ';
             }
         }
 
-        if ($aspectos_excelentes)
-            $aspectos_excelentes =
-                substr($aspectos_excelentes, 0, strlen($aspectos_excelentes) - 2);
-        if ($aspectos_deficientes)
-            $aspectos_deficientes =
-                substr($aspectos_deficientes, 0, strlen($aspectos_deficientes) - 2);
+        return $aspectos;
+    }
 
-        $datos_cohesion =
-            SITHelper::get_datos_cohesion($reporte_condicion_famliar['COHESION']);
-        $datos_adaptabilidad =
-            SITHelper::get_datos_adaptabilidad($reporte_condicion_famliar['ADAPTABILIDAD']);
-        $datos_funcionamiento_familiar =
-            SITHelper::get_datos_funcionamiento_familiar(
-                $reporte_condicion_famliar['COHESION'],
-                $reporte_condicion_famliar['ADAPTABILIDAD']
-            );
+    private function get_condicion_socioeconomica($periodo, $filtros)
+    {
+        $ficha = ReportesTutoria::reporte_ficha_socioeconomico($periodo, $filtros);
+        $nivel = ReportesTutoria::reporte_nivel_socioeconomico($periodo, $filtros);
+        if ($ficha && $nivel) {
+            return (object)[
+                'nivel_socioeconomico' => $nivel[0]->NIVEL,
+                'con_quien_vive' => $ficha[0]->RESPUESTA,
+                'trabaja' => $ficha[2]->RESPUESTA,
+                'aporte_dinero' => $ficha[8]->RESPUESTA,
+                'escolaridad_padre' => $ficha[6]->RESPUESTA,
+                'escolaridad_madre' => $ficha[7]->RESPUESTA,
+                'colonia' => $ficha[10]->RESPUESTA_ABIERTA,
+            ];
+        }
 
-        return [
-            'tipo_familia'         =>
-                isset($ficha_condicion_familiar['SECCIONES'][0]['PREGUNTAS'][3]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_familiar['SECCIONES'][0]['PREGUNTAS'][3]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'numero_hermanos'      =>
-                isset($ficha_condicion_familiar['SECCIONES'][0]['PREGUNTAS'][1]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_familiar['SECCIONES'][0]['PREGUNTAS'][1]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'lugar_entre_hermanos' =>
-                isset($ficha_condicion_familiar['SECCIONES'][0]['PREGUNTAS'][2]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_familiar['SECCIONES'][0]['PREGUNTAS'][2]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'aspectos_excelentes'  => $aspectos_excelentes,
-            'aspectos_deficientes' => $aspectos_deficientes,
-            // fase 20 esr
-            'nivel_cohesion'             => $datos_cohesion['nivel'],
-            'familia_cohesion'           => $datos_cohesion['tipo_familia'],
-            'explicacion_cohesion'       => $datos_cohesion['explicacion'],
-            'nivel_adaptabilidad'        => $datos_adaptabilidad['nivel'],
-            'familia_adaptabilidad'      => $datos_adaptabilidad['tipo_familia'],
-            'explicacion_adaptabilidad'  => $datos_adaptabilidad['explicacion'],
-            'nivel_funcionamiento'       => $datos_funcionamiento_familiar['nivel'],
-            'explicacion_funcionamiento' => $datos_funcionamiento_familiar['explicacion'],
+        return (object)[
+            'nivel_socioeconomico' => 'No definido',
+            'con_quien_vive' => 'No definido',
+            'trabaja' => 'No definido',
+            'aporte_dinero' => 'No definido',
+            'escolaridad_padre' => 'No definido',
+            'escolaridad_madre' => 'No definido',
+            'colonia' => 'No definido',
         ];
     }
 
-    private function get_condicion_socioeconomica($pk_usuario, $periodo) {
-        /* Datos condicion socioeconómica */
-        $aplicacion = Aplicacion_Encuesta::where('FK_USUARIO', $pk_usuario)
-            ->where('PERIODO', $periodo)
-            ->where('FK_ENCUESTA', Constantes::ENCUESTA_CONDICION_SOCIOECONOMICA)
-            ->first();
+    private function get_condicion_acedemica($periodo, $filtros)
+    {
+        $reporte = ReportesTutoria::reporte_academica($periodo, $filtros);
+        if ($reporte) {
+            return (object)[
+                'tipo_escuela' => $reporte[0]->RESPUESTA,
+                'modalidad' => $reporte[1]->RESPUESTA,
+                'especialidad' => $reporte[2]->RESPUESTA_ABIERTA,
+                'promedio' => $reporte[5]->RESPUESTA,
+                'materias_dificultad' => $reporte[6]->RESPUESTA_ABIERTA,
+                'itl_primera_opcion' => $reporte[7]->RESPUESTA,
+                'carrera_primera_opcion' => $reporte[8]->RESPUESTA,
+            ];
+        }
 
-        $ficha_condicion_socioeconomica = SITHelper::get_cuestionario_resuelto(
-            Constantes::ENCUESTA_CONDICION_SOCIOECONOMICA,
-            $aplicacion->PK_APLICACION_ENCUESTA,
-            14
-        );
-        $nivel_socioeconomico = SITHelper::get_nivel_socioeconomico(
-            SITHelper::reporte_condicion_socioeconomica(
-                Constantes::ENCUESTA_CONDICION_SOCIOECONOMICA,
-                $aplicacion->PK_APLICACION_ENCUESTA
-            )
-        );
-
-        $aporte_dinero = isset($ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][8]['RESPUESTAS'][0]['RESPUESTA'])
-            ? $ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][8]['RESPUESTAS'][0]['RESPUESTA']
-            : '';
-        if (isset($ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][8]['RESPUESTAS'][0]['ABIERTA']))
-            $aporte_dinero =
-                $ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][8]['RESPUESTAS'][0]['ABIERTA'];
-        return [
-            'nivel_socioeconomico' => $nivel_socioeconomico,
-            'con_quien_vive'   =>
-                isset($ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'trabaja'          =>
-                isset($ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][2]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][2]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'aporte_dinero'          => $aporte_dinero,
-            'escolaridad_padre'          =>
-                isset($ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][6]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][6]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'escolaridad_madre'          =>
-                isset($ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][7]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][7]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'colonia' =>
-                isset($ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][10]['RESPUESTAS'][0]['ABIERTA'])
-                ? $ficha_condicion_socioeconomica['SECCIONES'][0]['PREGUNTAS'][10]['RESPUESTAS'][0]['ABIERTA']
-                : ''
+        return (object)[
+            'tipo_escuela' => 'No definido',
+            'modalidad' => 'No definido',
+            'especialidad' => 'No definido',
+            'promedio' => 'No definido',
+            'materias_dificultad' => 'No definido',
+            'itl_primera_opcion' => 'No definido',
+            'carrera_primera_opcion' => 'No definido',
         ];
     }
 
-    private function get_condicion_acedemica($pk_usuario, $periodo) {
-        /* Datos condicion académica */
-        $aplicacion = Aplicacion_Encuesta::where('FK_USUARIO', $pk_usuario)
-            ->where('PERIODO', $periodo)
-            ->where('FK_ENCUESTA', Constantes::ENCUESTA_CONDICION_ACADEMICA)
-            ->first();
+    private function get_tutor($pk_usuario)
+    {
+        $usuario = UsuariosHelper::get_usuario_pk($pk_usuario);
 
-        $ficha_condicion_academica = SITHelper::get_cuestionario_resuelto(
-            Constantes::ENCUESTA_CONDICION_ACADEMICA,
-            $aplicacion->PK_APLICACION_ENCUESTA
-        );
+        return ($usuario)
+            ? $usuario->NOMBRE . ' ' . $usuario->PRIMER_APELLIDO . ' ' . $usuario->SEGUNDO_APELLIDO
+            : 'No asignado';
+    }
 
-        return [
-            'tipo_escuela'           =>
-                isset($ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][0]['RESPUESTAS'][0]['RESPUESTA']
-            : '',
-            'modalidad'              =>
-                isset($ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][1]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][1]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'especialidad'           =>
-                isset($ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][2]['RESPUESTAS'][0]['ABIERTA'])
-                ? $ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][2]['RESPUESTAS'][0]['ABIERTA']
-                : '',
-            'promedio'               =>
-                isset($ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][5]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][5]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'materias_dificultad'    =>
-                isset($ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][6]['RESPUESTAS'][0]['ABIERTA'])
-                ? $ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][6]['RESPUESTAS'][0]['ABIERTA']
-                : '',
-            'itl_primera_opcion'     =>
-                isset($ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][7]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][7]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
-            'carrera_primera_opcion' =>
-                isset($ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][8]['RESPUESTAS'][0]['RESPUESTA'])
-                ? $ficha_condicion_academica['SECCIONES'][0]['PREGUNTAS'][8]['RESPUESTAS'][0]['RESPUESTA']
-                : '',
+    /**
+     * @param $factor_cohesion
+     * @return object
+     */
+    private function datos_cohesion($nivel)
+    {
+        switch ($nivel) {
+            case 'Cohesión baja':
+                return (object)[
+                    'tipo' => 'Desprendida o desapegada',
+                    'explicacion' => 'Familias con ausencia de unión afectiva y lealtad,
+                    lo primordial es el yo por lo que existe una alta independencia personal,
+                    es escaso el tiempo para convivir y por tanto el involucramiento o interacción
+                    entre los miembros, las decisiones son tomadas de manera independiente y los
+                    intereses son desiguales y se enfocan fuera de la familia.'
+                ];
+            case 'Cohesión moderada-baja':
+                return (object)[
+                    'tipo' => 'Separada',
+                    'explicacion' => 'Familias en que existe la separación emocional, aunque a veces se demuestra
+                    el afecto, la lealtad familiar es ocasional, el involucramiento se acepta,
+                    sin embargo se prefiere la distancia, hay una tendencia al yo, con presencia
+                    del nosotros, en la interacción se da la interdependencia con cierta
+                    tendencia a la independencia, el límite parento-filial es claro con cierto
+                    nivel de cercanía entre padres e hijos, las decisiones se toman
+                    individualmente habiendo posibilidad de realizarlas de manera conjunta, el
+                    interés se focaliza fuera de la familia y se prefieren espacios separados.'
+                ];
+            case 'Cohesión moderada-alta':
+                return (object)[
+                    'tipo' => 'Unida o conectada',
+                    'explicacion' => 'Familias en que lo principal es el nosotros con presencia del yo, se
+                    presenta una considerable unión-afectiva y fidelidad entre sus integrantes,
+                    interdependencia con tendencia a la dependencia, los límites entre
+                    subsistemas son claros con cercanía parento-filial, el tiempo de convivencia
+                    juntos es importante, la separación es respetada pero poco valorada, las
+                    decisiones se toman preferentemente de manera conjunta y el interés se
+                    focaliza dentro de la familia.'
+                ];
+            case 'Cohesión muy alta':
+                return (object)[
+                    'tipo' => 'Enredada o apegada',
+                    'explicacion' => 'Familias en que la cercanía emocional es extrema, el involucramiento
+                    simbiótico, los integrantes dependen unos de otros en todos los aspectos, no
+                    existen límites generacionales, el interés se focaliza dentro de la familia,
+                    se dan por mandato los intereses conjuntos, la lealtad se demanda hacia la
+                    familia, las coaliciones parento-filiales están presentes, la mayor parte
+                    del tiempo se convive juntos, hay falta de separación personal.'
+                ];
+            default:
+                return (object)[
+                    'tipo' => 'No definido',
+                    'explicacion' => 'No definido',
+                ];
+        }
+    }
+
+    private function datos_adaptabilidad($nivel)
+    {
+        switch ($nivel) {
+            case 'Adaptabilidad baja':
+                return (object)[
+                    'tipo' => 'Rígida',
+                    'explicacion' => 'En estas familias, el liderazgo es autoritario con control parental, los roles
+                    son fijos y definidos, la disciplina estricta, rígida y severa, los padres
+                    imponen las decisiones, las reglas se cumplen estrictamente y no existe la
+                    posibilidad del cambio.'
+                ];
+            case 'Adaptabilidad moderada-baja':
+                return (object)[
+                    'tipo' => 'Estructurada',
+                    'explicacion' => 'Familias en las que el liderazgo es autoritario en principio y algunas veces
+                    igualitario, los roles son compartidos, en cierto grado la disciplina es
+                    democrática, lo padres toman las decisiones, las reglas se cumplen firmemente y
+                    pocas veces cambian, es democrática y los cambios se dan cuando se solicitan.'
+                ];
+            case 'Adaptabilidad moderada-alta':
+                return (object)[
+                    'tipo' => 'Flexible',
+                    'explicacion' => 'Es característico que en la familia se comparta el liderazgo y los roles, la
+                    disciplina es democrática, es común que se den los acuerdos en las decisiones,
+                    las reglas se cumplen con flexibilidad y pueden cambiar algunas, y se permiten
+                    los cambios cuando son necesarios.'
+                ];
+            case 'Adaptabilidad muy alta':
+                return (object)[
+                    'tipo' => 'Caótica',
+                    'explicacion' => 'En este tipo de familias, el liderazgo es ineficaz o ausente, la disciplina poco
+                    severa e inconsistente en sus castigos, las decisiones de los padres son
+                    impulsivas, no se tiene claridad en los roles ni funciones, y los cambios son
+                    muy frecuentes en el sistema.'
+                ];
+            default:
+                return (object)[
+                    'tipo' => 'No definido',
+                    'explicacion' => 'No definido',
+                ];
+        }
+    }
+
+    private function datos_funcionamiento_familiar($nivel_cohesion, $nivel_adaptabilidad)
+    {
+        if ($nivel_adaptabilidad == 'Adaptabilidad moderada-alta' && $nivel_cohesion == 'Cohesión moderada-baja') {
+            return (object)[
+                'nivel' => 'Balanceado: Flexible-separada',
+                'descripcion' => 'Los niveles de funcionamiento familiar balanceados
+                ubica a aquellas de óptimo funcionamiento.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad moderada-alta' && $nivel_cohesion == 'Cohesión moderada-alta') {
+            return (object)[
+                'nivel' => 'Balanceado: Flexible-unida',
+                'descripcion' => 'Los niveles de funcionamiento familiar balanceados
+                ubica a aquellas de óptimo funcionamiento.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad moderada-baja' && $nivel_cohesion == 'Cohesión moderada-baja') {
+            return (object)[
+                'nivel' => 'Balanceado: Estructurada-separada',
+                'descripcion' => 'Los niveles de funcionamiento familiar balanceados
+                ubica a aquellas de óptimo funcionamiento.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad moderada-baja' && $nivel_cohesion == 'Cohesión moderada-alta') {
+            return (object)[
+                'nivel' => 'Balanceado: Estructurada-unida',
+                'descripcion' => 'Los niveles de funcionamiento familiar balanceados
+                ubica a aquellas de óptimo funcionamiento.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad alta' && $nivel_cohesion == 'Cohesión moderada-baja') {
+            return (object)[
+                'nivel' => 'Rango medio: Caótica – separada',
+                'descripcion' => 'En el nivel de rango medio se presentan familias cuya dinámica es extrema
+                en una sola dimensión, sea en adaptabilidad o en cohesión,
+                generalmente debido a situaciones de estrés.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad alta' && $nivel_cohesion == 'Cohesión moderada-alta') {
+            return (object)[
+                'nivel' => 'Rango medio: Caótica-unida',
+                'descripcion' => 'En el nivel de rango medio se presentan familias cuya dinámica es extrema
+                en una sola dimensión, sea en adaptabilidad o en cohesión,
+                generalmente debido a situaciones de estrés.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad moderada-alta' && $nivel_cohesion == 'Cohesión baja') {
+            return (object)[
+                'nivel' => 'Rango medio: Flexible- desprendida',
+                'descripcion' => 'En el nivel de rango medio se presentan familias cuya dinámica es extrema
+                en una sola dimensión, sea en adaptabilidad o en cohesión,
+                generalmente debido a situaciones de estrés.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad moderada-alta' && $nivel_cohesion == 'Cohesión muy alta') {
+            return (object)[
+                'nivel' => 'Rango medio: Flexible-enredada',
+                'descripcion' => 'En el nivel de rango medio se presentan familias cuya dinámica es extrema
+                en una sola dimensión, sea en adaptabilidad o en cohesión,
+                generalmente debido a situaciones de estrés.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad moderada-baja' && $nivel_cohesion == 'Cohesión baja') {
+            return (object)[
+                'nivel' => 'Rango medio: Estructurada-desprendida',
+                'descripcion' => 'En el nivel de rango medio se presentan familias cuya dinámica es extrema
+                en una sola dimensión, sea en adaptabilidad o en cohesión,
+                generalmente debido a situaciones de estrés.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad moderada-baja' && $nivel_cohesion == 'Cohesión muy alta') {
+            return (object)[
+                'nivel' => 'Rango medio: Estructurada-enredada',
+                'descripcion' => 'En el nivel de rango medio se presentan familias cuya dinámica es extrema
+                en una sola dimensión, sea en adaptabilidad o en cohesión,
+                generalmente debido a situaciones de estrés.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad baja' && $nivel_cohesion == 'Cohesión moderada-baja') {
+            return (object)[
+                'nivel' => 'Rango medio: Rígida-separada',
+                'descripcion' => 'En el nivel de rango medio se presentan familias cuya dinámica es extrema
+                en una sola dimensión, sea en adaptabilidad o en cohesión,
+                generalmente debido a situaciones de estrés.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad baja' && $nivel_cohesion == 'Cohesión moderada-alta') {
+            return (object)[
+                'nivel' => 'Rango medio: Rígida-unida',
+                'descripcion' => 'En el nivel de rango medio se presentan familias cuya dinámica es extrema
+                en una sola dimensión, sea en adaptabilidad o en cohesión,
+                generalmente debido a situaciones de estrés.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad alta' && $nivel_cohesion == 'Cohesión baja') {
+            return (object)[
+                'nivel' => 'Extremo: Caótica-desprendida',
+                'descripcion' => 'En los niveles extremos se ubican familias en situación de dificultad,
+                y en la cohesión se encuentran de tipo desprendida-enredada y en la adaptabilidad caótica-rígida.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad alta' && $nivel_cohesion == 'Cohesión muy alta') {
+            return (object)[
+                'nivel' => 'Extremo: Caótica -enredada',
+                'descripcion' => 'En los niveles extremos se ubican familias en situación de dificultad,
+                y en la cohesión se encuentran de tipo desprendida-enredada y en la adaptabilidad caótica-rígida.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad baja' && $nivel_cohesion == 'Cohesión baja') {
+            return (object)[
+                'nivel' => 'Extremo: Rígida-desprendia',
+                'descripcion' => 'En los niveles extremos se ubican familias en situación de dificultad,
+                y en la cohesión se encuentran de tipo desprendida-enredada y en la adaptabilidad caótica-rígida.'];
+        }
+        if ($nivel_adaptabilidad == 'Adaptabilidad baja' && $nivel_cohesion == 'Cohesión muy alta') {
+            return (object)[
+                'nivel' => 'Extremo: Rígida-enredada',
+                'descripcion' => 'En los niveles extremos se ubican familias en situación de dificultad,
+                y en la cohesión se encuentran de tipo desprendida-enredada y en la adaptabilidad caótica-rígida.'];
+        }
+
+        return (object)[
+            'nivel' => 'No definido',
+            'descripcion' => 'No definido'
         ];
-    }
-
-    private function get_carrera_grupo($pk_grupo) {
-        $sql = "
-        SELECT
-            CAT_CARRERA.NOMBRE AS CARRERA
-        FROM
-            CAT_USUARIO
-            LEFT JOIN CAT_CARRERA ON CAT_USUARIO.FK_CARRERA = CAT_CARRERA.PK_CARRERA
-        WHERE
-            PK_USUARIO = (
-                SELECT TOP 1 
-                    FK_USUARIO 
-                FROM 
-                     TR_GRUPO_TUTORIA_DETALLE
-                )
-        ;";
-
-        $result = Constantes::procesa_consulta_general($sql);
-        if ($result) {
-            $result = $result[0];
-            return $result->CARRERA;
-        } else {
-            return false;
-        }
-    }
-
-    private function get_cantidad_alumnos_grupo($pk_grupo) {
-        $sql = "
-        SELECT
-            COUNT(*) AS CANTIDAD
-        FROM
-            TR_GRUPO_TUTORIA_DETALLE
-        WHERE 
-              FK_GRUPO = $pk_grupo
-        ;";
-
-        $result = Constantes::procesa_consulta_general($sql);
-        if ($result) {
-            $result = $result[0];
-            return $result->CANTIDAD;
-        } else {
-            return false;
-        }
-    }
-
-    private function get_tutor_grupo($pk_grupo) {
-        $sql = "
-        SELECT
-            TR_GRUPO_TUTORIA.CLAVE,
-            TR_GRUPO_TUTORIA.PERIODO,
-            NOMBRE,
-            PRIMER_APELLIDO,
-            SEGUNDO_APELLIDO
-        FROM
-            TR_GRUPO_TUTORIA
-            LEFT JOIN CAT_USUARIO ON TR_GRUPO_TUTORIA.FK_USUARIO = CAT_USUARIO.PK_USUARIO
-        WHERE 
-              PK_GRUPO_TUTORIA = $pk_grupo
-              AND PERIODO = '".Constantes::get_periodo()."'
-        ;";
-
-        $result = Constantes::procesa_consulta_general($sql);
-        if ($result) {
-            return $result[0];
-        } else {
-            return false;
-        }
     }
 }

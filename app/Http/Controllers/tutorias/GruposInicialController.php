@@ -29,8 +29,10 @@ class GruposInicialController extends Controller
     {
         if ($request->token && $request->rol) {
             $usuario = UsuariosHelper::get_usuario($request->token);
+            // $periodo = Constantes::get_periodo();
+            $periodo = '20192';
             if ($usuario) {
-                return ResponseHTTP::response_ok($this->get_grupos_rol($request->rol, $usuario));
+                return ResponseHTTP::response_ok($this->get_grupos_rol($request->rol, $usuario, $periodo));
             } else {
                 return ResponseHTTP::response_error('Parámetros incorrectos');
             }
@@ -57,18 +59,18 @@ class GruposInicialController extends Controller
      * @param Usuario $usuario
      * @return array
      */
-    private function get_grupos_rol($rol, Usuario $usuario)
+    private function get_grupos_rol($rol, Usuario $usuario, $periodo)
     {
         switch ($rol) {
             case Abreviaturas::TUTORIA_ROL_ADMINISTRADOR:
-                $grupos = GrupoTutorias::where('PERIODO', Constantes::get_periodo())
+                $grupos = GrupoTutorias::where('PERIODO', $periodo)
                     ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL)
                     ->leftJoin('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'FK_CARRERA')
                     ->get();
                 return $this->agrupar_grupos_por_carrera($grupos);
 
             case Abreviaturas::TUTORIA_ROL_COORDINADOR_INS:
-                $grupos = GrupoTutorias::where('PERIODO', Constantes::get_periodo())
+                $grupos = GrupoTutorias::where('PERIODO', $periodo)
                     ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL)
                     ->leftJoin('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'FK_CARRERA')
                     ->get();
@@ -82,7 +84,7 @@ class GruposInicialController extends Controller
                 }
                 $area_carrera = $area_carrera->get();
 
-                $grupos = GrupoTutorias::where('PERIODO', Constantes::get_periodo())
+                $grupos = GrupoTutorias::where('PERIODO', $periodo)
                     ->leftJoin('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'FK_CARRERA')
                     ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL);
                 foreach ($area_carrera as $area) {
@@ -91,7 +93,7 @@ class GruposInicialController extends Controller
                 return $this->agrupar_grupos_por_carrera($grupos->get());
 
             case Abreviaturas::TUTORIA_ROL_TUTOR:
-                $grupos = GrupoTutorias::where('PERIODO', Constantes::get_periodo())
+                $grupos = GrupoTutorias::where('PERIODO', $periodo)
                     ->leftJoin('CAT_CARRERA', 'CAT_CARRERA.PK_CARRERA', '=', 'FK_CARRERA')
                     ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL)
                     ->where('FK_USUARIO', $usuario->PK_USUARIO)
@@ -131,7 +133,7 @@ class GruposInicialController extends Controller
     {
         $condiciones_siia = [
             'CLAVE_GRUPO' => $grupo->CLAVE,
-            'PERIODO' => Constantes::get_periodo(),
+            'PERIODO' => $grupo->PERIODO,
             'CLAVE_MATERIA' => 'PDH'
         ];
 
@@ -152,10 +154,12 @@ class GruposInicialController extends Controller
             'HORARIO' => $horario_grupo,
             'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo_siia($condiciones_siia)),
             'ENCUESTAS_ACTIVAS' => $this->get_encuestas_grupo(
+                $grupo->PERIODO,
                 Constantes::ENCUESTA_PENDIENTE,
                 $grupo->PK_GRUPO_TUTORIA
             )[0]->CANTIDAD_ENCUESTAS,
             'ENCUESTAS_CONTESTADAS' => $this->get_encuestas_grupo(
+                $grupo->PERIODO,
                 Constantes::ENCUESTA_RESPONDIDA,
                 $grupo->PK_GRUPO_TUTORIA
             )[0]->CANTIDAD_ENCUESTAS,
@@ -167,7 +171,7 @@ class GruposInicialController extends Controller
     {
         $condiciones_siia = [
             'CLAVE_GRUPO' => $grupo->CLAVE,
-            'PERIODO' => Constantes::get_periodo(),
+            'PERIODO' => $grupo->PERIODO,
             'CLAVE_MATERIA' => 'PDH'
         ];
 
@@ -188,15 +192,17 @@ class GruposInicialController extends Controller
             'HORARIO' => $horario_grupo,
             'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo_siia($condiciones_siia)),
             'ENCUESTAS_ACTIVAS' => $this->get_encuestas_grupo(
+                $grupo->PERIODO,
                 Constantes::ENCUESTA_PENDIENTE,
                 $grupo->PK_GRUPO_TUTORIA
             )[0]->CANTIDAD_ENCUESTAS,
             'ENCUESTAS_CONTESTADAS' => $this->get_encuestas_grupo(
+                $grupo->PERIODO,
                 Constantes::ENCUESTA_RESPONDIDA,
                 $grupo->PK_GRUPO_TUTORIA
             )[0]->CANTIDAD_ENCUESTAS,
             'EVALUACION_GRUPO' => $grupo->EVALUACION,
-            'LISTA_ALUMNOS' => $this->get_lista_grupo(SiiaHelper::get_lista_grupo_siia($condiciones_siia))
+            'LISTA_ALUMNOS' => $this->get_lista_grupo(SiiaHelper::get_lista_grupo_siia($condiciones_siia), $grupo->PERIODO)
         ];
     }
 
@@ -204,7 +210,7 @@ class GruposInicialController extends Controller
      * @param $lista_alumnos
      * @return array
      */
-    private function get_lista_grupo($lista_alumnos)
+    private function get_lista_grupo($lista_alumnos, $periodo)
     {
         $lista = [];
         foreach ($lista_alumnos as $alumno) {
@@ -221,11 +227,13 @@ class GruposInicialController extends Controller
                     'CARRERA' => $alumno->ClaveCarrera,
                     'PERFIL_COMPLETO' => $usuario->PERFIL_COMPLETO,
                     'ENCUESTAS_ACTIVAS' => $this->get_encuestas_grupo(
+                        $periodo,
                         NULL,
                         NULL,
                         $usuario->PK_USUARIO
                     )[0]->CANTIDAD_ENCUESTAS,
                     'ENCUESTAS_CONTESTADAS' => $this->get_encuestas_grupo(
+                        $periodo,
                         Constantes::ENCUESTA_RESPONDIDA,
                         NULL,
                         $usuario->PK_USUARIO
@@ -243,7 +251,7 @@ class GruposInicialController extends Controller
      * @param null $alumno
      * @return array
      */
-    private function get_encuestas_grupo($estado_encuesta = null, $grupo = NULL, $alumno = NULL)
+    private function get_encuestas_grupo($periodo, $estado_encuesta = null, $grupo = NULL, $alumno = NULL)
     {
         $sql = "
         SELECT
@@ -257,7 +265,7 @@ class GruposInicialController extends Controller
             LEFT JOIN TR_GRUPO_TUTORIA
                 ON TR_GRUPO_TUTORIA.PK_GRUPO_TUTORIA = TR_GRUPO_TUTORIA_DETALLE.FK_GRUPO
         WHERE
-            TR_APLICACION_ENCUESTA.PERIODO = '" . Constantes::get_periodo() . "'";
+            TR_APLICACION_ENCUESTA.PERIODO = '" .$periodo. "'";
 
         if ($estado_encuesta == Constantes::ENCUESTA_RESPONDIDA) {
             $sql .= " AND TR_APLICACION_ENCUESTA_DETALLE.ESTADO = $estado_encuesta ";

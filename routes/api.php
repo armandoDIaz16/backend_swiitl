@@ -680,15 +680,21 @@ Route::group(['middleware' => ['jwt.verify']], function () {
  * *********************************************************** */
 //Generar pdf perfil individual de ingreso
 Route::get(
-    'get_pdf_perfil_personal_ingreso',
-    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+    'c413a63cce7f8f6a6f7b9179a20bfbe0', // reporte_perfil_personal_de_ingreso
+    'tutorias\SITPdfController@perfil_personal'
 );
 
 //Generar pdf perfil grupal de ingreso
 Route::get(
-    'get_pdf_perfil_grupal_ingreso',
-    'tutorias\SITPdfController@get_pdf_perfil_grupal_ingreso'
+    'de99193444466a46d939f6e1fe025e10', // reporte_perfil_grupal_ingreso
+    'tutorias\SITPdfController@perfil_grupal'
 );
+
+// Probar reportes de tutoria
+/*Route::get(
+    'test_reporte',
+    'tutorias\SITPdfController@test_reporte'
+);*/
 
 /* *********************************************************** *
  * ************* RUTAS PROTEGIDAS DEL SISTEMA DE ROLES Y USUARIOS *************** *

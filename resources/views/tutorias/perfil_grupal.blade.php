@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
@@ -9,7 +9,7 @@
             background-color: rgb(178, 179, 179);
         }
 
-        p > *, p{
+        p > *, p {
             font-size: .8em;
         }
 
@@ -44,10 +44,10 @@
 <!-- FIN ESTILOS FOOTER -->
 
 <!-- FIJAR ENCABEZADO -->
-<sethtmlpageheader name="MyHeader1" value="on" show-this-page="1" />
+<sethtmlpageheader name="MyHeader1" value="on" show-this-page="1"/>
 
 <!-- FIJAR FOOTER -->
-<sethtmlpagefooter name="MyFooter1" value="on" />
+<sethtmlpagefooter name="MyFooter1" value="on"/>
 
 <!-- INICIO CONTENIDO -->
 <div>
@@ -73,11 +73,11 @@
         </tr>
         <tr>
             <td valign="middle" align="left" colspan="2">
-                <p class="bold">NOMBRE DEL TUTOR: <u>{{$data['tutor']}}</u></p>
+                <p class="bold">NOMBRE DEL TUTOR: <u>{{$tutor}}</u></p>
             </td>
             <td valign="middle" align="left" colspan="2">
                 <p class="bold">
-                    PERIODO: <u>{{\App\Helpers\Constantes::get_periodo_texto()}}</u>
+                    PERIODO: <u>{{$periodo}}</u>
                 </p>
                 <p class="bold">
                     FECHA DE CONSULTA: <u>{{date('j-m-Y')}}</u>
@@ -91,16 +91,16 @@
         </tr>
         <tr>
             <td width="25%">
-                <p class="bold">GRUPO: <u>{{$data['grupo']}}</u></p>
+                <p class="bold">GRUPO: <u>{{$grupo}}</u></p>
             </td>
             <td width="25%">
-                <p class="bold">N° DE ALUMNOS: <u>{{$data['cantidad_alumnos']}}</u></p>
+                <p class="bold">N° DE ALUMNOS: <u>{{$cantidad_alumnos}}</u></p>
             </td>
             <td width="25%">
                 <p class="bold">SEMESTRE: <u>1</u></p>
             </td>
             <td width="25%">
-                <p class="bold">CARRERA: <u>{{$data['carrera']}}</u></p>
+                <p class="bold">CARRERA: <u>{{$carrera}}</u></p>
             </td>
         </tr>
         <tr>
@@ -118,29 +118,47 @@
                 <p class="bold">Porcentaje grupal de:</p>
                 <p>
                     <b>Sexo:</b>
-                    @foreach($data['personales']['sexo'] as $sexo)
-                        <u>{{$sexo->PROMEDIO}}% {{$sexo->ETIQUETA}}</u>,
+                    <br>
+                    @foreach($personales['sexo'] as $item)
+                        <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>Edad:</b>
+                    <br>
+                    @foreach($personales['edad'] as $item)
+                        @if($item->ITEM == 0)
+                            <u>No definido ({{$item->PROMEDIO}}%)</u>,
+                        @else
+                            <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
+                        @endif
                     @endforeach
                 </p>
                 <p>
                     <b>Edo. Civil: </b>
-                    @foreach($data['personales']['estado_civil'] as $estado_civil)
-                        <br>
-                        <u>{{$estado_civil->PROMEDIO}}% {{$estado_civil->ETIQUETA}}</u>
+                    <br>
+                    @foreach($personales['estado_civil'] as $item)
+                        <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
                     @endforeach
                 </p>
                 <p>
                     <b>Colonia donde vive:</b>
-                    @foreach($data['personales']['colonias'] as $colonia)
-                        <br>
-                        <u>{{$colonia->ETIQUETA}}</u>
+                    <br>
+                    <?php $ind = 0 ?>
+                    @foreach($personales['colonia'] as $item)
+                        @if($ind == 5)
+                            break;
+                        @else
+                            <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
+                            <?php $ind++ ?>
+                        @endif
                     @endforeach
                 </p>
                 <p>
                     <b>Lugar de residencia:</b>
-                    @foreach($data['personales']['situacion_residencia'] as $situacion_residencia)
-                        <br>
-                        <u>{{$situacion_residencia->PROMEDIO}}% {{$situacion_residencia->ETIQUETA}}</u>
+                    <br>
+                    @foreach($personales['situacion_residencia'] as $item)
+                        <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
                     @endforeach
                 </p>
             </td>
@@ -151,7 +169,7 @@
             </td>
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de:</p>
-                <p>
+                {{--<p>
                     <b>Tipo de preparatoria:</b>
                     @foreach($data['academico']['tipo_escuela'] as $tipo_escuela)
                         <br>
@@ -193,7 +211,7 @@
                         <br>
                         <u>{{$carrera_primera->PROMEDIO}}% {{$carrera_primera->ETIQUETA}}</u>,
                     @endforeach
-                </p>
+                </p>--}}
             </td>
         </tr>
         <tr>
@@ -202,7 +220,7 @@
             </td>
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de:</p>
-                <p>
+                {{--<p>
                     <b>Nivel Socioeconómico:</b> <u>{{$data['socioeconomica']['nivel_socioeconomico']}}</u>
                 </p>
                 <p>
@@ -239,7 +257,7 @@
                         <br>
                         <u>{{$escolaridad_madre->PROMEDIO}}% {{$escolaridad_madre->ETIQUETA}}</u>,
                     @endforeach
-                </p>
+                </p>--}}
             </td>
         </tr>
         <tr>
@@ -248,7 +266,7 @@
             </td>
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de: (dos primeros porcentajes)</p>
-                <p>
+                {{--<p>
                     <b>Tipo de familia</b>
                     @foreach($data['familiar']['tipo_familia'] as $tipo_familia)
                         <br>
@@ -263,9 +281,10 @@
                         - {{$aspectos->PLANTEAMIENTO}}
                         <br>
                         @foreach($aspectos->RESPUESTAS as $aspecto)
-                            <u>{{$aspecto->RESPUESTA}} ( {{number_format((($aspecto->CANTIDAD / $data['cantidad_alumnos']) * 100), 0)}}% )</u>,
+                            <u>{{$aspecto->RESPUESTA}}
+                                ( {{number_format((($aspecto->CANTIDAD / $data['cantidad_alumnos']) * 100), 0)}}% )</u>,
                         @endforeach
-                    <br>
+                        <br>
                     @endforeach
                 </p>
                 <br>
@@ -299,7 +318,7 @@
                     <br>
                     <b>Explicación:</b>
                     <u>{{$data['familiar']['funcionamiento']['explicacion']}}</u>
-                </p>
+                </p>--}}
             </td>
         </tr>
         <tr>
@@ -307,21 +326,21 @@
                 <p class="bold">Pasatiempos</p>
             </td>
             <td colspan="3">
-                <p>
+                {{--<p>
                     <b>Mencionar las actividades que más realiza en su tiempo libre:</b>
-                    <ol>
-                        <li>{{$data['pasatiempos'][0]->ETIQUETA}}</li>
-                        <li>{{$data['pasatiempos'][1]->ETIQUETA}}</li>
-                        <li>{{$data['pasatiempos'][2]->ETIQUETA}}</li>
-                    </ol>
+                <ol>
+                    <li>{{$data['pasatiempos'][0]->ETIQUETA}}</li>
+                    <li>{{$data['pasatiempos'][1]->ETIQUETA}}</li>
+                    <li>{{$data['pasatiempos'][2]->ETIQUETA}}</li>
+                </ol>
 
-                    <b>Mencionar las actividades que menos hace en su tiempo libre:</b>
-                    <ol>
-                        <li>{{$data['pasatiempos'][12]->ETIQUETA}}</li>
-                        <li>{{$data['pasatiempos'][13]->ETIQUETA}}</li>
-                        <li>{{$data['pasatiempos'][14]->ETIQUETA}}</li>
-                    </ol>
-                </p>
+                <b>Mencionar las actividades que menos hace en su tiempo libre:</b>
+                <ol>
+                    <li>{{$data['pasatiempos'][12]->ETIQUETA}}</li>
+                    <li>{{$data['pasatiempos'][13]->ETIQUETA}}</li>
+                    <li>{{$data['pasatiempos'][14]->ETIQUETA}}</li>
+                </ol>
+                </p>--}}
             </td>
         </tr>
         <tr>
@@ -330,23 +349,25 @@
             </td>
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de</p>
-                <p>
+                {{--<p>
                     <b>En general ¿Cómo calificas tu salud física?</b>
                     @foreach($data['salud']['salud_fisica'] as $salud_fisica)
                         <br>
                         <u>{{$salud_fisica->PROMEDIO}}% {{$salud_fisica->ETIQUETA}}</u>,
                     @endforeach
                 </p>
-                {{--<p>Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ</p>--}}
+                --}}{{--<p>Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ</p>--}}{{--
                 <p>
                     <br>
                     <b>Evaluación de habilidades:</b>
                     @foreach($data['salud']['habilidades'] as $pregunta)
                         <br>
-                         - {{$pregunta->PLANTEAMIENTO}}
+                        - {{$pregunta->PLANTEAMIENTO}}
                         <br>
                         @foreach($pregunta->RESPUESTAS as $respuesta)
-                            <u>{{$respuesta->RESPUESTA}} ( {{number_format((($respuesta->CANTIDAD / $data['cantidad_alumnos']) * 100), 0)}}% )</u>,
+                            <u>{{$respuesta->RESPUESTA}}
+                                ( {{number_format((($respuesta->CANTIDAD / $data['cantidad_alumnos']) * 100), 0)}}%
+                                )</u>,
                         @endforeach
                     @endforeach
                 </p>
@@ -357,7 +378,7 @@
                         <br>
                         <u>{{$sentimiento->PROMEDIO}}% {{$sentimiento->ETIQUETA}}</u>,
                     @endforeach
-                </p>
+                </p>--}}
             </td>
         </tr>
         <tr>
@@ -365,7 +386,7 @@
                 <p class="bold">Hábitos de estudio</p>
             </td>
             <td colspan="3">
-                <p>
+                {{--<p>
                     <b>Puntos fuertes.</b>
                 <ol>
                     @foreach($data['habitos_estudio']['puntos_fuertes'] as $punto_fuerte)
@@ -379,7 +400,7 @@
                         <li>{{$punto_debil}}</li>
                     @endforeach
                 </ol>
-                </p>
+                </p>--}}
             </td>
         </tr>
         <tr>
