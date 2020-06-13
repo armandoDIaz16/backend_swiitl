@@ -109,8 +109,15 @@ class SITPdfController extends Controller
         if ($reporte) {
             $data = [];
             $reporte = $this->agrupa_preguntas($reporte);
-            error_log(print_r($reporte, true));
-            return $reporte;
+            return (object)[
+                'tipo_escuela'        => $reporte[0],
+                // 'modalidad'           => $reporte[1],
+                'especialidad'        => $reporte[2],
+                'promedio'            => $reporte[5],
+                'materias_dificultad' => $reporte[6],
+                'itl_primera_opcion'  => $reporte[7],
+                'carrera_primera_opcion' => $reporte[8],
+            ];
         }
 
         return (object)[
@@ -127,39 +134,36 @@ class SITPdfController extends Controller
     private function agrupa_preguntas($reporte)
     {
         $preguntas = [];
+        $anterior = $reporte[0]->PK_PREGUNTA;
+        $ind = 0;
         $respuestas = [];
-        $abiertas = '';
-        $suma = $anterior = $nuevo = 0;
+        $preguntas[$ind]['SUMA_TOTAL'] = 0;
+        $preguntas[$ind]['ABIERTAS'] = '';
         foreach ($reporte as $item) {
-            /* AGRUPAR RESPUESTAS */
-            if ($item->TIPO_PREGUNTA == 1) {
+            $nuevo = $item->PK_PREGUNTA;
+            // SEPARAR PREGUNTAS
+            if ($anterior != $nuevo) {
+                $anterior = $nuevo;
+                $preguntas[$ind]['RESPUESTAS'] = $respuestas;
+                $ind++;
+                $respuestas = [];
+                $preguntas[$ind]['SUMA_TOTAL'] = 0;
+                $preguntas[$ind]['ABIERTAS'] = '';
+            }
+            $preguntas[$ind]['PK_PREGUNTA']   = $item->PK_PREGUNTA;
+            $preguntas[$ind]['PLANTEAMIENTO'] = $item->PLANTEAMIENTO;
+            $preguntas[$ind]['SUMA_TOTAL']    += $item->CANTIDAD;
+
+            if ($item->TIPO_PREGUNTA == 6) {
+                $preguntas[$ind]['ABIERTAS'] .= str_replace("\n", ' ', $item->RESPUESTA_ABIERTA) .', ';
+            } else {
                 $respuestas[] = [
                     'RESPUESTA' => $item->RESPUESTA,
                     'CANTIDAD' => $item->CANTIDAD,
                 ];
-                $suma += $item->CANTIDAD;
-            }
-
-            if ($item->TIPO_PREGUNTA == 6) {
-                $abiertas .= $item->RESPUESTA_ABIERTA .', ';
-            }
-
-            $nuevo = $item->PK_PREGUNTA;
-            /* SEPARAR PREGUNTAS */
-            if ($anterior != $nuevo) {
-                $anterior = $nuevo;
-                $preguntas[] = (object)[
-                    'PK_PREGUNTA'   => $item->PK_PREGUNTA,
-                    'PLANTEAMIENTO' => $item->PLANTEAMIENTO,
-                    'SUMA_TOTAL'    => $suma,
-                    'RESPUESTAS'    => $respuestas,
-                    'ABIERTAS'      => $abiertas
-                ];
-                $respuestas = [];
-                $abiertas = '';
-                $suma = 0;
             }
         }
+        $preguntas[$ind]['RESPUESTAS'] = $respuestas;
 
         return $preguntas;
     }

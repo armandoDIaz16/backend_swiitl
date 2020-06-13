@@ -169,49 +169,48 @@
             </td>
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de:</p>
-                {{--<p>
+                <p>
                     <b>Tipo de preparatoria:</b>
-                    @foreach($data['academico']['tipo_escuela'] as $tipo_escuela)
+                    @foreach($academico->tipo_escuela['RESPUESTAS'] as $tipo_escuela)
                         <br>
-                        <u>{{$tipo_escuela->PROMEDIO}}% {{$tipo_escuela->ETIQUETA}}</u>
+                        <u>{{$tipo_escuela['RESPUESTA']}} -
+                            {{number_format($tipo_escuela['CANTIDAD']*100 / $academico->tipo_escuela['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
 
                 <p>
                     <b>Área:</b>
                     <br>
-                    @foreach($data['academico']['areas'] as $area)
-                        <u>{{$area->ETIQUETA}}</u>,
-                    @endforeach
+                    <u>{{$academico->especialidad['ABIERTAS']}}</u>,
                 </p>
                 <p>
                     <b>Promedio de calificación de preparatoria:</b>
-                    @foreach($data['academico']['promedios'] as $promedio)
+                    @foreach($academico->promedio['RESPUESTAS'] as $promedio)
                         <br>
-                        <u>{{$promedio->PROMEDIO}}% {{$promedio->ETIQUETA}}</u>
+                        <u>{{$promedio['RESPUESTA']}} -
+                            {{number_format($promedio['CANTIDAD']*100 / $academico->promedio['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
                 <p>
                     <b>Materias difíciles:</b>
-                    @foreach($data['academico']['materias_dificiles'] as $materia_dificil)
-                        <br>
-                        <u>{{$materia_dificil->ETIQUETA}}</u>,
-                    @endforeach
+                    <u>{{$academico->materias_dificultad['ABIERTAS']}}</u>,
                 </p>
                 <p>
                     <b>ITL como primera opción:</b>
-                    @foreach($data['academico']['itl_primera_opcion'] as $itl_primera)
+                    @foreach($academico->itl_primera_opcion['RESPUESTAS'] as $itl)
                         <br>
-                        <u>{{$itl_primera->PROMEDIO}}% {{$itl_primera->ETIQUETA}}</u>,
+                        <u>{{$itl['RESPUESTA']}} -
+                            {{number_format($itl['CANTIDAD']*100 / $academico->itl_primera_opcion['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
                 <p>
                     <b>Carrera actual como primera opción:</b>
-                    @foreach($data['academico']['carrera_primera_opcion'] as $carrera_primera)
+                    @foreach($academico->carrera_primera_opcion['RESPUESTAS'] as $carrera)
                         <br>
-                        <u>{{$carrera_primera->PROMEDIO}}% {{$carrera_primera->ETIQUETA}}</u>,
+                        <u>{{$carrera['RESPUESTA']}} -
+                            {{number_format($carrera['CANTIDAD']*100 / $academico->carrera_primera_opcion['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
-                </p>--}}
+                </p>
             </td>
         </tr>
         <tr>
