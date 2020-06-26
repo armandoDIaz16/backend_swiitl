@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\capacitacion_docente;
 
 
+use App\Helpers\Abreviaturas;
+use App\Helpers\Constantes;
+use App\Helpers\UsuariosHelper;
 use App\Usuario_Rol;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -26,6 +29,9 @@ protected $value_docente  = '';
         // variables
         $data = array();
         $mytime = Carbon::now();
+        $valor = DB::table('CAT_TIPO_PARTICIPANTE_CADO')
+                                ->select('PK_TIPO_PARTICIPANTE_CADO')
+                                ->where('NOMBRE_TIPO','Participante')->get();
 //        $mytime->toDateTimeString();
         $pk_curso = $request->pk_curso;
 
@@ -115,15 +121,17 @@ protected $value_docente  = '';
                                             // no tiene usuario participante
                                             //se lo creamos
                                             $pkParticipanteInstructor = DB::table('CAT_PARTICIPANTE_CADO')->insertGetId(
-                                                [
-                                                    'FK_TIPO_PARTICIPANTE' => 2,
-                                                    'FK_USUARIO' => $instructor
-                                                ]
-                                            );
+                                                ['FK_TIPO_PARTICIPANTE' => $valor[0]->PK_TIPO_PARTICIPANTE_CADO,
+                                                    'FK_USUARIO' => $instructor]);
+                                            // Le asignamos el rol de participante
+                                            if (!UsuariosHelper::rol_usuario($instructor, Abreviaturas::CADO_ROL_PARTICIPANTE, TRUE)) {
+                                                error_log('***** ERROR AL ASIGNAR ROL A USUARIO *****');
+                                                error_log('PK_USUARIO: ' . $instructor);
+                                                error_log('ROL: ' . Abreviaturas::CADO_ROL_PARTICIPANTE);
+                                            }
                                         }
 
                                         if ($pkParticipanteInstructor > 0) {
-
                                             DB::table('CATTR_PARTICIPANTE_IMPARTE_CURSO')
                                                 ->updateOrInsert(
                                                     ['FK_PARTICIPANTE_CADO' => $pkParticipanteInstructor,
@@ -131,7 +139,6 @@ protected $value_docente  = '';
                                                     ['FK_PARTICIPANTE_CADO' =>$pkParticipanteInstructor,
                                                         'BORRADO' =>0]
                                                 );
-
                                             /*DB::table('CATTR_PARTICIPANTE_IMPARTE_CURSO')->update(
                                                 ['FK_PARTICIPANTE_CADO' => $pkParticipanteInstructor,
                                                     'FK_CAT_CURSO_CADO' => $pkCurso]
@@ -146,12 +153,6 @@ protected $value_docente  = '';
                                     }
                                 }
                             }
-
-                            // insertamos el registro de quien propone el curso puede ser el coordinador o el mismo
-                            // instructor en CATTR_PARTICIPANTE_PROPONE_CURSO
-                            /*DB::table('CATTR_PARTICIPANTE_PROPONE_CURSO')->insert(
-                                ['FK_PARTICIPANTE_CADO' => $pk_participante_modifica, 'FK_CAT_CURSO_CADO' => $pkCurso]
-                            )*/;
                             array_push($data, [
                                 'estado' => 'exito',
                                 'mensaje' => 'Se registro  el curso exitosamente!'
@@ -163,82 +164,6 @@ protected $value_docente  = '';
                             ]);
                         }
                     }
-
-                    /*$pkCurso = DB::table('CAT_CURSO_CADO')->insertGetId(
-                        [
-                            'NOMBRE_CURSO' => $request->nombre_curso,
-                            'TIPO_CURSO' => $request->tipo_curso,
-                            'CUPO_MAXIMO' => $request->cupo_maximo,
-                            'TOTAL_HORAS' => $request->total_horas,
-                            'FK_AREA_ACADEMICA' => ($request->pk_area_academica == 0) ? NULL : $request->pk_area_academica,
-                            'FECHA_INICIO' => $request->fecha_inicio,
-                            'FECHA_FIN' => $request->fecha_fin,
-                            'HORA_INICIO' => $request->hora_inicio,
-                            'HORA_FIN' => $request->hora_fin,
-                            'FK_EDIFICIO' => $request->edificio,
-                            'NOMBRE_ESPACIO' => $request->espacio,
-                            'ESTADO' => $request->estado_curso,
-                            'FK_PERIODO_CADO' => $request->pk_periodo,
-                            'FK_PARTICIPANTE_MODIFICACION' => $pk_participante_modifica,
-                            'FECHA_MODIFICACION' => $mytime->toDateTimeString()
-                        ]
-                    );*/
-
-                    /*if (isset($pkCurso) && $pkCurso > 0) {
-                        // si pudo crear el curso
-                        //     creamos las relaciones necesarias
-                        // insertamos el registro de los instructores en CATTR_PARTICIPANTE_IMPARTE_CURSO
-                        //obtenemos los instructores propuestos
-                        $instructoresArray = $request->array_instructores;
-                        $pkParticipanteInstructor = 0;
-                        foreach ($instructoresArray as $instructor) {
-                            // BUSCAMOS SI EL USUARIO TIENE REGISTRO EN PARTICIPANTE, SI NO SE LO CREAMOS
-                            $participante = ParticipanteCADO::where('FK_USUARIO', $instructor)
-                                ->get();
-                            if (isset($participante[0])) {
-                                // ya tiene usuario participante
-                                $pkParticipanteInstructor = $participante[0]->PK_PARTICIPANTE_CADO;
-                            } else {
-                                // no tiene usuario participante
-                                //se lo creamos
-                                $pkParticipanteInstructor = DB::table('CAT_PARTICIPANTE_CADO')->insertGetId(
-                                    [
-                                        'FK_TIPO_PARTICIPANTE' => 2,
-                                        'FK_USUARIO' => $instructor
-                                    ]
-                                );
-                            }
-
-                            if ($pkParticipanteInstructor > 0) {
-                                DB::table('CATTR_PARTICIPANTE_IMPARTE_CURSO')->insert(
-                                    ['FK_PARTICIPANTE_CADO' => $pkParticipanteInstructor,
-                                        'FK_CAT_CURSO_CADO' => $pkCurso]
-                                );
-                            } else {
-                                array_push($data, [
-                                    'estado' => 'error',
-                                    'mensaje' => 'No se pudo crear el participante para el instructor(es)'
-                                ]);
-                            }
-
-                        }
-                        // insertamos el registro de quien propone el curso puede ser el coordinador o el mismo
-                        // instructor en CATTR_PARTICIPANTE_PROPONE_CURSO
-                        DB::table('CATTR_PARTICIPANTE_PROPONE_CURSO')->insert(
-                            ['FK_PARTICIPANTE_CADO' => $pk_participante_modifica, 'FK_CAT_CURSO_CADO' => $pkCurso]
-                        );
-                        array_push($data, [
-                            'estado' => 'exito',
-                            'mensaje' => 'Se registro  el curso exitosamente!'
-                        ]);
-
-                    } else {
-                        // no se pudo insertar el curso
-                        array_push($data, [
-                            'estado' => 'error',
-                            'mensaje' => 'no se pudo insertar el curso'
-                        ]);
-                    }*/
                 } else {
                     array_push($data, [
                         'estado' => 'error',
@@ -655,6 +580,9 @@ protected $value_docente  = '';
         // FIN ESPACIO PRUEBA
         // variables
         $data = array();
+        $valor = DB::table('CAT_TIPO_PARTICIPANTE_CADO')
+                                ->select('PK_TIPO_PARTICIPANTE_CADO')
+                                ->where('NOMBRE_TIPO','Participante')->get();
 
         if (isset($request->no_control_usuario_registro)) {
             // BUSCAMOS POR NOCONTROL EL USUARIO QUE REALIZA EL REGISTRO
@@ -717,13 +645,16 @@ protected $value_docente  = '';
                                 // no tiene usuario participante
                                 //se lo creamos
                                 $pkParticipanteInstructor= DB::table('CAT_PARTICIPANTE_CADO')->insertGetId(
-                                    [
-                                        'FK_TIPO_PARTICIPANTE' =>2,
-                                        'FK_USUARIO' => $instructor
-                                    ]
-                                );
+                                    ['FK_TIPO_PARTICIPANTE' =>$valor[0]->PK_TIPO_PARTICIPANTE_CADO,
+                                        'FK_USUARIO' => $instructor]);
+                                // Le asignamos el rol de participante
+                                if (!UsuariosHelper::rol_usuario($instructor, Abreviaturas::CADO_ROL_PARTICIPANTE, TRUE)) {
+                                    error_log('***** ERROR AL ASIGNAR ROL A USUARIO *****');
+                                    error_log('PK_USUARIO: ' . $instructor);
+                                    error_log('ROL: ' . Abreviaturas::CADO_ROL_PARTICIPANTE);
+                                }
                             }
-
+                                //Asignamos el instructor a la tabla para impartir el curso
                             if($pkParticipanteInstructor>0){
                                 DB::table('CATTR_PARTICIPANTE_IMPARTE_CURSO')->insert(
                                     ['FK_PARTICIPANTE_CADO' =>$pkParticipanteInstructor,
