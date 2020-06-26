@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\capacitacion_docente;
 
 
+use App\Usuario_Rol;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;

@@ -895,16 +895,16 @@ Route::get('referencia_especial_hijos', 'ReferenciasEspeciales@generar_referenci
 Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeutico');
 
 
-/* *********************************************************** *
- * ************* RUTAS PROTEGIDAS DEL SISTEMA DE  CAPACITACION DOCENTE *************** *
- * *********************************************************** */
-Route::group(['middleware' => ['jwt.verify']], function () {
-    //* ************* INICIO PERIODOS *************** *
-    // Registro de periodo
-    Route::post(
-        'registro_periodo',
-        'capacitacion_docente\PeridoController@registro_periodo'
-    );
+        /* *********************************************************** *
+         * **** RUTAS PROTEGIDAS DEL SISTEMA DE  CAPACITACION DOCENTE *** *
+         * *********************************************************** */
+    Route::group(['middleware' => ['jwt.verify']], function () {
+        //* ************* INICIO PERIODOS *************** *
+        // Registro de periodo
+        Route::post(
+            'registro_periodo',
+            'capacitacion_docente\PeridoController@registro_periodo'
+        );
 
     // Consulta de periodos
     Route::get(
@@ -1038,7 +1038,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 //* ************* FIN  CURSOS *************** *
     //* ************* INICIO  FICHA TECNICA *************** *
 
-
 // Crear ficha tecnica del curso
     Route::post(
         'crear_actualizar_ficha',
@@ -1166,8 +1165,6 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 /* *********************************************************** *
  * ************* RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
  * *********************************************************** */
-
-
 
 // ruta de prueba
 /*Route::get(

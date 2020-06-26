@@ -1,0 +1,19 @@
+Visualizar las restricciones de la base de datos
+
+Ver las restricciones de tipo Check
+Select * from sys.check_constraints
+go
+Ver las restricciones de tipo Foreign Key
+Select * from sys.foreign_keys
+go
+Ver las restricciones de tipo Unique
+Select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+where CONSTRAINT_TYPE = ‘unique’
+go
+Ver las restricciones de tipo Primary key
+Select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+where CONSTRAINT_TYPE = ‘PRIMARY KEY’
+go
+Ver las restricciones de tipo Default
+select * from sys.default_constraints
+go
