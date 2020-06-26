@@ -13,6 +13,7 @@ class Seccion_Encuesta extends Model
         'OBJETIVO',
         'INSTRUCCIONES',
         'FK_ENCUESTA',
+
         'FK_USUARIO_REGISTRO',
         'FECHA_REGISTRO',
         'FK_USUARIO_MODIFICACION',

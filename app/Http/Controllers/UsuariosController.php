@@ -21,9 +21,11 @@ use Symfony\Component\HttpFoundation\Response;
 class UsuariosController extends Controller
 {
     /**
-     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $query = ViewUsuarios::where('BORRADO', Constantes::BORRADO_NO);
 
         /* INICIO FILTROS QUERY PARAMS */
@@ -35,11 +37,7 @@ class UsuariosController extends Controller
             $query->where('NUMERO_CONTROL', $request->numero_control);
         }
 
-        if ($request->carrera) {
-            $query->where('FK_CARRERA', $request->carrera);
-        }
-
-        if ($request->carrera) {
+        if ($request->carrera && $request->tipo_usuario != 1) {
             $carrera = Carrera::find($request->carrera);
             $carrera_area = AreaAcademicaCarrera::where('FK_CARRERA', $carrera->PK_CARRERA)->first();
             $query->where('FK_AREA_ACADEMICA', $carrera_area->FK_AREA_ACADEMICA);
@@ -55,13 +53,42 @@ class UsuariosController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function modifica_correo_usuario(Request $request) {
+    public function alumno(Request $request)
+    {
+        // TODO AGREGAR TUTOR ASIGNADO
+        $query = ViewUsuarios::where('BORRADO', Constantes::BORRADO_NO);
+
+        /* INICIO FILTROS QUERY PARAMS */
+        if ($request->tipo_usuario) {
+            $query->where('TIPO_USUARIO', Constantes::USUARIO_ALUMNO);
+        }
+
+        if ($request->numero_control) {
+            $query->where('NUMERO_CONTROL', $request->numero_control);
+        }
+
+        if ($request->carrera) {
+            $query->where('FK_CARRERA', $request->carrera);
+        }
+        /* FIN FILTROS QUERY PARAMS */
+
+        $usuarios = $query->get();
+
+        return ResponseHTTP::response_ok($usuarios);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function modifica_correo_usuario(Request $request)
+    {
         $usuario = UsuariosHelper::get_usuario($request->pk_encriptada);
         if ($usuario) {
             $usuario->CORREO1 = $request->correo;
             $usuario->save();
 
-            return response()->json(true,Response::HTTP_ACCEPTED);
+            return response()->json(true, Response::HTTP_ACCEPTED);
         }
 
         return response()->json(
@@ -74,7 +101,8 @@ class UsuariosController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function buscar_usuarios(Request $request) {
+    public function buscar_usuarios(Request $request)
+    {
         $usuarios_query = DB::table('CAT_USUARIO AS CU')
             ->select('CU.*', 'CA.NOMBRE AS AREA_ACADEMICA', 'CR.NOMBRE AS CARRERA',
                 DB::raw('(SELECT CONCAT(CU.NOMBRE, \' \', CU.PRIMER_APELLIDO, \' \', CU.SEGUNDO_APELLIDO) FROM CAT_USUARIO AS CU WHERE CU.PK_USUARIO = GRT.FK_USUARIO) AS NOMBRE_TUTOR'))
@@ -93,7 +121,7 @@ class UsuariosController extends Controller
         }
         if (trim($request->nombre)) {
             $usuarios_query->whereRaw(
-                "CONCAT(NOMBRE, ' ', PRIMER_APELLIDO, ' ', SEGUNDO_APELLIDO) LIKE '%$request->nombre%'"
+                "CONCAT(CU.NOMBRE, ' ', CU.PRIMER_APELLIDO, ' ', CU.SEGUNDO_APELLIDO) LIKE '%$request->nombre%'"
             );
         }
 
@@ -101,6 +129,6 @@ class UsuariosController extends Controller
         $usuarios_query->orderBy('NUMERO_CONTROL', 'ASC');
         $usuarios_query->limit(50);
 
-        return response()->json($usuarios_query->get(),Response::HTTP_ACCEPTED);
+        return response()->json($usuarios_query->get(), Response::HTTP_ACCEPTED);
     }
 }
