@@ -86,16 +86,16 @@ class SITPdfController extends Controller
         $data['academico'] = $this->get_condicion_acedemica_grupo($grupo->PERIODO, $filtro);
 
         // datos condición socioeconomica
-        // $data['socioeconomica'] = $this->get_socioeconomica_grupo($pk_grupo);
+        $data['socioeconomico'] = $this->get_socioeconomico_grupo($grupo->PERIODO, $filtro);
 
         // datos condicion familiar
-        // $data['familiar'] = $this->get_familiar_grupo($pk_grupo);
+        $data['familiar'] = $this->get_familiar_grupo($grupo->PERIODO, $filtro);
 
         // datos salud fisica
-        // $data['pasatiempos'] = SITHelper::pasatiempos_grupo($pk_grupo, 1);
+        $data['pasatiempos'] = $this->get_pasatiempos_grupo($grupo->PERIODO, $filtro);
 
         // datos salud fisica
-        // $data['salud'] = $this->get_salud_grupo($pk_grupo);
+        $data['salud'] = $this->get_salud_grupo($grupo->PERIODO, $filtro);
 
         // datos hábitos de estudio
         // $data['habitos_estudio'] = SITHelper::habitos_estudio_grupo($pk_grupo);
@@ -103,19 +103,196 @@ class SITPdfController extends Controller
         return $data;
     }
 
+    private function get_salud_grupo($periodo, $filtros)
+    {
+        $salud = ReportesTutoria::reporte_salud($periodo, $filtros);
+
+        if ($salud) {
+            $salud = $this->agrupa_preguntas($salud);
+
+            $habilidades = [];
+            $respuestas = [];
+            $respuestas_pool = [0, 1, 2, 4, 5, 6, 9, 10];
+            foreach ($salud as $index => $pregunta) {
+                if (in_array($index, $respuestas_pool)) {
+                    $respuestas[] = $pregunta;
+                }
+
+                if ($index >= 14 && $index <= 26) {
+                    $habilidades[] = $pregunta;
+                }
+            }
+
+            return (object)[
+                'estado_salud' => $salud[14],
+                'respuestas' => $respuestas,
+                'habilidades' => $habilidades,
+                'estado_animo' => $salud[28],
+            ];
+        }
+
+        return (object)[
+            'estado_salud' => 'No definido',
+            'respuestas' => 'No definido',
+            'habilidades' => 'No definido',
+            'estado_animo' => 'No definido',
+        ];
+    }
+
+    private function get_pasatiempos_grupo($periodo, $filtros)
+    {
+        $pasatiempos = ReportesTutoria::reporte_pasatiempos($periodo, $filtros);
+
+        if ($pasatiempos) {
+            return (object)[
+                'mas_1' => $pasatiempos[0],
+                'mas_2' => $pasatiempos[1],
+                'mas_3' => $pasatiempos[2],
+                'menos_1' => $pasatiempos[sizeof($pasatiempos) - 3],
+                'menos_2' => $pasatiempos[sizeof($pasatiempos) - 2],
+                'menos_3' => $pasatiempos[sizeof($pasatiempos) - 1],
+            ];
+        }
+
+        return (object)[
+            'mas_1' => 'No definido',
+            'mas_2' => 'No definido',
+            'mas_3' => 'No definido',
+            'menos_1' => 'No definido',
+            'menos_2' => 'No definido',
+            'menos_3' => 'No definido',
+        ];
+    }
+
+    private function get_familiar_grupo($periodo, $filtros)
+    {
+        $ficha = ReportesTutoria::reporte_ficha_familiar($periodo, $filtros);
+        $tipo_familia = ReportesTutoria::reporte_tipo_familia($periodo, $filtros);
+
+        if ($ficha && $tipo_familia) {
+            $ficha = $this->agrupa_preguntas($ficha);
+            $cohesion =
+                $this->agrega_promedios($tipo_familia['cohesion'], 'CANTIDAD', true);
+            $adaptabilidad =
+                $this->agrega_promedios($tipo_familia['adaptabilidad'], 'CANTIDAD', true);
+
+            return (object)[
+                // FICHA
+                'tipo_familia' => $ficha[3],
+                'aspectos_excelentes' => $this->get_aspectos_grupo($ficha, 'Excelente', 4),
+                'aspectos_deficientes' => $this->get_aspectos_grupo($ficha, 'Deficiente', 4),
+
+                // FACE 20
+                'nivel_cohesion' => $cohesion,
+                'tipo_familia_cohesion' => $this->datos_cohesion($cohesion->NIVEL)->tipo,
+                'explicacion_cohesion' => $this->datos_cohesion($cohesion->NIVEL)->explicacion,
+                'nivel_adaptabilidad' => $adaptabilidad,
+                'tipo_familia_adaptabilidad' => $this->datos_adaptabilidad($adaptabilidad->NIVEL)->tipo,
+                'explicacion_adaptabilidad' => $this->datos_adaptabilidad($adaptabilidad->NIVEL)->explicacion,
+                'funcionamiento_nivel' =>
+                    $this->datos_funcionamiento_familiar($cohesion->NIVEL, $adaptabilidad->NIVEL)->nivel,
+                'funcionamiento_descripcion' =>
+                    $this->datos_funcionamiento_familiar($cohesion->NIVEL, $adaptabilidad->NIVEL)->descripcion,
+            ];
+        }
+
+        return (object)[
+            'tipo_familia' => 'No definido',
+            'aspectos_excelentes' => 'No definido',
+            'aspectos_deficientes' => 'No definido',
+            'nivel_cohesion' => 'No definido',
+            'tipo_familia_cohesion' => 'No definido',
+            'explicacion_cohesion' => 'No definido',
+            'nivel_adaptabilidad' => 'No definido',
+            'tipo_familia_adaptabilidad' => 'No definido',
+            'explicacion_adaptabilidad' => 'No definido',
+            'funcionamiento_nivel' => 'No definido',
+            'funcionamiento_descripcion' => 'No definido',
+        ];
+    }
+
+    private function get_aspectos_grupo($ficha, $aspecto, $inicio = 0)
+    {
+        $aspectos = [];
+        for ($ind = $inicio; $ind < sizeof($ficha) - 1; $ind++) {
+            $promedio = 0;
+            foreach ($ficha[$ind]['RESPUESTAS'] as $respuesta) {
+                if ($respuesta['RESPUESTA'] == $aspecto) {
+                    $promedio = $respuesta['CANTIDAD'] * 100 / $ficha[$ind]['SUMA_TOTAL'];
+                }
+            }
+            $aspectos[] = [
+                'PK_PREGUNTA' => $ficha[$ind]['PK_PREGUNTA'],
+                'PLANTEAMIENTO' => $ficha[$ind]['PLANTEAMIENTO'],
+                'PROMEDIO' => $promedio,
+            ];
+        }
+
+        return $aspectos;
+    }
+
+    private function get_socioeconomico_grupo($periodo, $filtros)
+    {
+        $ficha = ReportesTutoria::reporte_ficha_socioeconomico($periodo, $filtros);
+        $nivel = ReportesTutoria::reporte_nivel_socioeconomico($periodo, $filtros);
+
+        if ($ficha && $nivel) {
+            $ficha = $this->agrupa_preguntas($ficha);
+            $nivel = $this->agrega_promedios($nivel, 'CANTIDAD');
+
+            return (object)[
+                'niveles' => $nivel,
+                'quien_vive' => $ficha[0],
+                'trabaja' => $ficha[2],
+                'aporta_dinero' => $ficha[8],
+                'escolaridad_padre' => $ficha[6],
+                'escolaridad_madre' => $ficha[7],
+            ];
+        }
+
+        return (object)[
+            'tipo_escuela' => 'No definido',
+            'modalidad' => 'No definido',
+            'especialidad' => 'No definido',
+            'promedio' => 'No definido',
+            'materias_dificultad' => 'No definido',
+            'itl_primera_opcion' => 'No definido',
+            'carrera_primera_opcion' => 'No definido',
+        ];
+    }
+
+    private function agrega_promedios($array, $columna, $retorna_mayor = false)
+    {
+        $suma = 0;
+        foreach ($array as $item) {
+            $suma += $item->$columna;
+        }
+
+        $mayor = 0;
+        $item_mayor = null;
+        foreach ($array as $item) {
+            $item->PROMEDIO = number_format($item->$columna / $suma * 100, 1);
+            if ($item->$columna > $mayor) {
+                $mayor = $item->$columna;
+                $item_mayor = $item;
+            }
+        }
+
+        return ($retorna_mayor) ? $item_mayor : $array;
+    }
+
     private function get_condicion_acedemica_grupo($periodo, $filtros)
     {
         $reporte = ReportesTutoria::reporte_academica($periodo, $filtros);
         if ($reporte) {
-            $data = [];
             $reporte = $this->agrupa_preguntas($reporte);
             return (object)[
-                'tipo_escuela'        => $reporte[0],
+                'tipo_escuela' => $reporte[0],
                 // 'modalidad'           => $reporte[1],
-                'especialidad'        => $reporte[2],
-                'promedio'            => $reporte[5],
+                'especialidad' => $reporte[2],
+                'promedio' => $reporte[5],
                 'materias_dificultad' => $reporte[6],
-                'itl_primera_opcion'  => $reporte[7],
+                'itl_primera_opcion' => $reporte[7],
                 'carrera_primera_opcion' => $reporte[8],
             ];
         }
@@ -150,12 +327,12 @@ class SITPdfController extends Controller
                 $preguntas[$ind]['SUMA_TOTAL'] = 0;
                 $preguntas[$ind]['ABIERTAS'] = '';
             }
-            $preguntas[$ind]['PK_PREGUNTA']   = $item->PK_PREGUNTA;
+            $preguntas[$ind]['PK_PREGUNTA'] = $item->PK_PREGUNTA;
             $preguntas[$ind]['PLANTEAMIENTO'] = $item->PLANTEAMIENTO;
-            $preguntas[$ind]['SUMA_TOTAL']    += $item->CANTIDAD;
+            $preguntas[$ind]['SUMA_TOTAL'] += $item->CANTIDAD;
 
             if ($item->TIPO_PREGUNTA == 6) {
-                $preguntas[$ind]['ABIERTAS'] .= str_replace("\n", ' ', $item->RESPUESTA_ABIERTA) .', ';
+                $preguntas[$ind]['ABIERTAS'] .= str_replace("\n", ' ', $item->RESPUESTA_ABIERTA) . ', ';
             } else {
                 $respuestas[] = [
                     'RESPUESTA' => $item->RESPUESTA,
@@ -190,7 +367,7 @@ class SITPdfController extends Controller
             $suma += $item->CANTIDAD;
         }
         foreach ($array as $item) {
-            $item->PROMEDIO = number_format(($item->CANTIDAD / $suma)  * 100, 1);
+            $item->PROMEDIO = number_format(($item->CANTIDAD / $suma) * 100, 1);
         }
 
         return $array;
@@ -430,7 +607,7 @@ class SITPdfController extends Controller
             'explicacion_adaptabilidad' => 'No definido',
             'nivel_funcionamiento' => 'No definido',
             'explicacion_funcionamiento' => 'No definido',
-        ];;
+        ];
     }
 
     private function get_aspectos($ficha, $aspecto, $inicio = 0)
@@ -508,8 +685,8 @@ class SITPdfController extends Controller
     }
 
     /**
-     * @param $factor_cohesion
-     * @return object
+     * @param $nivel
+     * @return object | [tipo, expliccion]
      */
     private function datos_cohesion($nivel)
     {
@@ -564,6 +741,10 @@ class SITPdfController extends Controller
         }
     }
 
+    /**
+     * @param $nivel
+     * @return object | [tipo, expliccion]
+     */
     private function datos_adaptabilidad($nivel)
     {
         switch ($nivel) {
@@ -607,6 +788,11 @@ class SITPdfController extends Controller
         }
     }
 
+    /**
+     * @param $nivel_cohesion
+     * @param $nivel_adaptabilidad
+     * @return object | [nivel, descripcion]
+     */
     private function datos_funcionamiento_familiar($nivel_cohesion, $nivel_adaptabilidad)
     {
         if ($nivel_adaptabilidad == 'Adaptabilidad moderada-alta' && $nivel_cohesion == 'Cohesión moderada-baja') {

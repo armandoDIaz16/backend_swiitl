@@ -781,7 +781,7 @@ class ReportesTutoria
         }
 
         $sql .= " PERIODO, PK_ENCUESTA, PK_PREGUNTA, PK_RESPUESTA_POSIBLE, RESPUESTA, ORDEN
-                ORDER BY CANTIDAD ASC
+                ORDER BY CANTIDAD DESC
         ";
 
         // error_log($sql);
