@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AreaAcademica;
 use App\Helpers\Constantes;
+use App\Helpers\ResponseHTTP;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,6 +14,20 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AreaAcademicaController extends Controller
 {
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request) {
+        $areas = AreaAcademica::where('ESTADO', Constantes::ESTADO_ACTIVO)
+            ->where('BORRADO', 0);
+
+        if ($request->academica) {
+            $areas->where('ES_ACADEMICA', $request->academica);
+        }
+
+        return ResponseHTTP::response_ok($areas->get());
+    }
+
     /**
      * @return \Illuminate\Http\JsonResponse
      */
