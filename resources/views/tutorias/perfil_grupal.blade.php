@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
@@ -9,7 +9,7 @@
             background-color: rgb(178, 179, 179);
         }
 
-        p > *, p{
+        p > *, p {
             font-size: .8em;
         }
 
@@ -44,10 +44,10 @@
 <!-- FIN ESTILOS FOOTER -->
 
 <!-- FIJAR ENCABEZADO -->
-<sethtmlpageheader name="MyHeader1" value="on" show-this-page="1" />
+<sethtmlpageheader name="MyHeader1" value="on" show-this-page="1"/>
 
 <!-- FIJAR FOOTER -->
-<sethtmlpagefooter name="MyFooter1" value="on" />
+<sethtmlpagefooter name="MyFooter1" value="on"/>
 
 <!-- INICIO CONTENIDO -->
 <div>
@@ -73,11 +73,11 @@
         </tr>
         <tr>
             <td valign="middle" align="left" colspan="2">
-                <p class="bold">NOMBRE DEL TUTOR: <u>{{$data['tutor']}}</u></p>
+                <p class="bold">NOMBRE DEL TUTOR: <u>{{$tutor}}</u></p>
             </td>
             <td valign="middle" align="left" colspan="2">
                 <p class="bold">
-                    PERIODO: <u>{{\App\Helpers\Constantes::get_periodo_texto()}}</u>
+                    PERIODO: <u>{{$periodo}}</u>
                 </p>
                 <p class="bold">
                     FECHA DE CONSULTA: <u>{{date('j-m-Y')}}</u>
@@ -91,16 +91,16 @@
         </tr>
         <tr>
             <td width="25%">
-                <p class="bold">GRUPO: <u>{{$data['grupo']}}</u></p>
+                <p class="bold">GRUPO: <u>{{$grupo}}</u></p>
             </td>
             <td width="25%">
-                <p class="bold">N° DE ALUMNOS: <u>{{$data['cantidad_alumnos']}}</u></p>
+                <p class="bold">N° DE ALUMNOS: <u>{{$cantidad_alumnos}}</u></p>
             </td>
             <td width="25%">
                 <p class="bold">SEMESTRE: <u>1</u></p>
             </td>
             <td width="25%">
-                <p class="bold">CARRERA: <u>{{$data['carrera']}}</u></p>
+                <p class="bold">CARRERA: <u>{{$carrera}}</u></p>
             </td>
         </tr>
         <tr>
@@ -118,29 +118,47 @@
                 <p class="bold">Porcentaje grupal de:</p>
                 <p>
                     <b>Sexo:</b>
-                    @foreach($data['personales']['sexo'] as $sexo)
-                        <u>{{$sexo->PROMEDIO}}% {{$sexo->ETIQUETA}}</u>,
+                    <br>
+                    @foreach($personales['sexo'] as $item)
+                        <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
+                    @endforeach
+                </p>
+                <p>
+                    <b>Edad:</b>
+                    <br>
+                    @foreach($personales['edad'] as $item)
+                        @if($item->ITEM == 0)
+                            <u>No definido ({{$item->PROMEDIO}}%)</u>,
+                        @else
+                            <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
+                        @endif
                     @endforeach
                 </p>
                 <p>
                     <b>Edo. Civil: </b>
-                    @foreach($data['personales']['estado_civil'] as $estado_civil)
-                        <br>
-                        <u>{{$estado_civil->PROMEDIO}}% {{$estado_civil->ETIQUETA}}</u>
+                    <br>
+                    @foreach($personales['estado_civil'] as $item)
+                        <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
                     @endforeach
                 </p>
                 <p>
                     <b>Colonia donde vive:</b>
-                    @foreach($data['personales']['colonias'] as $colonia)
-                        <br>
-                        <u>{{$colonia->ETIQUETA}}</u>
+                    <br>
+                    <?php $ind = 0 ?>
+                    @foreach($personales['colonia'] as $item)
+                        @if($ind == 5)
+                            break;
+                        @else
+                            <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
+                            <?php $ind++ ?>
+                        @endif
                     @endforeach
                 </p>
                 <p>
                     <b>Lugar de residencia:</b>
-                    @foreach($data['personales']['situacion_residencia'] as $situacion_residencia)
-                        <br>
-                        <u>{{$situacion_residencia->PROMEDIO}}% {{$situacion_residencia->ETIQUETA}}</u>
+                    <br>
+                    @foreach($personales['situacion_residencia'] as $item)
+                        <u>{{$item->ITEM}} ({{$item->PROMEDIO}}%)</u>,
                     @endforeach
                 </p>
             </td>
@@ -153,45 +171,44 @@
                 <p class="bold">Porcentaje grupal de:</p>
                 <p>
                     <b>Tipo de preparatoria:</b>
-                    @foreach($data['academico']['tipo_escuela'] as $tipo_escuela)
+                    @foreach($academico->tipo_escuela['RESPUESTAS'] as $tipo_escuela)
                         <br>
-                        <u>{{$tipo_escuela->PROMEDIO}}% {{$tipo_escuela->ETIQUETA}}</u>
+                        <u>{{$tipo_escuela['RESPUESTA']}} -
+                            {{number_format($tipo_escuela['CANTIDAD']*100 / $academico->tipo_escuela['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
 
                 <p>
                     <b>Área:</b>
                     <br>
-                    @foreach($data['academico']['areas'] as $area)
-                        <u>{{$area->ETIQUETA}}</u>,
-                    @endforeach
+                    <u>{{$academico->especialidad['ABIERTAS']}}</u>,
                 </p>
                 <p>
                     <b>Promedio de calificación de preparatoria:</b>
-                    @foreach($data['academico']['promedios'] as $promedio)
+                    @foreach($academico->promedio['RESPUESTAS'] as $promedio)
                         <br>
-                        <u>{{$promedio->PROMEDIO}}% {{$promedio->ETIQUETA}}</u>
+                        <u>{{$promedio['RESPUESTA']}} -
+                            {{number_format($promedio['CANTIDAD']*100 / $academico->promedio['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
                 <p>
                     <b>Materias difíciles:</b>
-                    @foreach($data['academico']['materias_dificiles'] as $materia_dificil)
-                        <br>
-                        <u>{{$materia_dificil->ETIQUETA}}</u>,
-                    @endforeach
+                    <u>{{$academico->materias_dificultad['ABIERTAS']}}</u>,
                 </p>
                 <p>
                     <b>ITL como primera opción:</b>
-                    @foreach($data['academico']['itl_primera_opcion'] as $itl_primera)
+                    @foreach($academico->itl_primera_opcion['RESPUESTAS'] as $itl)
                         <br>
-                        <u>{{$itl_primera->PROMEDIO}}% {{$itl_primera->ETIQUETA}}</u>,
+                        <u>{{$itl['RESPUESTA']}} -
+                            {{number_format($itl['CANTIDAD']*100 / $academico->itl_primera_opcion['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
                 <p>
                     <b>Carrera actual como primera opción:</b>
-                    @foreach($data['academico']['carrera_primera_opcion'] as $carrera_primera)
+                    @foreach($academico->carrera_primera_opcion['RESPUESTAS'] as $carrera)
                         <br>
-                        <u>{{$carrera_primera->PROMEDIO}}% {{$carrera_primera->ETIQUETA}}</u>,
+                        <u>{{$carrera['RESPUESTA']}} -
+                            {{number_format($carrera['CANTIDAD']*100 / $academico->carrera_primera_opcion['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
             </td>
@@ -203,41 +220,50 @@
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de:</p>
                 <p>
-                    <b>Nivel Socioeconómico:</b> <u>{{$data['socioeconomica']['nivel_socioeconomico']}}</u>
+                    <b>Nivel Socioeconómico:</b>
+                    <br>
+                    @foreach($socioeconomico->niveles as $nivel)
+                        <u>{{$nivel->NIVEL}} - {{$nivel->PROMEDIO}}%</u>,
+                    @endforeach
                 </p>
                 <p>
                     <b>¿Con quién vive?</b>
-                    @foreach($data['socioeconomica']['quien_vive'] as $quien_vive)
+                    @foreach($socioeconomico->quien_vive['RESPUESTAS'] as $item)
                         <br>
-                        <u>{{$quien_vive->PROMEDIO}}% {{$quien_vive->ETIQUETA}}</u>,
+                        <u>{{$item['RESPUESTA']}} -
+                            {{number_format($item['CANTIDAD']*100 / $socioeconomico->quien_vive['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
                 <p>
                     <b>¿Trabaja?</b>
-                    @foreach($data['socioeconomica']['trabaja'] as $trabaja)
+                    @foreach($socioeconomico->trabaja['RESPUESTAS'] as $item)
                         <br>
-                        <u>{{$trabaja->PROMEDIO}}% {{$trabaja->ETIQUETA}}</u>,
+                        <u>{{$item['RESPUESTA']}} -
+                            {{number_format($item['CANTIDAD']*100 / $socioeconomico->trabaja['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
                 <p>
                     <b>¿Quién aporta $ para sus estudios?</b>
-                    @foreach($data['socioeconomica']['aporta_dinero'] as $aporta_dinero)
+                    @foreach($socioeconomico->aporta_dinero['RESPUESTAS'] as $item)
                         <br>
-                        <u>{{$aporta_dinero->PROMEDIO}}% {{$aporta_dinero->ETIQUETA}}</u>,
+                        <u>{{$item['RESPUESTA']}} -
+                            {{number_format($item['CANTIDAD']*100 / $socioeconomico->aporta_dinero['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
                 <p>
                     <b>Escolaridad del padre</b>
-                    @foreach($data['socioeconomica']['escolaridad_padre'] as $escolaridad_padre)
+                    @foreach($socioeconomico->escolaridad_padre['RESPUESTAS'] as $item)
                         <br>
-                        <u>{{$escolaridad_padre->PROMEDIO}}% {{$escolaridad_padre->ETIQUETA}}</u>,
+                        <u>{{$item['RESPUESTA']}} -
+                            {{number_format($item['CANTIDAD']*100 / $socioeconomico->escolaridad_padre['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
                 <p>
                     <b>Escolaridad de la madre</b>
-                    @foreach($data['socioeconomica']['escolaridad_madre'] as $escolaridad_madre)
+                    @foreach($socioeconomico->escolaridad_madre['RESPUESTAS'] as $item)
                         <br>
-                        <u>{{$escolaridad_madre->PROMEDIO}}% {{$escolaridad_madre->ETIQUETA}}</u>,
+                        <u>{{$item['RESPUESTA']}} -
+                            {{number_format($item['CANTIDAD']*100 / $socioeconomico->escolaridad_madre['SUMA_TOTAL'], 1)}}%</u>
                     @endforeach
                 </p>
             </td>
@@ -247,25 +273,35 @@
                 <p class="bold">Condición Familiar</p>
             </td>
             <td colspan="3">
-                <p class="bold">Porcentaje grupal de: (dos primeros porcentajes)</p>
+                <p class="bold">Porcentaje grupal de:</p>
                 <p>
                     <b>Tipo de familia</b>
-                    @foreach($data['familiar']['tipo_familia'] as $tipo_familia)
+                    @foreach($familiar->tipo_familia['RESPUESTAS'] as $item)
                         <br>
-                        <u>{{$tipo_familia->PROMEDIO}}% {{$tipo_familia->ETIQUETA}}</u>,
+                        <u>{{$item['RESPUESTA']}} -
+                            {{number_format($item['CANTIDAD']*100 / $familiar->tipo_familia['SUMA_TOTAL'], 1)}}%</u>
+                        <br>
                     @endforeach
                 </p>
                 <p>
                     <br>
-                    <b>Condición familiar en aspectos excelentes y deficientes:</b>
+                    <b>Condición familiar en aspectos excelentes</b>
                     <br>
-                    @foreach($data['familiar']['aspectos'] as $aspectos)
-                        - {{$aspectos->PLANTEAMIENTO}}
-                        <br>
-                        @foreach($aspectos->RESPUESTAS as $aspecto)
-                            <u>{{$aspecto->RESPUESTA}} ( {{number_format((($aspecto->CANTIDAD / $data['cantidad_alumnos']) * 100), 0)}}% )</u>,
-                        @endforeach
+                    @foreach($familiar->aspectos_excelentes as $aspecto)
+                        @if($aspecto['PROMEDIO'] > 0)
+                            - <u>{{$aspecto['PLANTEAMIENTO']}} - {{number_format($aspecto['PROMEDIO'], 1)}}</u>
+                            <br>
+                        @endif
+                    @endforeach
+
                     <br>
+                    <b>Condición familiar en aspectos deficientes</b>
+                    <br>
+                    @foreach($familiar->aspectos_deficientes as $aspecto)
+                        @if($aspecto['PROMEDIO'] > 0)
+                            - <u>{{$aspecto['PLANTEAMIENTO']}} - {{number_format($aspecto['PROMEDIO'], 1)}}</u>
+                            <br>
+                        @endif
                     @endforeach
                 </p>
                 <br>
@@ -275,30 +311,30 @@
                 <p>
                     <br>
                     <b>Nivel de cohesión:</b>
-                    <u>{{$data['familiar']['cohesion']['nivel']}}</u>
+                    <u>{{$familiar->nivel_cohesion->NIVEL}} - {{$familiar->nivel_cohesion->PROMEDIO}}%</u>
                     <br>
                     <b>Tipo de familia por cohesión:</b>
-                    <u>{{$data['familiar']['cohesion']['tipo_familia']}}</u>
+                    <u>{{$familiar->tipo_familia_cohesion}}</u>
                     <br>
                     <b>Explicación:</b>
-                    <u>{{$data['familiar']['cohesion']['explicacion']}}</u>
+                    <u>{{$familiar->explicacion_cohesion}}</u>
                     <br>
                     <br>
                     <b>Nivel de adaptabilidad:</b>
-                    <u>{{$data['familiar']['adaptabilidad']['nivel']}}</u>
+                    <u>{{$familiar->nivel_adaptabilidad->NIVEL}} - {{$familiar->nivel_adaptabilidad->PROMEDIO}}%</u>
                     <br>
                     <b>Tipo de familia por adaptabilidad:</b>
-                    <u>{{$data['familiar']['adaptabilidad']['tipo_familia']}}</u>
+                    <u>{{$familiar->tipo_familia_adaptabilidad}}</u>
                     <br>
                     <b>Explicación:</b>
-                    <u>{{$data['familiar']['adaptabilidad']['explicacion']}}</u>
+                    <u>{{$familiar->explicacion_adaptabilidad}}</u>
                     <br>
                     <br>
                     <b>Nivel de funcionamiento:</b>
-                    <u>{{$data['familiar']['funcionamiento']['nivel']}}</u>
+                    <u>{{$familiar->funcionamiento_nivel}}</u>
                     <br>
                     <b>Explicación:</b>
-                    <u>{{$data['familiar']['funcionamiento']['explicacion']}}</u>
+                    <u>{{$familiar->funcionamiento_descripcion}}</u>
                 </p>
             </td>
         </tr>
@@ -309,18 +345,18 @@
             <td colspan="3">
                 <p>
                     <b>Mencionar las actividades que más realiza en su tiempo libre:</b>
-                    <ol>
-                        <li>{{$data['pasatiempos'][0]->ETIQUETA}}</li>
-                        <li>{{$data['pasatiempos'][1]->ETIQUETA}}</li>
-                        <li>{{$data['pasatiempos'][2]->ETIQUETA}}</li>
-                    </ol>
+                <ol>
+                    <li>{{$pasatiempos->mas_1->RESPUESTA}}</li>
+                    <li>{{$pasatiempos->mas_2->RESPUESTA}}</li>
+                    <li>{{$pasatiempos->mas_3->RESPUESTA}}</li>
+                </ol>
 
-                    <b>Mencionar las actividades que menos hace en su tiempo libre:</b>
-                    <ol>
-                        <li>{{$data['pasatiempos'][12]->ETIQUETA}}</li>
-                        <li>{{$data['pasatiempos'][13]->ETIQUETA}}</li>
-                        <li>{{$data['pasatiempos'][14]->ETIQUETA}}</li>
-                    </ol>
+                <b>Mencionar las actividades que menos hace en su tiempo libre:</b>
+                <ol>
+                    <li>{{$pasatiempos->menos_1->RESPUESTA}}</li>
+                    <li>{{$pasatiempos->menos_2->RESPUESTA}}</li>
+                    <li>{{$pasatiempos->menos_3->RESPUESTA}}</li>
+                </ol>
                 </p>
             </td>
         </tr>
@@ -331,31 +367,50 @@
             <td colspan="3">
                 <p class="bold">Porcentaje grupal de</p>
                 <p>
-                    <b>En general ¿Cómo calificas tu salud física?</b>
-                    @foreach($data['salud']['salud_fisica'] as $salud_fisica)
-                        <br>
-                        <u>{{$salud_fisica->PROMEDIO}}% {{$salud_fisica->ETIQUETA}}</u>,
-                    @endforeach
-                </p>
-                {{--<p>Mencionar 1-4, 6, 7, 8, 11, 12 sólo si su respuesta es SÍ</p>--}}
-                <p>
+                    En general ¿Cómo calificas tu salud física?
                     <br>
-                    <b>Evaluación de habilidades:</b>
-                    @foreach($data['salud']['habilidades'] as $pregunta)
+                    @foreach($salud->estado_salud['RESPUESTAS'] as $item)
+                        <u>{{$item['RESPUESTA']}} -
+                            {{number_format($item['CANTIDAD']*100 / $salud->estado_salud['SUMA_TOTAL'], 1)}}%</u>
                         <br>
-                         - {{$pregunta->PLANTEAMIENTO}}
-                        <br>
-                        @foreach($pregunta->RESPUESTAS as $respuesta)
-                            <u>{{$respuesta->RESPUESTA}} ( {{number_format((($respuesta->CANTIDAD / $data['cantidad_alumnos']) * 100), 0)}}% )</u>,
+                    @endforeach
+                    <br>
+                    @foreach($salud->respuestas as $pregunta)
+                        @foreach($pregunta['RESPUESTAS'] as $respuesta)
+                            @if($respuesta['RESPUESTA'] == 'SÍ')
+                                <u>{{$pregunta['PLANTEAMIENTO']}} -
+                                    {{number_format($respuesta['CANTIDAD']*100 / $pregunta['SUMA_TOTAL'], 1)}}%</u>
+                                <br>
+                            @endif
                         @endforeach
                     @endforeach
                 </p>
                 <p>
                     <br>
-                    <b>La mayor parte del tiempo me siento:</b>
-                    @foreach($data['salud']['sentimiento'] as $sentimiento)
+                    <b>Evaluación de habilidades:</b>
+                    <br>
+                    @foreach($salud->habilidades as $pregunta)
+                        {{$pregunta['PLANTEAMIENTO']}}:
                         <br>
-                        <u>{{$sentimiento->PROMEDIO}}% {{$sentimiento->ETIQUETA}}</u>,
+                        @foreach($pregunta['RESPUESTAS'] as $respuesta)
+                            @if($respuesta['RESPUESTA'] == 'Excelente' || $respuesta['RESPUESTA'] == 'Mala')
+                                <u>
+                                    {{$respuesta['RESPUESTA']}}:
+                                    {{number_format($respuesta['CANTIDAD']*100 / $pregunta['SUMA_TOTAL'], 1)}}%,
+                                </u>
+                            @endif
+                        @endforeach
+                        <br>
+                    @endforeach
+                </p>
+                <p>
+                    <br>
+                    <b>La mayor parte del tiempo me siento:</b>
+                    <br>
+                    @foreach($salud->estado_animo['RESPUESTAS'] as $item)
+                        <u>{{$item['RESPUESTA']}} -
+                            {{number_format($item['CANTIDAD']*100 / $salud->estado_animo['SUMA_TOTAL'], 1)}}%</u>
+                        <br>
                     @endforeach
                 </p>
             </td>
@@ -367,18 +422,18 @@
             <td colspan="3">
                 <p>
                     <b>Puntos fuertes.</b>
-                <ol>
+                {{--<ol>
                     @foreach($data['habitos_estudio']['puntos_fuertes'] as $punto_fuerte)
                         <li>{{$punto_fuerte}}</li>
                     @endforeach
-                </ol>
+                </ol>--}}
                 <br>
                 <b>Puntos débiles.</b>
-                <ol>
+                {{--<ol>
                     @foreach($data['habitos_estudio']['puntos_debiles'] as $punto_debil)
                         <li>{{$punto_debil}}</li>
                     @endforeach
-                </ol>
+                </ol>--}}
                 </p>
             </td>
         </tr>

@@ -415,7 +415,7 @@ INSERT INTO CAT_RESPUESTA_POSIBLE(
 (55, '', 1),
 (56, '2 años', 1), (56, '3 años', 1),
 (57, 'Enseguida de egresar de preparatoria', 1), (57, 'De 6 meses a un año', 1),
-(58, '70 a 80', 1), (58, '81 a 90', 1),
+(58, '70 a 80', 1), (58, '81 a 90', 1), , (58, '91 a 100', 1),
 (59, '', 1),
 (60, 'Sí', 1), (60, 'No', 1),
 (61, 'Sí', 1), (61, 'No', 1)
