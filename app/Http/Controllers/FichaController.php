@@ -11,67 +11,73 @@ class FichaController extends Controller
 {
     public function descargarReferencia($id)
     {
+        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('FECHA_FIN')
+            ->orderBy('PK_PERIODO_PREFICHAS', 'DESC')
+            ->first();
+        if ($periodo->FECHA_FIN < date('Y-m-d')) {
+            $fk_aspirante = DB::table('CAT_ASPIRANTE')->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CAT_ASPIRANTE.FK_PADRE')->where('PK_ENCRIPTADA', $id)->max('PK_ASPIRANTE');
+            $aspirante = DB::table('CAT_USUARIO')
+                ->select(
+                    DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
+                    DB::raw("CAT_USUARIO.NOMBRE + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
+                    DB::raw("'' as REFERENCIA"),
+                    DB::raw("'' as FECHA_LIMITE_PAGO"),
+                    DB::raw("'' as CONSEPTO"),
+                    DB::raw("'' as CLAVE"),
+                    DB::raw("'' as MONTO")
+                )
+                ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
+                ->where([
+                    ['CAT_USUARIO.PK_ENCRIPTADA', '=', $id],
+                    ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante],
+                ])
+                ->get();
 
-        $fk_aspirante = DB::table('CAT_ASPIRANTE')->join('CAT_USUARIO', 'CAT_USUARIO.PK_USUARIO', '=', 'CAT_ASPIRANTE.FK_PADRE')->where('PK_ENCRIPTADA', $id)->max('PK_ASPIRANTE');
-        $aspirante = DB::table('CAT_USUARIO')
-            ->select(
-                DB::raw('LTRIM(RTRIM(CAT_ASPIRANTE.PREFICHA)) as PREFICHA'),
-                DB::raw("CAT_USUARIO.NOMBRE + ' ' + CAT_USUARIO.PRIMER_APELLIDO + ' ' + CASE WHEN CAT_USUARIO.SEGUNDO_APELLIDO IS NULL THEN '' ELSE CAT_USUARIO.SEGUNDO_APELLIDO END as NOMBRE"),
-                DB::raw("'' as REFERENCIA"),
-                DB::raw("'' as FECHA_LIMITE_PAGO"),
-                DB::raw("'' as CONSEPTO"),
-                DB::raw("'' as CLAVE"),
-                DB::raw("'' as MONTO")
-            )
-            ->join('CAT_ASPIRANTE', 'CAT_ASPIRANTE.FK_PADRE', '=', 'CAT_USUARIO.PK_USUARIO')
-            ->where([
-                ['CAT_USUARIO.PK_ENCRIPTADA', '=', $id],
-                ['CAT_ASPIRANTE.PK_ASPIRANTE', '=', $fk_aspirante],
-            ])
-            ->get();
+            $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
 
-        $PK_PERIODO_PREFICHAS = DB::table('CAT_PERIODO_PREFICHAS')->max('PK_PERIODO_PREFICHAS');
+            $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO', 'FECHA_FIN', 'MONTO_PREFICHA')
+                ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO_PREFICHAS)
+                ->get();
 
-        $periodo = DB::table('CAT_PERIODO_PREFICHAS')->select('PK_PERIODO_PREFICHAS', 'FECHA_INICIO', 'FECHA_FIN', 'MONTO_PREFICHA')
-            ->where('PK_PERIODO_PREFICHAS', $PK_PERIODO_PREFICHAS)
-            ->get();
+            $fecha = date('Y-m-j');
+            $dia = date("d", strtotime($fecha));
+            if ($dia > 15) {
+                $anio = date("Y", strtotime($fecha));
+                $mes = 1 + date("m", strtotime($fecha));
+                $dia = 2;
+            } else {
+                $anio = date("Y", strtotime($fecha));
+                $mes = date("m", strtotime($fecha));
+                $dia = 17;
+            }
+            $nuevafecha = strtotime($anio . '-' . $mes . '-' . $dia);
+            $fechaFin = strtotime($periodo[0]->FECHA_FIN);
+            if ($nuevafecha > $fechaFin) {
+                $nuevafecha = strtotime('+2 day', $fechaFin);
+            }
+            $fechaLimitePago = date('Y-m-j', $nuevafecha);
 
-        $fecha = date('Y-m-j');
-        $dia = date("d", strtotime($fecha));
-        if ($dia > 15) {
-            $anio = date("Y", strtotime($fecha));
-            $mes = 1 + date("m", strtotime($fecha));
-            $dia = 2;
+            $datosReferencia =
+                [
+                    'tipo_persona' => '0',
+                    'control' => $aspirante[0]->PREFICHA,
+                    'servicio' => '004',
+                    'valorvariable' => '2',
+                    'monto' => $periodo[0]->MONTO_PREFICHA,
+                    'yearC' => date('Y', strtotime($fechaLimitePago)),
+                    'mesC' => date('m', strtotime($fechaLimitePago)),
+                    'diaC' => date('j', strtotime($fechaLimitePago)),
+                ];
+            $aspirante[0]->REFERENCIA = Referencia::RUTINA8250POSICIONES($datosReferencia);
+            $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
+            $aspirante[0]->CONCEPTO = "Solicitud de ficha de pago para examen de admisión";
+            $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
+            $aspirante[0]->MONTO = $datosReferencia['monto'];
+
+            return $this->generarPDF($aspirante, 'aspirante.referencia');
         } else {
-            $anio = date("Y", strtotime($fecha));
-            $mes = date("m", strtotime($fecha));
-            $dia = 17;
+            echo "Periodo de inscripciones no disponible";
         }
-        $nuevafecha = strtotime($anio . '-' . $mes . '-' . $dia);
-        $fechaFin = strtotime($periodo[0]->FECHA_FIN);
-        if ($nuevafecha > $fechaFin) {
-            $nuevafecha = strtotime('+2 day', $fechaFin);
-        }
-        $fechaLimitePago = date('Y-m-j', $nuevafecha);
-
-        $datosReferencia =
-            [
-                'tipo_persona' => '0',
-                'control' => $aspirante[0]->PREFICHA,
-                'servicio' => '004',
-                'valorvariable' => '2',
-                'monto' => $periodo[0]->MONTO_PREFICHA,
-                'yearC' => date('Y', strtotime($fechaLimitePago)),
-                'mesC' => date('m', strtotime($fechaLimitePago)),
-                'diaC' => date('j', strtotime($fechaLimitePago)),
-            ];
-        $aspirante[0]->REFERENCIA = Referencia::RUTINA8250POSICIONES($datosReferencia);
-        $aspirante[0]->FECHA_LIMITE_PAGO = $fechaLimitePago;
-        $aspirante[0]->CONCEPTO = "Solicitud de ficha de pago para examen de admisión";
-        $aspirante[0]->CLAVE = DB::table('CAT_INSTITUCION')->select('CLAVE_CIE')->where('ALIAS', 'ITL')->get()[0]->CLAVE_CIE;
-        $aspirante[0]->MONTO = $datosReferencia['monto'];
-
-        return $this->generarPDF($aspirante, 'aspirante.referencia');
     }
 
     public function descargarFicha($id)

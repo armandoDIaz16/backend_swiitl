@@ -20,12 +20,13 @@ use Symfony\Component\HttpFoundation\Response;
 class PerfilController extends Controller
 {
     /**
-     * @param $id_usuario
+     * @param $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get_perfil(Request $request) {
-        $perfil  = NULL;
-        $view    = '';
+    public function get_perfil(Request $request)
+    {
+        $perfil = NULL;
+        $view = '';
         $usuario = UsuariosHelper::get_usuario($request->pk_encriptada);
 
         if (!$usuario) {
@@ -59,28 +60,29 @@ class PerfilController extends Controller
     /**
      *
      */
-    public function actualiza_perfil(Request $request) {
+    public function actualiza_perfil(Request $request)
+    {
         $fk_codigo_postal = CodigoPostal::where('NUMERO', $request->CODIGO_POSTAL)->first()->PK_CODIGO_POSTAL;
         $usuario = Usuario::where('PK_USUARIO', $request->PK_USUARIO)->first();
 
-        $usuario->FK_ESTADO_CIVIL         = $request->ESTADO_CIVIL;
-        $usuario->FK_COLONIA              = $request->COLONIA;
-        $usuario->FK_CODIGO_POSTAL        = $fk_codigo_postal;
+        $usuario->FK_ESTADO_CIVIL = $request->ESTADO_CIVIL;
+        $usuario->FK_COLONIA = $request->COLONIA;
+        $usuario->FK_CODIGO_POSTAL = $fk_codigo_postal;
 
-        $usuario->FECHA_NACIMIENTO    = $request->FECHA_NACIMIENTO;
-        $usuario->SEXO                = $request->SEXO;
-        $usuario->CORREO1             = $request->CORREO1;
-        $usuario->CORREO2             = $request->CORREO2;
-        $usuario->TELEFONO_CASA       = $request->TELEFONO_CASA;
-        $usuario->TELEFONO_MOVIL      = $request->TELEFONO_MOVIL;
-        $usuario->CALLE               = $request->CALLE;
-        $usuario->NUMERO_EXTERIOR     = $request->NUMERO_EXTERIOR;
-        $usuario->NUMERO_INTERIOR     = $request->NUMERO_INTERIOR;
-        $usuario->NOMBRE_CONTACTO     = $request->NOMBRE_CONTACTO;
+        $usuario->FECHA_NACIMIENTO = $request->FECHA_NACIMIENTO;
+        $usuario->SEXO = $request->SEXO;
+        $usuario->CORREO1 = $request->CORREO1;
+        $usuario->CORREO2 = $request->CORREO2;
+        $usuario->TELEFONO_CASA = $request->TELEFONO_CASA;
+        $usuario->TELEFONO_MOVIL = $request->TELEFONO_MOVIL;
+        $usuario->CALLE = $request->CALLE;
+        $usuario->NUMERO_EXTERIOR = $request->NUMERO_EXTERIOR;
+        $usuario->NUMERO_INTERIOR = $request->NUMERO_INTERIOR;
+        $usuario->NOMBRE_CONTACTO = $request->NOMBRE_CONTACTO;
         $usuario->PARENTESCO_CONTACTO = $request->PARENTESCO_CONTACTO;
-        $usuario->TELEFONO_CONTACTO   = $request->TELEFONO_CONTACTO;
-        $usuario->CORREO_CONTACTO     = $request->CORREO_CONTACTO;
-        $usuario->PERFIL_COMPLETO     = 1;
+        $usuario->TELEFONO_CONTACTO = $request->TELEFONO_CONTACTO;
+        $usuario->CORREO_CONTACTO = $request->CORREO_CONTACTO;
+        $usuario->PERFIL_COMPLETO = 1;
 
         if ($request->SITUACION_RESIDENCIA) {
             $usuario->FK_SITUACION_RESIDENCIA = $request->SITUACION_RESIDENCIA;
@@ -99,10 +101,15 @@ class PerfilController extends Controller
         }
     }
 
-    public function actualiza_foto_perfil(Request $request) {
+    public function actualiza_foto_perfil(Request $request)
+    {
         $usuario = UsuariosHelper::get_usuario($request->PK_ENCRIPTADA);
-        $url = UsuariosHelper::get_url_expediente_usuario($usuario->NUMERO_CONTROL, $usuario->TIPO_USUARIO, 'perfil');
-        $nombre_archivo = md5('perfil_'.$usuario->PK_USUARIO);
+        $url = UsuariosHelper::get_url_expediente_usuario(
+            $usuario->NUMERO_CONTROL,
+            $usuario->TIPO_USUARIO,
+            'perfil'
+        );
+        $nombre_archivo = md5('perfil_' . $usuario->PK_USUARIO);
 
         $ruta = Base64ToFile::guarda_archivo($url, $nombre_archivo, $request->EXTENSION, $request->CONTENIDO);
 

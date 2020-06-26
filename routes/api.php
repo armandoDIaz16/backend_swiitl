@@ -441,32 +441,31 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
 
 
+    /* ************* REPORTES DE TUTORIA *************** */
+    // periodos de tutoría
+    Route::get('periodos_tutoria', 'tutorias\ReportesController@periodos_tutoria');
+    // lista de encuestas de tutoria
+    Route::get('encuestas', 'Encuestas\EncuestasController@index');
+    // lista de areas academicas
+    Route::get('areas_academicas', 'AreaAcademicaController@index');
+    // lista de carreras por areas academicas
+    Route::get('get_lista_carreras', 'CarreraController@get_carreras');
+
+    // generación de reporte de tutoria
+    Route::get('reporte_tutoria', 'tutorias\ReportesController@index');
+
 
 
 
     // Buscar encuesta por pk de encuesta
-    Route::get(
-        'cuestionario/{id}',
-        'tutorias\SITEncuestaController@get_encuesta'
-    );
-
+    Route::get('cuestionario/{id}', 'tutorias\SITEncuestaController@get_encuesta');
     // Obtener todas las encuestas
-    Route::get(
-        'get_encuestas_disponibles',
-        'tutorias\SITEncuestaController@get_encuestas_disponibles'
-    );
-
+    Route::get('get_encuestas_disponibles','tutorias\SITEncuestaController@get_encuestas_disponibles');
     // Obtener las carreras disponibles
-    Route::get(
-        'get_carreras',
-        'tutorias\SITEncuestaController@get_carreras'
-    );
+    Route::get('get_carreras','tutorias\SITEncuestaController@get_carreras');
 
     // Buscar las encuestbuscar_usuariosas asignadas a un id de usuario
-    Route::get(
-        'cuestionarios_usuario/{id_usuario}',
-        'tutorias\SITEncuestaController@get_cuestionarios_usuarios'
-    );
+    Route::get('cuestionarios_usuario/{id_usuario}', 'tutorias\SITEncuestaController@get_cuestionarios_usuarios');
 
     // Buscar periodos de las encuestas asignadas a un id de usuario
     Route::get(
@@ -475,41 +474,17 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     );
 
     // Buscar encuesta por pk de aplicacion de encuesta
-    Route::get(
-        'get_encuesta_aplicacion',
-        'tutorias\SITEncuestaController@get_encuesta_aplicacion'
-    );
-
+    Route::get('get_encuesta_aplicacion', 'tutorias\SITEncuestaController@get_encuesta_aplicacion');
     // Guarda respuestas de encuesta
-    Route::post(
-        'guarda_respuestas_encuesta',
-        'tutorias\SITEncuestaController@guarda_respuestas_encuesta'
-    );
-
+    Route::post('guarda_respuestas_encuesta', 'tutorias\SITEncuestaController@guarda_respuestas_encuesta');
     // Buscar grupos por tutor
-    Route::post(
-        'grupos_tutoria',
-        'tutorias\SITGruposController@get_grupos'
-    );
-
+    Route::post('grupos_tutoria', 'tutorias\SITGruposController@get_grupos');
     // Buscar historico de grupos por tutor
-    Route::post(
-        'get_historico_grupos_tutor',
-        'tutorias\SITGruposController@get_historico_grupos_tutor'
-    );
-
+    Route::post('get_historico_grupos_tutor', 'tutorias\SITGruposController@get_historico_grupos_tutor');
     // Buscar detalle de grupo por id
-    Route::get(
-        'detalle_grupo',
-        'tutorias\GruposInicialController@detalle_grupo'
-    );
-
+    Route::get('detalle_grupo', 'tutorias\GruposInicialController@detalle_grupo');
     // Buscar horario por pk usuario
-    Route::get(
-        'get_horario_alumno/{id_usuario}',
-        'tutorias\SITAlumnoController@get_horario'
-    );
-
+    Route::get('get_horario_alumno/{id_usuario}', 'tutorias\SITAlumnoController@get_horario');
     // Buscar datos personales por pk usuario
     Route::get(
         'get_alumno/{pk_usuario}',
@@ -705,15 +680,21 @@ Route::group(['middleware' => ['jwt.verify']], function () {
  * *********************************************************** */
 //Generar pdf perfil individual de ingreso
 Route::get(
-    'get_pdf_perfil_personal_ingreso',
-    'tutorias\SITPdfController@get_pdf_perfil_personal_ingreso'
+    'c413a63cce7f8f6a6f7b9179a20bfbe0', // reporte_perfil_personal_de_ingreso
+    'tutorias\SITPdfController@perfil_personal'
 );
 
 //Generar pdf perfil grupal de ingreso
 Route::get(
-    'get_pdf_perfil_grupal_ingreso',
-    'tutorias\SITPdfController@get_pdf_perfil_grupal_ingreso'
+    'de99193444466a46d939f6e1fe025e10', // reporte_perfil_grupal_ingreso
+    'tutorias\SITPdfController@perfil_grupal'
 );
+
+// Probar reportes de tutoria
+/*Route::get(
+    'test_reporte',
+    'tutorias\SITPdfController@test_reporte'
+);*/
 
 /* *********************************************************** *
  * ************* RUTAS PROTEGIDAS DEL SISTEMA DE ROLES Y USUARIOS *************** *
