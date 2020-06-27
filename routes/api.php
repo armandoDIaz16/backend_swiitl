@@ -44,6 +44,10 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
     // OBTENER DATOS DE INICIO PARA COMPLETAR PERFIL
     Route::get('perfil', 'PerfilController@get_perfil');
+    // OBTENER DATOS DE INICIO PARA PERFIL CV
+    Route::post('get_perfil_CV', 'PerfilController@get_perfil');
+
+
 
     // GUARDAR DATOS PARA COMPLETAR PERFIL
     Route::post('actualiza_perfil', 'PerfilController@actualiza_perfil');
