@@ -400,6 +400,11 @@ protected $value_docente  = '';
                      Response::HTTP_OK // 200
                  );
 
+             }else{
+                 return response()->json(
+                     $resultadoCursosArray,
+                     Response::HTTP_OK // 200
+                 );
              }
 
     }// fin consulta coordinador
