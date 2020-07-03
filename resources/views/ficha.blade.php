@@ -1,6 +1,6 @@
 
 <html>
-<head>    
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
     @foreach($ASPIRANTE as $ASPIRANTE)
@@ -32,7 +32,7 @@
     <tr>
         <td width="8%">Nombre:</td>
         <td width="50%">{{$ASPIRANTE->NOMBRE}} {{$ASPIRANTE->PRIMER_APELLIDO}} {{$ASPIRANTE->SEGUNDO_APELLIDO}}</td>
-        <td width="6%">Fima:_____________________________________________</td>
+        <td width="6%">Firma:_____________________________________________</td>
         <td width="50%"><hr size="2" style="color: black"></td>
     </tr>
 </table>
@@ -109,7 +109,7 @@ Fecha de formalización de ficha: {{$ASPIRANTE->FECHA_MODIFICACION}}.
     <tr>
         <td width="8%">Nombre:</td>
         <td width="50%">{{$ASPIRANTE->NOMBRE}} {{$ASPIRANTE->PRIMER_APELLIDO}} {{$ASPIRANTE->SEGUNDO_APELLIDO}}</td>
-        <td width="6%">Fima:_____________________________________________</td>
+        <td width="6%">Firma:_____________________________________________</td>
         <td width="50%"><hr size="2" style="color: black"></td>
     </tr>
 </table>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Aspirante;
+use App\Helpers\UsuariosHelper;
 use App\Periodo;
 use Illuminate\Http\Request;
 
@@ -50,6 +52,79 @@ class PeriodoController extends Controller
                     'CONCEPTO_SEMESTRE_CERO'   => $periodo[0]->CONCEPTO_SEMESTRE_CERO
                 )
             ];
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexAspirante(Request $request)
+    {
+        $usuario = UsuariosHelper::get_usuario($request->PK_ENCRIPTADA);
+        if ($usuario) {
+            $aspirante = Aspirante::where('FK_PADRE', $usuario->PK_USUARIO)->first();
+            if ($aspirante) {
+                $periodo = Periodo::select(
+                    'PK_PERIODO_PREFICHAS',
+                    'FECHA_INICIO',
+                    'FECHA_FIN',
+                    'MONTO_PREFICHA',
+                    'FECHA_INICIO_CURSO',
+                    'FECHA_FIN_CURSO',
+                    'MONTO_CURSO',
+                    'FECHA_INICIO_INSCRIPCION',
+                    'FECHA_FIN_INSCRIPCION',
+                    'MONTO_INSCRIPCION',
+                    'FECHA_INICIO_INSCRIPCION_BIS',
+                    'FECHA_FIN_INSCRIPCION_BIS',
+                    'MONTO_INSCRIPCION_BIS',
+                    'MENSAJE_SEMESTRE',
+                    'MENSAJE_SEMESTRE_BIS',
+                    'RESULTADOS',
+                    'TIPO_APLICACION',
+                    'MENSAJE_RECHAZADO',
+                    'TIPO_PERSONA_SEMESTRE_UNO',
+                    'TIPO_PERSONA_SEMESTRE_CERO',
+                    'APLICACION_SIIA_SEMESTRE_UNO',
+                    'APLICACION_SIIA_SEMESTRE_CERO',
+                    'CONCEPTO_SEMESTRE_UNO',
+                    'CONCEPTO_SEMESTRE_CERO'
+                )->where('PK_PERIODO_PREFICHAS', $aspirante->FK_PERIODO)->get();
+
+                if (isset($periodo[0])) {
+                    return [
+                        array(
+                            'PK_PERIODO_PREFICHAS' => $periodo[0]->PK_PERIODO_PREFICHAS,
+                            'FECHA_INICIO' => $periodo[0]->FECHA_INICIO,
+                            'FECHA_FIN' => $periodo[0]->FECHA_FIN,
+                            'FECHA_ACTUAL' => $this->fechaActual(),
+                            'MONTO_PREFICHA' => $periodo[0]->MONTO_PREFICHA,
+                            'FECHA_INICIO_CURSO' => $periodo[0]->FECHA_INICIO_CURSO,
+                            'FECHA_FIN_CURSO' => $periodo[0]->FECHA_FIN_CURSO,
+                            'MONTO_CURSO' => $periodo[0]->MONTO_CURSO,
+                            'FECHA_INICIO_INSCRIPCION' => $periodo[0]->FECHA_INICIO_INSCRIPCION,
+                            'FECHA_FIN_INSCRIPCION' => $periodo[0]->FECHA_FIN_INSCRIPCION,
+                            'MONTO_INSCRIPCION' => $periodo[0]->MONTO_INSCRIPCION,
+                            'FECHA_INICIO_INSCRIPCION_BIS' => $periodo[0]->FECHA_INICIO_INSCRIPCION_BIS,
+                            'FECHA_FIN_INSCRIPCION_BIS' => $periodo[0]->FECHA_FIN_INSCRIPCION_BIS,
+                            'MONTO_INSCRIPCION_BIS' => $periodo[0]->MONTO_INSCRIPCION_BIS,
+                            'MENSAJE_SEMESTRE' => $periodo[0]->MENSAJE_SEMESTRE,
+                            'MENSAJE_SEMESTRE_BIS' =>  $periodo[0]->MENSAJE_SEMESTRE_BIS,
+                            'MENSAJE_RECHAZADO' =>  $periodo[0]->MENSAJE_RECHAZADO,
+                            'RESULTADOS' => $periodo[0]->RESULTADOS,
+                            'TIPO_APLICACION' => $periodo[0]->TIPO_APLICACION,
+                            'TIPO_PERSONA_SEMESTRE_UNO' => $periodo[0]->TIPO_PERSONA_SEMESTRE_UNO,
+                            'TIPO_PERSONA_SEMESTRE_CERO' => $periodo[0]->TIPO_PERSONA_SEMESTRE_CERO,
+                            'APLICACION_SIIA_SEMESTRE_UNO' => $periodo[0]->APLICACION_SIIA_SEMESTRE_UNO,
+                            'APLICACION_SIIA_SEMESTRE_CERO' => $periodo[0]->APLICACION_SIIA_SEMESTRE_CERO,
+                            'CONCEPTO_SEMESTRE_UNO' => $periodo[0]->CONCEPTO_SEMESTRE_UNO,
+                            'CONCEPTO_SEMESTRE_CERO'   => $periodo[0]->CONCEPTO_SEMESTRE_CERO
+                        )
+                    ];
+                }
+            }
         }
     }
 

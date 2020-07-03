@@ -6,13 +6,14 @@ use App\AreaAcademica;
 use App\AreaAcademicaCarrera;
 use App\Carrera;
 use App\CoordinadorDepartamentalTutoria;
+use App\Helpers\Abreviaturas;
 use App\Helpers\PermisosUsuario;
+use App\Helpers\ResponseHTTP;
 use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
 use App\GrupoTutorias;
 use App\Helpers\Constantes;
 use App\Helpers\SiiaHelper;
-use App\User;
 use App\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,15 +42,29 @@ class SITGruposController extends Controller
 
             $horario_grupo = SiiaHelper::get_horario_grupo($condiciones_siia);
 
+            $encuestas_respondidas =
+                $this->get_encuestas_grupo(
+                    Constantes::ENCUESTA_RESPONDIDA,
+                    $grupo->PK_GRUPO_TUTORIA
+                )[0]->CANTIDAD_ENCUESTAS;
+
+            $encuestas_activas =
+                $this->get_encuestas_grupo(
+                    Constantes::ENCUESTA_PENDIENTE,
+                    $grupo->PK_GRUPO_TUTORIA
+                )[0]->CANTIDAD_ENCUESTAS;
+
             $data[] = [
                 'PK_GRUPO_TUTORIA' => $grupo->PK_GRUPO_TUTORIA,
                 'FK_USUARIO' => $grupo->FK_USUARIO,
                 'CLAVE' => $grupo->CLAVE,
                 'AULA' => $horario_grupo[0]->Aula,
                 'HORARIO' => $horario_grupo,
-                'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo_siia($condiciones_siia)),
+                'ENCUESTAS_ACTIVAS' => $encuestas_activas,
+                'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
                 'EVALUACION_GRUPO' => $grupo->EVALUACION,
-                'LISTA_ALUMNOS' => $this->get_lista_grupo(SiiaHelper::get_lista_grupo($condiciones_siia))
+                'LISTA_ALUMNOS' => $this->get_lista_grupo(SiiaHelper::get_lista_grupo_siia($condiciones_siia))
             ];
 
             return response()->json(
@@ -142,7 +157,7 @@ class SITGruposController extends Controller
                         $encuestas_respondidas =
                             $this->get_encuestas_grupo(
                                 Constantes::ENCUESTA_RESPONDIDA,
-                                $grupo->PK_GRUPO_TUTORIAor
+                                $grupo->PK_GRUPO_TUTORIA
                             )[0]->CANTIDAD_ENCUESTAS;
 
                         $encuestas_activas =
@@ -157,7 +172,7 @@ class SITGruposController extends Controller
                             'CLAVE' => $grupo->CLAVE,
                             'AULA' => $horario_grupo[0]->Aula,
                             'HORARIO' => $horario_grupo,
-                            'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                            'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo_siia($condiciones_siia)),
                             'ENCUESTAS_ACTIVAS' => $encuestas_activas,
                             'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
                             'EVALUACION_GRUPO' => $grupo->EVALUACION
@@ -222,7 +237,7 @@ class SITGruposController extends Controller
                     'PK_GRUPO_TUTORIA' => $grupo->PK_GRUPO_TUTORIA,
                     'FK_USUARIO' => $grupo->FK_USUARIO,
                     'CLAVE' => $grupo->CLAVE,
-                    'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                    'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo_siia($condiciones_siia)),
                     'ENCUESTAS_ACTIVAS' => $encuestas_activas,
                     'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
                     'EVALUACION_GRUPO' => $grupo->EVALUACION,
@@ -294,7 +309,7 @@ class SITGruposController extends Controller
                                 'CLAVE' => $grupo->CLAVE,
                                 'AULA' => $horario_grupo[0]->Aula,
                                 'HORARIO' => $horario_grupo,
-                                'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                                'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo_siia($condiciones_siia)),
                                 'ENCUESTAS_ACTIVAS' => $encuestas_activas,
                                 'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
                                 'EVALUACION_GRUPO' => $grupo->EVALUACION,
@@ -382,7 +397,7 @@ class SITGruposController extends Controller
                                     'CLAVE' => $grupo->CLAVE,
                                     'AULA' => $horario_grupo[0]->Aula,
                                     'HORARIO' => $horario_grupo,
-                                    'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo($condiciones_siia)),
+                                    'CANTIDAD_ALUMNOS' => count(SiiaHelper::get_lista_grupo_siia($condiciones_siia)),
                                     'ENCUESTAS_ACTIVAS' => $encuestas_activas,
                                     'ENCUESTAS_CONTESTADAS' => $encuestas_respondidas,
                                     'EVALUACION_GRUPO' => $grupo->EVALUACION,
@@ -453,40 +468,5 @@ class SITGruposController extends Controller
                 ->where('TIPO_GRUPO', Constantes::GRUPO_TUTORIA_INICIAL)
                 ->get();
         }
-    }
-
-    /**
-     * @param null $estado_encuesta
-     * @param null $grupo
-     * @param null $alumno
-     * @return array
-     */
-    private function get_encuestas_grupo($estado_encuesta = null, $grupo = NULL, $alumno = NULL)
-    {
-        $sql = "
-        SELECT
-            COUNT(*) AS CANTIDAD_ENCUESTAS
-        FROM
-            TR_APLICACION_ENCUESTA
-            LEFT JOIN TR_GRUPO_TUTORIA_DETALLE
-                ON TR_GRUPO_TUTORIA_DETALLE.FK_USUARIO = TR_APLICACION_ENCUESTA.FK_USUARIO
-            LEFT JOIN TR_GRUPO_TUTORIA
-                ON TR_GRUPO_TUTORIA.PK_GRUPO_TUTORIA = TR_GRUPO_TUTORIA_DETALLE.FK_GRUPO
-        WHERE
-            TR_APLICACION_ENCUESTA.PERIODO = '" . Constantes::get_periodo() . "'";
-
-        if ($estado_encuesta) {
-            $sql .= " AND TR_APLICACION_ENCUESTA.ESTADO = $estado_encuesta ";
-        }
-
-        if ($grupo) {
-            $sql .= " AND TR_GRUPO_TUTORIA.PK_GRUPO_TUTORIA = $grupo ";
-        }
-
-        if ($alumno) {
-            $sql .= " AND TR_GRUPO_TUTORIA_DETALLE.FK_USUARIO = $alumno ";
-        }
-
-        return DB::select($sql);
     }
 }

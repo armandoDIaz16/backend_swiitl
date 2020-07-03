@@ -13,6 +13,7 @@ class AreaAcademica extends Model
         'FK_INSTITUCION',
         'NOMBRE',
         'ABREVIATURA',
+        'ES_ACADEMICA',
         'ESTADO',
 
         'FK_USUARIO_REGISTRO',

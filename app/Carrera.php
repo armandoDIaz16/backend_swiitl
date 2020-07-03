@@ -4,8 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Carrera
+ * @package App
+ */
 class Carrera extends Model
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'NOMBRE',
         'ABREVIATURA',
@@ -17,8 +24,14 @@ class Carrera extends Model
         'FK_USUARIO_MODIFICACION'
     ];
 
+    /**
+     * @var string
+     */
     protected $table = 'CAT_CARRERA';
 
-
+    /**
+     * @var string
+     */
+    protected $primaryKey = 'PK_CARRERA';
 
 }

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\tutorias;
 
+use App\Aplicacion_Encuesta_Detalle;
+use App\Carrera;
 use App\Helpers\Constantes;
+use App\Helpers\ResponseHTTP;
+use App\Helpers\RespuestaHttp;
 use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,6 +16,7 @@ use App\Respuesta_Posible;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use App\Aplicacion_Encuesta;
+use function GuzzleHttp\Promise\all;
 
 /**
  * Class SITEncuestaController
@@ -30,17 +35,14 @@ class SITEncuestaController extends Controller
             //guardar respuestas de encuesta
             if ($this->guarda_respuestas($request)) {
                 // actualizar estatus de encuesta
-                $aplicacion = Aplicacion_Encuesta::where('PK_APLICACION_ENCUESTA', $request->PK_APLICACION)->first();
+                $aplicacion = Aplicacion_Encuesta_Detalle::find($request->PK_APLICACION);
                 $aplicacion->FECHA_RESPUESTA = date('Y-m-d H:i:s');
-                $aplicacion->FECHA_MODIFICACION = date('Y-m-d H:i:s');
-                $aplicacion->FK_USUARIO_MODIFICACION = $aplicacion->FK_USUARIO;
-                $aplicacion->ESTADO = 2;
+                /*$aplicacion->FECHA_MODIFICACION = date('Y-m-d H:i:s');
+                $aplicacion->FK_USUARIO_MODIFICACION = $aplicacion->FK_USUARIO;*/
+                $aplicacion->ESTADO = Constantes::ENCUESTA_RESPONDIDA;
                 $aplicacion->save();
 
-                return response()->json(
-                    ['data' => true],
-                    Response::HTTP_OK
-                );
+                return ResponseHTTP::response_ok([]);
             }
         } catch (Exception $e) {
             error_log("Error en actualización de aplicación de encuesta: ");
@@ -93,11 +95,11 @@ class SITEncuestaController extends Controller
 
         foreach ($respuestas_request['PREGUNTAS'] as $respuesta) {
             $respuestas[] = [
-                'FK_RESPUESTA_POSIBLE'   => $respuesta['RESPUESTAS'][0]['PK_RESPUESTA'],
-                'FK_APLICACION_ENCUESTA' => $pk_aplicacion,
-                'RESPUESTA_ABIERTA'      => $respuesta['RESPUESTAS'][0]['ABIERTA'],
-                'ORDEN'                  => 0,
-                'RANGO'                  => $respuesta['RESPUESTAS'][0]['RANGO']
+                'FK_RESPUESTA_POSIBLE' => $respuesta['RESPUESTAS'][0]['PK_RESPUESTA'],
+                'FK_APLICACION_ENCUESTA_DETALLE' => $pk_aplicacion,
+                'RESPUESTA_ABIERTA' => $respuesta['RESPUESTAS'][0]['ABIERTA'],
+                'ORDEN' => 0,
+                'RANGO' => $respuesta['RESPUESTAS'][0]['RANGO']
             ];
         }
 
@@ -116,7 +118,7 @@ class SITEncuestaController extends Controller
         foreach ($request as $respuesta) {
             $respuestas[] = [
                 'FK_RESPUESTA_POSIBLE' => $respuesta['pk_respuesta'],
-                'FK_APLICACION_ENCUESTA' => $pk_aplicacion,
+                'FK_APLICACION_ENCUESTA_DETALLE' => $pk_aplicacion,
                 'ORDEN' => $respuesta['orden']
             ];
         }
@@ -125,15 +127,32 @@ class SITEncuestaController extends Controller
     }
 
     /**
-     * @param $id_usuario
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get_cuestionarios_usuarios($pk_encriptada)
+    public function get_encuestas_disponibles()
     {
-        $usuario = UsuariosHelper::get_usuario($pk_encriptada);
+        $encuestas = DB::table('CAT_ENCUESTA')->get();
 
-        $encuestas = DB::table('VIEW_LISTA_ENCUESTAS')
-            ->where('FK_USUARIO', $usuario->PK_USUARIO)
+        if (count($encuestas) > 0) {
+            return response()->json(
+                ['data' => $encuestas],
+                Response::HTTP_OK
+            );
+        } else {
+            return response()->json(
+                ['data' => false],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get_tipos_aplicacion()
+    {
+        $encuestas = DB::table('CAT_TIPO_APLICACION_ENCUESTA')
+            ->select('NOMBRE')
             ->get();
 
         if (count($encuestas) > 0) {
@@ -147,6 +166,173 @@ class SITEncuestaController extends Controller
                 Response::HTTP_NOT_FOUND
             );
         }
+    }
+
+    public function get_carreras()
+    {
+        $carreras = Carrera::all();
+
+        if (count($carreras) > 0) {
+            return response()->json(
+                ['data' => $carreras],
+                Response::HTTP_OK
+            );
+        } else {
+            return response()->json(
+                ['data' => false],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get_encuestas_historico()
+    {
+        $encuestas = DB::table('TR_APLICACION_ENCUESTA AS APE')
+            ->select('APE.*', 'EN.NOMBRE AS NOMBRE_ENCUESTA', 'TIA.NOMBRE AS TIPO_APLICACION')
+            ->leftJoin('CAT_ENCUESTA AS EN', 'APE.FK_ENCUESTA', '=', 'EN.PK_ENCUESTA')
+            ->leftJoin('CAT_TIPO_APLICACION_ENCUESTA AS TIA', 'APE.FK_TIPO_APLICACION', '=', 'TIA.PK_TIPO_APLICACION')
+            ->limit(50)
+            ->orderBy('FECHA_APLICACION', 'DESC')
+            ->get();
+
+        if (count($encuestas) > 0) {
+            return response()->json(
+                ['data' => $encuestas],
+                Response::HTTP_OK
+            );
+        } else {
+            return response()->json(
+                ['data' => false],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function aplicar_encuesta(Request $request)
+    {
+        $encuesta = new Aplicacion_Encuesta;
+        $usuario = UsuariosHelper::get_usuario($request->PK_ENCRIPTADA);
+
+        $encuesta->FK_USUARIO_REGISTRO = $usuario->PK_USUARIO;
+        $encuesta->FK_ENCUESTA = $request->PK_ENCUESTA;
+        $encuesta->FK_TIPO_APLICACION = $request->PK_TIPO_APLICACION;
+        $encuesta->PERIODO = Constantes::get_periodo();
+        $encuesta->FECHA_APLICACION = date('Y-m-d H:i:s');
+        $encuesta->FECHA_REGISTRO = date('Y-m-d H:i:s');
+
+        switch ($request->TIPO_APLICACION) {
+            case 2:
+                // por carrera
+                $encuesta->APLICACION_FK_CARRERA = $request->FK_CARRERA;
+                break;
+            case 3:
+                // por semestre
+                $encuesta->APLICACION_SEMESTRE = $request->SEMESTRE;
+                break;
+            case 5:
+                // por usuario
+                $usuario = UsuariosHelper::get_usuario_numero_control($request->NUMERO_CONTROL);
+                $encuesta->FK_USUARIO = $usuario->PK_USUARIO;
+                break;
+        }
+
+        if ($encuesta->save()) {
+            $this->registra_detalle_aplicacion_encuesta($encuesta);
+
+            return response()->json(
+                RespuestaHttp::make_reponse_ok($encuesta),
+                Response::HTTP_OK
+            );
+        } else {
+            return response()->json(
+                RespuestaHttp::make_reponse_error(),
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    private function registra_detalle_aplicacion_encuesta(Aplicacion_Encuesta $encuesta)
+    {
+        switch ($encuesta->TIPO_APLICACION) {
+            case 2:
+                $this->aplica_carrera($encuesta->APLICACION_FK_CARRERA);
+                break;
+            case 3:
+                $this->aplica_semestre($encuesta->APLICACION_SEMESTRE);
+                break;
+            case 5:
+                $this->aplica_usuario($encuesta->FK_USUARIO);
+                break;
+        }
+    }
+
+    private function aplica_usuario($pk_usuario)
+    {
+
+    }
+
+    private function aplica_semestre($semestre)
+    {
+
+    }
+
+    private function aplica_carrera($pk_carrera)
+    {
+
+    }
+
+    /**
+     * @param $id_usuario
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get_cuestionarios_usuarios($pk_encriptada)
+    {
+        $usuario = UsuariosHelper::get_usuario($pk_encriptada);
+
+        $encuestas = DB::table('VW_LISTA_ENCUESTAS')
+            ->where('FK_USUARIO', $usuario->PK_USUARIO)
+            ->orderBy('FECHA_APLICACION', 'DESC')
+            ->get();
+
+        foreach ($encuestas as $encuesta) {
+            $encuesta->NOMBRE_PERIODO = Constantes::get_periodo_texto($encuesta->PERIODO);
+        }
+
+        return ResponseHTTP::response_ok($encuestas);
+    }
+
+    /**
+     * @param $id_usuario
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cuestionarios_usuario_periodos($pk_encriptada)
+    {
+        $usuario = UsuariosHelper::get_usuario($pk_encriptada);
+
+        $periodos = DB::table('VW_LISTA_ENCUESTAS')
+            ->select('PERIODO')
+            ->distinct()
+            ->orderBy('PERIODO', 'DESC')
+            ->get();
+
+        /*$data_periodos = [];*/
+
+        foreach ($periodos as $periodo) {
+            /*$data_periodos[] = [
+                'PERIODO' => $periodos->PERIODO,
+                'NOBRE' => Constantes::get_periodo_texto($periodos->PERIODO)
+            ];*/
+            $periodo->NOMBRE = Constantes::get_periodo_texto($periodo->PERIODO);
+        }
+
+        /*return ResponseHTTP::response_ok((object)$data_periodos);*/
+        return ResponseHTTP::response_ok($periodos);
     }
 
     /**
@@ -171,13 +357,16 @@ class SITEncuestaController extends Controller
     }
 
     /**
-     * @param $pk_aplicacion_encuesta
+     * @param $pk_detalle
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get_encuesta_aplicacion($pk_aplicacion_encuesta)
+    public function get_encuesta_aplicacion(Request $request)
     {
-        $aplicacion_encuesta = DB::table('VIEW_LISTA_ENCUESTAS')
-            ->where('PK_APLICACION_ENCUESTA', $pk_aplicacion_encuesta)
+        $usuario = UsuariosHelper::get_usuario($request->usuario);
+
+        $aplicacion_encuesta = DB::table('VW_LISTA_ENCUESTAS')
+            ->where('PK_APLICACION_ENCUESTA_DETALLE', $request->pk_detalle)
+            ->where('FK_USUARIO', $usuario->PK_USUARIO)
             ->first();
 
         if ($aplicacion_encuesta->ESTADO_APLICACION == Constantes::ENCUESTA_PENDIENTE) {
@@ -293,7 +482,8 @@ class SITEncuestaController extends Controller
         }
     }
 
-    private function get_cuestionario_resuelto($fk_encuesta, $pk_aplicacion) {
+    private function get_cuestionario_resuelto($fk_encuesta, $pk_aplicacion)
+    {
         $array_secciones = array();
         $cuestionario = Encuesta::where('PK_ENCUESTA', $fk_encuesta)->first();
         if ($cuestionario) {

@@ -1,22 +1,17 @@
 <?php
 
-namespace App;
+namespace App\Models\Conferencias;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Conferencia extends Model
+class CapturistaConferencia extends Model
 {
     /**
      * @var array
      */
     protected $fillable = [
-        'TEMA',
-        'FECHA',
-        'LUGAR',
-        'DESCRIPCION',
-        'NOMBRE_EXPOSITOR',
-        'CURRICULUM_EXPOSITOR',
-        'ESTADO',
+        'FK_JORNADA',
+        'FK_USUARIO',
 
         'FK_USUARIO_REGISTRO',
         'FECHA_REGISTRO',
@@ -28,12 +23,12 @@ class Conferencia extends Model
     /**
      * @var string
      */
-    protected $table = 'CAT_JORNADA';
+    protected $table = 'TR_CAPTURISTA_CONFERENCIA';
 
     /**
      * @var string
      */
-    protected $primaryKey = 'PK_JORNADA';
+    protected $primaryKey = 'PK_CAPTURISTA';
 
     /**
      * @var bool

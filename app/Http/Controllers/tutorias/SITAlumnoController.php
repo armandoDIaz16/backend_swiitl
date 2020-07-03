@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\tutorias;
 
+use App\Helpers\ResponseHTTP;
 use App\Helpers\UsuariosHelper;
 use App\Http\Controllers\Controller;
 
@@ -116,18 +117,10 @@ class SITAlumnoController extends Controller
 
             $usuario->HORARIO = $materias;
 
-            return response()->json(
-                ['data' => $usuario],
-                Response::HTTP_ACCEPTED
-            );
-
-            return $materias;
+            return ResponseHTTP::response_ok($usuario);
 
         } else {
-            return response()->json(
-                ['error' => "No se han encontrado al estudiante"],
-                Response::HTTP_NOT_FOUND
-            );
+            return ResponseHTTP::response_error();
         }
     }
 }
