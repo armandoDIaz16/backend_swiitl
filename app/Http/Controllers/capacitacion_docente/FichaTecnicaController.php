@@ -11,9 +11,12 @@ use App\FuenteInformacionCADO;
 use App\Helpers\Base64ToFile;
 use App\MaterialDidacticoCADO;
 use App\ParticipanteCADO;
+use http\Url;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
+use Mpdf\Mpdf;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\CursosCADOHelper;
@@ -43,13 +46,14 @@ class FichaTecnicaController extends Controller
         }
     }
     public function registra_archivo_adjunto(Request $request) {
+        try {
 //        $curso = CursoCADO::find($request->PK_CURSO);
         $adjunto_tema = new ArchivoContenidoTematicoCADO;
         $url = CursosCADOHelper::get_url_carpeta_curso($request->PK_CURSO, $request->PERIODO, 'temas/' . $request->FK_CONTENIDO_TEMATICO );
 //        $nombre_archivo = $request->NOMBRE_ARCHIVO.date('Y-m-d H:i:s');
         $nombre_archivo =  md5($request->NOMBRE_ARCHIVO).date('Y-m-d-H-i-s');
 
-        $ruta = Base64ToFile::guarda_archivo($url, $nombre_archivo, $request->EXTENSION, $request->CONTENIDO);
+           $ruta = Base64ToFile::guarda_archivo($url, $nombre_archivo, $request->EXTENSION, $request->CONTENIDO);
 
         if ($ruta) {
             $adjunto_tema->RUTA_ARCHIVO = $ruta;
@@ -64,20 +68,47 @@ class FichaTecnicaController extends Controller
         } else {
             return response()->json(false, Response::HTTP_NOT_FOUND);
         }
+
+        } catch(Exception $e){
+            error_log($e->getMessage());
+        }
     }
 
     public function busca_participante_por_pk( $pk_participante ){
-
-
         if( isset($pk_participante) ){
             //    DB::enableQueryLog();
             $obj_participante = ParticipanteCADO::find($pk_participante);
-//                                          ->where('PK_PARTICIPANTE_CADO',$pk_participante)
-//                                          ->where('BORRADO',0);
             return response()->json(
                 $obj_participante,Response::HTTP_OK);
         }
+    }
 
+    public function busca_cv_instructor( $pk_curso ){
+        $flagcv = true;
+        try{
+            if( isset($pk_curso) ){
+//                DB::enableQueryLog();
+             $result = DB::table('CATTR_PARTICIPANTE_IMPARTE_CURSO AS PI')
+                        ->select('CVP.PK_CV_PARTICIPANTE')
+                        ->leftJoin('CAT_CV_PARTICIPANTE_CADO AS CVP',
+                            'CVP.FK_PARTICIPANTE_CADO', '=', 'PI.FK_PARTICIPANTE_CADO')
+                        ->where('PI.FK_CAT_CURSO_CADO',$pk_curso)
+                        ->where('PI.BORRADO',0)
+                        ->get();
+
+//                return  $query = DB::getQueryLog();;
+             if(isset($result)) {
+                 foreach ($result as $item) {
+                    if( ! (isset($item->PK_CV_PARTICIPANTE)) ){
+                        $flagcv = false;
+                    }
+                 }
+             }
+                return response()->json( $flagcv,Response::HTTP_OK);
+            }
+        }catch(Exception $e){
+            error_log($e->getMessage());
+        }
     }
 
 
@@ -445,6 +476,7 @@ class FichaTecnicaController extends Controller
                     array_push($data, [
                         'estado'=>'exito',
                         'mensaje'=>'Se guardo  la sección, Contenido temático exitosamente!'
+
                     ]);
                 }else{
                     array_push($data, [
@@ -454,6 +486,10 @@ class FichaTecnicaController extends Controller
                 }
             }
         }
+        // actualizamos los temas
+        $temas = FichaTecnicaCADO::find($pkficha)->contenido_tematico;
+        array_push($data, ['temas'=> $temas]);
+
         return response()->json(
             $data,
             Response::HTTP_OK // 200
@@ -530,12 +566,94 @@ class FichaTecnicaController extends Controller
 
     }
 
-    /*METODO CREADO PARA PROBAR X RESPUESTA
-     * public function pruebarelacionorm()
-    {
-        return $curso = CursoCADO::find(6);
+    /**
+     * @requerimiento : RF - 25    Consulta ficha técnica en PDF
+     * @descripcion : Se puede visualizar la ficha técnica en formato PDF
+     * @param pk_curso Se recibe la pk del curso a imprimir
+     * @return
+     * @throws \Mpdf\MpdfException
+     * @author : Armando Díaz
+     * @fecha  : 12/05/2020
+     * @version : 1.0
+     */
+    public function reporteFichaTecnicaPDF($pk_curso){
+        $cursoController = new CursoController;
+        try{
+            if( isset($pk_curso) ){
+                //    DB::enableQueryLog();
+                $curso = DB::table('CAT_CURSO_CADO')
+                    //                ->select('PK_USUARIO','NOMBRE','PRIMER_APELLIDO','SEGUNDO_APELLIDO')
+                    //                ->join('CAT_PARTICIPANTE_CADO','CAT_PARTICIPANTE_CADO.FK_USUARIO','=','CAT_USUARIO.PK_USUARIO')
+                    ->where('BORRADO',0)
+                    ->where('PK_CAT_CURSO_CADO',$pk_curso)
+                    ->get();
+                //      return  $query = DB::getQueryLog();
+                $curso = $cursoController->prepararArrayCurso($curso);
+                $curso = $curso[0][0];
+                $ficha = $curso['OBJ_FICHA_TECNICA'];
+                $texto_tipo_servicio = $this->prepara_texto_ficha($ficha);
+                $html_final = view('capacitacion_docente.ficha_tecnica')->with('curso',$curso)
+                                                                             ->with('ficha',$ficha)
+                                                                             ->with('texto_tipo_servicio',$texto_tipo_servicio);
+
+                $mpdf = new Mpdf([
+                    'orientation' => 'P',
+                    'margin_top' => 35,
+                    'format' => [215.9,279.4]
+                ]);
+                /*$path = public_path() . '/img/marca_agua.jpg';
+                \Log::debug($path);
+                $mpdf->SetDefaultBodyCSS('background', "url('".$path."')");*/
+                $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
+               /* $stylesheet = file_get_contents(Url('/css/ficha_tecnica_style.css'));
+                $mpdf->WriteHTML($stylesheet,1);*/
+                $mpdf->WriteHTML($html_final);
+               /* return view('capacitacion_docente.ficha_tecnica')->with('curso',$curso)
+                    ->with('ficha',$ficha)
+                    ->with('texto_tipo_servicio',$texto_tipo_servicio);*/
+                return $mpdf->Output();
+            }
+        }catch (\Exception $exception ){
+            error_log('***** Error al generar la ficha técnica en PDF *****');
+            error_log($exception->getMessage());
+            return view('capacitacion_docente.error');
+        }
+
+    }
+    public function  prepara_texto_ficha($ficha){
+    // carga texto servicio ficha
+        if(! is_null($ficha)){
+
+            switch ($ficha->TIPO_SERVICIO) {
+                case 1:
+                    return 'Curso';
+                case 2:
+                    return 'Curso - taller';
+                case 3:
+                    return 'Taller';
+                case 4:
+                    return 'Diplomado';
+                case 5:
+                    return 'Serie de platicas';
+                case 6:
+                    return 'Simposium';
+                case 7:
+                    return $ficha->OTRO_SERVICIO;
+                default:
+                    return '';
+
+            }
+        }else {
+            return '';
+        }
+    }
+
+/*METODO CREADO PARA PROBAR X RESPUESTA
+ * public function pruebarelacionorm()
+{
+    return $curso = CursoCADO::find(6);
 //            $ficha = new Fic[haTecnicaCADO;
 //        return $ficha->();
-    }*/
+}*/
 
     }

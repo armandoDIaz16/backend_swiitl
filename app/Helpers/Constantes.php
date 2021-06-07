@@ -20,6 +20,7 @@ class Constantes
     CONST USUARIO_ALUMNO    = 1;
     CONST USUARIO_DOCENTE   = 2;
     CONST USUARIO_ASPIRANTE = 3;
+    CONST USUARIO_EXTERNO   = 4;
 
     /**
      *

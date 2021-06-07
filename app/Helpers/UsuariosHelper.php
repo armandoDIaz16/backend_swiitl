@@ -170,6 +170,14 @@ class UsuariosHelper {
                     .$numero_control.'/'
                     .$subirectorio.'/';
                 break;
+            case 4:
+                // el usuario es usuario externo
+                $numero_control = trim($numero_control);
+                $url =
+                    'usuarios/empleados/'
+                    .$numero_control.'/'
+                    .$subirectorio.'/';
+                break;
             default: break;
         }
 

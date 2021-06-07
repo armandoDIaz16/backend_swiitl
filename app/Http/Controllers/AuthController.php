@@ -272,7 +272,7 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         $this->verifica_primer_login();
-        $this->revisa_roles(auth()->user()->PK_ENCRIPTADA);
+        //$this->revisa_roles(auth()->user()->PK_ENCRIPTADA);
 
         return response()->json([
             'access_token' => $token,
@@ -303,6 +303,9 @@ class AuthController extends Controller
                 // es aspirante
                 $this->actualiza_datos_aspirante($usuario);
                 $this->asigna_rol_tutorias_estudiante($usuario);
+                break;
+            case Constantes::USUARIO_EXTERNO:
+                // ES EXTERNO
                 break;
         }
     }
@@ -563,19 +566,20 @@ class AuthController extends Controller
             $participante->FK_USUARIO = $usuario->PK_USUARIO;
             $participante->save();
 
-        } else { // lógica para usuarios que no son docentes ni alumnos
+        } else if ($usuario->TIPO_USUARIO == 4) { // lógica para usuarios que no son docentes ni alumnos ni aspirantes
             // logica para asignar roles del Sistema de capacitación Docente
             // EL ROL A ASIGNAR ES EL ROL DE PARTICIPANTE EL CUAL DEBE TENERLO UN PERSONAL ADMON DEL ITL PARA QUE PUEDA PROPONER CURSOS  O TOMARLOS
             // O UN DOCENTE EXTERNO
-           /* if (!UsuariosHelper::rol_usuario($usuario->PK_USUARIO, Abreviaturas::CADO_ROL_PARTICIPANTE, TRUE)) {
+            /*if (!UsuariosHelper::rol_usuario($usuario->PK_USUARIO, Abreviaturas::CADO_ROL_INSTRUCTOR_EXT, TRUE)) {
                 error_log('***** ERROR AL ASIGNAR ROL A USUARIO *****');
                 error_log('PK_USUARIO: ' . $usuario->PK_USUARIO);
-                error_log('ROL: ' . Abreviaturas::CADO_ROL_PARTICIPANTE);
+                error_log('ROL: ' . Abreviaturas::CADO_ROL_INSTRUCTOR_EXT);
             }
             $participante = new ParticipanteCADO;
-            $valor = Constantes::regresa_campo('CAT_TIPO_PARTICIPANTE_CADO','PK_TIPO_PARTICIPANTE_CADO',
-                'NOMBRE_TIPO','Participante');
-            $participante->FK_TIPO_PARTICIPANTE =$valor;
+            $valor = DB::table('CAT_TIPO_PARTICIPANTE_CADO') ->select('PK_TIPO_PARTICIPANTE_CADO')
+                ->where('NOMBRE_TIPO','Instructor externo')
+                ->get();
+            $participante->FK_TIPO_PARTICIPANTE = $valor[0]->PK_TIPO_PARTICIPANTE_CADO;
             $participante->FK_USUARIO = $usuario->PK_USUARIO;
             $participante->save();*/
         }
@@ -814,4 +818,41 @@ class AuthController extends Controller
             );
         }
     }
+
+    /*private function asignar_roles_cado($usuario) { todo PENDIENTE VALIDAR EL DOCUMENTO DE REQ POR INCREMENTO
+       if ($usuario->TIPO_USUARIO == 2) { // lógica para docentes
+
+            // logica para asignar roles del Sistema de capacitación Docente
+            // EL ROL A ASIGNAR ES EL ROL DE PARTICIPANTE EL CUAL DEBE TENERLO SIEMPRE UN DOCENTE DEL ITL PARA QUE PUEDA PROPONER CURSOS  O TOMARLOS
+            if (!UsuariosHelper::rol_usuario($usuario->PK_USUARIO, Abreviaturas::CADO_ROL_PARTICIPANTE, TRUE)) {
+                error_log('***** ERROR AL ASIGNAR ROL A USUARIO *****');
+                error_log('PK_USUARIO: ' . $usuario->PK_USUARIO);
+                error_log('ROL: ' . Abreviaturas::CADO_ROL_PARTICIPANTE);
+            }
+            $participante = new ParticipanteCADO;
+            $valor = DB::table('CAT_TIPO_PARTICIPANTE_CADO') ->select('PK_TIPO_PARTICIPANTE_CADO')
+                ->where('NOMBRE_TIPO','Participante')
+                ->get();
+            $participante->FK_TIPO_PARTICIPANTE = $valor[0]->PK_TIPO_PARTICIPANTE_CADO;
+            $participante->FK_USUARIO = $usuario->PK_USUARIO;
+            $participante->save();
+
+        } else { // lógica para usuarios que no son docentes ni alumnos
+            // logica para asignar roles del Sistema de capacitación Docente
+            // EL ROL A ASIGNAR ES EL ROL DE PARTICIPANTE EL CUAL DEBE TENERLO UN PERSONAL ADMON DEL ITL PARA QUE PUEDA PROPONER CURSOS  O TOMARLOS
+            // O UN DOCENTE EXTERNO
+            /* if (!UsuariosHelper::rol_usuario($usuario->PK_USUARIO, Abreviaturas::CADO_ROL_PARTICIPANTE, TRUE)) {
+                 error_log('***** ERROR AL ASIGNAR ROL A USUARIO *****');
+                 error_log('PK_USUARIO: ' . $usuario->PK_USUARIO);
+                 error_log('ROL: ' . Abreviaturas::CADO_ROL_PARTICIPANTE);
+             }
+             $participante = new ParticipanteCADO;
+             $valor = Constantes::regresa_campo('CAT_TIPO_PARTICIPANTE_CADO','PK_TIPO_PARTICIPANTE_CADO',
+                 'NOMBRE_TIPO','Participante');
+             $participante->FK_TIPO_PARTICIPANTE =$valor;
+             $participante->FK_USUARIO = $usuario->PK_USUARIO;
+             $participante->save();
+        }
+    }*/
+
 }

@@ -46,6 +46,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('perfil', 'PerfilController@get_perfil');
     // OBTENER DATOS DE INICIO PARA PERFIL CV
     Route::post('get_perfil_CV', 'PerfilController@get_perfil');
+    // OBTENER TIPO USUARIO
+    Route::post('get_tipo_usuario', 'PerfilController@get_tipo_usuario');
 
 
 
@@ -1128,12 +1130,29 @@ Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeu
         'registro_curso',
         'capacitacion_docente\CursoController@registro_curso'
     );
+    // Asigna instructores de curso
+    Route::post(
+        'asigna_instructores_curso',
+        'capacitacion_docente\CursoController@asigna_instructores_curso'
+    );
+    // Asigna instructores de curso
+    Route::post(
+        'modifica_instructores_curso',
+        'capacitacion_docente\CursoController@modifica_instructores_curso'
+    );
 
 // Consulta de participante
     Route::get(
-        'consulta_participante/{noControl}',
+        'consulta_participante/{idUsuario}',
         'capacitacion_docente\CursoController@consulta_participante'
     );
+
+    // Consulta de participante
+    Route::get(
+        'consulta_roles/{idUsuario}/{abreviatura_sistema}',
+        'capacitacion_docente\CursoController@consulta_roles'
+    );
+
 // Consulta de cursos por instructor
     Route::get(
         'consulta_cursos_participante/{pk_participante}/{tipo_participante}',
@@ -1220,12 +1239,19 @@ Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeu
         'busca_participante_por_pk/{pk_participante}',
         'capacitacion_docente\FichaTecnicaController@busca_participante_por_pk'
     );
+// Consulta cv de los intructores del curso
+    Route::get(
+        'busca_cv_instructor/{pk_curso}',
+        'capacitacion_docente\FichaTecnicaController@busca_cv_instructor'
+    );
 
     // REGISTRA SECCION CONTENIDO TEMATICO
     Route::post(
         'guarda_comentario',
         'capacitacion_docente\FichaTecnicaController@guarda_comentario'
     );
+
+
     //* ************* FIN  FICHA TECNICA *************** *
 
     //* ************* INICIO CONVOCATORIA  *************** *
@@ -1234,7 +1260,42 @@ Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeu
         'carga_convocatoria_cursos',
         'capacitacion_docente\ConvocatoriaController@carga_convocatoria_cursos'
     );
- //* ************* FIN CONVOCATORIA *************** *
+
+    // Consulta de los cursos del participante
+    Route::get(
+        'carga_mis_cursos/{pk_participante}',
+        'capacitacion_docente\ConvocatoriaController@carga_mis_cursos'
+    );
+
+    // Consulta el cupo del curso para inscribir a un participante
+    Route::get(
+        'validar_cupo_curso/{pk_curso}',
+        'capacitacion_docente\ConvocatoriaController@validar_cupo_curso'
+    );
+    // Consulta el cupo del curso para inscribir a un participante
+    Route::get(
+        'validar_horario_disponible/{pk_curso}/{pk_participante}/{pk_periodo}',
+        'capacitacion_docente\ConvocatoriaController@validar_horario_disponible'
+    );
+// REGISTRA SECCION CONTENIDO TEMATICO
+    Route::post(
+        'inscribir_participante',
+        'capacitacion_docente\ConvocatoriaController@inscribir_participante'
+    );
+    // REGISTRA SECCION CONTENIDO TEMATICO
+    Route::post(
+        'baja_participante',
+        'capacitacion_docente\ConvocatoriaController@baja_participante'
+    );
+
+    // Consulta el cupo del curso para inscribir a un participante
+    Route::get(
+        'valida_inscripcion_curso/{pk_curso}/{pk_participante}',
+        'capacitacion_docente\ConvocatoriaController@valida_inscripcion_curso'
+    );
+
+
+        //* ************* FIN CONVOCATORIA *************** *
  //* ************* INICIO CV  *************** *
 
 // Crear ficha tecnica del curso
@@ -1288,19 +1349,48 @@ Route::get('referencia_propedeutico', 'ReferenciasEspeciales@referencia_propedeu
 /* *********************************************************** *
  * ************* RUTAS LIBRES DEL SISTEMA DE CAPACITACION DOCENTE *************** *
  * *********************************************************** */
-
+// Consulta la ficha tecnica en PDF
+Route::get(
+    'reporteFichaTecnicaPDF/{pk_curso}',
+    'capacitacion_docente\FichaTecnicaController@reporteFichaTecnicaPDF'
+);
+// Consulta el CV en PDF
+Route::get(
+    'reporteCVPDF/{pk_participante}',
+    'capacitacion_docente\CurriculumController@reporteCVPDF'
+);
+// Consulta el CV en PDF
+Route::get(
+    'reporteCVHTML/{pk_participante}',
+    'capacitacion_docente\CurriculumController@reporteCVHTML'
+);
 // ruta de prueba
 /*Route::get(
     'pruebarelacionorm/',
     'capacitacion_docente\FichaTecnicaController@pruebarelacionorm'
 );*/
 
+// Consulta el cupo del curso para inscribir a un participante
+/*Route::get(
+    'validar_horario_disponible/{pk_curso}/{pk_participante}/{pk_periodo}',
+    'capacitacion_docente\ConvocatoriaController@validar_horario_disponible'
+);
+// REGISTRA SECCION CONTENIDO TEMATICO
+Route::post(
+    'inscribir_participante',
+    'capacitacion_docente\ConvocatoriaController@inscribir_participante'
+);*/
+/*// REGISTRA SECCION CONTENIDO TEMATICO
+Route::post(
+    'baja_participante',
+    'capacitacion_docente\ConvocatoriaController@baja_participante'
+);*/
 // Consulta de cursos misma fecha
 /*Route::get(
     'busca_curso_misma_hora/{fecha_inicio?}/{hora_inicio?}',
     'capacitacion_docente\CursoController@busca_curso_misma_hora'
-);*/
-/*
+);
+
  // Consulta de periodos
  Route::get(
     'consulta_periodos',

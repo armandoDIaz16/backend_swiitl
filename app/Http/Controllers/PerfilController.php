@@ -49,6 +49,11 @@ class PerfilController extends Controller
                 $view = 'VW_PERFIL_ASPIRANTE';
             }
 
+            if ($usuario->TIPO_USUARIO == Constantes::USUARIO_EXTERNO) {
+                //usuario externo
+                $view = 'VW_PERFIL_ALUMNO';
+            }
+
             $perfil = DB::table($view)
                 ->where('PK_USUARIO', $usuario->PK_USUARIO)
                 ->first();
@@ -104,8 +109,9 @@ class PerfilController extends Controller
     public function actualiza_foto_perfil(Request $request)
     {
         $usuario = UsuariosHelper::get_usuario($request->PK_ENCRIPTADA);
+        $carpeta = $usuario->NUMERO_CONTROL == '' ? $usuario->PK_USUARIO : $usuario->NUMERO_CONTROL;
         $url = UsuariosHelper::get_url_expediente_usuario(
-            $usuario->NUMERO_CONTROL,
+            $carpeta,
             $usuario->TIPO_USUARIO,
             'perfil'
         );
@@ -122,6 +128,17 @@ class PerfilController extends Controller
             }
         } else {
             return response()->json(false, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function get_tipo_usuario(Request $request)
+    {
+        $usuario = UsuariosHelper::get_usuario_pk($request->pk_usuario);
+
+        if ($usuario) {
+            return ResponseHTTP::response_ok($usuario);
+        }else {
+            return ResponseHTTP::response_error($usuario);
         }
     }
 }

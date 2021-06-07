@@ -7,11 +7,13 @@ use App\ExperienciaDocenteCVCADO;
 use App\ExperienciaLaboralCVCADO;
 use App\FormacionCVCADO;
 use App\ParticipacionInstructorCVCADO;
+use App\ParticipanteCADO;
 use App\ProductoAcademicoCVCADO;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Mpdf\Mpdf;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Carbon;
 
@@ -220,6 +222,7 @@ class CurriculumController extends Controller
                 $obj_experiencia->NOMBRE_EMPRESA = $experiencia['NOMBRE_EMPRESA'];
                 $obj_experiencia->FECHA_INICIO_PERMANENCIA = $experiencia['FECHA_INICIO_PERMANENCIA'];
                 $obj_experiencia->FECHA_FIN_PERMANENCIA = $experiencia['FECHA_FIN_PERMANENCIA'];
+                $obj_experiencia->FECHA_FIN_PERMANENCIA = ($experiencia['FECHA_FIN_PERMANENCIA'] ==NULL) ? NULL : $experiencia['FECHA_FIN_PERMANENCIA'] ;
                 $obj_experiencia->ACTIVIDADES_A_CARGO = $experiencia['ACTIVIDADES_A_CARGO'];
                 $obj_experiencia->FK_USUARIO_REGISTRO = $pk_usuario;
                 $obj_experiencia->BORRADO = 0;
@@ -454,6 +457,96 @@ class CurriculumController extends Controller
                 ['error' => 'No se pudo guardar'],
                 Response::HTTP_OK // 200
             );
+        }
+
+    }
+
+    /**
+     * @requerimiento : RF - 26    Consulta CV en PDF
+     * @descripcion : Se puede visualizar el CV del instructor en formato PDF
+     * @param pk_participante   Se recibe el pk_participante
+     * @return
+     * @throws \Mpdf\MpdfException
+     * @author : Armando Díaz
+     * @fecha  : 6/09/2020
+     * @version : 1.0
+     */
+    public function reporteCVPDF($pk_participante){
+        try{
+            if( isset($pk_participante) ){
+                //    DB::enableQueryLog();
+                $obj_participante = ParticipanteCADO::find($pk_participante);
+                if ( count($obj_participante['cv']) <= 0 ){
+                    $cv = null;
+                } else {
+                    $cv = $obj_participante['cv'][0];
+                }
+
+                $usuario = $obj_participante['usuario'];
+
+                //*********zona horaria*****************
+                date_default_timezone_set('America/Mexico_City');
+                //    setlocale(LC_TIME,'es_MX.UTF-8');
+                //    date_default_timezone_set('Europe/Madrid');
+                // Unix
+                //                setlocale(LC_TIME, 'es_ES.UTF-8');
+                // En windows
+                setlocale(LC_TIME, 'spanish');
+
+                $html_final = view('capacitacion_docente.cv_pdf')->with('cv',$cv)
+                                                                      ->with('usuario',$usuario);
+                               //view('capacitacion_docente.error');
+                $mpdf = new Mpdf([
+                    'orientation' => 'P',
+                    'margin_top' => 35,
+                    'format' => [215.9,279.4]
+                ]);
+                /*$path = public_path() . '/img/marca_agua.jpg';
+                \Log::debug($path);
+                $mpdf->SetDefaultBodyCSS('background', "url('".$path."')");*/
+                $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
+                /* $stylesheet = file_get_contents(Url('/css/ficha_tecnica_style.css'));
+                 $mpdf->WriteHTML($stylesheet,1);*/
+                $mpdf->WriteHTML($html_final);
+//                 return  view('capacitacion_docente.cv_pdf')->with('cv',$cv);
+                return $mpdf->Output();
+            }
+        }catch (\Exception $exception ){
+            error_log('***** Error al generar el CV en PDF *****');
+            error_log($exception->getMessage());
+            return view('capacitacion_docente.error');
+        }
+
+    }
+    public function reporteCVHTML($pk_participante){
+        try{
+            if( isset($pk_participante) ){
+                //    DB::enableQueryLog();
+                $obj_participante = ParticipanteCADO::find($pk_participante);
+
+                $cv = $obj_participante[0][0];
+//                $texto_tipo_servicio = $this->prepara_texto_ficha($ficha);
+                $html_final = view('capacitacion_docente.cv_pdf')->with('cv',$cv);
+                //view('capacitacion_docente.error');
+                $mpdf = new Mpdf([
+                    'orientation' => 'P',
+                    'margin_top' => 35,
+                    'format' => [215.9,279.4]
+                ]);
+                /*$path = public_path() . '/img/marca_agua.jpg';
+                \Log::debug($path);
+                $mpdf->SetDefaultBodyCSS('background', "url('".$path."')");*/
+                $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
+                /* $stylesheet = file_get_contents(Url('/css/ficha_tecnica_style.css'));
+                 $mpdf->WriteHTML($stylesheet,1);*/
+                $mpdf->WriteHTML($html_final);
+                 return  view('capacitacion_docente.cv_pdf')->with('cv',$cv);
+//                return $mpdf->Output();
+            }
+        }catch (\Exception $exception ){
+            error_log('***** Error al generar el CV en PDF *****');
+            error_log($exception->getMessage());
+            return view('capacitacion_docente.error');
         }
 
     }
